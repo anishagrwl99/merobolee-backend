@@ -1,0 +1,460 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MeroBolee</name>
+    </assembly>
+    <members>
+        <member name="M:MeroBolee.Controllers.CategoryController.Add(MeroBolee.Dto.AddCategoryDto)">
+            <summary>
+            To add category by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CategoryController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all category by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CategoryController.Delete(System.Int32)">
+            <summary>
+            To delete category record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CategoryController.GetById(System.Int32)">
+            <summary>
+            To get individual category detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CategoryController.Update(System.Int32,MeroBolee.Dto.AddCategoryDto)">
+            <summary>
+            To update Category info
+            </summary>
+            <param name="id"></param>
+            <param name="addCategory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.Add(MeroBolee.Dto.AddCityDto)">
+            <summary>
+            To add city by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all city by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.Delete(System.Int32)">
+            <summary>
+            To delete city record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.GetById(System.Int32)">
+            <summary>
+            To get individual city detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.GetCascade(System.Int32)">
+            <summary>
+            To get list of city for cascade dropdown acc. to municipality or vdc
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.City.CityController.Update(System.Int32,MeroBolee.Dto.AddCityDto)">
+            <summary>
+            To update city info
+            </summary>
+            <param name="id"></param>
+            <param name="addCity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CompanyType.CompanyTypeController.AddCompanyType(MeroBolee.Dto.AddCompanyTypeDto)">
+            <summary>
+            To add company type by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CompanyType.CompanyTypeController.GetAllCompanyType(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all Company Type by Admin
+            </summary>
+            <param name="pagination"></param>
+            <param name="search"></param>>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CompanyType.CompanyTypeController.DeleteCompanyType(System.Int32)">
+            <summary>
+            To delete CompanyType record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CompanyType.CompanyTypeController.GetCompanyTypeById(System.Int32)">
+            <summary>
+            To get individual CompanyType detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.CompanyType.CompanyTypeController.UpdateCompanyType(System.Int32,MeroBolee.Dto.AddCompanyTypeDto)">
+            <summary>
+            To update CompanyType info
+            </summary>
+            <param name="id"></param>
+            <param name="addCompanyType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Country.CountryController.AddCountry(MeroBolee.Dto.AddCountryDto)">
+            <summary>
+            To add country by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Country.CountryController.GetAllCountry(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all country by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Country.CountryController.DeleteCountry(System.Int32)">
+            <summary>
+            To delete country record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Country.CountryController.GetCountryById(System.Int32)">
+            <summary>
+            To get individual country detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Country.CountryController.UpdateCountry(System.Int32,MeroBolee.Dto.AddCountryDto)">
+            <summary>
+            To update country info
+            </summary>
+            <param name="id"></param>
+            <param name="addCountry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.Add(MeroBolee.Dto.AddDistrictDto)">
+            <summary>
+            To add district by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all district by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.Delete(System.Int32)">
+            <summary>
+            To delete district record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.GetById(System.Int32)">
+            <summary>
+            To get individual district detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.GetCascade(System.Int32)">
+            <summary>
+            To get list of district for cascade dropdown by province_id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.District.DistrictController.Update(System.Int32,MeroBolee.Dto.AddDistrictDto)">
+            <summary>
+            To update district info
+            </summary>
+            <param name="id"></param>
+            <param name="addDistrict"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.Add(MeroBolee.Dto.AddMemeberShipDto)">
+            <summary>
+            To add membershipType by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all membership type by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.Delete(System.Int32)">
+            <summary>
+            To delete membership type record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.GetById(System.Int32)">
+            <summary>
+            To get individual membership type detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.Update(System.Int32,MeroBolee.Dto.AddMemeberShipDto)">
+            <summary>
+            To update membership Type info
+            </summary>
+            <param name="id"></param>
+            <param name="addMemeberShip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.Add(MeroBolee.Dto.AddMunicipalityDto)">
+            <summary>
+            To add Municipality by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all Municipality by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.Delete(System.Int32)">
+            <summary>
+            To delete Municipality record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.GetById(System.Int32)">
+            <summary>
+            To get individual Municipality detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.GetCascade(System.Int32)">
+            <summary>
+            To get list of Municipality for cascade dropdown acc. to municipality or vdc
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Municipality.MunicipalityController.Update(System.Int32,MeroBolee.Dto.AddMunicipalityDto)">
+            <summary>
+            To update Municipality info
+            </summary>
+            <param name="id"></param>
+            <param name="addMunicipality"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.Add(MeroBolee.Dto.AddProvinceDto)">
+            <summary>
+            To add province by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all province by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.Delete(System.Int32)">
+            <summary>
+            To delete province record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.GetById(System.Int32)">
+            <summary>
+            To get individual province detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.GetCascade(System.Int32)">
+            <summary>
+            To get list of province for cascade dropdown by country_id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Province.ProvinceController.Update(System.Int32,MeroBolee.Dto.AddProvinceDto)">
+            <summary>
+            To update province info
+            </summary>
+            <param name="id"></param>
+            <param name="addProvince"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Role.RoleController.AddRole(MeroBolee.Dto.AddRoleDto)">
+            <summary>
+            To add role by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Role.RoleController.GetAllRole(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all role by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Role.RoleController.DeleteRole(System.Int32)">
+            <summary>
+            To delete role record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Role.RoleController.GetRoleById(System.Int32)">
+            <summary>
+            To get individual role detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Role.RoleController.UpdateRole(System.Int32,MeroBolee.Dto.AddRoleDto)">
+            <summary>
+            To update role info
+            </summary>
+            <param name="id"></param>
+            <param name="addRole"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetAll">
+            <summary>
+            To display all common status
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetAuctionStatus">
+            <summary>
+            To display all auction status for auction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetAdminStatus">
+            <summary>
+            To display all admin status for auction by admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetUserStatus">
+            <summary>
+            To display all user status
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.Add(MeroBolee.Dto.AddUserDto)">
+            <summary>
+            To add user by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.SignUp(MeroBolee.Dto.SignUpDto)">
+            <summary>
+            To signup user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all user by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.GetById(System.Int32)">
+            <summary>
+            To get individual user detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.Update(System.Int32,MeroBolee.Dto.AddUserDto)">
+            <summary>
+            To update user info by Admin
+            </summary>
+            <param name="id"></param>
+            <param name="addUser"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.User.UserController.UpdateByUser(System.Int32,MeroBolee.Dto.SignUpDto)">
+            <summary>
+            To update user info by User
+            </summary>
+            <param name="id"></param>
+            <param name="addUser"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.Add(MeroBolee.Dto.AddVDCDto)">
+            <summary>
+            To add VDC by Admin
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all VDC by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.Delete(System.Int32)">
+            <summary>
+            To delete VDC record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.GetById(System.Int32)">
+            <summary>
+            To get individual VDC detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.GetCascade(System.Int32)">
+            <summary>
+            To get list of VDC for cascade dropdown acc. to municipality or vdc
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.VDC.VDCController.Update(System.Int32,MeroBolee.Dto.AddVDCDto)">
+            <summary>
+            To update VDC info
+            </summary>
+            <param name="id"></param>
+            <param name="addVDC"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

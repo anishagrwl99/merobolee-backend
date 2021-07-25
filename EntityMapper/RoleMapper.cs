@@ -1,0 +1,55 @@
+﻿using MeroBolee.Dto;
+using MeroBolee.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MeroBolee.EntityMapper
+{
+    public class RoleMapper
+    {
+        public RoleEntity RoleDtoToEntity(AddRoleDto addGetRoleDto)
+        {
+            if (addGetRoleDto == null)
+            {
+                return null;
+            }
+            return new RoleEntity
+            { 
+                 Role_Name= addGetRoleDto.Role
+            };
+        }
+
+        public IEnumerable<GetRoleDto> RoleEntityListToDto(IEnumerable<RoleEntity> roleEntities)
+        {
+            List<GetRoleDto> addGetRoles = new List<GetRoleDto>();
+            if (roleEntities == null)
+            {
+                return addGetRoles = null;            
+            }
+            foreach (RoleEntity role in roleEntities)
+            {
+                addGetRoles.Add(new GetRoleDto
+                    {
+                        Role_Id= role.Role_Id,
+                        Role=role.Role_Name                    
+                    }          
+                    );                    
+            }
+            return addGetRoles;
+        }
+
+        public GetRoleDto RoleEntityToDto(RoleEntity roleEntity)
+        {if (roleEntity == null)
+            {
+                return null;
+            }
+            return new GetRoleDto 
+            {
+            Role_Id= roleEntity.Role_Id,
+            Role= roleEntity.Role_Name
+            };
+        }
+    }
+}
