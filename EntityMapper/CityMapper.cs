@@ -15,13 +15,36 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            return new CityEntity
+            if (addCityDto.Municipality_Id == 0 && addCityDto.VDC_Id != 0)
             {
-                City_Name = addCityDto.City,
-                Municipality_Id = addCityDto.Municipality_Id,
-                Vdc_Id = addCityDto.VDC_Id
+                return new CityEntity
+                {
+                    City_Name = addCityDto.City,
+                    Municipality_Id = null,
+                    Vdc_Id = addCityDto.VDC_Id
 
-            };
+                };
+
+            }
+            else if (addCityDto.Municipality_Id != 0 && addCityDto.VDC_Id == 0)
+            {
+                return new CityEntity
+                {
+                    City_Name = addCityDto.City,
+                    Municipality_Id = addCityDto.Municipality_Id,
+                    Vdc_Id = null
+                };
+            }
+            else
+            {
+                return new CityEntity
+                {
+                    City_Name = addCityDto.City,
+                    Municipality_Id = null,
+                    Vdc_Id = null
+
+                };
+            }
 
         }
 
@@ -49,10 +72,10 @@ namespace MeroBolee.EntityMapper
                 {
                     Id = cityEntity.City_Id,
                     City = cityEntity.City_Name,
-                    Municipality_Id = null,
-                    Municipality = null,
-                    VDC_Id = cityEntity.Vdc_Id,
-                    Vdc = cityEntity.VDC.Vdc_Name
+                    Municipality_Id = cityEntity.Municipality_Id,
+                    Municipality = cityEntity.Municipality.Municipality_Name,
+                    VDC_Id = null,
+                    Vdc = null
                 };
             }
 
@@ -81,18 +104,52 @@ namespace MeroBolee.EntityMapper
             }
             foreach (CityEntity city in cityEntities)
             {
-                getCity.Add
-                (
-                  new GetCityDto
-                  {
-                      Id = city.City_Id,
-                      City = city.City_Name,
-                      Municipality_Id = city.Municipality_Id,
-                      Municipality= city.Municipality.Municipality_Name,
-                      VDC_Id = city.Vdc_Id,
-                      Vdc= city.VDC.Vdc_Name
-                  }
-                );
+                if (city.Municipality_Id == null && city.Vdc_Id == null)
+                {
+                    getCity.Add
+                   (
+                     new GetCityDto
+                     {
+                         Id = city.City_Id,
+                         City = city.City_Name,
+                         Municipality_Id = null,
+                         Municipality = null,
+                         VDC_Id = null,
+                         Vdc = null
+                     }
+                   );
+
+                }
+                else if (city.Municipality_Id != null && city.Vdc_Id == null)
+                {
+                    getCity.Add
+                   (
+                     new GetCityDto
+                     {
+                         Id = city.City_Id,
+                         City = city.City_Name,
+                         Municipality_Id = city.Municipality_Id,
+                         Municipality = city.Municipality.Municipality_Name,
+                         VDC_Id = null,
+                         Vdc = null
+                     }
+                   );
+                }
+                else
+                {
+                    getCity.Add
+                    (
+                      new GetCityDto
+                      {
+                          Id = city.City_Id,
+                          City = city.City_Name,
+                          Municipality_Id = null,
+                          Municipality = null,
+                          VDC_Id = city.Vdc_Id,
+                          Vdc = city.VDC.Vdc_Name
+                      }
+                    );
+                }
             }
             return getCity;
         }

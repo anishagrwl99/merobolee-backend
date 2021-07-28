@@ -85,7 +85,7 @@ namespace MeroBolee.Controllers.Province
                 int totalCount = province.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(province, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetProvinceDto>>(province, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(province, pagination, totalCount)); // To pass result in object along with pagination info
             }

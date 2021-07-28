@@ -74,7 +74,7 @@ namespace MeroBolee.Controllers.CompanyType
                 int totalCount = CompanyType.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(CompanyType, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetCompanyTypeDto>>(CompanyType, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(CompanyType, pagination, totalCount)); // To pass result in object along with pagination info
             }

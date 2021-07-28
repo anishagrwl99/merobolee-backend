@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace MeroBolee.Service.User
 {
     public interface IUserService
     {
-        GetUserDto AddUser(AddUserDto userDto);
+        Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/ );
         GetUserDto SignUp(SignUpDto signUpDto);
         IEnumerable<GetUserDto> GetUser(string search);
         GetUserDto GetUserDetail(int id);

@@ -74,7 +74,7 @@ namespace MeroBolee.Controllers.Membership
                 int totalCount = membershipDtos.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(membershipDtos, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetMembershipDto>>(membershipDtos, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(membershipDtos, pagination, totalCount)); // To pass result in object along with pagination info
             }

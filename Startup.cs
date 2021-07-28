@@ -5,10 +5,12 @@ using MeroBolee.Repository.City;
 using MeroBolee.Repository.CompanyType;
 using MeroBolee.Repository.Country;
 using MeroBolee.Repository.District;
+using MeroBolee.Repository.Membership;
 using MeroBolee.Repository.Municipality;
 using MeroBolee.Repository.Province;
 using MeroBolee.Repository.Role;
 using MeroBolee.Repository.Status;
+using MeroBolee.Repository.User;
 using MeroBolee.Repository.VDC;
 using MeroBolee.Service;
 using MeroBolee.Service.Category;
@@ -16,9 +18,11 @@ using MeroBolee.Service.City;
 using MeroBolee.Service.CompanyType;
 using MeroBolee.Service.Country;
 using MeroBolee.Service.District;
+using MeroBolee.Service.Membership;
 using MeroBolee.Service.Municipality;
 using MeroBolee.Service.Province;
 using MeroBolee.Service.Status;
+using MeroBolee.Service.User;
 using MeroBolee.Service.VDC;
 using MeroBolee.Utility;
 using Microsoft.AspNetCore.Builder;
@@ -94,6 +98,11 @@ namespace MeroBolee
             services.AddScoped<IMunicipalityService, MunicipalityService>();
             services.AddScoped<IVDCRepository, VDCRepository>();
             services.AddScoped<IVDCService, VDCService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
+            services.AddScoped<IMembershipTypeService, MembershipTypeService>();
+
 
         }
 

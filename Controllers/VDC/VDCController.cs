@@ -80,7 +80,7 @@ namespace MeroBolee.Controllers.VDC
                 int totalCount = VDC.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(VDC, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetVDCDto>>(VDC, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(VDC, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -311,7 +311,6 @@ namespace MeroBolee.Controllers.VDC
                 response.statusCode = "400";
                 response.Message = e.Message;
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
             }
         }
 

@@ -74,7 +74,7 @@ namespace MeroBolee.Controllers.Role
                 int totalCount = role.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(role, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetRoleDto>>(role, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(role, pagination, totalCount)); // To pass result in object along with pagination info
             }

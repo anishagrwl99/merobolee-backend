@@ -18,6 +18,7 @@ namespace MeroBolee.EntityMapper
             return new MembershipTypeEntity
             {
                 Membership_Title = memeberShipDto.Membership_Title,
+                Membership_fee= memeberShipDto.Membership_fee,
                 Duration = memeberShipDto.Duration,
                 Duration_Type= memeberShipDto.Duration_Type,
                 Discount= memeberShipDto.Discount,

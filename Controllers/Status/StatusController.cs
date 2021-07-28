@@ -31,9 +31,9 @@ namespace MeroBolee.Controllers.Status
             try
             {
                 IEnumerable<PublishStatus> publishStatuses = statusService.GetPublishStatuses();
-                if (publishStatuses == null)
+                if (publishStatuses.Count() == 0)
                 {
-                    return Ok(new Responses<IEnumerable<PublishStatus>>(publishStatuses, "404", "Record not Found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<PublishStatus>>(publishStatuses, "404", "Record not Found")); // To pass result in object along with pagination info
                 }
                 return Ok(new Responses<IEnumerable<PublishStatus>>(publishStatuses,"200","Record Found")); // To pass result in object along with pagination info
             }
@@ -68,9 +68,9 @@ namespace MeroBolee.Controllers.Status
             try
             {
                 IEnumerable<AuctionStatusEntity> auctionStatuses = statusService.GetAuctionStatuses();
-                if (auctionStatuses == null)
+                if (auctionStatuses.Count() == 0)
                 {
-                    return Ok(new Responses<IEnumerable<AuctionStatusEntity>>(auctionStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<AuctionStatusEntity>>(auctionStatuses, "404", "Record not found")); // To pass result in object along with pagination info
 
                 }
                 return Ok(new Responses<IEnumerable<AuctionStatusEntity>>(auctionStatuses,"200", "Record found")); // To pass result in object along with pagination info
@@ -106,9 +106,9 @@ namespace MeroBolee.Controllers.Status
             try
             {
                 IEnumerable<AdminStatusEntity> adminStatuses = statusService.GetAdminStatuses();
-                if (adminStatuses == null)
+                if (adminStatuses.Count() == 0)
                 {
-                    return Ok(new Responses<IEnumerable<AdminStatusEntity>>(adminStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<AdminStatusEntity>>(adminStatuses, "404", "Record not found")); // To pass result in object along with pagination info
 
                 }
                 return Ok(new Responses<IEnumerable<AdminStatusEntity>>(adminStatuses,"200","Record found")); // To pass result in object along with pagination info
@@ -144,9 +144,9 @@ namespace MeroBolee.Controllers.Status
             try
             {
                 IEnumerable<UserStatusEntity> userStatuses = statusService.GetUserStatuses();
-                if (userStatuses == null)
+                if (userStatuses.Count() == 0)
                 {
-                    return Ok(new Responses<IEnumerable<UserStatusEntity>>(userStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<UserStatusEntity>>(userStatuses, "404", "Record not found")); // To pass result in object along with pagination info
 
                 }
                 return Ok(new Responses<IEnumerable<UserStatusEntity>>(userStatuses,"200","Record found")); // To pass result in object along with pagination info

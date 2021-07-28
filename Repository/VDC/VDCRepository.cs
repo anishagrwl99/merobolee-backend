@@ -21,6 +21,7 @@ namespace MeroBolee.Repository.VDC
             {
                 meroBoleeDbContexts.VDCEntities.Add(vdcEntity);
                 unitOfWork.SaveChange();
+                meroBoleeDbContexts.DistrictEntities.ToList();
                 return vdcEntity;
             }
             catch(Exception)
@@ -33,6 +34,7 @@ namespace MeroBolee.Repository.VDC
         {
             try
             {
+                meroBoleeDbContexts.DistrictEntities.ToList();
               return  meroBoleeDbContexts.VDCEntities.Where(m => m.District_Id == id).ToList();
             }
             catch (Exception)
@@ -59,6 +61,7 @@ namespace MeroBolee.Repository.VDC
         {
             try
             {
+                meroBoleeDbContexts.DistrictEntities.ToList();
                 return meroBoleeDbContexts.VDCEntities.Where(m => (search == null)
                 || (m.Vdc_Name.ToLower().Contains(search.ToLower())))
                 .ToList();
@@ -74,6 +77,7 @@ namespace MeroBolee.Repository.VDC
         {
             try
             {
+                meroBoleeDbContexts.DistrictEntities.ToList();
                 return meroBoleeDbContexts.VDCEntities.Where(m => m.Vdc_Id == id).FirstOrDefault();
             }
             catch (Exception)
@@ -91,10 +95,12 @@ namespace MeroBolee.Repository.VDC
                 if(vdc!=null)
                 {
                     vdc.Vdc_Name = vdcEntity.Vdc_Name;
+                    vdc.District_Id = vdcEntity.District_Id;
                     vdc.Date_modified = vdcEntity.Date_modified;
                     vdc.Modified_time_stamp = vdcEntity.Modified_time_stamp;
                     unitOfWork.SaveChange();
                 }
+                meroBoleeDbContexts.DistrictEntities.ToList();
                 return vdc;
             }
             catch (Exception)

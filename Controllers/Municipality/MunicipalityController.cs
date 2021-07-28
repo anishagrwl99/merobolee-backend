@@ -80,7 +80,7 @@ namespace MeroBolee.Controllers.Municipality
                 int totalCount = Municipality.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(Municipality, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetMunicipalityDto>>(Municipality, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(Municipality, pagination, totalCount)); // To pass result in object along with pagination info
             }

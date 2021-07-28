@@ -23,18 +23,26 @@ namespace MeroBolee.Controllers.User
             this.userService = userService;
         }
         /// <summary>
-        /// To add user by Admin
+        /// To add user by Admin  and status is userStatus
         /// </summary>
         /// <returns></returns>
         [HttpPost("User")]
-        public IActionResult Add([FromBody] AddUserDto addUser)
+        public async Task<IActionResult> Add(AddUserDto addUser/*,[FromForm]IFormFile front_Citizenship=null, [FromBody] IFormFile back_Citizenship=null, [FromBody] IFormFile tax_Clearance=null , [FromBody] IFormFile PAN_Registration=null, [FromBody] IFormFile company_Registration=null, [FromBody] IFormFile experienced_Doc=null, [FromBody] IFormFile bank_Credit_letter=null*/)
         {
             try
             {
                 if (ModelState.IsValid)
-                {
-
-                    return Ok(new Responses<GetUserDto>(userService.AddUser(addUser), "200", "Record is successfully added"));
+                {                    
+                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (int.TryParse(addUser.Person_contact1,out _)== true))
+                    {                       
+                        return Ok(new Responses<GetUserDto>( await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Contact Number must be numeric";
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
                 }
                 else
                 {
@@ -64,7 +72,7 @@ namespace MeroBolee.Controllers.User
         }
 
         /// <summary>
-        /// To signup user
+        /// To signup user and status is userStatus
         /// </summary>
         /// <returns></returns>
         [HttpPost("SignUpUser")]
@@ -75,7 +83,16 @@ namespace MeroBolee.Controllers.User
                 if (ModelState.IsValid)
                 {
 
-                    return Ok(new Responses<GetUserDto>(userService.SignUp(addUser), "200", "Record is successfully added"));
+                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (int.TryParse(addUser.Person_contact1, out _) == true))
+                    {
+                        return Ok(new Responses<GetUserDto>(userService.SignUp(addUser), "200", "Record is successfully added"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Contact Number must be numeric";
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
                 }
                 else
                 {
@@ -121,7 +138,7 @@ namespace MeroBolee.Controllers.User
                 int totalCount = user.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(user, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetUserDto>>(user, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(user, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -196,7 +213,7 @@ namespace MeroBolee.Controllers.User
         }
 
         /// <summary>
-        /// To update user info by Admin
+        /// To update user info by Admin and status is userStatus
         /// </summary>
         /// <param name="id"></param>
         /// <param name="addUser"></param>

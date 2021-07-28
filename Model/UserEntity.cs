@@ -62,10 +62,12 @@ namespace MeroBolee.Model
         private CityEntity city;
         private UserStatusEntity userStatus;
         private MembershipTypeEntity membershipType;
+        private CategoryEntity category;
         private RoleEntity role;
         private MunicipalityEntity municipality;
         private VDCEntity vdc;
         private CompanyTypeEntity companyType;
+        
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -77,45 +79,36 @@ namespace MeroBolee.Model
 
         [Column("country_id")]
         [ForeignKey("Country")]
-        [Required(ErrorMessage ="Country is required")]
         public int Country_Id { get => country_Id; set => country_Id = value; }
 
         [Column("province_id")]
         [ForeignKey("Province")]
-        [Required(ErrorMessage ="Province is required")]
         public int Province_Id { get => province_Id; set => province_Id = value; }
 
         [Column("district_id")]
         [ForeignKey("District")]
-        [Required(ErrorMessage ="District is required")]
         public int District_Id { get => district_Id; set => district_Id = value; }
 
         [Column("city_id")]
         [ForeignKey("City")]
-        [Required(ErrorMessage ="City is required")]
         public int City_Id { get => city_Id; set => city_Id = value; }
 
         [Column("role_id")]
         [ForeignKey("Role")]
-        [Required(ErrorMessage ="Role is required")]
         public int Role_Id { get => role_Id; set => role_Id = value; }
 
         [Column("register_country_id")]
       //  [ForeignKey("Country")]
-        [Required(ErrorMessage = "Country is required")]
         public int Register_Country { get => register_Country; set => register_Country = value; }
 
         [Column("registration_no")]
-        [Required(ErrorMessage = "Registration number is required")]
         public string Registration_No { get => registration_No; set => registration_No = value; }
 
         [Column("company_name")]
-        [Required(ErrorMessage = "Company Name is required")]
         public string Company_Name { get => company_Name; set => company_Name = value; }
 
         [Column("company_type_Id")]
         [ForeignKey("CompanyType")]
-        [Required(ErrorMessage = "Company Type is required")]
         public int Company_Type_Id { get => company_Type_Id; set => company_Type_Id = value; }
 
         [Column("acronym")]
@@ -125,22 +118,19 @@ namespace MeroBolee.Model
         public string Description { get => description; set => description = value; }
 
         [Column("no_of_employee")]
-        [Required(ErrorMessage = "Number of employee is required")]
         public int Employee_no { get => employee_no; set => employee_no = value; }
 
         [Column("category_id")]
-        [Required(ErrorMessage = "Industry Type is required")]
+        [ForeignKey("Category")]
         public int Category_Id { get => category_Id; set => category_Id = value; }
 
         [Column("vat_pan_no")]
-        [Required(ErrorMessage = "VAT or PAN no is required")]
         public string Vat_Pan_No { get => vat_Pan_No; set => vat_Pan_No = value; }
         
         [Column("website")]
         public string Website { get => website; set => website = value; }
 
         [Column("address1")]
-        [Required(ErrorMessage = "Contact address is required")]
         public string Address1 { get => address1; set => address1 = value; }
 
         [Column("address2")]
@@ -161,11 +151,9 @@ namespace MeroBolee.Model
         public string Fax_No { get => fax_No; set => fax_No = value; }
 
         [Column("comapny_email")]
-        [EmailAddress(ErrorMessage ="Invalid Email Format")]
         public string Company_email { get => company_email; set => company_email = value; }
 
         [Column("company_contact1")]
-        [Required(ErrorMessage = "Comapny Contact no is required")]
         public string Company_Contact1 { get => company_Contact1; set => company_Contact1 = value; }
 
         [Column("company_contact2")]
@@ -176,7 +164,6 @@ namespace MeroBolee.Model
         public string Salutation { get => salutation; set => salutation = value; }
 
         [Column("first_name")]
-        [Required(ErrorMessage = "Contact person's first name is required")]
         public string First_Name { get => first_Name; set => first_Name = value; }
 
         [Column("middle_name")]
@@ -184,31 +171,24 @@ namespace MeroBolee.Model
         public string Middle_Name { get => middle_Name; set => middle_Name = value; }
 
         [Column("last_name")]
-        [Required(ErrorMessage = "Contact person's second name is required")]
         public string Last_Name { get => last_Name; set => last_Name = value; }
 
         [Column("designation")]
-        [Required(ErrorMessage = "Contact person's designation is required")]
         public string Designation { get => designation; set => designation = value; }
 
         [Column("person_contact1")]
-        [Required(ErrorMessage = "Contact person's contact number is required")]
         public string Person_contact1 { get => person_contact1; set => person_contact1 = value; }
 
         [Column("person_contact2")]
         public string Person_contact2 { get => person_contact2; set => person_contact2 = value; }
 
         [Column("person_email")]
-        [Required(ErrorMessage = "Contact person's email is required")]
-        [EmailAddress(ErrorMessage ="Invalid Email Format")]
         public string Person_email { get => person_email; set => person_email = value; }
 
         [Column("username")]
-        [Required(ErrorMessage = "Username is required")]
         public string Username { get => username; set => username = value; }
 
         [Column("password")]
-        [Required(ErrorMessage = "Password is required")]
         public string Password { get => password; set => password = value; }
 
         [Column("activate_date")]
@@ -253,5 +233,6 @@ namespace MeroBolee.Model
         [Column("membership_Id")]
         [ForeignKey("MembershipType")]
         public int Membership_Id { get => membership_Id; set => membership_Id = value; }
+        public CategoryEntity Category { get => category; set => category = value; }
     }
 }

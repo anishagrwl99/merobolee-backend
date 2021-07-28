@@ -23,7 +23,7 @@ namespace MeroBolee.Controllers
             this.categoryService = categoryService;
         }
         /// <summary>
-        /// To add category by Admin
+        /// To add category by Admin and status is commonStatus
         /// </summary>
         /// <returns></returns>
         [HttpPost("Category")]
@@ -74,7 +74,7 @@ namespace MeroBolee.Controllers
                 int totalCount = category.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(category, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetCategoryDto>>(category, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(category, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -193,8 +193,8 @@ namespace MeroBolee.Controllers
             }
         }
 
-                /// <summary>
-        /// To update Category info
+        /// <summary>
+        /// To update Category info and status is commonStatus
         /// </summary>
         /// <param name="id"></param>
         /// <param name="addCategory"></param>

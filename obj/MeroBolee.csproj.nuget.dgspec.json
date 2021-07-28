@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Next_Nepal\\NextNepal\\MeroBoli\\MeroBolee\\MeroBolee.csproj": {}
+    "E:\\MeroBolee\\MeroBolee.csproj": {}
   },
   "projects": {
-    "D:\\Next_Nepal\\NextNepal\\MeroBoli\\MeroBolee\\MeroBolee.csproj": {
+    "E:\\MeroBolee\\MeroBolee.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Next_Nepal\\NextNepal\\MeroBoli\\MeroBolee\\MeroBolee.csproj",
+        "projectUniqueName": "E:\\MeroBolee\\MeroBolee.csproj",
         "projectName": "MeroBolee",
-        "projectPath": "D:\\Next_Nepal\\NextNepal\\MeroBoli\\MeroBolee\\MeroBolee.csproj",
+        "projectPath": "E:\\MeroBolee\\MeroBolee.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "D:\\Next_Nepal\\NextNepal\\MeroBoli\\MeroBolee\\obj\\",
+        "outputPath": "E:\\MeroBolee\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

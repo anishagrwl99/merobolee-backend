@@ -81,7 +81,7 @@ namespace MeroBolee.Controllers.District
                 int totalCount = district.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(district, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetDistrictDto>>(district, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(district, pagination, totalCount)); // To pass result in object along with pagination info
             }

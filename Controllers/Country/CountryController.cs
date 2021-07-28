@@ -73,7 +73,7 @@ namespace MeroBolee.Controllers.Country
                 int totalCount = country.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(country, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetCountryDto>>(country, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(country, pagination, totalCount)); // To pass result in object along with pagination info
             }

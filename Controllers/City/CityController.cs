@@ -34,12 +34,12 @@ namespace MeroBolee.Controllers.City
                 if (ModelState.IsValid)
                 {
                     GetCityDto getCity = cityService.AddCity(addCity);
-                    if (getCity.Id == 0)
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid District";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
+                    //if (getCity.Id == 0)
+                    //{
+                    //    response.statusCode = "400";
+                    //    response.Message = "Invalid District";
+                    //    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    //}
                     return Ok(new Responses<GetCityDto>(getCity, "200", "Record is successfully added"));
                 }
                 else
@@ -80,7 +80,7 @@ namespace MeroBolee.Controllers.City
                 int totalCount = City.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(ResultAfterPagination(City, pagination, totalCount));
+                    return NotFound(new Responses<IEnumerable<GetCityDto>>(City, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(City, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -271,12 +271,12 @@ namespace MeroBolee.Controllers.City
                     if (ModelState.IsValid)
                     {
                         GetCityDto getCity = cityService.UpdateCity(id,addCity);
-                        if (getCity.Id == 0)
-                        {
-                            response.statusCode = "400";
-                            response.Message = "Invalid District";
-                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                        }
+                        //if (getCity.Id == 0)
+                        //{
+                        //    response.statusCode = "400";
+                        //    response.Message = "Invalid District";
+                        //    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        //}
                         if (getCity == null)
                         {
                             response.statusCode = "404";
@@ -286,7 +286,8 @@ namespace MeroBolee.Controllers.City
                         return Ok(new Responses<GetCityDto>(getCity, "200", "Record is successfully updated"));
                     }
                     else
-                    {response.statusCode = "400";
+                    {
+                        response.statusCode = "400";
                         response.Message = "Invalid Format";
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
