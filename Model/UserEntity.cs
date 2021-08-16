@@ -12,26 +12,26 @@ namespace MeroBolee.Model
     {
         private int user_Id;
         private Guid user_Code;
-        private int country_Id;
-        private int province_Id;
-        private int district_Id;
-        private int city_Id;
-        private int role_Id;
+        private int? country_Id;
+        private int? province_Id;
+        private int? district_Id;
+        private int? city_Id;
+        private int? role_Id;
         private int register_Country;
         private string registration_No;
         private string company_Name;
-        private int company_Type_Id;
+        private int? company_Type_Id;
         private string company_acronym;
         private string description;
         private int employee_no;
-        private int category_Id;
+        private int? category_Id;
         private string vat_Pan_No;
         private string website;
         private string address1;
         private string address2;
         private string address3;
-        private int municipality_Id;
-        private int vdc_id;
+        //private int? municipality_Id;
+        //private int? vdc_id;
         private string fax_No;
         private string company_email;
         private string company_Contact1;
@@ -53,19 +53,20 @@ namespace MeroBolee.Model
         private string tax_Clearance;
         private string pan_Vat_Registration;
         private string company_Registration;
-        private string experienced_document;
+        private int? status_id;
+        private ICollection<UserExperienceDocEntity> experienced_document;
         private string bank_credit_letter;
-        private int membership_Id;
+        private int? membership_Id;
         private CountryEntity country;
         private ProvinceEntity province;
         private DistrictEntity district;
         private CityEntity city;
         private UserStatusEntity userStatus;
-        private MembershipTypeEntity membershipType;
+        private  MembershipTypeEntity membershipType;
         private CategoryEntity category;
         private RoleEntity role;
-        private MunicipalityEntity municipality;
-        private VDCEntity vdc;
+        //private MunicipalityEntity municipality;
+        //private VDCEntity vdc;
         private CompanyTypeEntity companyType;
         
 
@@ -79,23 +80,23 @@ namespace MeroBolee.Model
 
         [Column("country_id")]
         [ForeignKey("Country")]
-        public int Country_Id { get => country_Id; set => country_Id = value; }
+        public int? Country_Id { get => country_Id; set => country_Id = value; }
 
         [Column("province_id")]
         [ForeignKey("Province")]
-        public int Province_Id { get => province_Id; set => province_Id = value; }
+        public int? Province_Id { get => province_Id; set => province_Id = value; }
 
         [Column("district_id")]
         [ForeignKey("District")]
-        public int District_Id { get => district_Id; set => district_Id = value; }
+        public int? District_Id { get => district_Id; set => district_Id = value; }
 
         [Column("city_id")]
         [ForeignKey("City")]
-        public int City_Id { get => city_Id; set => city_Id = value; }
+        public int? City_Id { get => city_Id; set => city_Id = value; }
 
         [Column("role_id")]
         [ForeignKey("Role")]
-        public int Role_Id { get => role_Id; set => role_Id = value; }
+        public int? Role_Id { get => role_Id; set => role_Id = value; }
 
         [Column("register_country_id")]
       //  [ForeignKey("Country")]
@@ -109,7 +110,7 @@ namespace MeroBolee.Model
 
         [Column("company_type_Id")]
         [ForeignKey("CompanyType")]
-        public int Company_Type_Id { get => company_Type_Id; set => company_Type_Id = value; }
+        public int? Company_Type_Id { get => company_Type_Id; set => company_Type_Id = value; }
 
         [Column("acronym")]
         public string Company_acronym { get => company_acronym; set => company_acronym = value; }
@@ -122,7 +123,7 @@ namespace MeroBolee.Model
 
         [Column("category_id")]
         [ForeignKey("Category")]
-        public int Category_Id { get => category_Id; set => category_Id = value; }
+        public int? Category_Id { get => category_Id; set => category_Id = value; }
 
         [Column("vat_pan_no")]
         public string Vat_Pan_No { get => vat_Pan_No; set => vat_Pan_No = value; }
@@ -139,13 +140,12 @@ namespace MeroBolee.Model
         [Column("address3")]
         public string Address3 { get => address3; set => address3 = value; }
 
-        [Column("municipality_id")]
-        [ForeignKey("Municipality")]
-        public int Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+        //[Column("municipality_id")]
+        
+        //public int? Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
 
-        [Column("vdc_id")]
-        [ForeignKey("VDC")]
-        public int Vdc_id { get => vdc_id; set => vdc_id = value; }
+        //[Column("vdc_id")]
+        //public int? Vdc_id { get => vdc_id; set => vdc_id = value; }
 
         [Column("fax_no")]
         public string Fax_No { get => fax_No; set => fax_No = value; }
@@ -198,16 +198,20 @@ namespace MeroBolee.Model
         public DateTime? Expried_Date { get => expried_Date; set => expried_Date = value; }
 
         
-        public CountryEntity Country { get => country; set => country = value; }
-        public ProvinceEntity Province { get => province; set => province = value; }
-        public DistrictEntity District { get => district; set => district = value; }
-        public CityEntity City { get => city; set => city = value; }
-        public UserStatusEntity UserStatus { get => userStatus; set => userStatus = value; }
-        public MembershipTypeEntity MembershipType { get => membershipType; set => membershipType = value; }
-        public RoleEntity Role { get => role; set => role = value; }
-        public MunicipalityEntity Municipality { get => municipality; set => municipality = value; }
-        public VDCEntity VDC { get => vdc; set => vdc = value; }
-        public CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
+        public virtual CountryEntity Country { get => country; set => country = value; }
+        public virtual ProvinceEntity Province { get => province; set => province = value; }
+        public virtual DistrictEntity District { get => district; set => district = value; }
+        public virtual CityEntity City { get => city; set => city = value; }
+        public virtual UserStatusEntity  UserStatus { get => userStatus; set => userStatus = value; }
+        public virtual MembershipTypeEntity MembershipType { get => membershipType; set => membershipType = value; }
+        public virtual RoleEntity Role { get => role; set => role = value; }
+
+        //[ForeignKey("Municipality_Id")]
+        //public virtual MunicipalityEntity Municipality { get => municipality; set => municipality = value; }
+
+        //[ForeignKey("Vdc_id")]
+        //public virtual VDCEntity VDC { get => vdc; set => vdc = value; }
+        //public virtual CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
 
         [Column("front_citizenship")]
         public string Front_Citizenship { get => front_Citizenship; set => front_Citizenship = value; }
@@ -224,15 +228,20 @@ namespace MeroBolee.Model
         [Column("company_registration")]
         public string Company_Registration { get => company_Registration; set => company_Registration = value; }
 
-        [Column("experienced_doc")]
-        public string Experienced_document { get => experienced_document; set => experienced_document = value; }
+        public ICollection<UserExperienceDocEntity> Experienced_document { get => experienced_document; set => experienced_document = value; }
 
         [Column("bank_credit_letter")]
         public string Bank_credit_letter { get => bank_credit_letter; set => bank_credit_letter = value; }
        
         [Column("membership_Id")]
         [ForeignKey("MembershipType")]
-        public int Membership_Id { get => membership_Id; set => membership_Id = value; }
-        public CategoryEntity Category { get => category; set => category = value; }
+        public int? Membership_Id { get => membership_Id; set => membership_Id = value; }
+        public virtual CategoryEntity Category { get => category; set => category = value; }
+      //  public string User_experience { get => user_experience; set => user_experience = value; }
+        public CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
+
+        [Column("status_id")]
+        [ForeignKey("UserStatus")]
+        public int? Status_id { get => status_id; set => status_id = value; }
     }
 }

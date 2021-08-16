@@ -9,7 +9,7 @@ namespace MeroBolee.Infrastructure
 {
     public class UploadImage 
     {
-        public async Task<string> Upload(IFormFile file,string folderName, string fileType)
+        public async Task<string> Upload(IFormFile file,string folderName)
         {
            // bool isSaveSuccess = false;
             string fileName;
@@ -19,14 +19,14 @@ namespace MeroBolee.Infrastructure
                 {
                     return null;
                 }
-                var extension = "." + file.FileName.Split('.')/*[file.FileName.Split('.').Length-1]*/; // to get extension of file
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length-1]; // to get extension of file
                 fileName = DateTime.Now.Ticks + extension; // to change name of file for security reason
-                var pathBuilt = Path.Combine(Directory.GetCurrentDirectory(),"Resource\\"+ folderName+"\\" + fileType); // to create path for file
+                var pathBuilt = Path.Combine(Directory.GetCurrentDirectory(),"Resource\\"+ folderName); // to create path for file
                 if (!Directory.Exists(pathBuilt))
                 {
                     Directory.CreateDirectory(pathBuilt);
                 }
-                var path = Path.Combine(Directory.GetCurrentDirectory(),"Resource\\"+folderName +"\\"+fileType,fileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(),"Resource\\"+folderName,fileName);
                 using (var Stream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(Stream);
@@ -40,5 +40,18 @@ namespace MeroBolee.Infrastructure
             }
         
         }
+
+        //public async Task<IFormFile> Download(string filePath)
+        //{
+        //    try
+        //    {
+               
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw; 
+        //    }
+        
+        //}
     }
 }

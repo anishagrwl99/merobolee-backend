@@ -15,7 +15,7 @@ namespace MeroBolee.Controllers
         [Route("SaveFile")]
         public async Task<IActionResult> UploadFile(IFormFile file=null)
         {
-           return Ok(await upload.Upload(file, "Merchant",file.Name));
+           return Ok(await upload.Upload(file, "Merchant"));
         }
     }
 }

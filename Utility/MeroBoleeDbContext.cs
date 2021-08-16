@@ -38,13 +38,12 @@ namespace MeroBolee.Utility
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserEntity>().Property(x => x.User_Code).HasDefaultValueSql("NEWID()");
-       
+            modelBuilder.Entity<TenderEntity>().Property(x => x.Tender_Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
 
-            
-
+          //  modelBuilder.Entity<VDCEntity>().HasMany(x=>x.User_entity).WithOptional().HasForeignKey(x => x.Vdc_id).OnDelete(DeleteBehavior.Restrict);
 
             //    //modelBuilder.Entity<User>().HasData(
             //    //      new User() { Id = Guid.NewGuid(), Email = "Mubeen@gmail.com", Name = "Mubeen", Password = "123123" },
@@ -65,9 +64,21 @@ namespace MeroBolee.Utility
         public DbSet<AdminStatusEntity> AdminStatusEntities { get; set; }
         public DbSet<UserStatusEntity> UserStatusEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
+        public DbSet<UserExperienceDocEntity> UserExperienceDocEntities { get; set; }
         public DbSet<MunicipalityEntity> MunicipalityEntities { get; set; }
         public DbSet<VDCEntity> VDCEntities { get; set; }
         public DbSet<MembershipTypeEntity> MembershipTypeEntities { get; set; }
         public DbSet<CompanyTypeEntity> CompanyTypeEntities { get; set; }
+        public DbSet<FavouriteCategoryEntity> FavouriteCategoryEntities { get; set; }
+
+        public DbSet<TenderEntity> TenderEntities { get; set; }
+        public DbSet<PaymentStatusEntity> PaymentStatusEntities { get; set; }
+        public DbSet<TenderMaterialEntity> TenderMaterialEntities { get; set; }
+        public DbSet<TenderTermsConditionEntity> TenderTermsConditionEntities { get; set; }
+        public DbSet<WatchListEntity> WatchListEntities { get; set; }
+        public DbSet<MaterialFeatureEntity> MaterialFeatureEntities { get; set; }
+
+        public DbSet<BidderRequestEntity> BidderRequestEntities { get; set; }
+        public DbSet<BidderRequestDocEntity> BidderRequestDocEntities { get; set; }
     }
 }

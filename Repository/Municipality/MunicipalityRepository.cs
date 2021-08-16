@@ -94,7 +94,7 @@ namespace MeroBolee.Repository.Municipality
                 municipality.Municipality_Name = municipalityEntity.Municipality_Name;
                 municipality.District_id = municipalityEntity.District_id;
                 municipality.Date_modified = municipalityEntity.Date_modified;
-                municipality.Modified_time_stamp = municipality.Modified_time_stamp;
+               // municipality.Modified_time_stamp = municipality.Modified_time_stamp;
                 unitOfWork.SaveChange();
 
             }

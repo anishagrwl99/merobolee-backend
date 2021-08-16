@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeroBolee.Migrations
 {
     [DbContext(typeof(MeroBoleeDbContext))]
-    [Migration("20210723052053_changeOnCity")]
-    partial class changeOnCity
+    [Migration("20210814190327_changesinTender4")]
+    partial class changesinTender4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -252,6 +252,53 @@ namespace MeroBolee.Migrations
                     b.ToTable("mb_district");
                 });
 
+            modelBuilder.Entity("MeroBolee.Model.FavouriteCategoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Category_id")
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
+
+                    b.Property<int>("User_id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Category_id");
+
+                    b.HasIndex("User_id");
+
+                    b.ToTable("mb_favourite");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.MaterialFeatureEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("feature");
+
+                    b.Property<int?>("TenderMaterialEntityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenderMaterialEntityId");
+
+                    b.ToTable("mb_material_feature");
+                });
+
             modelBuilder.Entity("MeroBolee.Model.MembershipTypeEntity", b =>
                 {
                     b.Property<int>("Membership_Id")
@@ -327,7 +374,7 @@ namespace MeroBolee.Migrations
                         .HasColumnType("date")
                         .HasColumnName("date_modified");
 
-                    b.Property<int>("District_id")
+                    b.Property<int?>("District_id")
                         .HasColumnType("int")
                         .HasColumnName("district_id");
 
@@ -344,6 +391,23 @@ namespace MeroBolee.Migrations
                     b.HasIndex("District_id");
 
                     b.ToTable("mb_municipality");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.PaymentStatusEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Payment_status")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payment_status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("mb_payment_status");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.ProvinceEntity", b =>
@@ -399,7 +463,7 @@ namespace MeroBolee.Migrations
 
                     b.HasKey("Status_id");
 
-                    b.ToTable("md_common_status");
+                    b.ToTable("mb_common_status");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.RoleEntity", b =>
@@ -435,6 +499,149 @@ namespace MeroBolee.Migrations
                     b.ToTable("mb_role");
                 });
 
+            modelBuilder.Entity("MeroBolee.Model.TenderEntity", b =>
+                {
+                    b.Property<int>("Tender_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("tender_id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Admin_Status_Id")
+                        .HasColumnType("int")
+                        .HasColumnName("admin_status_id");
+
+                    b.Property<int>("Bid_No")
+                        .HasColumnType("int")
+                        .HasColumnName("bid_no");
+
+                    b.Property<string>("Cancel_remark")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("cancel_remark");
+
+                    b.Property<int>("Category_Id")
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
+
+                    b.Property<TimeSpan>("Created_time_stamp")
+                        .HasColumnType("time")
+                        .HasColumnName("created_timestamp");
+
+                    b.Property<DateTime>("Date_created")
+                        .HasColumnType("date")
+                        .HasColumnName("date_created");
+
+                    b.Property<DateTime>("Date_modified")
+                        .HasColumnType("date")
+                        .HasColumnName("date_modified");
+
+                    b.Property<string>("Duration_Type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("duration_type");
+
+                    b.Property<TimeSpan>("Modified_time_stamp")
+                        .HasColumnType("time")
+                        .HasColumnName("modified_timestamp");
+
+                    b.Property<int>("Posted_By")
+                        .HasColumnType("int")
+                        .HasColumnName("posted_by");
+
+                    b.Property<Guid>("Tender_Code")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("tender_code")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Tender_Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("Tender_Duration")
+                        .HasColumnType("int")
+                        .HasColumnName("duration");
+
+                    b.Property<DateTime>("Tender_End_Date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_date");
+
+                    b.Property<DateTime>("Tender_Start_Date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
+
+                    b.Property<int>("Tender_Status_Id")
+                        .HasColumnType("int")
+                        .HasColumnName("tender_status_id");
+
+                    b.Property<string>("Tender_Title")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tender_title");
+
+                    b.Property<int>("Tender_live_interval")
+                        .HasColumnType("int")
+                        .HasColumnName("live_interval");
+
+                    b.HasKey("Tender_Id");
+
+                    b.HasIndex("Admin_Status_Id");
+
+                    b.HasIndex("Category_Id");
+
+                    b.HasIndex("Posted_By");
+
+                    b.HasIndex("Tender_Status_Id");
+
+                    b.ToTable("mb_tender");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderMaterialEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Materials")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("material");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.Property<int?>("TenderEntityTender_Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenderEntityTender_Id");
+
+                    b.ToTable("mb_tender_material");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderTermsConditionEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("TenderEntityTender_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Term_Condition")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("term_condition");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenderEntityTender_Id");
+
+                    b.ToTable("mb_tender_term_condition");
+                });
+
             modelBuilder.Entity("MeroBolee.Model.UserEntity", b =>
                 {
                     b.Property<int>("User_Id")
@@ -448,7 +655,6 @@ namespace MeroBolee.Migrations
                         .HasColumnName("activate_date");
 
                     b.Property<string>("Address1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("address1");
 
@@ -468,16 +674,15 @@ namespace MeroBolee.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("bank_credit_letter");
 
-                    b.Property<int>("Category_Id")
+                    b.Property<int?>("Category_Id")
                         .HasColumnType("int")
                         .HasColumnName("category_id");
 
-                    b.Property<int>("City_Id")
+                    b.Property<int?>("City_Id")
                         .HasColumnType("int")
                         .HasColumnName("city_id");
 
                     b.Property<string>("Company_Contact1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("company_contact1");
 
@@ -486,7 +691,6 @@ namespace MeroBolee.Migrations
                         .HasColumnName("company_contact2");
 
                     b.Property<string>("Company_Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("company_name");
 
@@ -494,7 +698,7 @@ namespace MeroBolee.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("company_registration");
 
-                    b.Property<int>("Company_Type_Id")
+                    b.Property<int?>("Company_Type_Id")
                         .HasColumnType("int")
                         .HasColumnName("company_type_Id");
 
@@ -506,7 +710,7 @@ namespace MeroBolee.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comapny_email");
 
-                    b.Property<int>("Country_Id")
+                    b.Property<int?>("Country_Id")
                         .HasColumnType("int")
                         .HasColumnName("country_id");
 
@@ -527,21 +731,16 @@ namespace MeroBolee.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Designation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("designation");
 
-                    b.Property<int>("District_Id")
+                    b.Property<int?>("District_Id")
                         .HasColumnType("int")
                         .HasColumnName("district_id");
 
                     b.Property<int>("Employee_no")
                         .HasColumnType("int")
                         .HasColumnName("no_of_employee");
-
-                    b.Property<string>("Experienced_document")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("experienced_doc");
 
                     b.Property<DateTime?>("Expried_Date")
                         .HasColumnType("datetime2")
@@ -552,7 +751,6 @@ namespace MeroBolee.Migrations
                         .HasColumnName("fax_no");
 
                     b.Property<string>("First_Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("first_name");
 
@@ -561,11 +759,10 @@ namespace MeroBolee.Migrations
                         .HasColumnName("front_citizenship");
 
                     b.Property<string>("Last_Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("last_name");
 
-                    b.Property<int>("Membership_Id")
+                    b.Property<int?>("Membership_Id")
                         .HasColumnType("int")
                         .HasColumnName("membership_Id");
 
@@ -577,21 +774,18 @@ namespace MeroBolee.Migrations
                         .HasColumnType("time")
                         .HasColumnName("modified_timestamp");
 
-                    b.Property<int>("Municipality_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("municipality_id");
+                    b.Property<int?>("MunicipalityEntityMunicipality_id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Pan_Vat_Registration")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("pan_vat_registration");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password");
 
                     b.Property<string>("Person_contact1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("person_contact1");
 
@@ -600,11 +794,10 @@ namespace MeroBolee.Migrations
                         .HasColumnName("person_contact2");
 
                     b.Property<string>("Person_email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("person_email");
 
-                    b.Property<int>("Province_Id")
+                    b.Property<int?>("Province_Id")
                         .HasColumnType("int")
                         .HasColumnName("province_id");
 
@@ -613,11 +806,10 @@ namespace MeroBolee.Migrations
                         .HasColumnName("register_country_id");
 
                     b.Property<string>("Registration_No")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("registration_no");
 
-                    b.Property<int>("Role_Id")
+                    b.Property<int?>("Role_Id")
                         .HasColumnType("int")
                         .HasColumnName("role_id");
 
@@ -625,12 +817,13 @@ namespace MeroBolee.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("salutation");
 
+                    b.Property<int?>("Status_id")
+                        .HasColumnType("int")
+                        .HasColumnName("status_id");
+
                     b.Property<string>("Tax_Clearance")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("tax_clearance");
-
-                    b.Property<int?>("UserStatusStatus_Id")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("User_Code")
                         .ValueGeneratedOnAdd()
@@ -639,24 +832,23 @@ namespace MeroBolee.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("username");
 
+                    b.Property<int?>("VDCEntityVdc_Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("Vat_Pan_No")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("vat_pan_no");
-
-                    b.Property<int>("Vdc_id")
-                        .HasColumnType("int")
-                        .HasColumnName("vdc_id");
 
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("website");
 
                     b.HasKey("User_Id");
+
+                    b.HasIndex("Category_Id");
 
                     b.HasIndex("City_Id");
 
@@ -668,20 +860,43 @@ namespace MeroBolee.Migrations
 
                     b.HasIndex("Membership_Id");
 
-                    b.HasIndex("Municipality_Id");
+                    b.HasIndex("MunicipalityEntityMunicipality_id");
 
                     b.HasIndex("Province_Id");
 
                     b.HasIndex("Role_Id");
 
-                    b.HasIndex("UserStatusStatus_Id");
+                    b.HasIndex("Status_id");
 
                     b.HasIndex("Username")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[username] IS NOT NULL");
 
-                    b.HasIndex("Vdc_id");
+                    b.HasIndex("VDCEntityVdc_Id");
 
                     b.ToTable("mb_user");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.UserExperienceDocEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Experienced_doc")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("experience_doc");
+
+                    b.Property<int>("User_id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User_id");
+
+                    b.ToTable("mb_experience_doc");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.UserStatusEntity", b =>
@@ -709,9 +924,25 @@ namespace MeroBolee.Migrations
                         .HasColumnName("vdc_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("District_Id")
+                    b.Property<TimeSpan>("Created_time_stamp")
+                        .HasColumnType("time")
+                        .HasColumnName("created_timestamp");
+
+                    b.Property<DateTime>("Date_created")
+                        .HasColumnType("date")
+                        .HasColumnName("date_created");
+
+                    b.Property<DateTime>("Date_modified")
+                        .HasColumnType("date")
+                        .HasColumnName("date_modified");
+
+                    b.Property<int?>("District_Id")
                         .HasColumnType("int")
                         .HasColumnName("district_id");
+
+                    b.Property<TimeSpan>("Modified_time_stamp")
+                        .HasColumnType("time")
+                        .HasColumnName("modified_timestamp");
 
                     b.Property<string>("Vdc_Name")
                         .HasColumnType("nvarchar(max)")
@@ -759,6 +990,32 @@ namespace MeroBolee.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("MeroBolee.Model.FavouriteCategoryEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.CategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("Category_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MeroBolee.Model.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("User_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.MaterialFeatureEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.TenderMaterialEntity", null)
+                        .WithMany("MaterialFeatureEntities")
+                        .HasForeignKey("TenderMaterialEntityId");
+                });
+
             modelBuilder.Entity("MeroBolee.Model.MembershipTypeEntity", b =>
                 {
                     b.HasOne("MeroBolee.Model.PublishStatus", "Status")
@@ -774,9 +1031,7 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.DistrictEntity", "District")
                         .WithMany()
-                        .HasForeignKey("District_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("District_id");
 
                     b.Navigation("District");
                 });
@@ -790,65 +1045,102 @@ namespace MeroBolee.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("MeroBolee.Model.UserEntity", b =>
+            modelBuilder.Entity("MeroBolee.Model.TenderEntity", b =>
                 {
-                    b.HasOne("MeroBolee.Model.CityEntity", "City")
+                    b.HasOne("MeroBolee.Model.AdminStatusEntity", "AdminStatusEntity")
                         .WithMany()
-                        .HasForeignKey("City_Id")
+                        .HasForeignKey("Admin_Status_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MeroBolee.Model.CategoryEntity", "CategoryEntity")
+                        .WithMany()
+                        .HasForeignKey("Category_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MeroBolee.Model.UserEntity", "UserEntity")
+                        .WithMany()
+                        .HasForeignKey("Posted_By")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MeroBolee.Model.AuctionStatusEntity", "AuctionStatusEntity")
+                        .WithMany()
+                        .HasForeignKey("Tender_Status_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdminStatusEntity");
+
+                    b.Navigation("AuctionStatusEntity");
+
+                    b.Navigation("CategoryEntity");
+
+                    b.Navigation("UserEntity");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderMaterialEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.TenderEntity", null)
+                        .WithMany("TenderMaterialEntities")
+                        .HasForeignKey("TenderEntityTender_Id");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderTermsConditionEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.TenderEntity", null)
+                        .WithMany("TenderTermsConditionEntities")
+                        .HasForeignKey("TenderEntityTender_Id");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.UserEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.CategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("Category_Id");
+
+                    b.HasOne("MeroBolee.Model.CityEntity", "City")
+                        .WithMany()
+                        .HasForeignKey("City_Id");
 
                     b.HasOne("MeroBolee.Model.CompanyTypeEntity", "CompanyType")
                         .WithMany()
-                        .HasForeignKey("Company_Type_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Company_Type_Id");
 
                     b.HasOne("MeroBolee.Model.CountryEntity", "Country")
                         .WithMany()
-                        .HasForeignKey("Country_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Country_Id");
 
                     b.HasOne("MeroBolee.Model.DistrictEntity", "District")
                         .WithMany()
-                        .HasForeignKey("District_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("District_Id");
 
                     b.HasOne("MeroBolee.Model.MembershipTypeEntity", "MembershipType")
                         .WithMany()
-                        .HasForeignKey("Membership_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Membership_Id");
 
-                    b.HasOne("MeroBolee.Model.MunicipalityEntity", "Municipality")
-                        .WithMany()
-                        .HasForeignKey("Municipality_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("MeroBolee.Model.MunicipalityEntity", null)
+                        .WithMany("User_entity")
+                        .HasForeignKey("MunicipalityEntityMunicipality_id");
 
                     b.HasOne("MeroBolee.Model.ProvinceEntity", "Province")
                         .WithMany()
-                        .HasForeignKey("Province_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Province_Id");
 
                     b.HasOne("MeroBolee.Model.RoleEntity", "Role")
                         .WithMany()
-                        .HasForeignKey("Role_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Role_Id");
 
                     b.HasOne("MeroBolee.Model.UserStatusEntity", "UserStatus")
                         .WithMany()
-                        .HasForeignKey("UserStatusStatus_Id");
+                        .HasForeignKey("Status_id");
 
-                    b.HasOne("MeroBolee.Model.VDCEntity", "VDC")
-                        .WithMany()
-                        .HasForeignKey("Vdc_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("MeroBolee.Model.VDCEntity", null)
+                        .WithMany("User_entity")
+                        .HasForeignKey("VDCEntityVdc_Id");
+
+                    b.Navigation("Category");
 
                     b.Navigation("City");
 
@@ -860,26 +1152,58 @@ namespace MeroBolee.Migrations
 
                     b.Navigation("MembershipType");
 
-                    b.Navigation("Municipality");
-
                     b.Navigation("Province");
 
                     b.Navigation("Role");
 
                     b.Navigation("UserStatus");
+                });
 
-                    b.Navigation("VDC");
+            modelBuilder.Entity("MeroBolee.Model.UserExperienceDocEntity", b =>
+                {
+                    b.HasOne("MeroBolee.Model.UserEntity", "User")
+                        .WithMany("Experienced_document")
+                        .HasForeignKey("User_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.VDCEntity", b =>
                 {
                     b.HasOne("MeroBolee.Model.DistrictEntity", "District")
                         .WithMany()
-                        .HasForeignKey("District_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("District_Id");
 
                     b.Navigation("District");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.MunicipalityEntity", b =>
+                {
+                    b.Navigation("User_entity");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderEntity", b =>
+                {
+                    b.Navigation("TenderMaterialEntities");
+
+                    b.Navigation("TenderTermsConditionEntities");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.TenderMaterialEntity", b =>
+                {
+                    b.Navigation("MaterialFeatureEntities");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.UserEntity", b =>
+                {
+                    b.Navigation("Experienced_document");
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.VDCEntity", b =>
+                {
+                    b.Navigation("User_entity");
                 });
 #pragma warning restore 612, 618
         }

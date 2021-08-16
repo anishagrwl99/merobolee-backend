@@ -5,25 +5,31 @@ using MeroBolee.Repository.City;
 using MeroBolee.Repository.CompanyType;
 using MeroBolee.Repository.Country;
 using MeroBolee.Repository.District;
+using MeroBolee.Repository.FavouriteCategory;
 using MeroBolee.Repository.Membership;
 using MeroBolee.Repository.Municipality;
 using MeroBolee.Repository.Province;
 using MeroBolee.Repository.Role;
 using MeroBolee.Repository.Status;
+using MeroBolee.Repository.Tender;
 using MeroBolee.Repository.User;
 using MeroBolee.Repository.VDC;
+using MeroBolee.Repository.WatchLIst;
 using MeroBolee.Service;
 using MeroBolee.Service.Category;
 using MeroBolee.Service.City;
 using MeroBolee.Service.CompanyType;
 using MeroBolee.Service.Country;
 using MeroBolee.Service.District;
+using MeroBolee.Service.FavouriteCategory;
 using MeroBolee.Service.Membership;
 using MeroBolee.Service.Municipality;
 using MeroBolee.Service.Province;
 using MeroBolee.Service.Status;
+using MeroBolee.Service.Tender;
 using MeroBolee.Service.User;
 using MeroBolee.Service.VDC;
+using MeroBolee.Service.WatchList;
 using MeroBolee.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,6 +108,13 @@ namespace MeroBolee
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
             services.AddScoped<IMembershipTypeService, MembershipTypeService>();
+            services.AddScoped<IFavouriteCategoryRepository, FavouriteCategoryRepository>();
+            services.AddScoped<IFavouriteCategoryService, FavouriteCategoryService>();
+            services.AddScoped<ITenderRepository, TenderRepository>();
+            services.AddScoped<ITenderService, TenderService>();
+            services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
+            services.AddScoped<IWatchListRepository, WatchListRepository>();
+            services.AddScoped<IWatchListService, WatchListService>();
 
 
         }

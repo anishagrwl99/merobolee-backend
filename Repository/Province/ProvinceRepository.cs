@@ -131,7 +131,7 @@ namespace MeroBolee.Repository.Province
                 province.Province = provinceEntity.Province;
                 province.Country_Id = provinceEntity.Country_Id;
                 province.Date_modified = provinceEntity.Date_modified;
-                province.Modified_time_stamp = provinceEntity.Modified_time_stamp;
+              //  province.Modified_time_stamp = provinceEntity.Modified_time_stamp;
                 unitOfWork.SaveChange();
 
                 meroBoleeDbContexts.CountryEntities.ToList();

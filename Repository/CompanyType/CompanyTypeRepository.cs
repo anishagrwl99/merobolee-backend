@@ -72,7 +72,7 @@ namespace MeroBolee.Repository.CompanyType
                 {
                     companyType.Company_type = companyTypeEntity.Company_type;
                     companyType.Date_modified = companyTypeEntity.Date_modified;
-                    companyType.Modified_time_stamp = companyType.Modified_time_stamp;
+                 //   companyType.Modified_time_stamp = companyType.Modified_time_stamp;
                     unitOfWork.SaveChange();
                 }
                 return companyType;

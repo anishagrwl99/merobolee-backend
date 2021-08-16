@@ -112,7 +112,7 @@ namespace MeroBolee.Repository.Membership
                 membership.Membership_fee = membershipType.Membership_fee;
                 membership.Discount = membershipType.Discount;
                 membership.Date_modified = membershipType.Date_modified;
-                membership.Modified_time_stamp = membershipType.Modified_time_stamp;
+            //    membership.Modified_time_stamp = membershipType.Modified_time_stamp;
                 unitOfWork.SaveChange();
                 return membership;
             }

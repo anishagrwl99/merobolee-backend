@@ -6,6 +6,7 @@ using MeroBolee.Repository.User;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,14 +23,84 @@ namespace MeroBolee.Service.User
         public async Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/)
         {
             UserEntity user = UserDtoEntity(userDto);
-            user.Front_Citizenship = await uploadImage.Upload(userDto.Front_Citizenship,userDto.Company_Name,userDto.Front_Citizenship.Name);
-            user.Back_Citizenship = await uploadImage.Upload(userDto.Back_Citizenship, userDto.Company_Name,userDto.Back_Citizenship.Name);
-            user.Tax_Clearance = await uploadImage.Upload(userDto.Tax_Clearance, userDto.Company_Name,userDto.Tax_Clearance.Name);
-            user.Pan_Vat_Registration = await uploadImage.Upload(userDto.Pan_Vat_Registration, userDto.Company_Name, userDto.Pan_Vat_Registration.Name);
-            user.Company_Registration = await uploadImage.Upload(userDto.Company_Registration, userDto.Company_Name, userDto.Company_Registration.Name);
-            user.Experienced_document = await uploadImage.Upload(userDto.Experienced_document, userDto.Company_Name, userDto.Experienced_document.Name);
-            user.Bank_credit_letter = await uploadImage.Upload(userDto.Bank_credit_letter, userDto.Company_Name,userDto.Bank_credit_letter.Name);
-            return UserEntityToDto(userRepository.AddUser(user));
+            try
+            {
+
+
+                if (userDto.Front_Citizenship == null)
+                {
+                    user.Front_Citizenship = null;
+                }
+                else
+                {
+                    user.Front_Citizenship = await uploadImage.Upload(userDto.Front_Citizenship, userDto.Company_Name);
+                }
+                if (userDto.Back_Citizenship == null)
+                {
+                    user.Back_Citizenship = null;
+                }
+                else
+                {
+                    user.Back_Citizenship = await uploadImage.Upload(userDto.Back_Citizenship, userDto.Company_Name);
+                }
+                if (userDto.Tax_Clearance == null)
+                {
+                    user.Tax_Clearance = null;
+                }
+                else
+                {
+                    user.Tax_Clearance = await uploadImage.Upload(userDto.Tax_Clearance, userDto.Company_Name);
+                }
+                if (userDto.Pan_Vat_Registration == null)
+                {
+                    user.Pan_Vat_Registration = null;
+                }
+                else
+                {
+                    user.Pan_Vat_Registration = await uploadImage.Upload(userDto.Pan_Vat_Registration, userDto.Company_Name);
+                }
+                if (userDto.Company_Registration == null)
+                {
+                    user.Company_Registration = null;
+                }
+                else
+                {
+                    user.Company_Registration = await uploadImage.Upload(userDto.Company_Registration, userDto.Company_Name);
+                }
+                if (userDto.Bank_credit_letter == null)
+                {
+                    user.Bank_credit_letter = null;
+                }
+                else
+                {
+                    user.Bank_credit_letter = await uploadImage.Upload(userDto.Bank_credit_letter, userDto.Company_Name);
+                }
+
+
+                //if (userDto.Experienced_document == null)
+                //{
+                //    user.Experienced_document = null;
+                //}
+                //else
+                //{
+                //    foreach (var file in userDto.Experienced_document)
+                //    {
+                //        user.Experienced_document.Add(new UserExperienceDocEntity
+                //        {
+                //            Experienced_doc = await uploadImage.Upload(file, userDto.Company_Name, file.Name)
+                //        }
+                //        ); 
+                //    }
+                //}
+                
+                return UserEntityToDto(await userRepository.AddUser(user, userDto.Experienced_document));
+            }
+            catch (Exception ex)
+            {    
+
+                throw ex;
+
+            }
         }
 
         public IEnumerable<GetUserDto> GetUser(string search)
@@ -42,19 +113,173 @@ namespace MeroBolee.Service.User
             return UserEntityToDto(userRepository.GetUserDetail(id));
         }
 
-        public GetUserDto SignUp(SignUpDto signUpDto)
+        public async Task<GetUserDto> SignUp(SignUpDto userDto)
         {
-            return UserEntityToDto(userRepository.AddUser(SignUpDtoEntity(signUpDto)));
+            UserEntity user = SignUpDtoEntity(userDto);
+
+            if (userDto.Front_Citizenship == null)
+            {
+                user.Front_Citizenship = null;
+            }
+            else
+            {
+                user.Front_Citizenship = await uploadImage.Upload(userDto.Front_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Back_Citizenship == null)
+            {
+                user.Back_Citizenship = null;
+            }
+            else
+            {
+                user.Back_Citizenship = await uploadImage.Upload(userDto.Back_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Tax_Clearance == null)
+            {
+                user.Tax_Clearance = null;
+            }
+            else
+            {
+                user.Tax_Clearance = await uploadImage.Upload(userDto.Tax_Clearance, userDto.Company_Name);
+            }
+            if (userDto.Pan_Vat_Registration == null)
+            {
+                user.Pan_Vat_Registration = null;
+            }
+            else
+            {
+                user.Pan_Vat_Registration = await uploadImage.Upload(userDto.Pan_Vat_Registration, userDto.Company_Name);
+            }
+            if (userDto.Company_Registration == null)
+            {
+                user.Company_Registration = null;
+            }
+            else
+            {
+                user.Company_Registration = await uploadImage.Upload(userDto.Company_Registration, userDto.Company_Name);
+            }
+            if (userDto.Bank_credit_letter == null)
+            {
+                user.Bank_credit_letter = null;
+            }
+            else
+            {
+                user.Bank_credit_letter = await uploadImage.Upload(userDto.Bank_credit_letter, userDto.Company_Name);
+            }
+            return UserEntityToDto(await userRepository.AddUser(user,userDto.Experienced_document));
         }
 
-        public GetUserDto UpdateUserByAdmin(int id, AddUserDto userDto)
+        public  async Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto)
         {
-            return UserEntityToDto(userRepository.UpdateUser(id, UserDtoEntity(userDto)));
+            UserEntity user = UserDtoEntity(userDto);
+
+            if (userDto.Front_Citizenship == null)
+            {
+                user.Front_Citizenship = null;
+            }
+            else
+            {
+                user.Front_Citizenship = await uploadImage.Upload(userDto.Front_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Back_Citizenship == null)
+            {
+                user.Back_Citizenship = null;
+            }
+            else
+            {
+                user.Back_Citizenship = await uploadImage.Upload(userDto.Back_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Tax_Clearance == null)
+            {
+                user.Tax_Clearance = null;
+            }
+            else
+            {
+                user.Tax_Clearance = await uploadImage.Upload(userDto.Tax_Clearance, userDto.Company_Name);
+            }
+            if (userDto.Pan_Vat_Registration == null)
+            {
+                user.Pan_Vat_Registration = null;
+            }
+            else
+            {
+                user.Pan_Vat_Registration = await uploadImage.Upload(userDto.Pan_Vat_Registration, userDto.Company_Name);
+            }
+            if (userDto.Company_Registration == null)
+            {
+                user.Company_Registration = null;
+            }
+            else
+            {
+                user.Company_Registration = await uploadImage.Upload(userDto.Company_Registration, userDto.Company_Name);
+            }
+            if (userDto.Bank_credit_letter == null)
+            {
+                user.Bank_credit_letter = null;
+            }
+            else
+            {
+                user.Bank_credit_letter = await uploadImage.Upload(userDto.Bank_credit_letter, userDto.Company_Name);
+            }
+            return UserEntityToDto(await userRepository.UpdateUser(id, user, userDto.Experienced_document));
         }
 
-        public GetUserDto UpdateUserByUser(int id, SignUpDto signUpDto)
+        public async Task<GetUserDto> UpdateUserByUser(int id, SignUpDto userDto)
         {
-            return UserEntityToDto(userRepository.UpdateUserByUser(id, SignUpDtoEntity(signUpDto)));
+            UserEntity user = SignUpDtoEntity(userDto);
+
+
+            if (userDto.Front_Citizenship == null)
+            {
+                user.Front_Citizenship = null;
+            }
+            else
+            {
+                user.Front_Citizenship = await uploadImage.Upload(userDto.Front_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Back_Citizenship == null)
+            {
+                user.Back_Citizenship = null;
+            }
+            else
+            {
+                user.Back_Citizenship = await uploadImage.Upload(userDto.Back_Citizenship, userDto.Company_Name);
+            }
+            if (userDto.Tax_Clearance == null)
+            {
+                user.Tax_Clearance = null;
+            }
+            else
+            {
+                user.Tax_Clearance = await uploadImage.Upload(userDto.Tax_Clearance, userDto.Company_Name);
+            }
+            if (userDto.Pan_Vat_Registration == null)
+            {
+                user.Pan_Vat_Registration = null;
+            }
+            else
+            {
+                user.Pan_Vat_Registration = await uploadImage.Upload(userDto.Pan_Vat_Registration, userDto.Company_Name);
+            }
+            if (userDto.Company_Registration == null)
+            {
+                user.Company_Registration = null;
+            }
+            else
+            {
+                user.Company_Registration = await uploadImage.Upload(userDto.Company_Registration, userDto.Company_Name);
+            }
+            if (userDto.Bank_credit_letter == null)
+            {
+                user.Bank_credit_letter = null;
+            }
+            else
+            {
+                user.Bank_credit_letter = await uploadImage.Upload(userDto.Bank_credit_letter, userDto.Company_Name);
+            }
+
+            return UserEntityToDto( await userRepository.UpdateUser(id, user, userDto.Experienced_document));
         }
+
+       
     }
 }

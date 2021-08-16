@@ -128,7 +128,7 @@ namespace MeroBolee.Repository.District
                 
                 district.District_Name = districtEntity.District_Name;
                 district.Province_Id = districtEntity.Province_Id;
-                district.Modified_time_stamp = districtEntity.Modified_time_stamp;
+               // district.Modified_time_stamp = districtEntity.Modified_time_stamp;
                 district.Date_modified = districtEntity.Date_modified;
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.ProvinceEntities.ToList();

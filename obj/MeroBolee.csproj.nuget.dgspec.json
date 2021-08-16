@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\MeroBolee\\MeroBolee.csproj": {}
+    "D:\\Next_Nepal\\NextNepal\\MeroBolee\\MeroBolee.csproj": {}
   },
   "projects": {
-    "E:\\MeroBolee\\MeroBolee.csproj": {
+    "D:\\Next_Nepal\\NextNepal\\MeroBolee\\MeroBolee.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\MeroBolee\\MeroBolee.csproj",
+        "projectUniqueName": "D:\\Next_Nepal\\NextNepal\\MeroBolee\\MeroBolee.csproj",
         "projectName": "MeroBolee",
-        "projectPath": "E:\\MeroBolee\\MeroBolee.csproj",
+        "projectPath": "D:\\Next_Nepal\\NextNepal\\MeroBolee\\MeroBolee.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "E:\\MeroBolee\\obj\\",
+        "outputPath": "D:\\Next_Nepal\\NextNepal\\MeroBolee\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -43,9 +43,9 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "BCrypt.Net": {
+            "BCrypt.Net-Next": {
               "target": "Package",
-              "version": "[0.1.0, )"
+              "version": "[4.0.2, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -84,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }

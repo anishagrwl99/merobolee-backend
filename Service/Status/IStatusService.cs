@@ -13,5 +13,6 @@ namespace MeroBolee.Service.Status
         IEnumerable<AuctionStatusEntity> GetAuctionStatuses();
         IEnumerable<UserStatusEntity> GetUserStatuses();
 
+        IEnumerable<PaymentStatusEntity> GetPaymentStatuses();
     }
 }

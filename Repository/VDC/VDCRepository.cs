@@ -97,7 +97,7 @@ namespace MeroBolee.Repository.VDC
                     vdc.Vdc_Name = vdcEntity.Vdc_Name;
                     vdc.District_Id = vdcEntity.District_Id;
                     vdc.Date_modified = vdcEntity.Date_modified;
-                    vdc.Modified_time_stamp = vdcEntity.Modified_time_stamp;
+                   // vdc.Modified_time_stamp = vdcEntity.Modified_time_stamp;
                     unitOfWork.SaveChange();
                 }
                 meroBoleeDbContexts.DistrictEntities.ToList();

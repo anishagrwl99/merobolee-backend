@@ -104,7 +104,7 @@ namespace MeroBolee.Repository.Country
                 countryEntity.Country_Name = country.Country_Name;
                 countryEntity.Country_Code = country.Country_Code;
                 countryEntity.Date_modified = country.Date_modified;
-                countryEntity.Modified_time_stamp = country.Modified_time_stamp;
+             //   countryEntity.Modified_time_stamp = country.Modified_time_stamp;
                 unitOfWork.SaveChange();
                 return countryEntity;
             }

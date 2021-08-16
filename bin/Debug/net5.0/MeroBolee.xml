@@ -194,6 +194,27 @@
             <param name="addDistrict"></param>
             <returns></returns>
         </member>
+        <member name="M:MeroBolee.Controllers.FavouriteCategory.FavouriteCategoryController.Add(MeroBolee.Model.FavouriteCategoryEntity)">
+            <summary>
+            To add category as favourite by bidder
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FavouriteCategory.FavouriteCategoryController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.Int32)">
+            <summary>
+            To display all favourite category by bidder's primary key
+            </summary>
+            <param name="pagination"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FavouriteCategory.FavouriteCategoryController.Delete(System.Int32)">
+            <summary>
+            To remove category from favourite list by favourite'sprimary key
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:MeroBolee.Controllers.Membership.MembershipTypeController.Add(MeroBolee.Dto.AddMemeberShipDto)">
             <summary>
             To add membershipType by Admin
@@ -372,6 +393,69 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetPaymentStatus">
+            <summary>
+            To display all payment status 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.Add(MeroBolee.Dto.AddTenderDto)">
+            <summary>
+            To add tender tender_status_id belong to AuctionStatus
+            </summary>
+            <param name="tender"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display all tender list by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetInterestTender(MeroBolee.Infrastructure.PaginationQuery,System.Int32,System.String)">
+            <summary>
+            To display tender list of bidder's interest by bidder id
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetTenderByAuctioneer(MeroBolee.Infrastructure.PaginationQuery,System.Int32,System.String)">
+            <summary>
+            To display all tender list posted by auctioneer by auctioneer id
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetUpCommingTender(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To display only upcoming tender by bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetTenderByStatus(MeroBolee.Infrastructure.PaginationQuery,System.Int32,System.String)">
+            <summary>
+            To display tender list according to tender status id
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.GetById(System.Int32)">
+            <summary>
+            To individual detail of tender by tender id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Tender.TenderController.Update(System.Int32,MeroBolee.Dto.AddTenderDto)">
+            <summary>
+            To update tender detail
+            </summary>
+            <param name="id"></param>
+            <param name="tender"></param>
+            <returns></returns>
+        </member>
         <member name="M:MeroBolee.Controllers.User.UserController.Add(MeroBolee.Dto.AddUserDto)">
             <summary>
             To add user by Admin  and status is userStatus
@@ -454,6 +538,26 @@
             </summary>
             <param name="id"></param>
             <param name="addVDC"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.WatchList.WatchListController.Add(MeroBolee.Dto.AddWatchList)">
+            <summary>
+            To add upcoming bid in watch list
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.WatchList.WatchListController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.Int32)">
+            <summary>
+            To show interest bid of bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.WatchList.WatchListController.Delete(System.Int32)">
+            <summary>
+            To remove bid from watchlist by watchlist'sprimary key
+            </summary>
+            <param name="id"></param>
             <returns></returns>
         </member>
     </members>

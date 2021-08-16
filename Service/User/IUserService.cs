@@ -10,12 +10,12 @@ namespace MeroBolee.Service.User
     public interface IUserService
     {
         Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/ );
-        GetUserDto SignUp(SignUpDto signUpDto);
+        Task<GetUserDto> SignUp(SignUpDto signUpDto);
         IEnumerable<GetUserDto> GetUser(string search);
         GetUserDto GetUserDetail(int id);
 
-        GetUserDto UpdateUserByAdmin(int id, AddUserDto userDto);
-        GetUserDto UpdateUserByUser(int id, SignUpDto signUpDto);
+        Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto);
+       Task<GetUserDto> UpdateUserByUser(int id, SignUpDto signUpDto);
        
     }
 }

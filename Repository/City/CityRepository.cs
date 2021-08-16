@@ -133,7 +133,7 @@ namespace MeroBolee.Repository.City
                 city.City_Name = cityEntity.City_Name;
                // city.District_Id = cityEntity.District_Id;
                 city.Date_modified = cityEntity.Date_modified;
-                city.Modified_time_stamp = cityEntity.Modified_time_stamp;
+               // city.Modified_time_stamp = cityEntity.Modified_time_stamp;
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.MunicipalityEntities.ToList();
                 meroBoleeDbContexts.VDCEntities.ToList();

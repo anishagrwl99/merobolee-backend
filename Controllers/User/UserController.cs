@@ -4,6 +4,7 @@ using MeroBolee.Service.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,10 @@ namespace MeroBolee.Controllers.User
             try
             {
                 if (ModelState.IsValid)
-                {                    
-                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (int.TryParse(addUser.Person_contact1,out _)== true))
-                    {                       
-                        return Ok(new Responses<GetUserDto>( await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
+                {
+                    if (((long.TryParse(addUser.Company_Contact1, out _) == true) && (long.TryParse(addUser.Person_contact1, out _) == true)) || (long.TryParse(addUser.Company_Contact2, out _) == true) || (long.TryParse(addUser.Person_contact2, out _) == true))
+                    {
+                        return Ok(new Responses<GetUserDto>(await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
                     }
                     else
                     {
@@ -50,12 +51,21 @@ namespace MeroBolee.Controllers.User
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
+
             }
             catch (UnauthorizedAccessException)
             {
                 response.statusCode = "400";
                 response.Message = "Username or Email already exists";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+
+            catch (DbUpdateException)
+            {
+                response.statusCode = "500";
+                response.Message = "Internal Server Error";
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+
             }
             catch (SqlException)
             {
@@ -65,7 +75,7 @@ namespace MeroBolee.Controllers.User
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
@@ -76,16 +86,16 @@ namespace MeroBolee.Controllers.User
         /// </summary>
         /// <returns></returns>
         [HttpPost("SignUpUser")]
-        public IActionResult SignUp([FromBody] SignUpDto addUser)
+        public async Task<IActionResult> SignUp(SignUpDto addUser)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
 
-                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (int.TryParse(addUser.Person_contact1, out _) == true))
+                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (ulong.TryParse(addUser.Person_contact1, out _) == true))
                     {
-                        return Ok(new Responses<GetUserDto>(userService.SignUp(addUser), "200", "Record is successfully added"));
+                        return Ok(new Responses<GetUserDto>( await userService.SignUp(addUser), "200", "Record is successfully added"));
                     }
                     else
                     {
@@ -219,7 +229,7 @@ namespace MeroBolee.Controllers.User
         /// <param name="addUser"></param>
         /// <returns></returns>
         [HttpPut("User")]
-        public IActionResult Update([FromQuery] int id, [FromBody] AddUserDto addUser)
+        public async Task<IActionResult> Update([FromQuery] int id,[FromQuery] AddUserDto addUser)
         {
             try
             {
@@ -233,7 +243,7 @@ namespace MeroBolee.Controllers.User
                 {
                     if (ModelState.IsValid)
                     {
-                        GetUserDto getUser = userService.UpdateUserByAdmin(id, addUser);
+                        GetUserDto getUser = await userService.UpdateUserByAdmin(id, addUser);
                         if (getUser == null)
                         {
                             response.statusCode = "404";
@@ -265,6 +275,7 @@ namespace MeroBolee.Controllers.User
             }
             catch (Exception e)
             {
+
                 response.statusCode = "400";
                 response.Message = e.Message;
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
@@ -279,7 +290,7 @@ namespace MeroBolee.Controllers.User
         /// <param name="addUser"></param>
         /// <returns></returns>
         [HttpPut("UpdateUser")]
-        public IActionResult UpdateByUser([FromQuery] int id, [FromBody] SignUpDto addUser)
+        public async Task<IActionResult> UpdateByUser([FromQuery] int id, [FromBody] SignUpDto addUser)
         {
             try
             {
@@ -293,7 +304,7 @@ namespace MeroBolee.Controllers.User
                 {
                     if (ModelState.IsValid)
                     {
-                        GetUserDto getUser = userService.UpdateUserByUser(id, addUser);
+                        GetUserDto getUser =await userService.UpdateUserByUser(id, addUser);
                         if (getUser == null)
                         {
                             response.statusCode = "404";

@@ -91,7 +91,7 @@ namespace MeroBolee.Repository.Role
                 }
                 toEditRole.Role_Name = role.Role_Name;
                 toEditRole.Date_modified = role.Date_modified;
-                toEditRole.Modified_time_stamp = role.Modified_time_stamp;
+               // toEditRole.Modified_time_stamp = role.Modified_time_stamp;
                 unitOfWork.SaveChange();
                 return toEditRole;
             }
