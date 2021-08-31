@@ -14,13 +14,15 @@ namespace MeroBolee.Service.Status
         private readonly IAuctionStatusRepository auctionStatusRepository;
         private readonly IUserStatusRepository userStatusRepository;
         private readonly IPaymentStatusRepository paymentStatusRepository;
-        public StatusService(IStatusRepository statusRepository, IAdminStatusRepository adminStatusRepository, IAuctionStatusRepository auctionStatusRepository, IUserStatusRepository userStatusRepository, IPaymentStatusRepository paymentStatusRepository)
+        private readonly IRequestStatusRepository requestStatusRepository;
+        public StatusService(IStatusRepository statusRepository, IAdminStatusRepository adminStatusRepository, IAuctionStatusRepository auctionStatusRepository, IUserStatusRepository userStatusRepository, IPaymentStatusRepository paymentStatusRepository, IRequestStatusRepository requestStatusRepository)
         {
             this.statusRepository = statusRepository;
             this.adminStatusRepository = adminStatusRepository;
             this.auctionStatusRepository = auctionStatusRepository;
             this.userStatusRepository = userStatusRepository;
             this.paymentStatusRepository = paymentStatusRepository;
+            this.requestStatusRepository = requestStatusRepository;
         }
 
         public IEnumerable<AdminStatusEntity> GetAdminStatuses()
@@ -41,6 +43,11 @@ namespace MeroBolee.Service.Status
         public IEnumerable<PublishStatus> GetPublishStatuses()
         {
             return statusRepository.GetPublishStatuses();
+        }
+
+        public IEnumerable<RequestHelpStatus> GetRequestHelpStatuses()
+        {
+            return requestStatusRepository.GetRequestHelpStatus();
         }
 
         public IEnumerable<UserStatusEntity> GetUserStatuses()

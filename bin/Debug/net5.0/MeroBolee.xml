@@ -4,6 +4,41 @@
         <name>MeroBolee</name>
     </assembly>
     <members>
+        <member name="M:MeroBolee.Controllers.BiddingRequest.BiddingRequestController.Add(MeroBolee.Dto.AddBiddingRequestDto)">
+            <summary>
+            To request for bidding
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.BiddingRequest.BiddingRequestController.GetAll(MeroBolee.Infrastructure.PaginationQuery)">
+            <summary>
+            To display all Bidding Request by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.BiddingRequest.BiddingRequestController.GetBidderRequest(MeroBolee.Infrastructure.PaginationQuery,System.Int32)">
+            <summary>
+            To display all Bidding Request by Bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.BiddingRequest.BiddingRequestController.GetById(System.Int32)">
+            <summary>
+            To get individual BiddingRequest detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.BiddingRequest.BiddingRequestController.Update(System.Int32,MeroBolee.Dto.UpdateRequestDto)">
+            <summary>
+            To update BiddingRequest info and status is commonStatus
+            </summary>
+            <param name="id"></param>
+            <param name="updateRequest"></param>
+            <returns></returns>
+        </member>
         <member name="M:MeroBolee.Controllers.CategoryController.Add(MeroBolee.Dto.AddCategoryDto)">
             <summary>
             To add category by Admin and status is commonStatus
@@ -152,6 +187,34 @@
             <param name="addCountry"></param>
             <returns></returns>
         </member>
+        <member name="M:MeroBolee.Controllers.DisplayMail.DisplayMailController.GetAll(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To show reply from merobolee to bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.DisplayMail.DisplayMailController.GetSentByBidder(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To sent mail from bidder to merobolee
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.DisplayMail.DisplayMailController.CallForAction(MeroBolee.Infrastructure.PaginationQuery,System.String)">
+            <summary>
+            To sent mail from bidder to merobolee
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.DisplayMail.DisplayMailController.GetSentMail(MeroBolee.Infrastructure.PaginationQuery)">
+            <summary>
+            To show reply from merobolee to bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
         <member name="M:MeroBolee.Controllers.District.DistrictController.Add(MeroBolee.Dto.AddDistrictDto)">
             <summary>
             To add district by Admin
@@ -192,6 +255,48 @@
             </summary>
             <param name="id"></param>
             <param name="addDistrict"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.Add(MeroBolee.Model.FAQEntity)">
+            <summary>
+            To add FAQ and status is commonStatus
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.GetAll(MeroBolee.Infrastructure.PaginationQuery)">
+            <summary>
+            To display all FAQ by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.GetAllPublish(MeroBolee.Infrastructure.PaginationQuery)">
+            <summary>
+            To display all FAQ which is publish
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.Delete(System.Int32)">
+            <summary>
+            To delete FAQ record
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.GetById(System.Int32)">
+            <summary>
+            To get individual FAQ detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.FAQ.FAQController.Update(System.Int32,MeroBolee.Model.FAQEntity)">
+            <summary>
+            To update FAQ info and status is commonStatus
+            </summary>
+            <param name="id"></param>
+            <param name="addFAQ"></param>
             <returns></returns>
         </member>
         <member name="M:MeroBolee.Controllers.FavouriteCategory.FavouriteCategoryController.Add(MeroBolee.Model.FavouriteCategoryEntity)">
@@ -334,6 +439,40 @@
             <param name="addProvince"></param>
             <returns></returns>
         </member>
+        <member name="M:MeroBolee.Controllers.RequestHelp.RequestHelpController.Add(MeroBolee.Dto.PostRequestHelpDto)">
+            <summary>
+            To add RequestHelp and status is request help status    /// </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.RequestHelp.RequestHelpController.GetAll(MeroBolee.Infrastructure.PaginationQuery)">
+            <summary>
+            To display all RequestHelp by Admin
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.RequestHelp.RequestHelpController.GetAllPublish(MeroBolee.Infrastructure.PaginationQuery,System.Int32)">
+            <summary>
+            To display all RequestHelp of individual bidder
+            </summary>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.RequestHelp.RequestHelpController.GetById(System.Int32)">
+            <summary>
+            To get individual RequestHelp detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.RequestHelp.RequestHelpController.Update(System.Int32,MeroBolee.Dto.UpdateRequestHelpDto)">
+            <summary>
+            To update RequestHelp info and status is commonStatus
+            </summary>
+            <param name="id"></param>
+            <param name="updateRequestHelp"></param>
+            <returns></returns>
+        </member>
         <member name="M:MeroBolee.Controllers.Role.RoleController.AddRole(MeroBolee.Dto.AddRoleDto)">
             <summary>
             To add role by Admin
@@ -396,6 +535,12 @@
         <member name="M:MeroBolee.Controllers.Status.StatusController.GetPaymentStatus">
             <summary>
             To display all payment status 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MeroBolee.Controllers.Status.StatusController.GetRequestHelpStatus">
+            <summary>
+            To display all request help status 
             </summary>
             <returns></returns>
         </member>

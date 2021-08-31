@@ -1,5 +1,7 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,14 @@ namespace MeroBolee.Repository.BidderRequest
 {
     public interface IBidderRequestRepository : IRepositoryBase<BidderRequestEntity>
     {
-        BidderRequestEntity SendRequest(BidderRequestEntity bidderRequestEntity);
-        BidderRequestEntity UpdateRequest(int id, int  admin_status_id);
+        Task<BidderRequestEntity> SendRequest(BidderRequestEntity bidderRequestEntity, ICollection<IFormFile> requestDoc);
+
+        BidderRequestEntity ShowRequest(int requestId);
+
+        IEnumerable<BidderRequestEntity> ShowAllRequest();
+
+        IEnumerable<BidderRequestEntity> AllRequestByBidder(int bidderId);
+
+        BidderRequestEntity UpdateRequest(int id, UpdateRequestDto updateRequest);
     }
 }

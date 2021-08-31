@@ -27,8 +27,8 @@ namespace MeroBolee.Dto
         private string address1;
         private string address2;
         private string address3;
-        //private int municipality_Id;
-        //private int vdc_id;
+        private int municipality_Id;
+        private int vdc_id;
         private string fax_No;
         private string company_email;
         private string company_Contact1;
@@ -73,8 +73,8 @@ namespace MeroBolee.Dto
         public string Address1 { get => address1; set => address1 = value; }
         public string Address2 { get => address2; set => address2 = value; }
         public string Address3 { get => address3; set => address3 = value; }
-        //public int Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
-        //public int Vdc_id { get => vdc_id; set => vdc_id = value; }
+        public int Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+        public int Vdc_id { get => vdc_id; set => vdc_id = value; }
         public string Fax_No { get => fax_No; set => fax_No = value; }
         public string Company_email { get => company_email; set => company_email = value; }
         public string Company_Contact1 { get => company_Contact1; set => company_Contact1 = value; }

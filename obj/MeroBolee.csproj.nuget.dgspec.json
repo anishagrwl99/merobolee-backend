@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[4.0.2, )"
             },
+            "MailKit": {
+              "target": "Package",
+              "version": "[2.15.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.7, )"
@@ -60,6 +64,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[5.0.7, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[2.15.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

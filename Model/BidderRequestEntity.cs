@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,6 +25,7 @@ namespace MeroBolee.Model
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("request_id")]
+        [JsonIgnore]
         public int Request_Id { get => request_Id; set => request_Id = value; }
 
         [Column("request_code")]

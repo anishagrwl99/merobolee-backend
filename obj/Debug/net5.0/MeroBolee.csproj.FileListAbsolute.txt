@@ -136,6 +136,7 @@ D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\MeroBolee.pdb
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\MeroBolee.xml
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\BCrypt.Net-Next.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Humanizer.dll
+D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\MailKit.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.Data.SqlClient.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
@@ -150,7 +151,9 @@ D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.IdentityModel.Proto
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Microsoft.OpenApi.dll
+D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\MimeKit.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Newtonsoft.Json.dll
+D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Next_Nepal\NextNepal\MeroBolee\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll

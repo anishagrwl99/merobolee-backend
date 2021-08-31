@@ -80,5 +80,13 @@ namespace MeroBolee.Utility
 
         public DbSet<BidderRequestEntity> BidderRequestEntities { get; set; }
         public DbSet<BidderRequestDocEntity> BidderRequestDocEntities { get; set; }
+
+        public DbSet<FAQEntity> FAQEntities { get; set; }
+
+        public DbSet<RequestHelpStatus> RequestHelpStatuses { get; set; }
+        public DbSet<RequestHelpEntity> RequestHelpEntities { get; set; }
+
+        public DbSet<MailEntity> MailEntities { get; set; }
+        public DbSet<MailAttachmentEntity> MailAttachmentEntities { get; set; }
     }
 }

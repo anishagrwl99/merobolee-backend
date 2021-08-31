@@ -35,6 +35,15 @@ namespace MeroBolee.Repository.User
                 }
                 else
                 {
+                    if (user.Municipality_Id == 0)
+                    {
+                        user.Municipality_Id = null;
+                    }
+                    if (user.Vdc_id == 0)
+                    {
+                        user.Vdc_id = null;
+                    }
+
                     user.Activate_Date = DateTime.Now.Date;
                     MembershipTypeEntity packages = meroBoleeDbContexts.MembershipTypeEntities.Where(m => m.Membership_Id == user.Membership_Id).FirstOrDefault();
                     if (packages != null)
@@ -55,6 +64,7 @@ namespace MeroBolee.Repository.User
 
                     else
                     {
+                        user.Membership_Id = null;
                         user.Expried_Date = null;
                         user.Activate_Date = null;
                     }
@@ -257,8 +267,8 @@ namespace MeroBolee.Repository.User
                     user.Province_Id = userdto.Province_Id;
                     user.District_Id = userdto.District_Id;
                     user.City_Id = userdto.City_Id;
-                    //user.Municipality_Id = userdto.Municipality_Id;
-                    //user.Vdc_id = userdto.Vdc_id;
+                    user.Municipality_Id = userdto.Municipality_Id;
+                    user.Vdc_id = userdto.Vdc_id;
                     user.Register_Country = userdto.Register_Country;
                     user.Company_Type_Id = userdto.Company_Type_Id;
                     user.Company_acronym = userdto.Company_acronym;

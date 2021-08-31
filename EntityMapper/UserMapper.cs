@@ -25,9 +25,9 @@ namespace MeroBolee.EntityMapper
                 Province_Id= userDto.Province_Id,
                 District_Id= userDto.District_Id,
                 City_Id= userDto.City_Id,
-                //Municipality_Id= userDto.Municipality_Id,
-                //Vdc_id=userDto.Vdc_id,
-                Register_Country= userDto.Register_Country,
+                Municipality_Id = userDto.Municipality_Id,
+                Vdc_id = userDto.Vdc_id,
+                Register_Country = userDto.Register_Country,
                 Company_Type_Id= userDto.Company_Type_Id,
                 Company_acronym= userDto.Company_acronym,
                 Description= userDto.Description,
@@ -132,23 +132,23 @@ namespace MeroBolee.EntityMapper
 
             GetUserDto getUser = new GetUserDto();
 
-            //if (userEntity.Municipality == null)
-            //{
-            //    getUser.Municipality = null;
-            //}
-            //else 
-            //{
-            //    getUser.Municipality = userEntity.Municipality.Municipality_Name;
-            //}
+            if (userEntity.Municipality == null)
+            {
+                getUser.Municipality = null;
+            }
+            else
+            {
+                getUser.Municipality = userEntity.Municipality.Municipality_Name;
+            }
 
-            //if (userEntity.VDC == null)
-            //{
-            //    getUser.Vdc = null;
-            //}
-            //else
-            //{
-            //    getUser.Vdc = userEntity.VDC.Vdc_Name;
-            //}
+            if (userEntity.VDC == null)
+            {
+                getUser.Vdc = null;
+            }
+            else
+            {
+                getUser.Vdc = userEntity.VDC.Vdc_Name;
+            }
             if (userEntity.Category == null)
             {
                 getUser.Category = null;
@@ -250,8 +250,8 @@ namespace MeroBolee.EntityMapper
             getUser.Province_Id = userEntity.Province_Id;
             getUser.District_Id = userEntity.District_Id;
             getUser.City_Id = userEntity.City_Id;
-            //getUser.Municipality_Id = userEntity.Municipality_Id;
-            //getUser.Vdc_id = userEntity.Vdc_id;
+            getUser.Municipality_Id = userEntity.Municipality_Id;
+            getUser.Vdc_id = userEntity.Vdc_id;
             getUser.Register_Country = userEntity.Register_Country;
             getUser.Company_Type_Id = userEntity.Company_Type_Id;
             getUser.Company_acronym = userEntity.Company_acronym;

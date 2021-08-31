@@ -210,5 +210,43 @@ namespace MeroBolee.Controllers.Status
 
         }
 
+        /// <summary>
+        /// To display all request help status 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("RequestHelpStatus")]
+        public IActionResult GetRequestHelpStatus()
+        {
+            try
+            {
+                IEnumerable<RequestHelpStatus> requestHelpStatuses = statusService.GetRequestHelpStatuses();
+                if (requestHelpStatuses.Count() == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<RequestHelpStatus>>(requestHelpStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+
+                }
+                return Ok(new Responses<IEnumerable<RequestHelpStatus>>(requestHelpStatuses, "200", "Record found")); // To pass result in object along with pagination info
+            }
+            catch (SqlException)
+            {
+                response.statusCode = "500";
+                response.Message = "Something went wrong";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+            catch (InvalidOperationException)
+            {
+                response.statusCode = "500";
+                response.Message = "Something went wrong";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "400";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
     }
 }

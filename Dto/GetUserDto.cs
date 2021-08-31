@@ -29,8 +29,8 @@ namespace MeroBolee.Dto
         private string address1;
         private string address2;
         private string address3;
-        //private int? municipality_Id;
-        //private int? vdc_id;
+        private int? municipality_Id;
+        private int? vdc_id;
         private string fax_No;
         private string company_email;
         private string company_Contact1;
@@ -61,8 +61,8 @@ namespace MeroBolee.Dto
         private string userStatus;
         private string membershipType;
         private string role;
-        //private string municipality;
-        //private string vdc;
+        private string municipality;
+        private string vdc;
         private string companyType;
         private DateTime? activate_Date;
         private DateTime? expried_Date;
@@ -87,10 +87,10 @@ namespace MeroBolee.Dto
         public string MembershipType { get => membershipType; set => membershipType = value; }
         public int? Role_Id { get => role_Id; set => role_Id = value; }
         public string Role { get => role; set => role = value; }
-        //public int? Municipality_Id { get => municipality_Id; set => municipality_Id = value; }      
-        //public string Municipality { get => municipality; set => municipality = value; }
-        //public int? Vdc_id { get => vdc_id; set => vdc_id = value; }
-        //public string Vdc { get => vdc; set => vdc = value; }
+        public int? Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+        public string Municipality { get => municipality; set => municipality = value; }
+        public int? Vdc_id { get => vdc_id; set => vdc_id = value; }
+        public string Vdc { get => vdc; set => vdc = value; }
         public int? Company_Type_Id { get => company_Type_Id; set => company_Type_Id = value; }
         public string CompanyType { get => companyType; set => companyType = value; }
         public int Register_Country { get => register_Country; set => register_Country = value; }

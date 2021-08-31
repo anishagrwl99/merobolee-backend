@@ -30,8 +30,8 @@ namespace MeroBolee.Model
         private string address1;
         private string address2;
         private string address3;
-        //private int? municipality_Id;
-        //private int? vdc_id;
+        private int? municipality_Id;
+        private int? vdc_id;
         private string fax_No;
         private string company_email;
         private string company_Contact1;
@@ -65,8 +65,8 @@ namespace MeroBolee.Model
         private  MembershipTypeEntity membershipType;
         private CategoryEntity category;
         private RoleEntity role;
-        //private MunicipalityEntity municipality;
-        //private VDCEntity vdc;
+        private MunicipalityEntity municipality;
+        private VDCEntity vdc;
         private CompanyTypeEntity companyType;
         
 
@@ -140,12 +140,12 @@ namespace MeroBolee.Model
         [Column("address3")]
         public string Address3 { get => address3; set => address3 = value; }
 
-        //[Column("municipality_id")]
-        
-        //public int? Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+        [Column("municipality_id")]
 
-        //[Column("vdc_id")]
-        //public int? Vdc_id { get => vdc_id; set => vdc_id = value; }
+        public int? Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+
+        [Column("vdc_id")]
+        public int? Vdc_id { get => vdc_id; set => vdc_id = value; }
 
         [Column("fax_no")]
         public string Fax_No { get => fax_No; set => fax_No = value; }
@@ -206,12 +206,12 @@ namespace MeroBolee.Model
         public virtual MembershipTypeEntity MembershipType { get => membershipType; set => membershipType = value; }
         public virtual RoleEntity Role { get => role; set => role = value; }
 
-        //[ForeignKey("Municipality_Id")]
-        //public virtual MunicipalityEntity Municipality { get => municipality; set => municipality = value; }
+        [ForeignKey("Municipality_Id")]
+        public virtual MunicipalityEntity Municipality { get => municipality; set => municipality = value; }
 
-        //[ForeignKey("Vdc_id")]
-        //public virtual VDCEntity VDC { get => vdc; set => vdc = value; }
-        //public virtual CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
+        [ForeignKey("Vdc_id")]
+        public virtual VDCEntity VDC { get => vdc; set => vdc = value; }
+        public virtual CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
 
         [Column("front_citizenship")]
         public string Front_Citizenship { get => front_Citizenship; set => front_Citizenship = value; }
@@ -238,7 +238,7 @@ namespace MeroBolee.Model
         public int? Membership_Id { get => membership_Id; set => membership_Id = value; }
         public virtual CategoryEntity Category { get => category; set => category = value; }
       //  public string User_experience { get => user_experience; set => user_experience = value; }
-        public CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
+      //  public CompanyTypeEntity CompanyType { get => companyType; set => companyType = value; }
 
         [Column("status_id")]
         [ForeignKey("UserStatus")]
