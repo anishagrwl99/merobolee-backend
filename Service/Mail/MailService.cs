@@ -38,8 +38,8 @@ namespace MeroBolee.Service.Mail
         //        bool isSent;
         //        var email = new MimeMessage();
         //        //userMailSetting.DisplayName = "";
-        //        _mailSettings.Mail = "anushrestha0310@gmail.com";
-        //        _mailSettings.Password = "9813612871";
+        //        _mailSettings.Mail = "";
+        //        _mailSettings.Password = "";
         //        email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
         //        email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
         //        email.Subject = mailRequest.Subject;
