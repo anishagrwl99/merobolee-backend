@@ -1,4 +1,5 @@
 using MeroBolee.Infrastructure;
+using MeroBolee.Middleware;
 using MeroBolee.Repository;
 using MeroBolee.Repository.BidderRequest;
 using MeroBolee.Repository.Category;
@@ -75,6 +76,7 @@ namespace MeroBolee
             services.AddControllers();
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
+            services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.AddDbContext<MeroBoleeDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
@@ -139,6 +141,10 @@ namespace MeroBolee
             services.AddScoped<IMailByUserService, MailByUserService>();
 
 
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IAccountService, AccountService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -158,6 +164,9 @@ namespace MeroBolee
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
+            // custom jwt auth middleware
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
