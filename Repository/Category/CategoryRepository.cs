@@ -28,9 +28,9 @@ namespace MeroBolee.Repository.Category
             {
                 throw new ArgumentNullException();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception();
+                throw;
             }
         }
              

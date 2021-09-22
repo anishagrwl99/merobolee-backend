@@ -12,7 +12,6 @@ namespace MeroBolee.Controllers
     /// <summary>
     /// Controller to manage user account
     /// </summary>
-    [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -35,15 +34,22 @@ namespace MeroBolee.Controllers
         [HttpGet("Authenticate")]
         public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromQuery] AuthenticateRequest model)
         {
-            if(ModelState.IsValid)
+            try
             {
-                AuthenticateResponse response = await accountService.AuthenticateAsync(model);
-                if(response != null)
+                if (ModelState.IsValid)
                 {
-                    //setTokenCookie(response.RefreshToken);
-                    return Ok(response);
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model);
+                    if (response != null)
+                    {
+                        //setTokenCookie(response.RefreshToken);
+                        return Ok(response);
+                    }
+
                 }
-                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
             }
             return NotFound();
         }

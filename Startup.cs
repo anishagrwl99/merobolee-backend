@@ -62,8 +62,16 @@ namespace MeroBolee
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public static string HostingEnvironment { get; set; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            //var builder = new ConfigurationBuilder()
+            //  .SetBasePath(env.ContentRootPath)
+            //  .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            //  .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true)
+            //  .AddEnvironmentVariables();
+            //configuration = builder.Build();
             Configuration = configuration;
         }
 
@@ -72,8 +80,8 @@ namespace MeroBolee
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
@@ -83,14 +91,17 @@ namespace MeroBolee
 
             }); // Connection string is available in appsettings.Json file
                 // UseSqlServer help to database connection which use package Ms.EntityFrameworkCore.SqlServer
+
+     
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MeroBolee", Version = "v1" }); // Configuration for documentation of API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"; // To enable XML comment in API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            }); 
-                      
+            });
+
             // Dependency Injection
             services.AddScoped<IDbFactory, DbFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -104,14 +115,14 @@ namespace MeroBolee
             services.AddScoped<IDistrictService, DistrictService>();
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<ICityService, CityService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();  
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<IAdminStatusRepository, AdminStatusRepository>();
             services.AddScoped<IAuctionStatusRepository, AuctionStatusRepository>();
             services.AddScoped<IUserStatusRepository, UserStatusRepository>();
             services.AddScoped<IStatusService, StatusService>();
-            services.AddScoped<ICompanyTypeRepository,CompanyTypeRepository>();
+            services.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
             services.AddScoped<ICompanyTypeService, CompanyTypeService>();
             services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
             services.AddScoped<IMunicipalityService, MunicipalityService>();
@@ -144,21 +155,41 @@ namespace MeroBolee
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
 
+           
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            HostingEnvironment = env.EnvironmentName;
+            app.UseStaticFiles();
+
+            app.UseSwagger();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1"));
+
+                app.UseSwaggerUI(c =>
+               {
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
+               });
+            }
+            else
+            {
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
+                });
             }
 
-        //    app.Run(context => { throw new Exception("error"); });
-         
+            //    app.Run(context => { throw new Exception("error"); });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

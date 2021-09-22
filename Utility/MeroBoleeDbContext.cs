@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Model;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -26,7 +27,7 @@ namespace MeroBolee.Utility
             {
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                    .SetBasePath(Directory.GetCurrentDirectory())
-                   .AddJsonFile("appsettings.json")
+                   .AddJsonFile($"appsettings.{Startup.HostingEnvironment}.json")
                    .Build();
                 var connectionString = configuration.GetConnectionString("MeroBoleeConn");
                 dbContextOptionsBuilder.UseSqlServer(connectionString);

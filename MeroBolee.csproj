@@ -8,6 +8,10 @@
     <DocumentationFile>D:\Next_Nepal\NextNepal\MeroBoli\MeroBolee\MeroBolee.xml</DocumentationFile>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+	
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="MailKit" Version="2.15.0" />
