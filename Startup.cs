@@ -85,6 +85,7 @@ namespace MeroBolee
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
+            CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
             services.AddDbContext<MeroBoleeDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
