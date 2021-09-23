@@ -172,7 +172,7 @@ namespace MeroBolee
             app.UseStaticFiles();
 
             app.UseSwagger();
-            if (env.IsDevelopment())
+            if (!env.IsEnvironment("Production"))
             {
                 app.UseDeveloperExceptionPage();
 
