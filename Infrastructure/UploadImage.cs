@@ -32,7 +32,7 @@ namespace MeroBolee.Infrastructure
                     await file.CopyToAsync(Stream);
                 }
              //   isSaveSuccess = true;
-                return path;
+                return Path.Combine("Resource", folderName, fileName);
             }
             catch (Exception)
             {
