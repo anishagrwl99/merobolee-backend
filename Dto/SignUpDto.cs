@@ -11,6 +11,8 @@ namespace MeroBolee.Dto
         private int country_Id;
         private int province_Id;
         private int district_Id;
+        private int municipality_Id;
+        private int vdc_Id;
         private int city_Id;
         private int role_Id;
         private int register_Country;
@@ -55,6 +57,8 @@ namespace MeroBolee.Dto
         public int Country_Id { get => country_Id; set => country_Id = value; }
         public int Province_Id { get => province_Id; set => province_Id = value; }
         public int District_Id { get => district_Id; set => district_Id = value; }
+        public int Municipality_Id { get => municipality_Id; set => municipality_Id = value; }
+        public int VDC_Id { get => vdc_Id; set => vdc_Id = value; }
         public int City_Id { get => city_Id; set => city_Id = value; }
         public int Role_Id { get => role_Id; set => role_Id = value; }
         public int Register_Country { get => register_Country; set => register_Country = value; }
