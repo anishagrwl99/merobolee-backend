@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
+using MeroBolee.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,8 +25,7 @@ namespace MeroBolee.Repository.User
             
             try
             {
-                int salt = 6;
-                string hashPasswod = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
+                string hashPasswod = BCrypt.Net.BCrypt.HashPassword(user.Password, CryptoConfig.Salt);
                 user.Password = hashPasswod;
 
                 UserEntity users = meroBoleeDbContexts.UserEntities.Where(m => m.Username.ToLower() == user.Username.ToLower()).FirstOrDefault(); //|| m.Email == user.Email.ToLower()).FirstOrDefault();
@@ -43,7 +43,8 @@ namespace MeroBolee.Repository.User
                     {
                         user.Vdc_id = null;
                     }
-
+                    user.Date_created = DateTime.Now.Date;
+                    user.Date_modified = DateTime.Now.Date;
                     user.Activate_Date = DateTime.Now.Date;
                     MembershipTypeEntity packages = meroBoleeDbContexts.MembershipTypeEntities.Where(m => m.Membership_Id == user.Membership_Id).FirstOrDefault();
                     if (packages != null)

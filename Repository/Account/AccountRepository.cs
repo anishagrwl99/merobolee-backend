@@ -1,6 +1,8 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
+using MeroBolee.Settings;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,12 @@ namespace MeroBolee.Repository
         {
             return Task.Run(() =>
             {
-                UserEntity userEntity = meroBoleeDbContexts.UserEntities.Where(x => x.Person_email == request.Email && x.Password == request.Password).FirstOrDefault();
+                string hashPassword = BCrypt.Net.BCrypt.HashPassword(request.Password, CryptoConfig.Salt);
+                UserEntity userEntity = meroBoleeDbContexts.UserEntities
+                .Where(x => x.Person_email == request.Email && x.Password == hashPassword)
+                .Include(x => x.Role)
+                .FirstOrDefault();
+                
                 if (userEntity != null)
                 {
                     return new AuthenticateResponse
