@@ -19,6 +19,7 @@ namespace MeroBolee.Repository.Municipality
         {
             try
             {
+                municipalityEntity.Date_created = municipalityEntity.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.MunicipalityEntities.Add(municipalityEntity);
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.DistrictEntities.ToList();

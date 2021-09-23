@@ -41,7 +41,7 @@ namespace MeroBolee.Controllers.District
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
                     }
-                    return Ok(new Responses<GetDistrictDto>(districtService.AddDistrict(addDistrict), "200", "Record is successfully added"));
+                    return Ok(new Responses<GetDistrictDto>(getDistrict, "200", "Record is successfully added"));
                 }
                 else
                 {

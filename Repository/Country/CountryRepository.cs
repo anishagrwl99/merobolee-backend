@@ -20,6 +20,7 @@ namespace MeroBolee.Repository.Country
         {
             try
             {
+                country.Date_created = country.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.CountryEntities.Add(country);
                 unitOfWork.SaveChange();
                 return country;

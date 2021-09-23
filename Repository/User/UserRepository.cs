@@ -353,6 +353,27 @@ namespace MeroBolee.Repository.User
             }
         }
 
-     
+
+        public string GetUserCompany(int id)
+        {
+            try
+            {
+                string userCompany = meroBoleeDbContexts.UserEntities
+                                .Where(x => x.User_Id == id)
+                                .Select(x => x.Company_Name)
+                                .DefaultIfEmpty("")
+                                .FirstOrDefault();
+                
+                return userCompany;
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ArgumentNullException();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
     }
 }

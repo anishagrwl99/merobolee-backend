@@ -19,6 +19,7 @@ namespace MeroBolee.Repository.Role
         {
             try
             {
+                role.Date_created = role.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.RoleEntities.Add(role);
                 unitOfWork.SaveChange();
                 return role;

@@ -15,37 +15,13 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            if (addCityDto.Municipality_Id == 0 && addCityDto.VDC_Id != 0)
+
+            return new CityEntity
             {
-                return new CityEntity
-                {
-                    City_Name = addCityDto.City,
-                    Municipality_Id = null,
-                    Vdc_Id = addCityDto.VDC_Id
-
-                };
-
-            }
-            else if (addCityDto.Municipality_Id != 0 && addCityDto.VDC_Id == 0)
-            {
-                return new CityEntity
-                {
-                    City_Name = addCityDto.City,
-                    Municipality_Id = addCityDto.Municipality_Id,
-                    Vdc_Id = null
-                };
-            }
-            else
-            {
-                return new CityEntity
-                {
-                    City_Name = addCityDto.City,
-                    Municipality_Id = null,
-                    Vdc_Id = null
-
-                };
-            }
-
+                City_Name = addCityDto.City,
+                Municipality_Id = addCityDto.Municipality_Id.HasValue ? addCityDto.Municipality_Id : null,
+                Vdc_Id = addCityDto.VDC_Id.HasValue ? addCityDto.VDC_Id.Value : null
+            };
         }
 
         public GetCityDto CityEntityToDto(CityEntity cityEntity)
@@ -54,44 +30,16 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else if (cityEntity.Municipality_Id == null && cityEntity.Vdc_Id!=null)
-            {
-                return new GetCityDto
-                {
-                    Id = cityEntity.City_Id,
-                    City = cityEntity.City_Name,
-                    Municipality_Id = null,
-                    Municipality = null,
-                    VDC_Id= cityEntity.Vdc_Id,
-                    Vdc= cityEntity.VDC.Vdc_Name
-                };
-            }
-            else if (cityEntity.Vdc_Id==null && cityEntity.Municipality_Id!=null)
-            {
-                return new GetCityDto
-                {
-                    Id = cityEntity.City_Id,
-                    City = cityEntity.City_Name,
-                    Municipality_Id = cityEntity.Municipality_Id,
-                    Municipality = cityEntity.Municipality.Municipality_Name,
-                    VDC_Id = null,
-                    Vdc = null
-                };
-            }
 
             return new GetCityDto
             {
                 Id = cityEntity.City_Id,
                 City = cityEntity.City_Name,
-                Municipality_Id = null,
-                Municipality = null,
-                VDC_Id = null,
-                Vdc = null
-                //District_id = cityEntity.District_Id,
-                //District = cityEntity.District.District_Name
-
+                Municipality_Id = cityEntity.Municipality ==null? null: cityEntity.Municipality.Municipality_id,
+                Municipality = cityEntity.Municipality == null ? null : cityEntity.Municipality.Municipality_Name,
+                VDC_Id = cityEntity.VDC == null? null: cityEntity.VDC.Vdc_Id,
+                Vdc = cityEntity.VDC == null ? null : cityEntity.VDC.Vdc_Name                
             };
-
         }
 
         public IEnumerable<GetCityDto> CityEntityListToDto(IEnumerable<CityEntity> cityEntities)

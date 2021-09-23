@@ -19,6 +19,7 @@ namespace MeroBolee.Repository.District
         {
             try
             {
+                districtEntity.Date_created = districtEntity.Date_modified = DateTime.Now;
                 if (meroBoleeDbContexts.ProvinceEntities.Find(districtEntity.Province_Id) == null)
                 {
                     districtEntity.Province_Id = 0;

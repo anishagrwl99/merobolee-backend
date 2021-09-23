@@ -19,6 +19,7 @@ namespace MeroBolee.Repository.VDC
         {
             try
             {
+                vdcEntity.Date_created = vdcEntity.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.VDCEntities.Add(vdcEntity);
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.DistrictEntities.ToList();

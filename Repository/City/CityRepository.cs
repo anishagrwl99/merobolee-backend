@@ -24,6 +24,7 @@ namespace MeroBolee.Repository.City
                 //    cityEntity.District_Id = 0;
                 //    return cityEntity;
                 //}
+                cityEntity.Date_created = cityEntity.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.CityEntities.Add(cityEntity);
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.MunicipalityEntities.ToList();
@@ -32,11 +33,11 @@ namespace MeroBolee.Repository.City
             }
             catch (ArgumentNullException)
             {
-                throw new ArgumentNullException();
+                throw;
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 

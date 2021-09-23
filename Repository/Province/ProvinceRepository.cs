@@ -20,6 +20,7 @@ namespace MeroBolee.Repository.Province
         {
             try
             {
+                provinceEntity.Date_created = provinceEntity.Date_modified = DateTime.Now;
                 if (meroBoleeDbContexts.CountryEntities.Find(provinceEntity.Country_Id) == null)
                 {
                     provinceEntity.Country_Id = 0;
