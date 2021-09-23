@@ -67,7 +67,8 @@ namespace MeroBolee.Controllers.Country
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/Country");
+                string url = Url.Action("GetAllCountry", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetCountryDto> country = countryService.GetCountry(search);
                 int totalCount = country.Count();
@@ -103,7 +104,7 @@ namespace MeroBolee.Controllers.Country
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteCountry")]
+        [HttpDelete("DeleteCountry")]
         public IActionResult DeleteCountry([FromQuery] int id)
         {
             try

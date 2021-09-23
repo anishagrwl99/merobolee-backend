@@ -142,7 +142,8 @@ namespace MeroBolee.Controllers.User
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/User");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetUserDto> user = userService.GetUser(search);
                 int totalCount = user.Count();

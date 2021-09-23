@@ -68,7 +68,8 @@ namespace MeroBolee.Controllers
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/Category");
+                string url = Url.Action("GetBidderRequest", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetCategoryDto> category = categoryService.GetCategory(search);
                 int totalCount = category.Count();
@@ -104,7 +105,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteCategory")]
+        [HttpDelete("DeleteCategory")]
         public IActionResult Delete([FromQuery] int id)
         {
             try

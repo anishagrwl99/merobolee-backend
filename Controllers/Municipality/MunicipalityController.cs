@@ -74,7 +74,8 @@ namespace MeroBolee.Controllers.Municipality
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/Municipality");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetMunicipalityDto> Municipality = municipalityService.GetMunicipality(search);
                 int totalCount = Municipality.Count();
@@ -110,7 +111,7 @@ namespace MeroBolee.Controllers.Municipality
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteMunicipality")]
+        [HttpDelete("DeleteMunicipality")]
         public IActionResult Delete([FromQuery] int id)
         {
             try
@@ -217,7 +218,8 @@ namespace MeroBolee.Controllers.Municipality
                 }
                 else
                 {
-                    uriService = new UriService("https://localhost:44332/Municipality");
+                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetMunicipalityDto> Municipality = municipalityService.CascadeMunicipality(id);
                     int totalCount = Municipality.Count();

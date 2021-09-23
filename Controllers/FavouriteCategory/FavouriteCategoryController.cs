@@ -70,7 +70,8 @@ namespace MeroBolee.Controllers.FavouriteCategory
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/FavouriteCategory");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<FavouriteCategoryEntity> category = favouriteCategoryService.GetFavourites(id);
                 int totalCount = category.Count();
@@ -119,7 +120,7 @@ namespace MeroBolee.Controllers.FavouriteCategory
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("RemoveFavourite")]
+        [HttpDelete("RemoveFavourite")]
         public IActionResult Delete([FromQuery] int id)
         {
             try

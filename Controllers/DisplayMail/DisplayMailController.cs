@@ -32,7 +32,8 @@ namespace MeroBolee.Controllers.DisplayMail
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/Clarification");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<MailEntity> mail = displayService.ShowReceiveMail(email);
                 int totalCount = mail.Count();
@@ -73,7 +74,8 @@ namespace MeroBolee.Controllers.DisplayMail
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/Correspondence");
+                string url = Url.Action("GetSentByBidder", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<MailEntity> mail = displayService.ShowSentMail(email);
                 int totalCount = mail.Count();
@@ -114,7 +116,8 @@ namespace MeroBolee.Controllers.DisplayMail
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/CallForAction");
+                string url = Url.Action("CallForAction", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<MailEntity> mail = displayService.CallForAction(email);
                 int totalCount = mail.Count();
@@ -155,7 +158,8 @@ namespace MeroBolee.Controllers.DisplayMail
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/AllSentMail");
+                string url = Url.Action("GetSentMail", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<MailEntity> mail = displayService.ShowSendMail();
                 int totalCount = mail.Count();

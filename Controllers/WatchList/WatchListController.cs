@@ -93,7 +93,8 @@ namespace MeroBolee.Controllers.WatchList
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-                this.uriService = new UriService("https://localhost:44332/WatchList");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetWatchListDto> watchList = watchListService.GetAllWatchList(id);
                 int totalCount = watchList.Count();
@@ -129,7 +130,7 @@ namespace MeroBolee.Controllers.WatchList
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("RemoveWatchList")]
+        [HttpDelete("RemoveWatchList")]
         public IActionResult Delete([FromQuery] int id)
         {
             try

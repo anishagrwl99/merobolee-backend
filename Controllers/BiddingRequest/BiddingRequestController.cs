@@ -69,7 +69,8 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/AllBiddingRequest");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetBiddingRequestDto> BiddingRequest = biddingRequestService.ShowAllRequest();
                 int totalCount = BiddingRequest.Count();
@@ -110,7 +111,8 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/BiddingRequestByBidder");
+                string url = Url.Action("GetBidderRequest", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetBiddingRequestDto> BiddingRequest = biddingRequestService.AllRequestByBidder(id);
                 int totalCount = BiddingRequest.Count();

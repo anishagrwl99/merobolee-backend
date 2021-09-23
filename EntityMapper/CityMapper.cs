@@ -104,6 +104,16 @@ namespace MeroBolee.EntityMapper
             }
             foreach (CityEntity city in cityEntities)
             {
+                getCity.Add(new GetCityDto
+                {
+                    Id = city.City_Id,
+                    City = city.City_Name,
+                    Municipality_Id = city.Municipality == null? null: city.Municipality.Municipality_id,
+                    Municipality = city.Municipality==null? null: city.Municipality.Municipality_Name,
+                    VDC_Id = city.VDC == null? null: city.VDC.Vdc_Id,
+                    Vdc = city.VDC == null?  null: city.VDC.Vdc_Name
+                });
+                /*
                 if (city.Municipality_Id == null && city.Vdc_Id == null)
                 {
                     getCity.Add
@@ -150,6 +160,7 @@ namespace MeroBolee.EntityMapper
                       }
                     );
                 }
+                */
             }
             return getCity;
         }

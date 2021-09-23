@@ -74,7 +74,8 @@ namespace MeroBolee.Controllers.City
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/City");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetCityDto> City = cityService.GetCity(search);
                 int totalCount = City.Count();
@@ -110,7 +111,7 @@ namespace MeroBolee.Controllers.City
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteCity")]
+        [HttpDelete("DeleteCity")]
         public IActionResult Delete([FromQuery] int id)
         {
             try
@@ -217,7 +218,8 @@ namespace MeroBolee.Controllers.City
                 }
                 else
                 {
-                    uriService = new UriService("https://localhost:44332/City");
+                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetCityDto> City = cityService.CascadeCity(id);
                     int totalCount = City.Count();

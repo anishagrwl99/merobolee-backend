@@ -79,7 +79,8 @@ namespace MeroBolee.Controllers.Province
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/Province");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetProvinceDto> province = provinceService.GetProvinces(search);
                 int totalCount = province.Count();
@@ -116,7 +117,7 @@ namespace MeroBolee.Controllers.Province
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteProvince")]
+        [HttpDelete("DeleteProvince")]
         public IActionResult Delete([FromQuery] int id)
         {
             try
@@ -225,7 +226,8 @@ namespace MeroBolee.Controllers.Province
                 }
                 else
                 {
-                    uriService = new UriService("https://localhost:44332/Province");
+                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetProvinceDto> province = provinceService.CascadeProvince(id);
                     int totalCount = province.Count();

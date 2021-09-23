@@ -68,7 +68,8 @@ namespace MeroBolee.Controllers.FAQ
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/FAQ");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<FAQEntity> FAQ = FAQService.GetAllFAQ();
                 int totalCount = FAQ.Count();
@@ -109,7 +110,8 @@ namespace MeroBolee.Controllers.FAQ
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/PublishFAQ");
+                string url = Url.Action("GetAllPublish", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<FAQEntity> FAQ = FAQService.GetAllPublishFAQ();
                 int totalCount = FAQ.Count();
@@ -146,7 +148,7 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteFAQ")]
+        [HttpDelete("DeleteFAQ")]
         public IActionResult Delete([FromQuery] int id)
         {
             try

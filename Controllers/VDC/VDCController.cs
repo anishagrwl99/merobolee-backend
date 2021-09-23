@@ -74,7 +74,8 @@ namespace MeroBolee.Controllers.VDC
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/VDC");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetVDCDto> VDC = vdcService.GetVDC(search);
                 int totalCount = VDC.Count();
@@ -110,7 +111,7 @@ namespace MeroBolee.Controllers.VDC
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteVDC")]
+        [HttpDelete("DeleteVDC")]
         public IActionResult Delete([FromQuery] int id)
         {
             try
@@ -217,7 +218,8 @@ namespace MeroBolee.Controllers.VDC
                 }
                 else
                 {
-                    uriService = new UriService("https://localhost:44332/VDC");
+                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetVDCDto> VDC = vdcService.CascadeVDC(id);
                     int totalCount = VDC.Count();

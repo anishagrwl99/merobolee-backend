@@ -83,7 +83,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/Tender");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetTenderDto> tenders = tenderService.GetAllTender(search);
                 int totalCount = tenders.Count();
@@ -124,7 +125,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/InterestTender");
+                string url = Url.Action("GetInterestTender", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetTenderDto> tenders = tenderService.FavouriteTender(id,search);
                 int totalCount = tenders.Count();
@@ -165,7 +167,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/TenderByAuctioneer");
+                string url = Url.Action("GetTenderByAuctioneer", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetTenderDto> tenders = tenderService.GetTenderByAuctioneer(id,search);
                 int totalCount = tenders.Count();
@@ -206,7 +209,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/UpComingTender");
+                string url = Url.Action("GetUpCommingTender", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetTenderDto> tenders = tenderService.UpcomingTender(search);
                 int totalCount = tenders.Count();
@@ -247,7 +251,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/TenderByStatus");
+                string url = Url.Action("GetTenderByStatus", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetTenderDto> tenders = tenderService.TenderByStatus(id,search);
                 int totalCount = tenders.Count();

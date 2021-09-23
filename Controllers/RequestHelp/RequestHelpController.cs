@@ -67,7 +67,8 @@ namespace MeroBolee.Controllers.RequestHelp
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/RequestHelp");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetRequestHelpDto> RequestHelp = RequestHelpService.GetAllRequestHelp();
                 int totalCount = RequestHelp.Count();
@@ -108,7 +109,8 @@ namespace MeroBolee.Controllers.RequestHelp
         {
             try
             {
-                this.uriService = new UriService("https://localhost:44332/RequestHelpByBidder");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetRequestHelpDto> RequestHelp = RequestHelpService.GetAllRequestHelpByBidder(id);
                 int totalCount = RequestHelp.Count();

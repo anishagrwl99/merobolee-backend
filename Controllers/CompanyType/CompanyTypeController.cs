@@ -68,7 +68,8 @@ namespace MeroBolee.Controllers.CompanyType
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/CompanyType");
+                string url = Url.Action("GetAllCompanyType", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetCompanyTypeDto> CompanyType = CompanyTypeService.GetCompanyType(search);
                 int totalCount = CompanyType.Count();
@@ -104,7 +105,7 @@ namespace MeroBolee.Controllers.CompanyType
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteCompanyType")]
+        [HttpDelete("DeleteCompanyType")]
         public IActionResult DeleteCompanyType([FromQuery] int id)
         {
             try

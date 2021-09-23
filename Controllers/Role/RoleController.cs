@@ -68,7 +68,8 @@ namespace MeroBolee.Controllers.Role
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/Role");
+                string url = Url.Action("GetAllRole", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetRoleDto> role = roleService.GetAllRole(search);
                 int totalCount = role.Count();
@@ -104,7 +105,7 @@ namespace MeroBolee.Controllers.Role
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteRole")]
+        [HttpDelete("DeleteRole")]
         public IActionResult DeleteRole([FromQuery] int id)
         {
             try

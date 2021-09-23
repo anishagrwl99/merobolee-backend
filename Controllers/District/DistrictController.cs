@@ -75,7 +75,8 @@ namespace MeroBolee.Controllers.District
         {
             try
             {
-                uriService = new UriService("https://localhost:44332/District");
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetDistrictDto> district = districtService.GetDistricts(search);
                 int totalCount = district.Count();
@@ -111,7 +112,7 @@ namespace MeroBolee.Controllers.District
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("DeleteDistrict")]
+        [HttpDelete("DeleteDistrict")]
         public IActionResult Delete([FromQuery] int id)
         {
             try
@@ -220,7 +221,8 @@ namespace MeroBolee.Controllers.District
                 }
                 else
                 {
-                    uriService = new UriService("https://localhost:44332/District");
+                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetDistrictDto> district = districtService.CascadeDistrict(id);
                     int totalCount = district.Count();
