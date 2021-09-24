@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_bidder_requesst_doc")]
+    [Table("mb_bidder_request_doc")]
     public class BidderRequestDocEntity
     {
         private int doc_id;
