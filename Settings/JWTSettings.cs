@@ -16,6 +16,8 @@ namespace MeroBolee.Settings
 
         public int TokenExpiryInMinute { get; set; }
 
+        public string Issuer { get; set; }
+
         public MailSettings MailSettings { get; set; }
     }
 

@@ -64,6 +64,19 @@ namespace MeroBolee.Service
 
 
 
+        //private string abc()
+        //{
+        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        //    var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+        //                          _config["Jwt:Issuer"],
+        //                          null,
+        //                          expires: DateTime.Now.AddMinutes(120),
+        //                          signingCredentials: credentials);
+
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
 
 
         private string generateJwtToken(AuthenticateResponse account)
@@ -72,6 +85,8 @@ namespace MeroBolee.Service
             var key = Encoding.ASCII.GetBytes(jwtsetting.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Audience = jwtsetting.Issuer,
+                Issuer = jwtsetting.Issuer,
                 Subject = new ClaimsIdentity(new[] { new Claim("id", account.Id.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(jwtsetting.TokenExpiryInMinute),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -41,6 +41,7 @@ using MeroBolee.Service.VDC;
 using MeroBolee.Service.WatchList;
 using MeroBolee.Settings;
 using MeroBolee.Utility;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -50,12 +51,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MeroBolee
@@ -80,12 +83,26 @@ namespace MeroBolee
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
+
+            //Enabling Cross Origin Requests from merobolee ui 
+            string[] origins = Configuration.GetValue<string>("APIAllowedOrigins").Split(',');
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("MeroBoleeApps", builder =>
+                {
+                    builder.WithOrigins(origins)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+
+            });
+            services.AddControllers();
+            services.AddMvc();
+            
             services.AddDbContext<MeroBoleeDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
@@ -97,11 +114,65 @@ namespace MeroBolee
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MeroBolee", Version = "v1" }); // Configuration for documentation of API
+                //This is to generate the Default UI of Swagger Documentation  
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "MeroBolee",
+                    Description = "JWT Authentication. To test bearer token check <b>/TestToken</b> endpoint. All other endpoints allows anonymous connection. Token should be passed in request header."
+                });
+                //c.SwaggerDoc("v1", new OpenApiInfo { Title = "MeroBolee", Version = "v1" }); // Configuration for documentation of API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"; // To enable XML comment in API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                // To Enable authorization using Swagger (JWT)  
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nTo generate token use \\Authenticate endpoint.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
             });
+
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                
+            })
+                .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["JWTSettings:Issuer"],
+                    ValidAudience = Configuration["JWTSettings:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTSettings:Secret"])) //Configuration["JwtToken:SecretKey"]  
+                };
+            })
+            ;
 
             // Dependency Injection
             services.AddScoped<IDbFactory, DbFactory>();
@@ -194,6 +265,7 @@ namespace MeroBolee
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthorization();
             app.UseAuthentication();

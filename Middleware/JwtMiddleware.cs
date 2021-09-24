@@ -28,12 +28,29 @@ namespace MeroBolee.Middleware
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                await attachAccountToContext(context, dataContext, token);
+            {
+                bool isTokenValid =  await attachAccountToContext(context, dataContext, token);
 
-            await _next(context);
+                if (isTokenValid)
+                {
+                    await _next(context);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    var bytes = Encoding.UTF8.GetBytes("Invalid token or token is expired");
+
+                    await context.Response.Body.WriteAsync(bytes, 0, bytes.Length);
+                }
+                
+            }
+            else
+            {
+                await _next(context);
+            }
         }
 
-        private async Task attachAccountToContext(HttpContext context, MeroBoleeDbContext dataContext, string token)
+        private async Task<bool> attachAccountToContext(HttpContext context, MeroBoleeDbContext dataContext, string token)
         {
             try
             {
@@ -43,8 +60,10 @@ namespace MeroBolee.Middleware
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidAudience = _jwtSettings.Issuer,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
@@ -54,9 +73,11 @@ namespace MeroBolee.Middleware
 
                 // attach account to context on successful jwt validation
                 context.Items["Account"] = await dataContext.UserEntities.FindAsync(accountId);
+                return true;
             }
-            catch 
+            catch (Exception ex)
             {
+                return false;
                 // do nothing if jwt validation fails
                 // account is not attached to context so request won't have access to secure routes
             }
