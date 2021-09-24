@@ -31,8 +31,8 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <returns></returns>
         /// 
-        [HttpGet("Authenticate")]
-        public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromQuery] AuthenticateRequest model)
+        [HttpPost("Authenticate")]
+        public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] AuthenticateRequest model)
         {
             try
             {

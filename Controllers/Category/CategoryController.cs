@@ -68,7 +68,7 @@ namespace MeroBolee.Controllers
         {
             try
             {
-                string url = Url.Action("GetBidderRequest", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetCategoryDto> category = categoryService.GetCategory(search);
