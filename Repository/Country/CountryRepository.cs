@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +44,13 @@ namespace MeroBolee.Repository.Country
                 meroBoleeDbContexts.CountryEntities.Remove(GetCountryDetail(id));
                 unitOfWork.SaveChange();
             }
+            catch(DbUpdateException)
+            {
+                throw new Exception("Country is in use. Can not be delete at this time.");
+            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
             
         }
@@ -75,20 +80,13 @@ namespace MeroBolee.Repository.Country
         {
             try
             {
-                CountryEntity country = meroBoleeDbContexts.CountryEntities.Where(m => m.Country_Id == id).First();
-                if (country == null)
-                {
-                    return country = null;
-                }
+                CountryEntity country = meroBoleeDbContexts.CountryEntities.Where(m => m.Country_Id == id).FirstOrDefault();
+                
                 return country;
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 

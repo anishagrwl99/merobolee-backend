@@ -33,9 +33,9 @@ namespace MeroBolee.Service.Country
             { 
             countryRepository.DeleteCountry(id);
             }
-            catch(Exception)
+            catch
             {
-                throw new Exception();
+                throw;
             }
         }
 
@@ -60,7 +60,7 @@ namespace MeroBolee.Service.Country
             }   
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }    
         }
 

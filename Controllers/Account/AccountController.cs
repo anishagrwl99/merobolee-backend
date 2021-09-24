@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace MeroBolee.Controllers
         /// <returns></returns>
         /// 
         [HttpPost("Authenticate")]
-        public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest model)
         {
             try
             {
@@ -43,15 +44,21 @@ namespace MeroBolee.Controllers
                     {
                         //setTokenCookie(response.RefreshToken);
                         return Ok(response);
-                    }
+                    }                   
 
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                ResponseMsg response = new ResponseMsg
+                {
+                    statusCode = StatusCodes.Status400BadRequest.ToString(),
+                    Message= ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
-            return NotFound();
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
 

@@ -28,7 +28,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <returns></returns>
         [HttpPost("BiddingRequest")]
-        public  async Task<IActionResult> Add([FromBody] AddBiddingRequestDto addBiddingRequest)
+        public  async Task<IActionResult> Add(AddBiddingRequestDto addBiddingRequest)
         {
             try
             {
