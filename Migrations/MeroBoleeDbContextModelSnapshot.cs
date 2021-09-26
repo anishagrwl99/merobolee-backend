@@ -15,6 +15,7 @@ namespace MeroBolee.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -73,7 +74,7 @@ namespace MeroBolee.Migrations
 
                     b.HasIndex("Request_id");
 
-                    b.ToTable("mb_bidder_requesst_doc");
+                    b.ToTable("mb_bidder_request_doc");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.BidderRequestEntity", b =>
