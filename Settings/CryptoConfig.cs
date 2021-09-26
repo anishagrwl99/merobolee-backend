@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Settings
 {
-    public static class CryptoConfig
+    public  class CryptoKeys
     {
-        public static string Salt { get; set; }
+        public  string EncryptionKey { get; set; }
+        public string EncryptionByteHash { get; set; }
     }
 }

@@ -25,9 +25,7 @@ namespace MeroBolee.Repository.User
             
             try
             {
-                string hashPasswod = BCrypt.Net.BCrypt.HashPassword(user.Password, CryptoConfig.Salt);
-                user.Password = hashPasswod;
-
+            
                 UserEntity users = meroBoleeDbContexts.UserEntities.Where(m => m.Username.ToLower() == user.Username.ToLower()).FirstOrDefault(); //|| m.Email == user.Email.ToLower()).FirstOrDefault();
                 if (users != null)
                 {

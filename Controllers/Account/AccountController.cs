@@ -32,13 +32,13 @@ namespace MeroBolee.Controllers
         /// <returns></returns>
         /// 
         [HttpPost("Authenticate")]
-        public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] AuthenticateRequest model)
+        public IActionResult Authenticate([FromBody] AuthenticateRequest model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AuthenticateResponse response = await accountService.AuthenticateAsync(model);
+                    AuthenticateResponse response =  accountService.AuthenticateAsync(model);
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
@@ -53,7 +53,6 @@ namespace MeroBolee.Controllers
             }
             return NotFound();
         }
-
 
 
         private void setTokenCookie(string token)

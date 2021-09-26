@@ -68,7 +68,7 @@ namespace MeroBolee.Model
         private MunicipalityEntity municipality;
         private VDCEntity vdc;
         private CompanyTypeEntity companyType;
-        
+        private CompanyEntity company;
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -203,6 +203,7 @@ namespace MeroBolee.Model
         public virtual DistrictEntity District { get => district; set => district = value; }
         public virtual CityEntity City { get => city; set => city = value; }
         public virtual UserStatusEntity  UserStatus { get => userStatus; set => userStatus = value; }
+        public virtual CompanyEntity Company { get => company; set => company = value; }
         public virtual MembershipTypeEntity MembershipType { get => membershipType; set => membershipType = value; }
         public virtual RoleEntity Role { get => role; set => role = value; }
 
@@ -243,5 +244,10 @@ namespace MeroBolee.Model
         [Column("status_id")]
         [ForeignKey("UserStatus")]
         public int? Status_id { get => status_id; set => status_id = value; }
+
+
+
+        [ForeignKey("Company")]
+        public int CompanyId { get; set; }
     }
 }

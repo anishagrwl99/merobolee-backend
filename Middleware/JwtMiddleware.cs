@@ -25,6 +25,8 @@ namespace MeroBolee.Middleware
 
         public async Task Invoke(HttpContext context, MeroBoleeDbContext dataContext)
         {
+            await _next(context);
+            /*
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
@@ -48,6 +50,7 @@ namespace MeroBolee.Middleware
             {
                 await _next(context);
             }
+            */
         }
 
         private async Task<bool> attachAccountToContext(HttpContext context, MeroBoleeDbContext dataContext, string token)

@@ -18,6 +18,7 @@ namespace MeroBolee.Utility
 
         public MeroBoleeDbContext()
         {
+            Database.SetCommandTimeout(524);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
@@ -31,20 +32,33 @@ namespace MeroBolee.Utility
                    .Build();
                 var connectionString = configuration.GetConnectionString("MeroBoleeConn");
                 dbContextOptionsBuilder.UseSqlServer(connectionString);
+                
             }
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.HasDefaultSchema("dbo");
 
             modelBuilder.Entity<UserEntity>().Property(x => x.User_Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<TenderEntity>().Property(x => x.Tender_Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
+            modelBuilder.Entity<BidderRequestEntity>()
+                .HasOne(e => e.TenderEntity)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
-          //  modelBuilder.Entity<VDCEntity>().HasMany(x=>x.User_entity).WithOptional().HasForeignKey(x => x.Vdc_id).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<WatchListEntity>()
+               .HasOne(e => e.UserEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
+            //  modelBuilder.Entity<VDCEntity>().HasMany(x=>x.User_entity).WithOptional().HasForeignKey(x => x.Vdc_id).OnDelete(DeleteBehavior.Restrict);
 
             //    //modelBuilder.Entity<User>().HasData(
             //    //      new User() { Id = Guid.NewGuid(), Email = "Mubeen@gmail.com", Name = "Mubeen", Password = "123123" },
@@ -53,6 +67,7 @@ namespace MeroBolee.Utility
             //    //      );
         }
 
+        public DbSet<CompanyEntity> SupplierCompany { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<CountryEntity> CountryEntities { get; set; }
         public DbSet<ProvinceEntity> ProvinceEntities { get; set; }

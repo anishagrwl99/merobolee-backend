@@ -65,8 +65,9 @@ namespace MeroBolee
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public static string HostingEnvironment { get; set; }
-
+        private string _corsPolicy = "MeroBoleeClients";
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             //var builder = new ConfigurationBuilder()
@@ -78,23 +79,24 @@ namespace MeroBolee
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
+       
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
-            CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
+            services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
+            //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
             //Enabling Cross Origin Requests from merobolee ui 
             string[] origins = Configuration.GetValue<string>("APIAllowedOrigins").Split(',');
             services.AddCors(opt =>
             {
-                opt.AddPolicy("MeroBoleeApps", builder =>
+                opt.AddPolicy( name: _corsPolicy, builder =>
                 {
-                    builder.WithOrigins(origins)
+                    builder.AllowAnyOrigin()
+                    //builder.WithOrigins(origins)
                     .AllowAnyMethod()
                     .AllowAnyHeader();
                 });
@@ -226,8 +228,11 @@ namespace MeroBolee
 
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICryptoService, CryptoService>();
 
-           
+            //signup
+            services.AddScoped<ISignupRepository, SignupRepository>();
+            services.AddScoped<ISignupService, SignupService>();           
 
         }
 
@@ -256,6 +261,7 @@ namespace MeroBolee
             {
                 app.UseSwaggerUI(c =>
                 {
+                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
                     c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
                 });
             }
@@ -265,7 +271,7 @@ namespace MeroBolee
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(_corsPolicy);
 
             app.UseAuthorization();
             app.UseAuthentication();

@@ -15,12 +15,15 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
+
+
     /// <summary>
     /// Interface for User Authentication
     /// </summary>
     public interface IAccountService
     {
-        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model);
+        AuthenticateResponse AuthenticateAsync(AuthenticateRequest model);
+       
     }
 
     /// <summary>
@@ -30,53 +33,49 @@ namespace MeroBolee.Service
     {
         private readonly IAccountRepository accountRepository;
         private readonly JWTSettings jwtsetting;
+        private readonly ICryptoService cryptoService;
 
-        public AccountService(IAccountRepository accountRepository, IOptions<JWTSettings> jwtSettings)
+        public AccountService(ICryptoService cryptoService, IAccountRepository accountRepository, IOptions<JWTSettings> jwtSettings)
         {
+            this.cryptoService = cryptoService;
             this.accountRepository = accountRepository;
             jwtsetting = jwtSettings.Value;
         }
 
-        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model)
+        public  AuthenticateResponse AuthenticateAsync(AuthenticateRequest model)
         {
-            AuthenticateResponse account = await accountRepository.AuthenticateAsync(model);
+            try
+            {
+                model.Password = cryptoService.Encrypt(model.Password);
+                AuthenticateResponse account = accountRepository.AuthenticateAsync(model);
 
-            if (account != null)
+                if (account != null)
+                {
+
+                    // authentication successful so generate jwt and refresh tokens
+                    var jwtToken = generateJwtToken(account);
+                    //var refreshToken = generateRefreshToken(ipAddress);
+                    //account.RefreshTokens.Add(refreshToken);
+
+                    // remove old refresh tokens from account
+                    //removeOldRefreshTokens(account);
+
+                    // save changes to db
+                    //_context.Update(account);
+                    //_context.SaveChanges();
+
+                    account.JwtToken = jwtToken;
+                    //account.RefreshToken = refreshToken.Token;
+                }
+                return account;
+            }
+            catch (Exception ex)
             {
 
-                // authentication successful so generate jwt and refresh tokens
-                var jwtToken = generateJwtToken(account);
-                //var refreshToken = generateRefreshToken(ipAddress);
-                //account.RefreshTokens.Add(refreshToken);
-
-                // remove old refresh tokens from account
-                //removeOldRefreshTokens(account);
-
-                // save changes to db
-                //_context.Update(account);
-                //_context.SaveChanges();
-
-                account.JwtToken = jwtToken;
-                //account.RefreshToken = refreshToken.Token;
+                throw ex;
             }
-            return account;
         }
 
-
-
-        //private string abc()
-        //{
-        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        //    var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-        //                          _config["Jwt:Issuer"],
-        //                          null,
-        //                          expires: DateTime.Now.AddMinutes(120),
-        //                          signingCredentials: credentials);
-
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
 
 
         private string generateJwtToken(AuthenticateResponse account)

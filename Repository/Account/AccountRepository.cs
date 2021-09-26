@@ -12,7 +12,7 @@ namespace MeroBolee.Repository
 {
     public interface IAccountRepository
     {
-        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest request);
+        AuthenticateResponse AuthenticateAsync(AuthenticateRequest request);
     }
     public class AccountRepository : RepositoryBase<UserEntity>, IAccountRepository
     {
@@ -23,16 +23,15 @@ namespace MeroBolee.Repository
             this.unitOfWork = unitOfWork;
         }
 
-        public Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest request)
+        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request)
         {
-            return Task.Run(() =>
+            try
             {
-                string hashPassword = BCrypt.Net.BCrypt.HashPassword(request.Password, CryptoConfig.Salt);
                 UserEntity userEntity = meroBoleeDbContexts.UserEntities
-                .Where(x => x.Person_email == request.Email && x.Password == hashPassword)
-                .Include(x => x.Role)
+                .Where(x => x.Person_email == request.Email && x.Password == request.Password)
+                //.Include(x => x.Role)
                 .FirstOrDefault();
-                
+
                 if (userEntity != null)
                 {
                     return new AuthenticateResponse
@@ -42,15 +41,17 @@ namespace MeroBolee.Repository
                         LastName = userEntity.Last_Name,
                         Created = userEntity.Date_created,
                         Email = userEntity.Person_email,
-                        Role = userEntity.Role.Role_Name
+                        Role = ""//userEntity.Role.Role_Name
                     };
                 }
                 return null;
-            });
-            
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
         }
-
-
     }
 }

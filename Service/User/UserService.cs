@@ -15,14 +15,17 @@ namespace MeroBolee.Service.User
     public class UserService : UserMapper, IUserService
     {
         private readonly IUserRepository userRepository;
+        private readonly ICryptoService cryptoService;
         private UploadImage uploadImage = new UploadImage();
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, ICryptoService cryptoService)
         {
             this.userRepository = userRepository;
+            this.cryptoService = cryptoService;
         }
         public async Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/)
         {
             UserEntity user = UserDtoEntity(userDto);
+            user.Password = cryptoService.Encrypt(user.Password);
             try
             {
 
