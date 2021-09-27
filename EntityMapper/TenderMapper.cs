@@ -22,6 +22,10 @@ namespace MeroBolee.EntityMapper
                 case "days":
                     return startDateTime.AddDays(tenderDuration);
 
+                case "week":
+                case "weeks":
+                    return startDateTime.AddDays(tenderDuration * 7);
+
                 case "month":
                 case "months":
                     return startDateTime.AddMonths(tenderDuration);
