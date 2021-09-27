@@ -10,7 +10,7 @@ namespace MeroBolee.Repository.Tender
    public interface ITenderRepository: IRepositoryBase<TenderEntity>
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
-        IEnumerable<TenderEntity> GetAllTender(string search);
+        IEnumerable<TenderEntity> GetMarketplaceTender(string search);
         IEnumerable<TenderEntity> GetTenderByAuctioneer(int id, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(int id);

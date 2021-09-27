@@ -78,7 +78,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("Tender")]
+        [HttpGet("Tender/Marketplace")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
@@ -86,7 +86,7 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetAllTender(search);
+                IEnumerable<GetTenderDto> tenders = tenderService.GetMarketplaceTender(search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -204,7 +204,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("UpcomingTender")]
+        [HttpGet("Tender/Upcoming")]
         public IActionResult GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try

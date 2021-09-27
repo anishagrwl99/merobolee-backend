@@ -101,7 +101,7 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
-        public IEnumerable<TenderEntity> GetAllTender(string search)
+        public IEnumerable<TenderEntity> GetMarketplaceTender(string search)
         {
             try
             {
@@ -114,20 +114,23 @@ namespace MeroBolee.Repository.Tender
 
                 meroBoleeDbContexts.UserEntities.ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.AdminStatusEntity.Status.ToLower() == "approved") && ((search == null)
-                || (m.Tender_Code.ToString().Contains(search))
-                || (m.Tender_Description.ToLower().Contains(search.ToLower()))
-                || (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                return meroBoleeDbContexts.TenderEntities
+                    .Where(m => (m.AdminStatusEntity.Status.ToLower() == "approved")
+                    && (m.Live_Start_Date>= DateTime.Now)
+                    && ((search == null)
+                //|| (m.Tender_Code.ToString().Contains(search))
+                //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
                 || (m.Tender_Title.ToLower().Contains(search.ToLower()))
-                || (m.Tender_live_interval.ToString().Contains(search.ToLower()))
-                || (m.Live_Start_Date.ToString().Contains(search.ToLower()))
-                || (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                || (m.Duration_Type.ToLower().Contains(search.ToLower()))
-                || (m.Tender_Duration.ToString().Contains(search.ToLower()))
-                //    || (m.Tender_fee.ToString().Contains(search.ToLower()))
-                || (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
-                || (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
-                //  || (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_live_interval.ToString().Contains(search.ToLower()))
+                //|| (m.Live_Start_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Live_End_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Duration_Type.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                //|| (m.Tender_fee.ToString().Contains(search.ToLower()))
+                //|| (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
                 )).ToList();
             }
             catch (Exception)
@@ -247,7 +250,10 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
                 meroBoleeDbContexts.UserEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.AuctionStatusEntity.Status.ToLower() == "upcoming" && m.AdminStatusEntity.Status.ToLower() == "approved") && ((search == null)
+                return meroBoleeDbContexts.TenderEntities
+                    .Where(m => (m.AuctionStatusEntity.Status.ToLower() == "upcoming" 
+                    && m.AdminStatusEntity.Status.ToLower() == "approved") 
+                    && ((search == null)
                     //|| (m.Tender_Code.ToString().Contains(search))
                     //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
                     //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
