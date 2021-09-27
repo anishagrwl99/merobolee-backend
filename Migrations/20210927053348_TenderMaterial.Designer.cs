@@ -4,14 +4,16 @@ using MeroBolee.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeroBolee.Migrations
 {
     [DbContext(typeof(MeroBoleeDbContext))]
-    partial class MeroBoleeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210927053348_TenderMaterial")]
+    partial class TenderMaterial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,23 +37,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Status_Id");
 
                     b.ToTable("mb_admin_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Status_Id = 1,
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Status_Id = 2,
-                            Status = "Inactive"
-                        },
-                        new
-                        {
-                            Status_Id = 3,
-                            Status = "Approved"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.AuctionStatusEntity", b =>
@@ -69,28 +54,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Status_Id");
 
                     b.ToTable("mb_auction_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Status_Id = 1,
-                            Status = "Created"
-                        },
-                        new
-                        {
-                            Status_Id = 2,
-                            Status = "Running"
-                        },
-                        new
-                        {
-                            Status_Id = 3,
-                            Status = "Closed"
-                        },
-                        new
-                        {
-                            Status_Id = 4,
-                            Status = "Upcoming"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.BidderRequestDocEntity", b =>
@@ -196,32 +159,6 @@ namespace MeroBolee.Migrations
                     b.HasIndex("Status_Id");
 
                     b.ToTable("mb_category");
-
-                    b.HasData(
-                        new
-                        {
-                            Category_Id = 1,
-                            Category = "Transportation",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1025),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1052),
-                            Status_Id = 1
-                        },
-                        new
-                        {
-                            Category_Id = 2,
-                            Category = "Construction",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1082),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1086),
-                            Status_Id = 1
-                        },
-                        new
-                        {
-                            Category_Id = 3,
-                            Category = "Tourism",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1101),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(1105),
-                            Status_Id = 1
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.CityEntity", b =>
@@ -299,20 +236,6 @@ namespace MeroBolee.Migrations
                     b.HasIndex("ProvienceId");
 
                     b.ToTable("mb_company");
-
-                    b.HasData(
-                        new
-                        {
-                            CompanyId = 1,
-                            Address1 = "Address1",
-                            Address2 = "Address2",
-                            Address3 = "Address3",
-                            City = "Kathmandu",
-                            CountryId = 1,
-                            Name = "Test Company",
-                            ProvienceId = 3,
-                            Zip = "123"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.CompanyTypeEntity", b =>
@@ -338,29 +261,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Company_Type_Id");
 
                     b.ToTable("mb_company_type");
-
-                    b.HasData(
-                        new
-                        {
-                            Company_Type_Id = 1,
-                            Company_type = "Transportation",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3533),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3542)
-                        },
-                        new
-                        {
-                            Company_Type_Id = 2,
-                            Company_type = "Construction",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3554),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3558)
-                        },
-                        new
-                        {
-                            Company_Type_Id = 3,
-                            Company_type = "Tourism",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3568),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 37, 758, DateTimeKind.Local).AddTicks(3571)
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.CountryEntity", b =>
@@ -394,17 +294,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Country_Id");
 
                     b.ToTable("mb_country");
-
-                    b.HasData(
-                        new
-                        {
-                            Country_Id = 1,
-                            Abbre = "NP",
-                            Country_Code = "NEP",
-                            Country_Name = "Nepal",
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 631, DateTimeKind.Local).AddTicks(2458),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(6)
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.DistrictEntity", b =>
@@ -577,13 +466,12 @@ namespace MeroBolee.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("feature");
 
-                    b.Property<int>("Material_id")
-                        .HasColumnType("int")
-                        .HasColumnName("material_id");
+                    b.Property<int?>("TenderMaterialEntityId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Material_id");
+                    b.HasIndex("TenderMaterialEntityId");
 
                     b.ToTable("mb_material_feature");
                 });
@@ -681,18 +569,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("mb_payment_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Payment_status = "Pending"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Payment_status = "Paid"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.ProvinceEntity", b =>
@@ -724,64 +600,6 @@ namespace MeroBolee.Migrations
                     b.HasIndex("Country_Id");
 
                     b.ToTable("mb_province");
-
-                    b.HasData(
-                        new
-                        {
-                            Province_Id = 1,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1908),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1915),
-                            Province = "Province No. 1"
-                        },
-                        new
-                        {
-                            Province_Id = 2,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1919),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1920),
-                            Province = "Province No. 2"
-                        },
-                        new
-                        {
-                            Province_Id = 3,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1921),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1922),
-                            Province = "Bagmati Province"
-                        },
-                        new
-                        {
-                            Province_Id = 4,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1924),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1924),
-                            Province = "Gandaki Province"
-                        },
-                        new
-                        {
-                            Province_Id = 5,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1926),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1927),
-                            Province = "Lumbini Province"
-                        },
-                        new
-                        {
-                            Province_Id = 6,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1928),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1929),
-                            Province = "Karnali Province"
-                        },
-                        new
-                        {
-                            Province_Id = 7,
-                            Country_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1930),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(1931),
-                            Province = "Sudurpashchim Province"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.PublishStatus", b =>
@@ -799,18 +617,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Status_id");
 
                     b.ToTable("mb_common_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Status_id = 1,
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Status_id = 2,
-                            Status = "Inactive"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.RequestHelpEntity", b =>
@@ -877,28 +683,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Status_id");
 
                     b.ToTable("mb_request_help_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Status_id = 1,
-                            Request_status = "Requested"
-                        },
-                        new
-                        {
-                            Status_id = 2,
-                            Request_status = "Approved"
-                        },
-                        new
-                        {
-                            Status_id = 3,
-                            Request_status = "Running"
-                        },
-                        new
-                        {
-                            Status_id = 4,
-                            Request_status = "Resolved"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.RoleEntity", b =>
@@ -924,29 +708,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Role_Id");
 
                     b.ToTable("mb_role");
-
-                    b.HasData(
-                        new
-                        {
-                            Role_Id = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4808),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4813),
-                            Role_Name = "Super Admin"
-                        },
-                        new
-                        {
-                            Role_Id = 2,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4815),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4816),
-                            Role_Name = "Bid Inviter"
-                        },
-                        new
-                        {
-                            Role_Id = 3,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4818),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 632, DateTimeKind.Local).AddTicks(4819),
-                            Role_Name = "Bidder"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.TenderEntity", b =>
@@ -1083,9 +844,8 @@ namespace MeroBolee.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Tender_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("tender_id");
+                    b.Property<int?>("TenderEntityTender_Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Term_Condition")
                         .HasColumnType("nvarchar(max)")
@@ -1093,7 +853,7 @@ namespace MeroBolee.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Tender_Id");
+                    b.HasIndex("TenderEntityTender_Id");
 
                     b.ToTable("mb_tender_term_condition");
                 });
@@ -1330,56 +1090,6 @@ namespace MeroBolee.Migrations
                     b.HasIndex("Vdc_id");
 
                     b.ToTable("mb_user");
-
-                    b.HasData(
-                        new
-                        {
-                            User_Id = 1,
-                            CompanyId = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 633, DateTimeKind.Local).AddTicks(445),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 633, DateTimeKind.Local).AddTicks(452),
-                            Employee_no = 0,
-                            First_Name = "Super",
-                            Last_Name = "Admin",
-                            Password = "YHCTM7byxNlmg1x9CGp5nA==",
-                            Person_email = "super.admin@test.com",
-                            Register_Country = 0,
-                            Role_Id = 1,
-                            Status_id = 2,
-                            User_Code = new Guid("00000000-0000-0000-0000-000000000000")
-                        },
-                        new
-                        {
-                            User_Id = 2,
-                            CompanyId = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 637, DateTimeKind.Local).AddTicks(7581),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 637, DateTimeKind.Local).AddTicks(7598),
-                            Employee_no = 0,
-                            First_Name = "Bid",
-                            Last_Name = "Inviter",
-                            Password = "YHCTM7byxNlmg1x9CGp5nA==",
-                            Person_email = "bid.inviter@test.com",
-                            Register_Country = 0,
-                            Role_Id = 2,
-                            Status_id = 2,
-                            User_Code = new Guid("00000000-0000-0000-0000-000000000000")
-                        },
-                        new
-                        {
-                            User_Id = 3,
-                            CompanyId = 1,
-                            Date_created = new DateTime(2021, 9, 27, 15, 4, 36, 637, DateTimeKind.Local).AddTicks(7924),
-                            Date_modified = new DateTime(2021, 9, 27, 15, 4, 36, 637, DateTimeKind.Local).AddTicks(7927),
-                            Employee_no = 0,
-                            First_Name = "Bid",
-                            Last_Name = "Bidder",
-                            Password = "YHCTM7byxNlmg1x9CGp5nA==",
-                            Person_email = "bid.bidder@test.com",
-                            Register_Country = 0,
-                            Role_Id = 3,
-                            Status_id = 2,
-                            User_Code = new Guid("00000000-0000-0000-0000-000000000000")
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.UserExperienceDocEntity", b =>
@@ -1419,28 +1129,6 @@ namespace MeroBolee.Migrations
                     b.HasKey("Status_Id");
 
                     b.ToTable("mb_user_status");
-
-                    b.HasData(
-                        new
-                        {
-                            Status_Id = 1,
-                            Status = "Registered"
-                        },
-                        new
-                        {
-                            Status_Id = 2,
-                            Status = "Approved"
-                        },
-                        new
-                        {
-                            Status_Id = 3,
-                            Status = "Suspended"
-                        },
-                        new
-                        {
-                            Status_Id = 4,
-                            Status = "Terminated"
-                        });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.VDCEntity", b =>
@@ -1630,13 +1318,9 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.MaterialFeatureEntity", b =>
                 {
-                    b.HasOne("MeroBolee.Model.TenderMaterialEntity", "TenderMaterialEntity")
+                    b.HasOne("MeroBolee.Model.TenderMaterialEntity", null)
                         .WithMany("MaterialFeatureEntities")
-                        .HasForeignKey("Material_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TenderMaterialEntity");
+                        .HasForeignKey("TenderMaterialEntityId");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.MembershipTypeEntity", b =>
@@ -1735,13 +1419,9 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.TenderTermsConditionEntity", b =>
                 {
-                    b.HasOne("MeroBolee.Model.TenderEntity", "TenderEntity")
+                    b.HasOne("MeroBolee.Model.TenderEntity", null)
                         .WithMany("TenderTermsConditionEntities")
-                        .HasForeignKey("Tender_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TenderEntity");
+                        .HasForeignKey("TenderEntityTender_Id");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.UserEntity", b =>
