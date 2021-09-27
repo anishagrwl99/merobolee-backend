@@ -37,6 +37,12 @@ namespace MeroBolee.Service
             _encryptionByte = Convert.FromBase64String(config.EncryptionByteHash);
         }
 
+        public CryptoService(string  encryptionKey, string saltHash)
+        {
+            _encryptionKey = encryptionKey;
+            _encryptionByte = Convert.FromBase64String(saltHash);
+        }
+
 
         /// <summary>
         /// Encrypt data using <see cref="RijndaelManaged"/>
