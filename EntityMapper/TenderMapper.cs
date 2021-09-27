@@ -9,6 +9,31 @@ namespace MeroBolee.EntityMapper
 {
     public class TenderMapper
     {
+
+        private DateTime GetTenderEndDate(DateTime startDateTime, int tenderDuration, string durationUnit)
+        {
+            switch(durationUnit.ToLowerInvariant())
+            {
+                case "minute":
+                case "minutes":
+                    return startDateTime.AddMinutes(tenderDuration);
+
+                case "day":
+                case "days":
+                    return startDateTime.AddDays(tenderDuration);
+
+                case "month":
+                case "months":
+                    return startDateTime.AddMonths(tenderDuration);
+
+                case "year":
+                case "years":
+                    return startDateTime.AddYears(tenderDuration);
+
+                default:
+                    return startDateTime.AddMinutes(tenderDuration);
+            }
+        }
         public TenderEntity TenderDtoEntity(AddTenderDto tenderDto)
         {
             if (tenderDto == null)
@@ -23,6 +48,7 @@ namespace MeroBolee.EntityMapper
                 Tender_Description = tenderDto.Tender_Description,
                 Tender_live_interval = tenderDto.Tender_live_interval,
                 Live_Start_Date = tenderDto.Live_Start_Date,
+                Live_End_Date = GetTenderEndDate(tenderDto.Live_Start_Date, tenderDto.Tender_Duration, tenderDto.Duration_Type),
                 Tender_Duration = tenderDto.Tender_Duration,
                 Duration_Type = tenderDto.Duration_Type,
                 Bid_No = tenderDto.Bid_No,
@@ -30,14 +56,16 @@ namespace MeroBolee.EntityMapper
                 Admin_Status_Id = tenderDto.Admin_Status_Id,
                 Cancel_remark = tenderDto.Cancel_Remark,
                 Posted_By = tenderDto.Posted_By,
-                Last_Request_Date= tenderDto.Last_Request_Date,
-                Source_Fund= tenderDto.Source_Fund,
-            //    IFB_RFP_EOI1= tenderDto.IFB_RFP_EOI1,
-                Project_Start_Date= tenderDto.Project_Start_Date,
-          //  Payment_Status_Id = tenderDto.Payment_Status_Id,
-            TenderMaterialEntities = tenderDto.TenderMaterialEntities,
-            TenderTermsConditionEntities = tenderDto.TenderTermsConditionEntities,
-        };
+                Last_Request_Date = tenderDto.Last_Request_Date,
+                Source_Fund = tenderDto.Source_Fund,
+                //    IFB_RFP_EOI1= tenderDto.IFB_RFP_EOI1,
+                Project_Start_Date = tenderDto.Project_Start_Date,
+                //  Payment_Status_Id = tenderDto.Payment_Status_Id,
+                TenderMaterialEntities = tenderDto.TenderMaterialEntities,
+                TenderTermsConditionEntities = tenderDto.TenderTermsConditionEntities,
+                Date_created = DateTime.Now,
+                Date_modified = DateTime.Now
+            };
 
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity)
@@ -69,10 +97,10 @@ namespace MeroBolee.EntityMapper
             getTender.UserEntity = tenderEntity.UserEntity;
             getTender.Last_Request_Date = tenderEntity.Last_Request_Date;
             getTender.Source_Fund = tenderEntity.Source_Fund;
-        //    getTender.IFB_RFP_EOI1 = tenderEntity.IFB_RFP_EOI1;
+            //    getTender.IFB_RFP_EOI1 = tenderEntity.IFB_RFP_EOI1;
             getTender.Project_Start_Date = tenderEntity.Project_Start_Date;
             getTender.Publish_Date = tenderEntity.Date_created;
-      //      getTender.Publish_time = tenderEntity.Created_time_stamp;
+            //      getTender.Publish_time = tenderEntity.Created_time_stamp;
             //getTender.Tender_fee = tenderEntity.Tender_fee;
             //getTender.Payment_Status_Id = tenderEntity.Payment_Status_Id;
             //getTender.PaymentStatus = tenderEntity.PaymentStatusEntity.Payment_status;

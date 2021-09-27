@@ -9,8 +9,8 @@ namespace MeroBolee.Model
     public class TenderMaterialEntity
     {
         private int id;
-        //private int tender_Id;
-        //private TenderEntity tenderEntity;
+        private int tender_Id;
+        private TenderEntity tenderEntity;
         private string materials;
         private int quantity;
         private ICollection<MaterialFeatureEntity> materialFeatureEntities;
@@ -19,12 +19,13 @@ namespace MeroBolee.Model
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         public int Id { get => id; set => id = value; }
-        //[Column("tender_id")]
-        //[ForeignKey("TenderEntity")]
-        //[JsonIgnore]
-        //public int Tender_Id { get => tender_Id; set => tender_Id = value; }
-        //[JsonIgnore]
-        //public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+
+        [Column("tender_id")]
+        [ForeignKey("TenderEntity")]
+        [JsonIgnore]
+        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
+        [JsonIgnore]
+        public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
 
         [Column("material")]
         public string Materials { get => materials; set => materials = value; }

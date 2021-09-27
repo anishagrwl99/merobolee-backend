@@ -29,7 +29,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tender"></param>
         /// <returns></returns>
         [HttpPost("Tender")]
-        public IActionResult Add([FromBody]AddTenderDto tender)
+        public IActionResult Add([FromBody] AddTenderDto tender)
         {
             try
             {
@@ -49,8 +49,8 @@ namespace MeroBolee.Controllers.Tender
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-        }
-            catch (DbUpdateException)
+            }
+            catch (DbUpdateException ex)
             {
                 response.statusCode = "500";
                 response.Message = "Internal Server Error";
@@ -58,7 +58,7 @@ namespace MeroBolee.Controllers.Tender
 
             }
 
-            catch (SqlException)
+            catch (SqlException ex)
             {
                 response.statusCode = "500";
                 response.Message = "Something went wrong";
@@ -67,11 +67,11 @@ namespace MeroBolee.Controllers.Tender
 
 
             catch (Exception e)
-{
-    response.statusCode = "400";
-    response.Message = e.Message;
-    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-}
+            {
+                response.statusCode = "400";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
         }
         /// <summary>
         /// To display all tender list by Admin
@@ -79,7 +79,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("Tender")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery]string search=null)
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetInterestTender", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.FavouriteTender(id,search);
+                IEnumerable<GetTenderDto> tenders = tenderService.FavouriteTender(id, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -170,7 +170,7 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetTenderByAuctioneer", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetTenderByAuctioneer(id,search);
+                IEnumerable<GetTenderDto> tenders = tenderService.GetTenderByAuctioneer(id, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -254,7 +254,7 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetTenderByStatus", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.TenderByStatus(id,search);
+                IEnumerable<GetTenderDto> tenders = tenderService.TenderByStatus(id, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
