@@ -20,7 +20,10 @@ namespace MeroBolee.EntityMapper
                 Last_Name = obj.LastName,
                 Company_email = obj.Email,
                 Person_email = obj.Email,
-                Password = obj.Password
+                Password = obj.Password,
+                Date_created= DateTime.Now,
+                Date_modified = DateTime.Now,
+                Role_Id = 3 //Bidder(Supplier) role
             };
         }
         public UserEntity UserDtoEntity(AddUserDto userDto)

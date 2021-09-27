@@ -1,6 +1,8 @@
+using MeroBolee.Model;
 using MeroBolee.Settings;
 using MeroBolee.Utility;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,23 +17,29 @@ namespace MeroBolee.Middleware
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IMemoryCache cache;
         private readonly JWTSettings _jwtSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<JWTSettings> jwtSettings)
+        public JwtMiddleware(RequestDelegate next, IOptions<JWTSettings> jwtSettings, IMemoryCache cache)
         {
             _next = next;
+            this.cache = cache;
             _jwtSettings = jwtSettings.Value;
         }
 
+        /// <summary>
+        /// Check the Authorization header for user identification
+        /// </summary>
+        /// <param name="context">Context in which authorization is invoked</param>
+        /// <param name="dataContext">Database context for user lookup</param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context, MeroBoleeDbContext dataContext)
         {
-            await _next(context);
-            /*
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
             {
-                bool isTokenValid =  await attachAccountToContext(context, dataContext, token);
+                bool isTokenValid = await attachAccountToContext(context, dataContext, token);
 
                 if (isTokenValid)
                 {
@@ -44,13 +52,13 @@ namespace MeroBolee.Middleware
 
                     await context.Response.Body.WriteAsync(bytes, 0, bytes.Length);
                 }
-                
+
             }
             else
             {
                 await _next(context);
             }
-            */
+
         }
 
         private async Task<bool> attachAccountToContext(HttpContext context, MeroBoleeDbContext dataContext, string token)
@@ -72,10 +80,17 @@ namespace MeroBolee.Middleware
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var accountId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                int accountId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
                 // attach account to context on successful jwt validation
-                context.Items["Account"] = await dataContext.UserEntities.FindAsync(accountId);
+                UserEntity user=null;
+                string _cacheKey = $"{CacheKeys.LoginUser}_{accountId}";
+                if (!cache.TryGetValue<UserEntity>(_cacheKey, out user))
+                {
+                    user = await dataContext.UserEntities.FindAsync(accountId);
+                    cache.Set<UserEntity>(_cacheKey, user);
+                }
+                context.Items["Account"] = user;
                 return true;
             }
             catch (Exception ex)
