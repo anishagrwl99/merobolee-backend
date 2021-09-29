@@ -57,8 +57,14 @@ namespace MeroBolee.Utility
                .HasOne(e => e.UserEntity)
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<CorrespondenceEmailEntity>()
                .HasOne(e => e.User)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ClarificationEmailEntity>()
+               .HasOne(e => e.UserEntity)
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -206,6 +212,7 @@ namespace MeroBolee.Utility
                 );
         }
 
+        public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
         public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
         public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }

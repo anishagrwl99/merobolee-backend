@@ -237,6 +237,10 @@ namespace MeroBolee
             //correspondence
             services.AddScoped<ICorrespondenceRepository, CorrespondenceRepository>();
             services.AddScoped<ICorrespondenceService, CorrespondenceService>();
+
+            //Clarification
+            services.AddScoped<IClarificationRepository, ClarificationRepository>();
+            services.AddScoped<IClarificationService, ClarificationService>();
         }
 
 
