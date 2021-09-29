@@ -232,8 +232,11 @@ namespace MeroBolee
 
             //signup
             services.AddScoped<ISignupRepository, SignupRepository>();
-            services.AddScoped<ISignupService, SignupService>();           
+            services.AddScoped<ISignupService, SignupService>();
 
+            //correspondence
+            services.AddScoped<ICorrespondenceRepository, CorrespondenceRepository>();
+            services.AddScoped<ICorrespondenceService, CorrespondenceService>();
         }
 
 

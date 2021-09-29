@@ -24,7 +24,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                meroBoleeDbContexts.SupplierCompany.Add(company);
+                meroBoleeDbContexts.SupplierCompanyEntities.Add(company);
                 unitOfWork.SaveChange();
                 user.CompanyId = company.CompanyId;
                 meroBoleeDbContexts.UserEntities.Add(user);

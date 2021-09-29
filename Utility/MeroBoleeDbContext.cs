@@ -57,7 +57,10 @@ namespace MeroBolee.Utility
                .HasOne(e => e.UserEntity)
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<CorrespondenceEmailEntity>()
+               .HasOne(e => e.User)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
 
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
@@ -203,7 +206,8 @@ namespace MeroBolee.Utility
                 );
         }
 
-        public DbSet<CompanyEntity> SupplierCompany { get; set; }
+        public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
+        public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<CountryEntity> CountryEntities { get; set; }
         public DbSet<ProvinceEntity> ProvinceEntities { get; set; }
