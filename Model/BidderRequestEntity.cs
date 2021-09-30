@@ -51,6 +51,8 @@ namespace MeroBolee.Model
         [Column("remark")]
         public string Remark { get => remark; set => remark = value; }
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
-       
+
+        public virtual List<LiveBiddingEntity> LiveBiddingEntities { get; set; }
+
     }
 }

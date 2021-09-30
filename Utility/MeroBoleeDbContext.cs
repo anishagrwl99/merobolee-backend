@@ -73,6 +73,27 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
+            //modelBuilder.Entity<LiveBiddingEntity>()
+            //   .HasOne(e => e.BidderRequestEntity)
+            //   .WithOne()
+            //   .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LiveBiddingEntity>()
+               .HasOne(e => e.UserEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<LiveBiddingEntity>()
+               .HasOne(e => e.TenderMaterialEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LiveBiddingEntity>()
+               .HasOne(e => e.TenderEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
@@ -217,6 +238,7 @@ namespace MeroBolee.Utility
                 );
         }
 
+        public DbSet<LiveBiddingEntity> liveBiddingEntities { get; set; }
         public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
         public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
         public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
@@ -257,5 +279,6 @@ namespace MeroBolee.Utility
 
         public DbSet<MailEntity> MailEntities { get; set; }
         public DbSet<MailAttachmentEntity> MailAttachmentEntities { get; set; }
+
     }
 }

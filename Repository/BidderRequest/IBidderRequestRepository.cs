@@ -13,7 +13,9 @@ namespace MeroBolee.Repository.BidderRequest
     {
         Task<BidderRequestEntity> SendRequest(BidderRequestEntity bidderRequestEntity, ICollection<IFormFile> requestDoc);
 
-        BidderRequestEntity ShowRequest(int requestId);
+        Task<LiveBiddingEntity> LiveBid(LiveBiddingEntity bidEntity);
+
+       BidderRequestEntity ShowRequest(int requestId);
 
         IEnumerable<BidderRequestEntity> ShowAllRequest();
 

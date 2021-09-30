@@ -116,7 +116,7 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.CategoryEntities.ToList();
                 return meroBoleeDbContexts.TenderEntities
                     .Where(m => (m.AdminStatusEntity.Status.ToLower() == "approved")
-                    && (m.Live_Start_Date>= DateTime.Now)
+                    //&& (m.Live_Start_Date>= DateTime.Now)
                     && ((search == null)
                 //|| (m.Tender_Code.ToString().Contains(search))
                 //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))

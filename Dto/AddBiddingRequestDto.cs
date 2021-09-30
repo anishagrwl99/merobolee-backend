@@ -30,5 +30,18 @@ namespace MeroBolee.Dto
         //public DateTime Request_Send_Date { get => request_Send_Date; set => request_Send_Date = value; }
         //public string Remark { get => remark; set => remark = value; }
         public ICollection<IFormFile> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
+        public DateTime BiddingTime { get; set; }
     }
+
+    public class TenderMaterialBiddingDto
+    {
+        public int BiddingId { get; set; }
+        public int TenderId { get; set; }
+        public int SupplierId { get; set; }
+        public int MaterialId { get; set; }
+        public decimal Quotation { get; set; }
+        public DateTime BiddingDate { get; set; }
+    }
+
+
 }

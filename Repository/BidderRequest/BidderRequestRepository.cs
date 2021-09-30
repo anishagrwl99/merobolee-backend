@@ -25,6 +25,7 @@ namespace MeroBolee.Repository.BidderRequest
             meroBoleeDbContexts.TenderEntities.ToList();
             meroBoleeDbContexts.AdminStatusEntities.ToList();
             meroBoleeDbContexts.UserEntities.ToList();
+            meroBoleeDbContexts.CategoryEntities.ToList();
             return meroBoleeDbContexts.BidderRequestEntities.Where(m => m.User_id == bidderId).ToList();
         }
 
@@ -32,48 +33,67 @@ namespace MeroBolee.Repository.BidderRequest
         {
             try
             {
-                TenderEntity tender = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id).First();
+                TenderEntity tender = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id).FirstOrDefault();
 
-                if (bidderRequestEntity.Request_Send_Date < tender.Last_Request_Date)
+                if (tender != null)
                 {
-                    return null;
-                }
-                meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
-                unitOfWork.SaveChange();
-                if (bidderRequestEntity.BidderRequestDocs == null)
-                {
-                    bidderRequestEntity.BidderRequestDocs = null;
-
-                }
-                else
-                {
-                    foreach (var doc in requestDoc)
+                    if (bidderRequestEntity.Request_Send_Date < tender.Last_Request_Date)
                     {
-                        meroBoleeDbContexts.BidderRequestDocEntities.Add(new BidderRequestDocEntity
-                        {
-                            Request_id = bidderRequestEntity.Request_Id,
-                            Document = await uploadImage.Upload(doc, bidderRequestEntity.UserEntity.Username)
-                        }
-                        );
-                        unitOfWork.SaveChange();
+                        return null;
                     }
-                }
+                    meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
+                    unitOfWork.SaveChange();
+                    if (bidderRequestEntity.BidderRequestDocs == null)
+                    {
+                        bidderRequestEntity.BidderRequestDocs = null;
 
-               
-                return bidderRequestEntity;
+                    }
+                    else
+                    {
+                        foreach (var doc in requestDoc)
+                        {
+                            meroBoleeDbContexts.BidderRequestDocEntities.Add(new BidderRequestDocEntity
+                            {
+                                Request_id = bidderRequestEntity.Request_Id,
+                                Document = await uploadImage.Upload(doc, bidderRequestEntity.UserEntity.Username)
+                            }
+                            );
+                            unitOfWork.SaveChange();
+                        }
+                    }
+                    return bidderRequestEntity;
+                }
+                return null;
+                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception();
+                throw;
             }
         }
 
+        public async Task<LiveBiddingEntity> LiveBid(LiveBiddingEntity bidEntity)
+        {
+            try
+            {
+                meroBoleeDbContexts.liveBiddingEntities.Add(bidEntity);
+                unitOfWork.SaveChange();
+                return bidEntity;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return null;
+        }
         public IEnumerable<BidderRequestEntity> ShowAllRequest()
         {
             meroBoleeDbContexts.BidderRequestDocEntities.ToList();
             meroBoleeDbContexts.TenderEntities.ToList();
             meroBoleeDbContexts.AdminStatusEntities.ToList();
             meroBoleeDbContexts.UserEntities.ToList();
+            meroBoleeDbContexts.CategoryEntities.ToList();
             return meroBoleeDbContexts.BidderRequestEntities.ToList();
         }
 
@@ -98,7 +118,7 @@ namespace MeroBolee.Repository.BidderRequest
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
     }

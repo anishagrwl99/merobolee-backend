@@ -23,12 +23,15 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             this.biddingRequestService = biddingRequestService;
         }
+
+
         /// <summary>
-        /// To request for bidding
+        /// Bid to a tender
         /// </summary>
+        /// <param name="addBiddingRequest"></param>
         /// <returns></returns>
-        [HttpPost("BiddingRequest")]
-        public  async Task<IActionResult> Add(AddBiddingRequestDto addBiddingRequest)
+        [HttpPost("Bidding/EnterLiveBiddingRoom")]
+        public  async Task<IActionResult> Add([FromBody]AddBiddingRequestDto addBiddingRequest)
         {
             try
             {
@@ -44,27 +47,52 @@ namespace MeroBolee.Controllers.BiddingRequest
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-
-            catch (SqlException)
+            catch (Exception e)
             {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "400";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+
+        /// <summary>
+        /// Submit a live bid (incomplete) Need to add more business rules. You can bid but validation won't happen
+        /// </summary>
+        /// <param name="bidRequest"></param>
+        /// <returns></returns>
+        [HttpPost("Bidding/LiveBid")]
+        public async Task<IActionResult> LiveBid([FromBody] TenderMaterialBiddingDto bidRequest)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    return Ok(new Responses<TenderMaterialBiddingDto>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
             }
             catch (Exception e)
             {
                 response.statusCode = "400";
-                response.Message = e.Message;
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
         /// <summary>
-        /// To display all Bidding Request by Admin
+        /// To display all bids Request by Admin
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("AllBiddingRequest")]
+        [HttpGet("Bidding/All")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination)
         {
             try
@@ -80,80 +108,57 @@ namespace MeroBolee.Controllers.BiddingRequest
                 }
                 return Ok(ResultAfterPagination(BiddingRequest, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
         /// <summary>
-        /// To display all Bidding Request by Bidder
+        /// To display all bids submitted by Bidder
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="supplierId"></param>
         /// <returns></returns>
-        [HttpGet("BiddingRequestByBidder")]
-        public IActionResult GetBidderRequest([FromQuery] PaginationQuery pagination,[FromQuery] int id)
+        [HttpGet("Bidding/History")]
+        public IActionResult GetBidderRequest([FromQuery] PaginationQuery pagination,[FromQuery] int supplierId)
         {
             try
             {
                 string url = Url.Action("GetBidderRequest", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetBiddingRequestDto> BiddingRequest = biddingRequestService.AllRequestByBidder(id);
+                IEnumerable<GetBiddingRequestDto> BiddingRequest = biddingRequestService.AllRequestByBidder(supplierId);
                 int totalCount = BiddingRequest.Count();
                 if (totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<GetBiddingRequestDto>>(BiddingRequest, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(BiddingRequest, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
+            }           
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
         /// <summary>
-        /// To get individual BiddingRequest detail
+        /// To get individual bid detail
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="bidId"></param>
         /// <returns></returns>
-        [HttpGet("BiddingRequestDetail")]
-        public IActionResult GetById([FromQuery] int id)
+        [HttpGet("Bidding/Bid/Detail")]
+        public IActionResult GetById([FromQuery] int bidId)
         {
             try
             {
-                if (id == 0)
+                if (bidId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
@@ -161,7 +166,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 }
                 else
                 {
-                    GetBiddingRequestDto getBiddingRequest = biddingRequestService.ShowRequest(id);
+                    GetBiddingRequestDto getBiddingRequest = biddingRequestService.ShowRequest(bidId);
                     if (getBiddingRequest == null)
                     {
                         response.statusCode = "404";
@@ -171,23 +176,11 @@ namespace MeroBolee.Controllers.BiddingRequest
                     return Ok(new Responses<GetBiddingRequestDto>(getBiddingRequest, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
+           
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -199,7 +192,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="id"></param>
         /// <param name="updateRequest"></param>
         /// <returns></returns>
-        [HttpPut("BiddingRequest")]
+        [HttpPut("Bidding/Update")]
         public IActionResult Update([FromQuery] int id, [FromBody] UpdateRequestDto updateRequest)
         {
             try
@@ -231,23 +224,10 @@ namespace MeroBolee.Controllers.BiddingRequest
                     }
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
                 response.statusCode = "400";
-                response.Message = e.Message;
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null? e.InnerException.Message: "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
             }

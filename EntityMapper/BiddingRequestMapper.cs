@@ -9,6 +9,40 @@ namespace MeroBolee.EntityMapper
 {
     public class BiddingRequestMapper
     {
+
+        public LiveBiddingEntity MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto)
+        {
+            if(dto == null)
+            {
+                return null;
+            }
+            return new LiveBiddingEntity
+            {
+                BiddingRequestId = dto.BiddingId,
+                SupplierId = dto.SupplierId,
+                TenderId = dto.TenderId,
+                MaterialId = dto.MaterialId,
+                Quotation = dto.Quotation,
+                BidDate = dto.BiddingDate
+            };
+        }
+        public TenderMaterialBiddingDto LiveBiddingEntityToMaterialBiddingDto(LiveBiddingEntity e)
+        {
+            if (e == null)
+            {
+                return null;
+            }
+            return new TenderMaterialBiddingDto
+            {
+                BiddingId = e.BiddingRequestId,
+                SupplierId = e.SupplierId,
+                TenderId = e.TenderId,
+                MaterialId = e.MaterialId,
+                Quotation = e.Quotation,
+                BiddingDate = e.BidDate
+            };
+        }
+
         public BidderRequestEntity BidderRequestDtoRequest(AddBiddingRequestDto addBiddingRequest)
         {
             if (addBiddingRequest == null)
@@ -21,8 +55,8 @@ namespace MeroBolee.EntityMapper
                 {
                     User_id = addBiddingRequest.User_id,
                     Tender_Id= addBiddingRequest.Tender_Id,
-                    Admin_Status_Id= addBiddingRequest.Admin_Status_Id               
-                
+                    Admin_Status_Id= addBiddingRequest.Admin_Status_Id,
+                    Request_Send_Date = addBiddingRequest.BiddingTime
                 };
             }
         

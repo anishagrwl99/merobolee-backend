@@ -12,6 +12,8 @@ namespace MeroBolee.Service.BidderReuest
     {
         Task<GetBiddingRequestDto> SendRequest(AddBiddingRequestDto bidderRequest);
 
+        Task<TenderMaterialBiddingDto> LiveBid(TenderMaterialBiddingDto materialDto);
+
         GetBiddingRequestDto ShowRequest(int requestId);
 
         IEnumerable<GetBiddingRequestDto> ShowAllRequest();

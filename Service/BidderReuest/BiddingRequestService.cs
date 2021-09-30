@@ -22,6 +22,21 @@ namespace MeroBolee.Service.BidderReuest
             return BidderRequestToEntity(await bidderRequestRepository.SendRequest(BidderRequestDtoRequest(bidderRequest),bidderRequest.BidderRequestDocs));
         }
 
+        public async Task<TenderMaterialBiddingDto> LiveBid(TenderMaterialBiddingDto materialDto)
+        {
+            try
+            {
+                LiveBiddingEntity entity = await bidderRequestRepository.LiveBid(MaterialBiddingDtoToLiveBiddingEntity(materialDto));
+                return LiveBiddingEntityToMaterialBiddingDto(entity);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
         public GetBiddingRequestDto ShowRequest(int requestId)
         {
             return BidderRequestToEntity(bidderRequestRepository.ShowRequest(requestId));
