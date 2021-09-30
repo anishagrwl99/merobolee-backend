@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
-
-    public class CorrespondenceRequestDto
+    public class CallActionRequestDto
     {
         public int SenderId { get; set; }
-        public int TenderId { get; set; }
+        public long? ParentId { get; set; }
         public string Subject { get; set; }
         public string EmailBody { get; set; }
         public DateTime EmailSentDateTime { get; set; }
     }
 
-    public class CorrespondenceRequestResponseDto
+
+    public class CallActionRequestResponseDto
     {
         public string Subject { get; set; }
-        public int MailId { get; set; }
+        public long MailId { get; set; }
         public DateTime SentDate { get; set; }
     }
 
-    public class CorrespondenceResponseDto
+    public class CallActionResponseDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
+        public long? ParentId { get; set; }
         public bool IsRead { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public DateTime SentOn { get; set; }
-        public string SupplierName { get; set; }
+        public string SenderName { get; set; }
         public string SupplierCompany { get; set; }
-        public int TenderId { get; set; }
+
+        public List<CallActionResponseDto> Responses { get; set; }
+        public CallActionResponseDto Parent { get; set; }
     }
 }
