@@ -12,7 +12,7 @@ namespace MeroBolee.EntityMapper
 
         public LiveBiddingEntity MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto)
         {
-            if(dto == null)
+            if (dto == null)
             {
                 return null;
             }
@@ -49,17 +49,45 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else 
+            else
             {
                 return new BidderRequestEntity
                 {
                     User_id = addBiddingRequest.User_id,
-                    Tender_Id= addBiddingRequest.Tender_Id,
-                    Admin_Status_Id= addBiddingRequest.Admin_Status_Id,
-                    Request_Send_Date = addBiddingRequest.BiddingTime
+                    Tender_Id = addBiddingRequest.Tender_Id,
+                    Admin_Status_Id = addBiddingRequest.Admin_Status_Id,
+                    Request_Send_Date = addBiddingRequest.BiddingTime,
+                    Request_code = Guid.NewGuid(),
+                    Date_created = addBiddingRequest.BiddingTime,
+                    Date_modified = addBiddingRequest.BiddingTime
                 };
             }
-        
+
+        }
+
+        public GetBiddingRequestDto EnterBiddingRoomToEntity(BidderRequestEntity bidderRequestEntity)
+        {
+            if (bidderRequestEntity == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new GetBiddingRequestDto
+                {
+                    BidId = bidderRequestEntity.Request_Id,
+                    Request_code = bidderRequestEntity.Request_code,
+                    User_id = bidderRequestEntity.User_id,
+                    Username = bidderRequestEntity.UserEntity.Username,
+                    Admin_Status_Id = bidderRequestEntity.Admin_Status_Id,
+                    //AdminStatus = bidderRequestEntity.AdminStatusEntity,
+                    Request_Send_Date = bidderRequestEntity.Request_Send_Date,
+                    Remark = bidderRequestEntity.Remark,
+                    Tender_Id = bidderRequestEntity.Tender_Id
+                    //BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
+                    //Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
+                };
+            }
         }
 
         public GetBiddingRequestDto BidderRequestToEntity(BidderRequestEntity bidderRequestEntity)
@@ -72,16 +100,17 @@ namespace MeroBolee.EntityMapper
             {
                 return new GetBiddingRequestDto
                 {
-                   Request_code= bidderRequestEntity.Request_code,
-                   User_id= bidderRequestEntity.User_id,
-                   Username= bidderRequestEntity.UserEntity.Username,
-                   Admin_Status_Id= bidderRequestEntity.Admin_Status_Id,
-                   AdminStatusEntity= bidderRequestEntity.AdminStatusEntity,
-                   Request_Send_Date= bidderRequestEntity.Request_Send_Date,
-                   Remark= bidderRequestEntity.Remark,
-                   BidderRequestDocs= bidderRequestEntity.BidderRequestDocs,
-                   TenderEntity= TenderEntityToDto(bidderRequestEntity.TenderEntity),
-
+                    BidId = bidderRequestEntity.Request_Id,
+                    Request_code = bidderRequestEntity.Request_code,
+                    User_id = bidderRequestEntity.User_id,
+                    Username = bidderRequestEntity.UserEntity.Username,
+                    Admin_Status_Id = bidderRequestEntity.Admin_Status_Id,
+                    //AdminStatus = bidderRequestEntity.AdminStatusEntity,
+                    Request_Send_Date = bidderRequestEntity.Request_Send_Date,
+                    Remark = bidderRequestEntity.Remark,
+                    Tender_Id = bidderRequestEntity.Tender_Id,
+                    BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
+                    Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
                 };
             }
 
@@ -93,29 +122,29 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else 
+            else
             {
                 return new BiddingRequestTender
                 {
-                    Tender_Code= tenderEntity.Tender_Code,
-                    Tender_Title=tenderEntity.Tender_Title,
-                    Category_Id= tenderEntity.Category_Id,
-                    Category= tenderEntity.CategoryEntity.Category,
-                    Tender_Description= tenderEntity.Tender_Description,
-                    Tender_live_interval= tenderEntity.Tender_live_interval,
-                    Live_Start_Date= tenderEntity.Live_Start_Date,
-                    Live_End_Date=tenderEntity.Live_End_Date,
-                    Project_Duration= tenderEntity.Tender_Duration,
-                    Duration_Type= tenderEntity.Duration_Type,
-                    Publish_Date= tenderEntity.Date_created,
-                    Last_Request_Date= tenderEntity.Last_Request_Date,
-                    Project_Start_Date= tenderEntity.Project_Start_Date,
-                    TenderMaterialEntities= tenderEntity.TenderMaterialEntities,
-                    TenderTermsConditionEntities= tenderEntity.TenderTermsConditionEntities
+                    Tender_Code = tenderEntity.Tender_Code,
+                    Tender_Title = tenderEntity.Tender_Title,
+                    Category_Id = tenderEntity.Category_Id,
+                    Category = tenderEntity.CategoryEntity.Category,
+                    Tender_Description = tenderEntity.Tender_Description,
+                    Tender_live_interval = tenderEntity.Tender_live_interval,
+                    Live_Start_Date = tenderEntity.Live_Start_Date,
+                    Live_End_Date = tenderEntity.Live_End_Date,
+                    Project_Duration = tenderEntity.Tender_Duration,
+                    Duration_Type = tenderEntity.Duration_Type,
+                    Publish_Date = tenderEntity.Date_created,
+                    Last_Request_Date = tenderEntity.Last_Request_Date,
+                    Project_Start_Date = tenderEntity.Project_Start_Date,
+                    TenderMaterials = tenderEntity.TenderMaterialEntities,
+                    TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
 
                 };
             }
-        
+
         }
 
         public IEnumerable<GetBiddingRequestDto> BidderRequestToDto(IEnumerable<BidderRequestEntity> bidderRequests)
@@ -125,17 +154,17 @@ namespace MeroBolee.EntityMapper
                 return null;
             }
 
-            else 
+            else
             {
                 List<GetBiddingRequestDto> getBiddings = new List<GetBiddingRequestDto>();
                 foreach (BidderRequestEntity requestEntity in bidderRequests)
                 {
                     getBiddings.Add(BidderRequestToEntity(requestEntity));
                 };
-                return getBiddings;                
-            
+                return getBiddings;
+
             }
-        
+
         }
     }
 }

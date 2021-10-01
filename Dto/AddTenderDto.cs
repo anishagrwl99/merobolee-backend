@@ -40,8 +40,8 @@ namespace MeroBolee.Dto
         public int Tender_Status_Id { get => tender_Status_Id; set => tender_Status_Id = value; }
         public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
       //  public int Payment_Status_Id { get => payment_Status_Id; set => payment_Status_Id = value; }
-        public ICollection<TenderMaterialEntity> TenderMaterialEntities { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsConditionEntities { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public ICollection<TenderMaterialEntity> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
+        public ICollection<TenderTermsConditionEntity> TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
         public string Cancel_Remark { get => cancel_Remark; set => cancel_Remark = value; }
         public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
         public string Source_Fund { get => source_Fund; set => source_Fund = value; }

@@ -31,14 +31,22 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="addBiddingRequest"></param>
         /// <returns></returns>
         [HttpPost("Bidding/EnterLiveBiddingRoom")]
-        public  async Task<IActionResult> Add([FromBody]AddBiddingRequestDto addBiddingRequest)
+        public async Task<IActionResult> Add([FromBody] AddBiddingRequestDto addBiddingRequest)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-
-                    return Ok(new Responses<GetBiddingRequestDto>(await biddingRequestService.SendRequest(addBiddingRequest), "200", "Record is successfully added"));
+                    GetBiddingRequestDto dto = await biddingRequestService.SendRequest(addBiddingRequest);
+                    if (dto == null)
+                    {
+                        return NotFound(new Responses<GetBiddingRequestDto>(dto, "404", "Tender you bid for doesn't exist anymore."));
+                    }
+                    else
+                    {
+                        return Ok(new Responses<GetBiddingRequestDto>(dto, "200", "Record is successfully added"));
+                    }
+                    
                 }
                 else
                 {
@@ -124,7 +132,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="supplierId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/History")]
-        public IActionResult GetBidderRequest([FromQuery] PaginationQuery pagination,[FromQuery] int supplierId)
+        public IActionResult GetBidderRequest([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId)
         {
             try
             {
@@ -138,7 +146,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     return NotFound(new Responses<IEnumerable<GetBiddingRequestDto>>(BiddingRequest, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(BiddingRequest, pagination, totalCount)); // To pass result in object along with pagination info
-            }           
+            }
             catch (Exception e)
             {
                 response.statusCode = "500";
@@ -176,7 +184,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     return Ok(new Responses<GetBiddingRequestDto>(getBiddingRequest, "200", "Record found"));
                 }
             }
-           
+
             catch (Exception e)
             {
                 response.statusCode = "500";
@@ -227,7 +235,7 @@ namespace MeroBolee.Controllers.BiddingRequest
             catch (Exception e)
             {
                 response.statusCode = "400";
-                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null? e.InnerException.Message: "")}";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
             }

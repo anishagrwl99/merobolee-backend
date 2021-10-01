@@ -52,7 +52,7 @@ namespace MeroBolee.Dto
         public string Duration_Type { get => duration_Type; set => duration_Type = value; }
         public int Bid_No { get => bid_No; set => bid_No = value; }
         public int Posted_By { get => posted_By; set => posted_By = value; }
-        public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
+        public UserEntity User { get => userEntity; set => userEntity = value; }
 
         public int Tender_Status_Id { get => tender_Status_Id; set => tender_Status_Id = value; }
         public string AuctionStatus { get => auctionStatus; set => auctionStatus = value; }
@@ -61,8 +61,8 @@ namespace MeroBolee.Dto
         public float Tender_fee { get => tender_fee; set => tender_fee = value; }
         //public int Payment_Status_Id { get => payment_Status_Id; set => payment_Status_Id = value; }
         //public string PaymentStatus { get => paymentStatus; set => paymentStatus = value; }
-        public ICollection<TenderMaterialEntity> TenderMaterialEntities { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsConditionEntities { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public ICollection<TenderMaterialEntity> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
+        public ICollection<TenderTermsConditionEntity> TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
         public string Cancel_Remark { get => cancel_Remark; set => cancel_Remark = value; }
         public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
         public string Source_Fund { get => source_Fund; set => source_Fund = value; }

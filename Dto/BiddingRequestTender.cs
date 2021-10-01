@@ -39,7 +39,7 @@ namespace MeroBolee.Dto
     //    public TimeSpan Publish_time { get => publish_time; set => publish_time = value; }
         public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
-        public ICollection<TenderMaterialEntity> TenderMaterialEntities { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsConditionEntities { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public ICollection<TenderMaterialEntity> TenderMaterials { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
+        public ICollection<TenderTermsConditionEntity> TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
     }
 }

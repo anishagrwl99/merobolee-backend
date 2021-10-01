@@ -65,8 +65,8 @@ namespace MeroBolee.EntityMapper
                 //    IFB_RFP_EOI1= tenderDto.IFB_RFP_EOI1,
                 Project_Start_Date = tenderDto.Project_Start_Date,
                 //  Payment_Status_Id = tenderDto.Payment_Status_Id,
-                TenderMaterialEntities = tenderDto.TenderMaterialEntities,
-                TenderTermsConditionEntities = tenderDto.TenderTermsConditionEntities,
+                TenderMaterialEntities = tenderDto.TenderMaterial,
+                TenderTermsConditionEntities = tenderDto.TenderTermsCondition,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -98,7 +98,7 @@ namespace MeroBolee.EntityMapper
             getTender.AdminStatus = tenderEntity.AdminStatusEntity.Status;
             getTender.Cancel_Remark = tenderEntity.Cancel_remark;
             getTender.Posted_By = tenderEntity.Posted_By;
-            getTender.UserEntity = tenderEntity.UserEntity;
+            getTender.User = tenderEntity.UserEntity;
             getTender.Last_Request_Date = tenderEntity.Last_Request_Date;
             getTender.Source_Fund = tenderEntity.Source_Fund;
             //    getTender.IFB_RFP_EOI1 = tenderEntity.IFB_RFP_EOI1;
@@ -108,8 +108,8 @@ namespace MeroBolee.EntityMapper
             //getTender.Tender_fee = tenderEntity.Tender_fee;
             //getTender.Payment_Status_Id = tenderEntity.Payment_Status_Id;
             //getTender.PaymentStatus = tenderEntity.PaymentStatusEntity.Payment_status;
-            getTender.TenderMaterialEntities = tenderEntity.TenderMaterialEntities;
-            getTender.TenderTermsConditionEntities = tenderEntity.TenderTermsConditionEntities;
+            getTender.TenderMaterial = tenderEntity.TenderMaterialEntities;
+            getTender.TenderTermsCondition = tenderEntity.TenderTermsConditionEntities;
             return getTender;
 
         }

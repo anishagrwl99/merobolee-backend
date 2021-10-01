@@ -10,7 +10,8 @@ namespace MeroBolee.Model
         private int id;
         private int material_id;
         private TenderMaterialEntity tenderMaterialEntity;
-        private string feature;
+        private string featureName;
+        private string featureValue;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
@@ -24,7 +25,17 @@ namespace MeroBolee.Model
         [JsonIgnore]
         public TenderMaterialEntity TenderMaterialEntity { get => tenderMaterialEntity; set => tenderMaterialEntity = value; }
 
-        [Column("feature")]
-        public string Feature { get => feature; set => feature = value; }
+        [Column("feature_name")]
+        public string FeatureName { get => featureName; set => featureName = value; }
+
+        
+
+        [Column("feature_value")]
+        public string FeatureValue
+        {
+            get { return featureValue; }
+            set { featureValue = value; }
+        }
+
     }
 }

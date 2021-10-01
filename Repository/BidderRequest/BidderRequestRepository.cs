@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeroBolee.Repository.BidderRequest
 {
@@ -33,7 +34,15 @@ namespace MeroBolee.Repository.BidderRequest
         {
             try
             {
-                TenderEntity tender = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id).FirstOrDefault();
+                TenderEntity tender = meroBoleeDbContexts
+                                        .TenderEntities
+                                        .Include(x=>x.CategoryEntity)
+                                        .Include(x=>x.TenderMaterialEntities)
+                                        .Include(x=>x.TenderTermsConditionEntities)
+                                        .Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id)
+                                        .FirstOrDefault();
+
+                
 
                 if (tender != null)
                 {
@@ -43,6 +52,7 @@ namespace MeroBolee.Repository.BidderRequest
                     }
                     meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
                     unitOfWork.SaveChange();
+                    meroBoleeDbContexts.UserEntities.ToList();
                     if (bidderRequestEntity.BidderRequestDocs == null)
                     {
                         bidderRequestEntity.BidderRequestDocs = null;
@@ -61,6 +71,8 @@ namespace MeroBolee.Repository.BidderRequest
                             unitOfWork.SaveChange();
                         }
                     }
+                    bidderRequestEntity.UserEntity = meroBoleeDbContexts.UserEntities.Where(x=> x.User_Id == bidderRequestEntity.User_id).FirstOrDefault();
+                    bidderRequestEntity.AdminStatusEntity = meroBoleeDbContexts.AdminStatusEntities.Where(x => x.Status_Id == bidderRequestEntity.Admin_Status_Id).FirstOrDefault();
                     return bidderRequestEntity;
                 }
                 return null;
@@ -103,6 +115,7 @@ namespace MeroBolee.Repository.BidderRequest
             meroBoleeDbContexts.TenderEntities.ToList();
             meroBoleeDbContexts.AdminStatusEntities.ToList();
             meroBoleeDbContexts.UserEntities.ToList();
+            meroBoleeDbContexts.CategoryEntities.ToList();
             return meroBoleeDbContexts.BidderRequestEntities.Where(m => m.Request_Id == requestId).FirstOrDefault();
         }
 
