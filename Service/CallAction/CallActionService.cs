@@ -13,8 +13,8 @@ namespace MeroBolee.Service
     public interface ICallActionService
     {
         CallActionRequestResponseDto AddCallActionEmail(CallActionRequestDto dto);
-        List<CallActionResponseDto> GetAllCallAction();
-        List<CallActionResponseDto> GetAllCallActionNested();
+        List<CallActionResponseDto> GetAllCallAction(int supplierId);
+        List<CallActionResponseDto> GetAllCallActionNested(int supplierId);
         CallActionResponseDto GetCallActionDetail(int id);
         ResponseMsg ReadCallActionEmail(int id);
     }
@@ -59,13 +59,13 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-        public List<CallActionResponseDto> GetAllCallAction()
+        public List<CallActionResponseDto> GetAllCallAction(int supplierId)
         {
             try
             {
                 //collection.SelectMany(c => c.Children).Concat(collection).Where(c => c.id == id)
 
-                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmails();
+                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmails(supplierId);
 
                 List<CallActionResponseDto> response = new List<CallActionResponseDto>();
                 response = emails.Select(item => new CallActionResponseDto()
@@ -89,13 +89,13 @@ namespace MeroBolee.Service
             }
         }
 
-        public List<CallActionResponseDto> GetAllCallActionNested()
+        public List<CallActionResponseDto> GetAllCallActionNested(int supplierId)
         {
             try
             {
                 //collection.SelectMany(c => c.Children).Concat(collection).Where(c => c.id == id)
 
-                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmailsNested();
+                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmailsNested(supplierId);
 
                 List<CallActionResponseDto> response = new List<CallActionResponseDto>();
                 response = emails.Select(item => new CallActionResponseDto()

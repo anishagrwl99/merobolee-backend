@@ -11,7 +11,7 @@ namespace MeroBolee.Repository
     public interface ICorrespondenceRepository : IRepositoryBase<CorrespondenceEmailEntity>
     {
         public CorrespondenceEmailEntity SendCorrespondenceEmail(CorrespondenceEmailEntity obj);
-        public List<CorrespondenceEmailEntity> GetCorrespondenceEmails();
+        public List<CorrespondenceEmailEntity> GetCorrespondenceEmails(int supplierId);
         public CorrespondenceEmailEntity GetCorrespondenceEmailDetail(int id);
         public CorrespondenceEmailEntity ReadCorrespondenceEmail(int id);
     }
@@ -41,12 +41,13 @@ namespace MeroBolee.Repository
             }
         }
 
-        public List<CorrespondenceEmailEntity> GetCorrespondenceEmails()
+        public List<CorrespondenceEmailEntity> GetCorrespondenceEmails(int supplierId)
         {
             return meroBoleeDbContexts
                 .CorrespondenceEmailEntities
                 .Include(x=>x.User)
                 .Include(x=>x.User.Company)
+                .Where(x=>x.SenderUserId == supplierId)
                 .ToList();
         }
 

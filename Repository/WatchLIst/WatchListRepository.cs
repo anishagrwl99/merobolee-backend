@@ -22,7 +22,7 @@ namespace MeroBolee.Repository.WatchLIst
                 meroBoleeDbContexts.WatchListEntities.Add(watchList);
                 unitOfWork.SaveChange();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new Exception();
             }

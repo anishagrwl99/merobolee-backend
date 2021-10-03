@@ -11,9 +11,9 @@ namespace MeroBolee.Repository
     public interface ICallActionRepository : IRepositoryBase<CallActionEmailEntity>
     {
         public CallActionEmailEntity SendCallActionEmail(CallActionEmailEntity obj);
-        public List<CallActionEmailEntity> GetCallActionEmails();
+        public List<CallActionEmailEntity> GetCallActionEmails(int supplierId);
         public List<CallActionEmailEntity> GetCallActionParentEmailsResponses(long emailId, long parentId);
-        public List<CallActionEmailEntity> GetCallActionEmailsNested();
+        public List<CallActionEmailEntity> GetCallActionEmailsNested(int supplierId);
         public CallActionEmailEntity GetCallActionEmailDetail(long id);
         public CallActionEmailEntity ReadCallActionEmail(long id);
     }
@@ -43,23 +43,24 @@ namespace MeroBolee.Repository
             }
         }
 
-        public List<CallActionEmailEntity> GetCallActionEmails()
+        public List<CallActionEmailEntity> GetCallActionEmails(int supplierId)
         {
             //emails.SelectMany(c => c.Responses).Concat(emails);
             return meroBoleeDbContexts
                 .CallActionEmailEntities
                 .Include(x=>x.UserEntity)
+                //.Where(x=>x.SenderUserId == supplierId)
                 .ToList();
         }
 
-        public List<CallActionEmailEntity> GetCallActionEmailsNested()
+        public List<CallActionEmailEntity> GetCallActionEmailsNested(int supplierId)
         {
             //emails.SelectMany(c => c.Responses).Concat(emails);
             return meroBoleeDbContexts
                 .CallActionEmailEntities
                 .Include(x => x.UserEntity)
                 .Include(x=>x.Responses)
-                .Where(x => x.ParentId == null)
+                .Where(x => x.ParentId == null /*&& x.SenderUserId == supplierId*/)
                 .ToList();
         }
 

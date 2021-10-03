@@ -20,7 +20,7 @@ namespace MeroBolee.EntityMapper
             {
                Name = obj.Name,
                CountryId = obj.CountryId,
-               ProvienceId = obj.ProvienceId,
+               ProvinceId = obj.ProvinceId,
                City =obj.City,
                Address1 = obj.Address1,
                Address2 = obj.Address2,

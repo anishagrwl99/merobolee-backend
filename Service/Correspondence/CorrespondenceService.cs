@@ -12,7 +12,7 @@ namespace MeroBolee.Service
     public interface ICorrespondenceService
     {
         CorrespondenceRequestResponseDto AddCorrespondenceEmail(CorrespondenceRequestDto dto);
-        List<CorrespondenceResponseDto> GetAllCorrespondances();
+        List<CorrespondenceResponseDto> GetAllCorrespondances(int supplierId);
         CorrespondenceResponseDto GetCorrespondanceDetail(int id);
         ResponseMsg ReadCorrespondanceEmail(int id);
     }
@@ -54,11 +54,11 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-        public List<CorrespondenceResponseDto> GetAllCorrespondances()
+        public List<CorrespondenceResponseDto> GetAllCorrespondances(int supplierId)
         {
             try
             {
-                List<CorrespondenceEmailEntity> emails = correspondenceRepository.GetCorrespondenceEmails();
+                List<CorrespondenceEmailEntity> emails = correspondenceRepository.GetCorrespondenceEmails(supplierId);
 
                 List<CorrespondenceResponseDto> response = new List<CorrespondenceResponseDto>();
                 response = emails.Select(item => new CorrespondenceResponseDto()
@@ -74,7 +74,7 @@ namespace MeroBolee.Service
                 }).ToList();
                 return response;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;

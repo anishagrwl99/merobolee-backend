@@ -21,7 +21,7 @@ namespace MeroBolee.Model
         public int CountryId { get; set; }
 
         [ForeignKey("Province")]
-        public int ProvienceId { get; set; }
+        public int ProvinceId { get; set; }
         public string City { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

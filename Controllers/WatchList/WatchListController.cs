@@ -29,7 +29,7 @@ namespace MeroBolee.Controllers.WatchList
         /// To add upcoming bid in watch list
         /// </summary>
         /// <returns></returns>
-        [HttpPost("WatchList")]
+        [HttpPost("Tender/AddToWatchList")]
         public async Task<IActionResult> Add(AddWatchList watchListEntity)
         {
             try
@@ -82,12 +82,12 @@ namespace MeroBolee.Controllers.WatchList
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("WatchList")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] int id )
+        [HttpGet("Tender/WatchLists")]
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId )
         {
             try
             {
-                if (id == 0)
+                if (supplierId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
@@ -96,7 +96,7 @@ namespace MeroBolee.Controllers.WatchList
                 string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetWatchListDto> watchList = watchListService.GetAllWatchList(id);
+                IEnumerable<GetWatchListDto> watchList = watchListService.GetAllWatchList(supplierId);
                 int totalCount = watchList.Count();
                 if (totalCount == 0)
                 {
@@ -130,7 +130,7 @@ namespace MeroBolee.Controllers.WatchList
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("RemoveWatchList")]
+        [HttpDelete("Tender/RemoveFromWatchList")]
         public IActionResult Delete([FromQuery] int id)
         {
             try

@@ -8,13 +8,13 @@ namespace MeroBolee.Dto
 {
     public class SupplierSignUp
     {
-        public int CompanyId { get; set; }
+        //public int CompanyId { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         public int CountryId { get; set; }
-        public int ProvienceId { get; set; }
+        public int ProvinceId { get; set; }
         public string City { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

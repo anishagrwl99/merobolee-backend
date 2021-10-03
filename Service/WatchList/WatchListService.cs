@@ -23,9 +23,9 @@ namespace MeroBolee.Service.WatchList
              watchListRepository.AddWatchList(WatchListDtoToEntity(watchList));
         }
 
-        public IEnumerable<GetWatchListDto> GetAllWatchList(int id)
+        public IEnumerable<GetWatchListDto> GetAllWatchList(int supplierId)
         {
-            return WatchListEntityToDto(watchListRepository.GetAllWatchList(id));
+            return WatchListEntityToDto(watchListRepository.GetAllWatchList(supplierId));
         }
 
         public void RemoveWatchList(int id)

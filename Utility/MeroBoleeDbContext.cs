@@ -185,7 +185,7 @@ namespace MeroBolee.Utility
                     CompanyId = 1,
                     Name = "Test Company",
                     CountryId = 1,
-                    ProvienceId = 3,
+                    ProvinceId = 3,
                     Address1 = "Address1",
                     Address2 = "Address2",
                     Address3 = "Address3",
