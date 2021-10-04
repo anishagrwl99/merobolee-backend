@@ -94,6 +94,16 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<CompanyDocumentEntity>()
+               .HasOne(e => e.UploadUserEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<CompanyDocumentEntity>()
+            //   .HasOne(e => e.StatusChangedUserEntity)
+            //   .WithMany()
+            //   .OnDelete(DeleteBehavior.Restrict);
+
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
@@ -162,6 +172,21 @@ namespace MeroBolee.Utility
               new ProvinceEntity() { Province_Id = 7, Province = "Sudurpashchim Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now }
               );
 
+            builder.Entity<DocumentStatusEntity>().HasData(
+                new DocumentStatusEntity() { Id = 1, Status = "Pending"},
+                new DocumentStatusEntity() { Id = 2, Status = "Approve"},
+                new DocumentStatusEntity() { Id = 3, Status = "Reject"},
+                new DocumentStatusEntity() { Id = 4, Status = "Requires-New"}
+                );
+
+            builder.Entity<DocumentTypeEntity>().HasData(
+                new DocumentTypeEntity() { Id = 1, TypeName = "Citizenship-Front" },
+                new DocumentTypeEntity() { Id = 2, TypeName = "Citizenship-Back" },
+                new DocumentTypeEntity() { Id = 3, TypeName = "Tax Clearance" },
+                new DocumentTypeEntity() { Id = 4, TypeName = "PAN/VAT Registration" },
+                new DocumentTypeEntity() { Id = 5, TypeName = "Bank Voucher" }
+                );
+
             builder.Entity<CategoryEntity>().HasData(
                 new CategoryEntity() { Category_Id = 1, Category = "Transportation", Status_Id = 1 },
                 new CategoryEntity() { Category_Id = 2, Category = "Construction", Status_Id = 1 },
@@ -215,7 +240,7 @@ namespace MeroBolee.Utility
                     First_Name = "Bid",
                     Last_Name = "Inviter",
                     Person_email = "bid.inviter@test.com",
-                    Role_Id=2,
+                    Role_Id = 2,
                     Status_id = 2,
                     CompanyId = 1,
                     Date_created = DateTime.Now,
@@ -238,6 +263,10 @@ namespace MeroBolee.Utility
                 );
         }
 
+        public DbSet<CompanyEntity> CompanyEntities { get; set; }
+        public DbSet<DocumentStatusEntity> DocumentStatusEntities { get; set; }
+        public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
+        public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
         public DbSet<LiveBiddingEntity> liveBiddingEntities { get; set; }
         public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
         public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }

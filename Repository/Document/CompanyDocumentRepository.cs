@@ -1,0 +1,103 @@
+﻿using MeroBolee.Infrastructure;
+using MeroBolee.Model;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MeroBolee.Repository
+{
+    public interface ICompanyDocumentRepository : IRepositoryBase<CompanyDocumentEntity>
+    {
+        public CompanyDocumentEntity AddDocument(CompanyDocumentEntity obj);
+        public CompanyDocumentEntity ChangeStatus(int userId, long documentId, int statusId, string remarks);
+        public List<CompanyDocumentEntity> GetAllDocument(int companyId);
+        public string GetCompanyFolder(int companyId);
+    }
+
+
+    public class CompanyDocumentRepository : RepositoryBase<CompanyDocumentEntity>, ICompanyDocumentRepository
+    {
+        private readonly IUnitOfWork unitOfWork;
+        public CompanyDocumentRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork) : base(dbFactory)
+        {
+            this.unitOfWork = unitOfWork;
+        }
+
+        public CompanyDocumentEntity AddDocument(CompanyDocumentEntity obj)
+        {
+            try
+            {
+                meroBoleeDbContexts.CompanyDocumentEntities.Add(obj);
+                unitOfWork.SaveChange();
+                return obj;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        public CompanyDocumentEntity ChangeStatus(int userId, long documentId, int statusId, string remarks)
+        {
+            try
+            {
+                CompanyDocumentEntity entity =  meroBoleeDbContexts
+                    .CompanyDocumentEntities
+                    .Where(x => x.Id == documentId)
+                    .FirstOrDefault();
+                if(entity != null)
+                {
+                    entity.DocumentStatusId = statusId;
+                    entity.StatusChangedBy = userId;
+                    entity.Remarks = remarks;
+                    unitOfWork.SaveChange();
+                    return entity;
+
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        public List<CompanyDocumentEntity> GetAllDocument(int companyId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.CompanyDocumentEntities
+                    .Include(d=> d.DocumentType)
+                    .Include(st=> st.DocumentStatus)
+                    .Include(u => u.UploadUserEntity)
+                    .Include(s => s.StatusChangedUserEntity)
+                    .Where(x => x.CompanyID == companyId)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public string GetCompanyFolder(int companyId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.CompanyEntities
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.Name)
+                    .FirstOrDefault();
+                    
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+    }
+}

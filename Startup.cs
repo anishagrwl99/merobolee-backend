@@ -49,6 +49,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -79,7 +80,7 @@ namespace MeroBolee
             Configuration = configuration;
         }
 
-       
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -93,18 +94,18 @@ namespace MeroBolee
             string[] origins = Configuration.GetValue<string>("APIAllowedOrigins").Split(',');
             services.AddCors(opt =>
             {
-                opt.AddPolicy( name: _corsPolicy, builder =>
-                {
-                    builder.AllowAnyOrigin()
-                    //builder.WithOrigins(origins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-                });
+                opt.AddPolicy(name: _corsPolicy, builder =>
+               {
+                   builder.AllowAnyOrigin()
+                   //builder.WithOrigins(origins)
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+               });
 
             });
             services.AddControllers();
             services.AddMvc();
-            
+
             services.AddDbContext<MeroBoleeDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
@@ -112,7 +113,7 @@ namespace MeroBolee
             }); // Connection string is available in appsettings.Json file
                 // UseSqlServer help to database connection which use package Ms.EntityFrameworkCore.SqlServer
 
-     
+
 
             services.AddSwaggerGen(c =>
             {
@@ -159,7 +160,7 @@ namespace MeroBolee
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                
+
             })
                 .AddJwtBearer(options =>
             {
@@ -245,6 +246,15 @@ namespace MeroBolee
             //Call Action Email
             services.AddScoped<ICallActionRepository, CallActionRepository>();
             services.AddScoped<ICallActionService, CallActionService>();
+
+
+            //Document
+            services.AddScoped<ICompanyDocumentRepository, CompanyDocumentRepository>();
+            services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+            services.AddScoped<IDocumentStatusRepository, DocumentStatusRepository>();
+            services.AddScoped<ICompanyDocumentService, CompanyDocumentService>();
+            services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+            services.AddScoped<IDocumentStatusService, DocumentStatusService>();
         }
 
 
@@ -257,6 +267,12 @@ namespace MeroBolee
         {
             HostingEnvironment = env.EnvironmentName;
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                   Path.Combine(env.ContentRootPath, "Resource")),
+                        RequestPath = "/Resource"
+            });
 
             app.UseSwagger();
             if (!env.IsEnvironment("Production"))

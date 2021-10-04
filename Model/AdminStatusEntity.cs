@@ -20,5 +20,9 @@ namespace MeroBolee.Model
         [Column("admin_status")]
         public string Status { get => status; set => status = value; }
 
+        public virtual ICollection<CompanyDocumentEntity> CompanyDocuments { get; set; }
+
     }
+
+ 
 }
