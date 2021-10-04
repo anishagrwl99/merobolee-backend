@@ -28,9 +28,10 @@ namespace MeroBolee.Repository
             try
             {
                 UserEntity userEntity = meroBoleeDbContexts.UserEntities
-                .Where(x => x.Person_email == request.Email && x.Password == request.Password)
-                .Include(x => x.Role)
-                .FirstOrDefault();
+                    .Include(x => x.Company)
+                    .Where(x => x.Person_email == request.Email && x.Password == request.Password)
+                    .Include(x => x.Role)
+                    .FirstOrDefault();
 
                 if (userEntity != null)
                 {
@@ -41,7 +42,9 @@ namespace MeroBolee.Repository
                         LastName = userEntity.Last_Name,
                         Created = userEntity.Date_created,
                         Email = userEntity.Person_email,
-                        Role = userEntity.Role.Role_Name
+                        Role = userEntity.Role.Role_Name,
+                        CompanyId = userEntity.CompanyId,
+                        CompanyName = userEntity.Company.Name
                     };
                 }
                 return null;
