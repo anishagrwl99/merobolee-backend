@@ -99,6 +99,44 @@ namespace MeroBolee.Repository.BidderRequest
             }
             return null;
         }
+        public async Task<List<LiveBiddingEntity>> TenderLiveBids(int tenderId)
+        {
+            try
+            {
+                /*
+                 * var query = context.Orders
+    .GroupBy(o => new { o.CustomerId, o.EmployeeId })
+    .Select(g => new
+        {
+          g.Key.CustomerId,
+          g.Key.EmployeeId,
+          Sum = g.Sum(o => o.Amount),
+          Min = g.Min(o => o.Amount),
+          Max = g.Max(o => o.Amount),
+          Avg = g.Average(o => o.Amount)
+        });
+                 * 
+                 * 
+                 * */
+
+                List<LiveBiddingEntity> bids =  await meroBoleeDbContexts.liveBiddingEntities
+                    .GroupBy(o => new { o.SupplierId, o.TenderId, o.MaterialId })
+                    .Select(g => new LiveBiddingEntity
+                    {
+                        SupplierId = g.Key.SupplierId,
+                        TenderId = g.Key.TenderId,
+                        MaterialId = g.Key.MaterialId,
+                        Quotation = g.Min(o => o.Quotation)
+                    }).ToListAsync();
+                return bids;
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public IEnumerable<BidderRequestEntity> ShowAllRequest()
         {
             meroBoleeDbContexts.BidderRequestDocEntities.ToList();

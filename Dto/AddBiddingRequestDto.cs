@@ -43,5 +43,13 @@ namespace MeroBolee.Dto
         public DateTime BiddingDate { get; set; }
     }
 
+    public class LiveBidResponse
+    {
+        public bool IsBidSuccess { get; set; }
+        public string Position { get; set; }
+        public int MaterialId { get; set; }
+        public string Message { get; set; }
+        public decimal Quotation { get; set; }
+    }
 
 }

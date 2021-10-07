@@ -65,6 +65,16 @@ namespace MeroBolee.Controllers.BiddingRequest
 
 
 
+        [HttpGet("Bidding/Position")]
+        public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination , [FromQuery] int tenderId, [FromQuery] int supplierId)
+        {
+            string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+            this.uriService = new UriService(url);
+            LiveBidResponse res = await biddingRequestService.TenderPosition(tenderId, supplierId);
+            //int totalCount = res.Count();
+            return Ok(new Responses<LiveBidResponse>(res, "200", "Record is successfully added"));
+            //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
+        }
         /// <summary>
         /// Submit a live bid (incomplete) Need to add more business rules. You can bid but validation won't happen
         /// </summary>
@@ -78,7 +88,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
 
-                    return Ok(new Responses<TenderMaterialBiddingDto>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
+                    return Ok(new Responses<LiveBidResponse>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
                 }
                 else
                 {
@@ -247,6 +257,20 @@ namespace MeroBolee.Controllers.BiddingRequest
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
                 return new PagedResponse<GetBiddingRequestDto>(getBiddingRequest, totalCount);
+            }
+
+            var get = getBiddingRequest.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
+        private PagedResponse<LiveBidResponse> ResultAfterPagination(IEnumerable<LiveBidResponse> getBiddingRequest, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<LiveBidResponse>(getBiddingRequest, totalCount);
             }
 
             var get = getBiddingRequest.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
