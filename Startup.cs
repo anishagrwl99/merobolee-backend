@@ -178,6 +178,8 @@ namespace MeroBolee
             ;
 
             // Dependency Injection
+            services.AddScoped<ICryptoService, CryptoService>();
+
             services.AddScoped<IDbFactory, DbFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRoleRepository, RoleRepository>();
@@ -229,7 +231,7 @@ namespace MeroBolee
 
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ICryptoService, CryptoService>();
+           
 
             //signup
             services.AddScoped<ISignupRepository, SignupRepository>();

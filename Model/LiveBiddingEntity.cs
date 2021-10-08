@@ -27,7 +27,9 @@ namespace MeroBolee.Model
         [ForeignKey("TenderMaterialEntity")]
         public int MaterialId { get; set; }
 
-        public decimal Quotation { get; set; }
+        [MaxLength(300)]
+        public string Quotation { get; set; }
+
         public DateTime BidDate { get; set; }
 
 

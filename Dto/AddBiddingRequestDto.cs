@@ -50,6 +50,8 @@ namespace MeroBolee.Dto
         public int MaterialId { get; set; }
         public string Message { get; set; }
         public decimal Quotation { get; set; }
+        public bool IsLowestBidReceived { get; set; }
+        public DateTime LowestBidRecievedTime { get; set; }
     }
 
 }

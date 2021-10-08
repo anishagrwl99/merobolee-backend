@@ -68,11 +68,18 @@ namespace MeroBolee.Controllers.BiddingRequest
         [HttpGet("Bidding/Position")]
         public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination , [FromQuery] int tenderId, [FromQuery] int supplierId)
         {
-            string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+            string url = Url.Action("GetBiddingPosition", null, null, Request.Scheme); //get url for current request
             this.uriService = new UriService(url);
             LiveBidResponse res = await biddingRequestService.TenderPosition(tenderId, supplierId);
             //int totalCount = res.Count();
-            return Ok(new Responses<LiveBidResponse>(res, "200", "Record is successfully added"));
+            if (res.IsBidSuccess)
+            {
+                return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+            }
+            else
+            {
+                return NotFound(new Responses<LiveBidResponse>(null, "404", res.Message));
+            }
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
         /// <summary>
@@ -87,8 +94,17 @@ namespace MeroBolee.Controllers.BiddingRequest
             {
                 if (ModelState.IsValid)
                 {
+                    LiveBidResponse res = await biddingRequestService.LiveBid(bidRequest);
+                    //return Ok(new Responses<LiveBidResponse>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
 
-                    return Ok(new Responses<LiveBidResponse>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
+                    if (res.IsBidSuccess)
+                    {
+                        return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+                    }
+                    else
+                    {
+                        return StatusCode(400 , new Responses<LiveBidResponse>(res, "400", res.Message));
+                    }
                 }
                 else
                 {

@@ -22,7 +22,7 @@ namespace MeroBolee.EntityMapper
                 SupplierId = dto.SupplierId,
                 TenderId = dto.TenderId,
                 MaterialId = dto.MaterialId,
-                Quotation = dto.Quotation,
+                Quotation = dto.Quotation.ToString(),
                 BidDate = dto.BiddingDate
             };
         }
@@ -38,7 +38,7 @@ namespace MeroBolee.EntityMapper
                 SupplierId = e.SupplierId,
                 TenderId = e.TenderId,
                 MaterialId = e.MaterialId,
-                Quotation = e.Quotation,
+                Quotation = Convert.ToDecimal(e.Quotation),
                 BiddingDate = e.BidDate
             };
         }
