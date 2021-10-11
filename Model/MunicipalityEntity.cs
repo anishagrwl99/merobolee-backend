@@ -15,7 +15,6 @@ namespace MeroBolee.Model
         private string municipality_Name;
         private int? district_id;
         private DistrictEntity district;
-        private ICollection<UserEntity> user_entity;
 
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -29,7 +28,6 @@ namespace MeroBolee.Model
         [ForeignKey("District")]
         public int? District_id { get => district_id; set => district_id = value; }
         public DistrictEntity District { get => district; set => district = value; }
-       [JsonIgnore]
-        public virtual ICollection<UserEntity> User_entity { get => user_entity; set => user_entity = value; }
+
     }
 }

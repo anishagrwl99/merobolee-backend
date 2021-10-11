@@ -26,7 +26,8 @@ namespace MeroBolee.EntityMapper
                Address2 = obj.Address2,
                Address3 = obj.Address3,
                Zip = obj.Zip,
-               RegisteredAs = "Supplier"
+               RegisteredAs = "Supplier",
+               MembershipTypeId = 1 //Registration
             };
         }
 

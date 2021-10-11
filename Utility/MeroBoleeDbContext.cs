@@ -13,6 +13,57 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
+        public DbSet<CompanyTypeEntity> CompanyTypeEntities { get; set; }
+        public DbSet<UserCompany> UserCompanies { get; set; }
+        public DbSet<BiddingHistoryEntity> BiddingHistoryEntities { get; set; }
+        public DbSet<CompanyEntity> CompanyEntities { get; set; }
+        public DbSet<DocumentStatusEntity> DocumentStatusEntities { get; set; }
+        public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
+        public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
+        public DbSet<LiveBiddingEntity> LiveBiddingEntities { get; set; }
+        public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
+        public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
+        public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
+        public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
+        public DbSet<RoleEntity> RoleEntities { get; set; }
+        public DbSet<CountryEntity> CountryEntities { get; set; }
+        public DbSet<ProvinceEntity> ProvinceEntities { get; set; }
+        public DbSet<DistrictEntity> DistrictEntities { get; set; }
+        public DbSet<CityEntity> CityEntities { get; set; }
+        public DbSet<CategoryEntity> CategoryEntities { get; set; }
+
+        public DbSet<PublishStatus> StatusEntities { get; set; }
+        public DbSet<AuctionStatusEntity> AuctionStatusEntities { get; set; }
+        public DbSet<AdminStatusEntity> AdminStatusEntities { get; set; }
+        public DbSet<UserStatusEntity> UserStatusEntities { get; set; }
+        public DbSet<UserEntity> UserEntities { get; set; }
+        public DbSet<UserExperienceDocEntity> UserExperienceDocEntities { get; set; }
+        public DbSet<MunicipalityEntity> MunicipalityEntities { get; set; }
+        public DbSet<VDCEntity> VDCEntities { get; set; }
+        public DbSet<MembershipTypeEntity> MembershipTypeEntities { get; set; }
+        public DbSet<CompanyTypeLookupEntity> CompanyTypeLookupEntities { get; set; }
+        public DbSet<FavouriteCategoryEntity> FavouriteCategoryEntities { get; set; }
+
+        public DbSet<TenderEntity> TenderEntities { get; set; }
+        public DbSet<PaymentStatusEntity> PaymentStatusEntities { get; set; }
+        public DbSet<TenderMaterialEntity> TenderMaterialEntities { get; set; }
+        public DbSet<TenderTermsConditionEntity> TenderTermsConditionEntities { get; set; }
+        public DbSet<WatchListEntity> WatchListEntities { get; set; }
+        public DbSet<MaterialFeatureEntity> MaterialFeatureEntities { get; set; }
+
+        public DbSet<BidderRequestEntity> BidderRequestEntities { get; set; }
+        public DbSet<BidderRequestDocEntity> BidderRequestDocEntities { get; set; }
+
+        public DbSet<FAQEntity> FAQEntities { get; set; }
+
+        public DbSet<RequestHelpStatus> RequestHelpStatuses { get; set; }
+        public DbSet<RequestHelpEntity> RequestHelpEntities { get; set; }
+
+        public DbSet<MailEntity> MailEntities { get; set; }
+        public DbSet<MailAttachmentEntity> MailAttachmentEntities { get; set; }
+
+
+
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
         }
@@ -175,6 +226,44 @@ namespace MeroBolee.Utility
         }
         private void SeedLookupData(ModelBuilder builder)
         {
+            builder.Entity<MembershipTypeEntity>().HasData(
+                new MembershipTypeEntity
+                {
+                    Membership_Id = 1,
+                    Membership_Title = "Registration",
+                    Duration = 1,
+                    Duration_Type = "Year",
+                    Membership_fee = 2000,
+                    Discount = 0,
+                    Status_Id = 1,
+                    Date_created = DateTime.Now,
+                    Date_modified = DateTime.Now
+                },
+                 new MembershipTypeEntity
+                 {
+                     Membership_Id = 2,
+                     Membership_Title = "Add New Company",
+                     Duration = 1,
+                     Duration_Type = "Year",
+                     Membership_fee = 1500,
+                     Discount = 0,
+                     Status_Id = 1,
+                     Date_created = DateTime.Now,
+                     Date_modified = DateTime.Now
+                 },
+                 new MembershipTypeEntity
+                 {
+                     Membership_Id = 3,
+                     Membership_Title = "Renew",
+                     Duration = 1,
+                     Duration_Type = "Year",
+                     Membership_fee = 1000,
+                     Discount = 0,
+                     Status_Id = 1,
+                     Date_created = DateTime.Now,
+                     Date_modified = DateTime.Now
+                 });
+
             builder.Entity<CountryEntity>().HasData(
                new CountryEntity() { Country_Id = 1, Country_Name = "Nepal", Country_Code = "NEP", Abbre = "NP", Date_created = DateTime.Now, Date_modified = DateTime.Now }
                );
@@ -189,10 +278,10 @@ namespace MeroBolee.Utility
               );
 
             builder.Entity<DocumentStatusEntity>().HasData(
-                new DocumentStatusEntity() { Id = 1, Status = "Pending"},
-                new DocumentStatusEntity() { Id = 2, Status = "Approve"},
-                new DocumentStatusEntity() { Id = 3, Status = "Reject"},
-                new DocumentStatusEntity() { Id = 4, Status = "Requires-New"}
+                new DocumentStatusEntity() { Id = 1, Status = "Pending" },
+                new DocumentStatusEntity() { Id = 2, Status = "Approve" },
+                new DocumentStatusEntity() { Id = 3, Status = "Reject" },
+                new DocumentStatusEntity() { Id = 4, Status = "Requires-New" }
                 );
 
             builder.Entity<DocumentTypeEntity>().HasData(
@@ -209,10 +298,10 @@ namespace MeroBolee.Utility
                 new CategoryEntity() { Category_Id = 3, Category = "Tourism", Status_Id = 1 }
                 );
 
-            builder.Entity<CompanyTypeEntity>().HasData(
-                new CompanyTypeEntity() { Company_Type_Id = 1, Company_type = "Transportation" },
-                new CompanyTypeEntity() { Company_Type_Id = 2, Company_type = "Construction" },
-                new CompanyTypeEntity() { Company_Type_Id = 3, Company_type = "Tourism" }
+            builder.Entity<CompanyTypeLookupEntity>().HasData(
+                new CompanyTypeLookupEntity() { Company_Type_Id = 1, Company_type = "Transportation" },
+                new CompanyTypeLookupEntity() { Company_Type_Id = 2, Company_type = "Construction" },
+                new CompanyTypeLookupEntity() { Company_Type_Id = 3, Company_type = "Tourism" }
                 );
             builder.Entity<RoleEntity>().HasData(
                 new RoleEntity() { Role_Id = 1, Role_Name = "Super Admin", Date_created = DateTime.Now, Date_modified = DateTime.Now },
@@ -231,7 +320,10 @@ namespace MeroBolee.Utility
                     Address2 = "Address2",
                     Address3 = "Address3",
                     City = "Kathmandu",
-                    Zip = "123"
+                    Zip = "123",
+                    RegisteredAs = "Supplier",
+                    ReferenceCode = $"SP{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                    MembershipTypeId = 1
                 }
                 );
 
@@ -276,59 +368,11 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<UserCompany>().HasData(
-                new UserCompany { Id = 1, UserId = 1, CompanyId = 1},
-                new UserCompany { Id = 2, UserId = 2, CompanyId = 1},
-                new UserCompany { Id = 3, UserId = 3, CompanyId = 1}
+                new UserCompany { Id = 1, UserId = 1, CompanyId = 1 },
+                new UserCompany { Id = 2, UserId = 2, CompanyId = 1 },
+                new UserCompany { Id = 3, UserId = 3, CompanyId = 1 }
                 );
         }
-
-        public DbSet<UserCompany> UserCompanies { get; set; }
-        public DbSet<BiddingHistoryEntity> BiddingHistoryEntities { get; set; }
-        public DbSet<CompanyEntity> CompanyEntities { get; set; }
-        public DbSet<DocumentStatusEntity> DocumentStatusEntities { get; set; }
-        public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
-        public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
-        public DbSet<LiveBiddingEntity> LiveBiddingEntities { get; set; }
-        public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
-        public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
-        public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
-        public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
-        public DbSet<RoleEntity> RoleEntities { get; set; }
-        public DbSet<CountryEntity> CountryEntities { get; set; }
-        public DbSet<ProvinceEntity> ProvinceEntities { get; set; }
-        public DbSet<DistrictEntity> DistrictEntities { get; set; }
-        public DbSet<CityEntity> CityEntities { get; set; }
-        public DbSet<CategoryEntity> CategoryEntities { get; set; }
-
-        public DbSet<PublishStatus> StatusEntities { get; set; }
-        public DbSet<AuctionStatusEntity> AuctionStatusEntities { get; set; }
-        public DbSet<AdminStatusEntity> AdminStatusEntities { get; set; }
-        public DbSet<UserStatusEntity> UserStatusEntities { get; set; }
-        public DbSet<UserEntity> UserEntities { get; set; }
-        public DbSet<UserExperienceDocEntity> UserExperienceDocEntities { get; set; }
-        public DbSet<MunicipalityEntity> MunicipalityEntities { get; set; }
-        public DbSet<VDCEntity> VDCEntities { get; set; }
-        public DbSet<MembershipTypeEntity> MembershipTypeEntities { get; set; }
-        public DbSet<CompanyTypeEntity> CompanyTypeEntities { get; set; }
-        public DbSet<FavouriteCategoryEntity> FavouriteCategoryEntities { get; set; }
-
-        public DbSet<TenderEntity> TenderEntities { get; set; }
-        public DbSet<PaymentStatusEntity> PaymentStatusEntities { get; set; }
-        public DbSet<TenderMaterialEntity> TenderMaterialEntities { get; set; }
-        public DbSet<TenderTermsConditionEntity> TenderTermsConditionEntities { get; set; }
-        public DbSet<WatchListEntity> WatchListEntities { get; set; }
-        public DbSet<MaterialFeatureEntity> MaterialFeatureEntities { get; set; }
-
-        public DbSet<BidderRequestEntity> BidderRequestEntities { get; set; }
-        public DbSet<BidderRequestDocEntity> BidderRequestDocEntities { get; set; }
-
-        public DbSet<FAQEntity> FAQEntities { get; set; }
-
-        public DbSet<RequestHelpStatus> RequestHelpStatuses { get; set; }
-        public DbSet<RequestHelpEntity> RequestHelpEntities { get; set; }
-
-        public DbSet<MailEntity> MailEntities { get; set; }
-        public DbSet<MailAttachmentEntity> MailAttachmentEntities { get; set; }
 
     }
 }

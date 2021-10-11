@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_company_type")]
-    public class CompanyTypeEntity: BaseEntity
+    [Table("lk_company_type")]
+    public class CompanyTypeLookupEntity: BaseEntity
     {
         private int company_Type_Id;
         private string company_type;
@@ -18,4 +18,21 @@ namespace MeroBolee.Model
         [Column("company_type")]
         public string Company_type { get => company_type; set => company_type = value; }
     }
+
+
+    [Table("mb_company_type")]
+    public class CompanyTypeEntity: BaseEntity
+    {
+        public long Id { get; set; }
+
+        [ForeignKey("Company")]
+        public long CompanyId { get; set; }
+
+        [ForeignKey("CompanyTypeLookup")]
+        public int CompanyTypeId { get; set; }
+
+        public virtual CompanyEntity Company { get; set; }
+        public virtual CompanyTypeLookupEntity CompanyTypeLookup { get; set; }
+    }
+
 }

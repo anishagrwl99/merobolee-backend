@@ -40,8 +40,31 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         public string ReferenceCode { get; set; }
 
+
+        [MaxLength(150)]
+        public string ContactPerson { get; set; }
+
+        [EmailAddress]
+        [MaxLength(100)]
+        public string CompanyEmail { get; set; }
+
+        [Url]
+        [MaxLength(100)]
+        public string CompanyWebsite { get; set; }
+
+        [MaxLength(15)]
+        public string Phone1 { get; set; }
+
+        [MaxLength(15)]
+        public string Phone2 { get; set; }
+
+        [ForeignKey("MembershipType")]
+        public int MembershipTypeId { get; set; }
+
+
         public virtual CountryEntity Country { get; set; }
         public virtual ProvinceEntity Province { get; set; }
+        public virtual MembershipTypeEntity MembershipType { get; set; }
 
     }
 }

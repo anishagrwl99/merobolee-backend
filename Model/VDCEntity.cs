@@ -29,7 +29,5 @@ namespace MeroBolee.Model
         public int? District_Id { get => district_Id; set => district_Id = value; }
         public DistrictEntity District { get => district; set => district = value; }
 
-        [JsonIgnore]
-        public virtual ICollection<UserEntity> User_entity { get => user_entity; set => user_entity = value; }
     }
 }

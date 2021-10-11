@@ -9,20 +9,20 @@ namespace MeroBolee.EntityMapper
 {
     public class CompanyTypeMapper
     {
-        public CompanyTypeEntity CompanyTypeDtoEntity(AddCompanyTypeDto addCompanyType)
+        public CompanyTypeLookupEntity CompanyTypeDtoEntity(AddCompanyTypeDto addCompanyType)
         {
             if (addCompanyType == null)
             {
                 return null;
             }
-            return new CompanyTypeEntity
+            return new CompanyTypeLookupEntity
             {
                 Company_type = addCompanyType.Company_Type                            
             };
 
         }
 
-        public GetCompanyTypeDto CompanyTypeEntityToDto(CompanyTypeEntity companyTypeEntity)
+        public GetCompanyTypeDto CompanyTypeEntityToDto(CompanyTypeLookupEntity companyTypeEntity)
         {
             if (companyTypeEntity == null)
             {
@@ -37,7 +37,7 @@ namespace MeroBolee.EntityMapper
 
         }
 
-        public IEnumerable<GetCompanyTypeDto> CompanyTypeEntityListToDto(IEnumerable<CompanyTypeEntity> companyTypeEntities)
+        public IEnumerable<GetCompanyTypeDto> CompanyTypeEntityListToDto(IEnumerable<CompanyTypeLookupEntity> companyTypeEntities)
         {
 
             List<GetCompanyTypeDto> getCompanyTypes = new List<GetCompanyTypeDto>();
@@ -45,7 +45,7 @@ namespace MeroBolee.EntityMapper
             {
                 return getCompanyTypes = null;
             }
-            foreach (CompanyTypeEntity companyType in companyTypeEntities)
+            foreach (CompanyTypeLookupEntity companyType in companyTypeEntities)
             {
                 getCompanyTypes.Add
                 (

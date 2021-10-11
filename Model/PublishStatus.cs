@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_common_status")]
+    [Table("lk_common_status")]
     public class PublishStatus
     {
         private int status_id;

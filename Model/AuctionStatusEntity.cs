@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_auction_status")]
+    [Table("lk_auction_status")]
     public class AuctionStatusEntity
     {
         private int status_Id;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MeroBolee.Model
 {
 
-    [Table("mb_document_status")]
+    [Table("lk_document_status")]
     public class DocumentStatusEntity
     {
 

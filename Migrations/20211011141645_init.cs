@@ -11,7 +11,7 @@ namespace MeroBolee.Migrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
-                name: "mb_admin_status",
+                name: "lk_admin_status",
                 schema: "dbo",
                 columns: table => new
                 {
@@ -21,11 +21,11 @@ namespace MeroBolee.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mb_admin_status", x => x.status_id);
+                    table.PrimaryKey("PK_lk_admin_status", x => x.status_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "mb_auction_status",
+                name: "lk_auction_status",
                 schema: "dbo",
                 columns: table => new
                 {
@@ -35,11 +35,11 @@ namespace MeroBolee.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mb_auction_status", x => x.status_id);
+                    table.PrimaryKey("PK_lk_auction_status", x => x.status_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "mb_common_status",
+                name: "lk_common_status",
                 schema: "dbo",
                 columns: table => new
                 {
@@ -49,11 +49,11 @@ namespace MeroBolee.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mb_common_status", x => x.status_id);
+                    table.PrimaryKey("PK_lk_common_status", x => x.status_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "mb_company_type",
+                name: "lk_company_type",
                 schema: "dbo",
                 columns: table => new
                 {
@@ -65,7 +65,49 @@ namespace MeroBolee.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_mb_company_type", x => x.company_type_id);
+                    table.PrimaryKey("PK_lk_company_type", x => x.company_type_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "lk_document_status",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_lk_document_status", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "lk_request_help_status",
+                schema: "dbo",
+                columns: table => new
+                {
+                    status_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    request_status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_lk_request_help_status", x => x.status_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "lk_user_status",
+                schema: "dbo",
+                columns: table => new
+                {
+                    status_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    user_status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_lk_user_status", x => x.status_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,20 +126,6 @@ namespace MeroBolee.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_mb_country", x => x.country_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_document_status",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_document_status", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -150,20 +178,6 @@ namespace MeroBolee.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "mb_request_help_status",
-                schema: "dbo",
-                columns: table => new
-                {
-                    status_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    request_status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_request_help_status", x => x.status_id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "mb_role",
                 schema: "dbo",
                 columns: table => new
@@ -177,20 +191,6 @@ namespace MeroBolee.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_mb_role", x => x.role_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_user_status",
-                schema: "dbo",
-                columns: table => new
-                {
-                    status_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    user_status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_user_status", x => x.status_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,10 +209,10 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_category", x => x.category_id);
                     table.ForeignKey(
-                        name: "FK_mb_category_mb_common_status_status_id",
+                        name: "FK_mb_category_lk_common_status_status_id",
                         column: x => x.status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_common_status",
+                        principalTable: "lk_common_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,10 +234,10 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_FAQ", x => x.faq_id);
                     table.ForeignKey(
-                        name: "FK_mb_FAQ_mb_common_status_status_id",
+                        name: "FK_mb_FAQ_lk_common_status_status_id",
                         column: x => x.status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_common_status",
+                        principalTable: "lk_common_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,10 +262,10 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_membership", x => x.membership_id);
                     table.ForeignKey(
-                        name: "FK_mb_membership_mb_common_status_status",
+                        name: "FK_mb_membership_lk_common_status_status",
                         column: x => x.status,
                         principalSchema: "dbo",
-                        principalTable: "mb_common_status",
+                        principalTable: "lk_common_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -317,6 +317,47 @@ namespace MeroBolee.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "mb_user",
+                schema: "dbo",
+                columns: table => new
+                {
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    user_code = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    role_id = table.Column<int>(type: "int", nullable: true),
+                    first_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    middle_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    last_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    designation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    activate_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    expired_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    status_id = table.Column<int>(type: "int", nullable: true),
+                    date_created = table.Column<DateTime>(type: "date", nullable: false),
+                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_user", x => x.user_id);
+                    table.ForeignKey(
+                        name: "FK_mb_user_lk_user_status_status_id",
+                        column: x => x.status_id,
+                        principalSchema: "dbo",
+                        principalTable: "lk_user_status",
+                        principalColumn: "status_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_mb_user_mb_role_role_id",
+                        column: x => x.role_id,
+                        principalSchema: "dbo",
+                        principalTable: "mb_role",
+                        principalColumn: "role_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "mb_company",
                 schema: "dbo",
                 columns: table => new
@@ -332,7 +373,13 @@ namespace MeroBolee.Migrations
                     Address3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Zip = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RegisteredAs = table.Column<string>(type: "VARCHAR(20)", maxLength: 20, nullable: true),
-                    ReferenceCode = table.Column<string>(type: "VARCHAR(25)", maxLength: 25, nullable: true)
+                    ReferenceCode = table.Column<string>(type: "VARCHAR(25)", maxLength: 25, nullable: true),
+                    ContactPerson = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    CompanyEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CompanyWebsite = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Phone1 = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Phone2 = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    MembershipTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -343,6 +390,13 @@ namespace MeroBolee.Migrations
                         principalSchema: "dbo",
                         principalTable: "mb_country",
                         principalColumn: "country_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_mb_company_mb_membership_MembershipTypeId",
+                        column: x => x.MembershipTypeId,
+                        principalSchema: "dbo",
+                        principalTable: "mb_membership",
+                        principalColumn: "membership_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_mb_company_mb_province_ProvinceId",
@@ -378,223 +432,6 @@ namespace MeroBolee.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "mb_municipality",
-                schema: "dbo",
-                columns: table => new
-                {
-                    municipality_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    municipality = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    district_id = table.Column<int>(type: "int", nullable: true),
-                    date_created = table.Column<DateTime>(type: "date", nullable: false),
-                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_municipality", x => x.municipality_id);
-                    table.ForeignKey(
-                        name: "FK_mb_municipality_mb_district_district_id",
-                        column: x => x.district_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_district",
-                        principalColumn: "district_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_vdc",
-                schema: "dbo",
-                columns: table => new
-                {
-                    vdc_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    vdc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    district_id = table.Column<int>(type: "int", nullable: true),
-                    date_created = table.Column<DateTime>(type: "date", nullable: false),
-                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_vdc", x => x.vdc_id);
-                    table.ForeignKey(
-                        name: "FK_mb_vdc_mb_district_district_id",
-                        column: x => x.district_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_district",
-                        principalColumn: "district_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_city",
-                schema: "dbo",
-                columns: table => new
-                {
-                    city_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    city_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    municipality_id = table.Column<int>(type: "int", nullable: true),
-                    vdc_id = table.Column<int>(type: "int", nullable: true),
-                    date_created = table.Column<DateTime>(type: "date", nullable: false),
-                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_city", x => x.city_id);
-                    table.ForeignKey(
-                        name: "FK_mb_city_mb_municipality_municipality_id",
-                        column: x => x.municipality_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_municipality",
-                        principalColumn: "municipality_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_city_mb_vdc_vdc_id",
-                        column: x => x.vdc_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_vdc",
-                        principalColumn: "vdc_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_user",
-                schema: "dbo",
-                columns: table => new
-                {
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    user_code = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    country_id = table.Column<int>(type: "int", nullable: true),
-                    province_id = table.Column<int>(type: "int", nullable: true),
-                    district_id = table.Column<int>(type: "int", nullable: true),
-                    city_id = table.Column<int>(type: "int", nullable: true),
-                    role_id = table.Column<int>(type: "int", nullable: true),
-                    register_country_id = table.Column<int>(type: "int", nullable: false),
-                    registration_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    company_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    company_type_Id = table.Column<int>(type: "int", nullable: true),
-                    acronym = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    no_of_employee = table.Column<int>(type: "int", nullable: false),
-                    category_id = table.Column<int>(type: "int", nullable: true),
-                    vat_pan_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    website = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    address1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    address2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    address3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    municipality_id = table.Column<int>(type: "int", nullable: true),
-                    vdc_id = table.Column<int>(type: "int", nullable: true),
-                    fax_no = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    comapny_email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    company_contact1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    company_contact2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    salutation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    first_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    middle_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    last_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    designation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    person_contact1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    person_contact2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    person_email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    username = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    activate_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    expired_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    front_citizenship = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    back_citizenship = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    tax_clearance = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    pan_vat_registration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    company_registration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    bank_credit_letter = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    membership_Id = table.Column<int>(type: "int", nullable: true),
-                    status_id = table.Column<int>(type: "int", nullable: true),
-                    date_created = table.Column<DateTime>(type: "date", nullable: false),
-                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_user", x => x.user_id);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_category_category_id",
-                        column: x => x.category_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_category",
-                        principalColumn: "category_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_city_city_id",
-                        column: x => x.city_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_city",
-                        principalColumn: "city_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_company_type_company_type_Id",
-                        column: x => x.company_type_Id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_company_type",
-                        principalColumn: "company_type_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_country_country_id",
-                        column: x => x.country_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_country",
-                        principalColumn: "country_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_district_district_id",
-                        column: x => x.district_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_district",
-                        principalColumn: "district_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_membership_membership_Id",
-                        column: x => x.membership_Id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_membership",
-                        principalColumn: "membership_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_municipality_municipality_id",
-                        column: x => x.municipality_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_municipality",
-                        principalColumn: "municipality_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_province_province_id",
-                        column: x => x.province_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_province",
-                        principalColumn: "province_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_role_role_id",
-                        column: x => x.role_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_role",
-                        principalColumn: "role_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_user_status_status_id",
-                        column: x => x.status_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_user_status",
-                        principalColumn: "status_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_user_mb_vdc_vdc_id",
-                        column: x => x.vdc_id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_vdc",
-                        principalColumn: "vdc_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "mb_callaction_email",
                 schema: "dbo",
                 columns: table => new
@@ -623,69 +460,6 @@ namespace MeroBolee.Migrations
                     table.ForeignKey(
                         name: "FK_mb_callaction_email_mb_user_SenderUserId",
                         column: x => x.SenderUserId,
-                        principalSchema: "dbo",
-                        principalTable: "mb_user",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mb_company_document",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyID = table.Column<long>(type: "bigint", nullable: false),
-                    UploadedBy = table.Column<long>(type: "bigint", nullable: false),
-                    StatusChangedBy = table.Column<long>(type: "bigint", nullable: true),
-                    DocumentTypeyId = table.Column<int>(type: "int", nullable: false),
-                    DocumentStatusId = table.Column<int>(type: "int", nullable: false),
-                    DocumentPath = table.Column<string>(type: "VARCHAR(300)", maxLength: 300, nullable: true),
-                    Remarks = table.Column<string>(type: "VARCHAR(500)", maxLength: 500, nullable: true),
-                    AdminStatusEntityStatus_Id = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mb_company_document", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_admin_status_AdminStatusEntityStatus_Id",
-                        column: x => x.AdminStatusEntityStatus_Id,
-                        principalSchema: "dbo",
-                        principalTable: "mb_admin_status",
-                        principalColumn: "status_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_company_CompanyID",
-                        column: x => x.CompanyID,
-                        principalSchema: "dbo",
-                        principalTable: "mb_company",
-                        principalColumn: "CompanyId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_document_status_DocumentStatusId",
-                        column: x => x.DocumentStatusId,
-                        principalSchema: "dbo",
-                        principalTable: "mb_document_status",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_document_type_DocumentTypeyId",
-                        column: x => x.DocumentTypeyId,
-                        principalSchema: "dbo",
-                        principalTable: "mb_document_type",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_user_StatusChangedBy",
-                        column: x => x.StatusChangedBy,
-                        principalSchema: "dbo",
-                        principalTable: "mb_user",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_mb_company_document_mb_user_UploadedBy",
-                        column: x => x.UploadedBy,
                         principalSchema: "dbo",
                         principalTable: "mb_user",
                         principalColumn: "user_id",
@@ -763,10 +537,10 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_request_help", x => x.request_help_id);
                     table.ForeignKey(
-                        name: "FK_mb_request_help_mb_request_help_status_help_status_id",
+                        name: "FK_mb_request_help_lk_request_help_status_help_status_id",
                         column: x => x.help_status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_request_help_status",
+                        principalTable: "lk_request_help_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -809,17 +583,17 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_tender", x => x.tender_id);
                     table.ForeignKey(
-                        name: "FK_mb_tender_mb_admin_status_admin_status_id",
+                        name: "FK_mb_tender_lk_admin_status_admin_status_id",
                         column: x => x.admin_status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_admin_status",
+                        principalTable: "lk_admin_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_mb_tender_mb_auction_status_tender_status_id",
+                        name: "FK_mb_tender_lk_auction_status_tender_status_id",
                         column: x => x.tender_status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_auction_status",
+                        principalTable: "lk_auction_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -835,6 +609,100 @@ namespace MeroBolee.Migrations
                         principalSchema: "dbo",
                         principalTable: "mb_user",
                         principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mb_company_document",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyID = table.Column<long>(type: "bigint", nullable: false),
+                    UploadedBy = table.Column<long>(type: "bigint", nullable: false),
+                    StatusChangedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DocumentTypeyId = table.Column<int>(type: "int", nullable: false),
+                    DocumentStatusId = table.Column<int>(type: "int", nullable: false),
+                    DocumentPath = table.Column<string>(type: "VARCHAR(300)", maxLength: 300, nullable: true),
+                    Remarks = table.Column<string>(type: "VARCHAR(500)", maxLength: 500, nullable: true),
+                    AdminStatusEntityStatus_Id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_company_document", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_lk_admin_status_AdminStatusEntityStatus_Id",
+                        column: x => x.AdminStatusEntityStatus_Id,
+                        principalSchema: "dbo",
+                        principalTable: "lk_admin_status",
+                        principalColumn: "status_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_lk_document_status_DocumentStatusId",
+                        column: x => x.DocumentStatusId,
+                        principalSchema: "dbo",
+                        principalTable: "lk_document_status",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_mb_company_CompanyID",
+                        column: x => x.CompanyID,
+                        principalSchema: "dbo",
+                        principalTable: "mb_company",
+                        principalColumn: "CompanyId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_mb_document_type_DocumentTypeyId",
+                        column: x => x.DocumentTypeyId,
+                        principalSchema: "dbo",
+                        principalTable: "mb_document_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_mb_user_StatusChangedBy",
+                        column: x => x.StatusChangedBy,
+                        principalSchema: "dbo",
+                        principalTable: "mb_user",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_mb_company_document_mb_user_UploadedBy",
+                        column: x => x.UploadedBy,
+                        principalSchema: "dbo",
+                        principalTable: "mb_user",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mb_company_type",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
+                    CompanyTypeId = table.Column<int>(type: "int", nullable: false),
+                    date_created = table.Column<DateTime>(type: "date", nullable: false),
+                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_company_type", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_mb_company_type_lk_company_type_CompanyTypeId",
+                        column: x => x.CompanyTypeId,
+                        principalSchema: "dbo",
+                        principalTable: "lk_company_type",
+                        principalColumn: "company_type_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_mb_company_type_mb_company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "dbo",
+                        principalTable: "mb_company",
+                        principalColumn: "CompanyId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -868,6 +736,54 @@ namespace MeroBolee.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "mb_municipality",
+                schema: "dbo",
+                columns: table => new
+                {
+                    municipality_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    municipality = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    district_id = table.Column<int>(type: "int", nullable: true),
+                    date_created = table.Column<DateTime>(type: "date", nullable: false),
+                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_municipality", x => x.municipality_id);
+                    table.ForeignKey(
+                        name: "FK_mb_municipality_mb_district_district_id",
+                        column: x => x.district_id,
+                        principalSchema: "dbo",
+                        principalTable: "mb_district",
+                        principalColumn: "district_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mb_vdc",
+                schema: "dbo",
+                columns: table => new
+                {
+                    vdc_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    vdc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    district_id = table.Column<int>(type: "int", nullable: true),
+                    date_created = table.Column<DateTime>(type: "date", nullable: false),
+                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_vdc", x => x.vdc_id);
+                    table.ForeignKey(
+                        name: "FK_mb_vdc_mb_district_district_id",
+                        column: x => x.district_id,
+                        principalSchema: "dbo",
+                        principalTable: "mb_district",
+                        principalColumn: "district_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "mb_bidder_request",
                 schema: "dbo",
                 columns: table => new
@@ -887,10 +803,10 @@ namespace MeroBolee.Migrations
                 {
                     table.PrimaryKey("PK_mb_bidder_request", x => x.request_id);
                     table.ForeignKey(
-                        name: "FK_mb_bidder_request_mb_admin_status_admin_status_id",
+                        name: "FK_mb_bidder_request_lk_admin_status_admin_status_id",
                         column: x => x.admin_status_id,
                         principalSchema: "dbo",
-                        principalTable: "mb_admin_status",
+                        principalTable: "lk_admin_status",
                         principalColumn: "status_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -1015,6 +931,38 @@ namespace MeroBolee.Migrations
                         principalSchema: "dbo",
                         principalTable: "mb_user",
                         principalColumn: "user_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mb_city",
+                schema: "dbo",
+                columns: table => new
+                {
+                    city_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    city_title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    municipality_id = table.Column<int>(type: "int", nullable: true),
+                    vdc_id = table.Column<int>(type: "int", nullable: true),
+                    date_created = table.Column<DateTime>(type: "date", nullable: false),
+                    date_modified = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mb_city", x => x.city_id);
+                    table.ForeignKey(
+                        name: "FK_mb_city_mb_municipality_municipality_id",
+                        column: x => x.municipality_id,
+                        principalSchema: "dbo",
+                        principalTable: "mb_municipality",
+                        principalColumn: "municipality_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_mb_city_mb_vdc_vdc_id",
+                        column: x => x.vdc_id,
+                        principalSchema: "dbo",
+                        principalTable: "mb_vdc",
+                        principalColumn: "vdc_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1194,7 +1142,7 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_admin_status",
+                table: "lk_admin_status",
                 columns: new[] { "status_id", "admin_status" },
                 values: new object[,]
                 {
@@ -1205,7 +1153,7 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_auction_status",
+                table: "lk_auction_status",
                 columns: new[] { "status_id", "auction_status" },
                 values: new object[,]
                 {
@@ -1217,7 +1165,7 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_common_status",
+                table: "lk_common_status",
                 columns: new[] { "status_id", "status" },
                 values: new object[,]
                 {
@@ -1227,24 +1175,18 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_company_type",
+                table: "lk_company_type",
                 columns: new[] { "company_type_id", "company_type", "date_created", "date_modified" },
                 values: new object[,]
                 {
-                    { 2, "Construction", new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(3061), new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(3071) },
-                    { 1, "Transportation", new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(2980), new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(3018) },
-                    { 3, "Tourism", new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(3105), new DateTime(2021, 10, 11, 18, 51, 11, 401, DateTimeKind.Local).AddTicks(3115) }
+                    { 3, "Tourism", new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4822), new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4829) },
+                    { 1, "Transportation", new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4741), new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4773) },
+                    { 2, "Construction", new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4798), new DateTime(2021, 10, 11, 20, 1, 45, 157, DateTimeKind.Local).AddTicks(4804) }
                 });
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_country",
-                columns: new[] { "country_id", "abbre", "country_code", "country_name", "date_created", "date_modified" },
-                values: new object[] { 1, "NP", "NEP", "Nepal", new DateTime(2021, 10, 11, 18, 51, 10, 308, DateTimeKind.Local).AddTicks(3102), new DateTime(2021, 10, 11, 18, 51, 10, 311, DateTimeKind.Local).AddTicks(5841) });
-
-            migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "mb_document_status",
+                table: "lk_document_status",
                 columns: new[] { "Id", "Status" },
                 values: new object[,]
                 {
@@ -1256,15 +1198,45 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
+                table: "lk_request_help_status",
+                columns: new[] { "status_id", "request_status" },
+                values: new object[,]
+                {
+                    { 4, "Resolved" },
+                    { 3, "Running" },
+                    { 2, "Approved" },
+                    { 1, "Requested" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "lk_user_status",
+                columns: new[] { "status_id", "user_status" },
+                values: new object[,]
+                {
+                    { 1, "Registered" },
+                    { 2, "Approved" },
+                    { 4, "Terminated" },
+                    { 3, "Suspended" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "mb_country",
+                columns: new[] { "country_id", "abbre", "country_code", "country_name", "date_created", "date_modified" },
+                values: new object[] { 1, "NP", "NEP", "Nepal", new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(7914), new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(7928) });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
                 table: "mb_document_type",
                 columns: new[] { "Id", "TypeName" },
                 values: new object[,]
                 {
                     { 5, "Bank Voucher" },
-                    { 3, "Tax Clearance" },
+                    { 4, "PAN/VAT Registration" },
                     { 2, "Citizenship-Back" },
                     { 1, "Citizenship-Front" },
-                    { 4, "PAN/VAT Registration" }
+                    { 3, "Tax Clearance" }
                 });
 
             migrationBuilder.InsertData(
@@ -1279,37 +1251,13 @@ namespace MeroBolee.Migrations
 
             migrationBuilder.InsertData(
                 schema: "dbo",
-                table: "mb_request_help_status",
-                columns: new[] { "status_id", "request_status" },
-                values: new object[,]
-                {
-                    { 1, "Requested" },
-                    { 2, "Approved" },
-                    { 3, "Running" },
-                    { 4, "Resolved" }
-                });
-
-            migrationBuilder.InsertData(
-                schema: "dbo",
                 table: "mb_role",
                 columns: new[] { "role_id", "date_created", "date_modified", "role" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8637), new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8656), "Super Admin" },
-                    { 2, new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8662), new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8663), "Bid Inviter" },
-                    { 3, new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8666), new DateTime(2021, 10, 11, 18, 51, 10, 313, DateTimeKind.Local).AddTicks(8667), "Bidder" }
-                });
-
-            migrationBuilder.InsertData(
-                schema: "dbo",
-                table: "mb_user_status",
-                columns: new[] { "status_id", "user_status" },
-                values: new object[,]
-                {
-                    { 3, "Suspended" },
-                    { 1, "Registered" },
-                    { 2, "Approved" },
-                    { 4, "Terminated" }
+                    { 1, new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6182), new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6195), "Super Admin" },
+                    { 2, new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6200), new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6203), "Bid Inviter" },
+                    { 3, new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6207), new DateTime(2021, 10, 11, 20, 1, 43, 953, DateTimeKind.Local).AddTicks(6210), "Bidder" }
                 });
 
             migrationBuilder.InsertData(
@@ -1318,9 +1266,20 @@ namespace MeroBolee.Migrations
                 columns: new[] { "category_id", "category", "date_created", "date_modified", "status_id" },
                 values: new object[,]
                 {
-                    { 1, "Transportation", new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7565), new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7598), 1 },
-                    { 2, "Construction", new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7640), new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7646), 1 },
-                    { 3, "Tourism", new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7729), new DateTime(2021, 10, 11, 18, 51, 11, 343, DateTimeKind.Local).AddTicks(7735), 1 }
+                    { 1, "Transportation", new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4626), new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4662), 1 },
+                    { 2, "Construction", new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4727), new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4739), 1 },
+                    { 3, "Tourism", new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4810), new DateTime(2021, 10, 11, 20, 1, 45, 88, DateTimeKind.Local).AddTicks(4819), 1 }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "mb_membership",
+                columns: new[] { "membership_id", "date_created", "date_modified", "discount", "duration", "duration_type", "title", "membership_fee", "status" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2021, 10, 11, 20, 1, 43, 947, DateTimeKind.Local).AddTicks(6674), new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(1609), 0f, 1, "Year", "Registration", 2000f, 1 },
+                    { 2, new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(2885), new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(2895), 0f, 1, "Year", "Add New Company", 1500f, 1 },
+                    { 3, new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(2901), new DateTime(2021, 10, 11, 20, 1, 43, 951, DateTimeKind.Local).AddTicks(2904), 0f, 1, "Year", "Renew", 1000f, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -1329,31 +1288,31 @@ namespace MeroBolee.Migrations
                 columns: new[] { "province_id", "country_id", "date_created", "date_modified", "province_title" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1776), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1795), "Province No. 1" },
-                    { 2, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1806), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1807), "Province No. 2" },
-                    { 3, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1810), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1812), "Bagmati Province" },
-                    { 4, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1814), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1816), "Gandaki Province" },
-                    { 5, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1818), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1820), "Lumbini Province" },
-                    { 6, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1823), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1824), "Karnali Province" },
-                    { 7, 1, new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1827), new DateTime(2021, 10, 11, 18, 51, 10, 312, DateTimeKind.Local).AddTicks(1828), "Sudurpashchim Province" }
+                    { 1, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1739), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1748), "Province No. 1" },
+                    { 2, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1755), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1759), "Province No. 2" },
+                    { 3, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1763), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1767), "Bagmati Province" },
+                    { 4, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1772), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1775), "Gandaki Province" },
+                    { 5, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1779), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1782), "Lumbini Province" },
+                    { 6, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1786), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1790), "Karnali Province" },
+                    { 7, 1, new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1794), new DateTime(2021, 10, 11, 20, 1, 43, 952, DateTimeKind.Local).AddTicks(1797), "Sudurpashchim Province" }
                 });
 
             migrationBuilder.InsertData(
                 schema: "dbo",
                 table: "mb_user",
-                columns: new[] { "user_id", "activate_date", "address1", "address2", "address3", "back_citizenship", "bank_credit_letter", "category_id", "city_id", "company_contact1", "company_contact2", "company_name", "company_registration", "company_type_Id", "acronym", "comapny_email", "country_id", "date_created", "date_modified", "description", "designation", "district_id", "no_of_employee", "expired_date", "fax_no", "first_name", "front_citizenship", "last_name", "membership_Id", "middle_name", "municipality_id", "pan_vat_registration", "password", "person_contact1", "person_contact2", "person_email", "province_id", "register_country_id", "registration_no", "role_id", "salutation", "status_id", "tax_clearance", "username", "vat_pan_no", "vdc_id", "website" },
+                columns: new[] { "user_id", "activate_date", "date_created", "date_modified", "designation", "expired_date", "first_name", "last_name", "middle_name", "password", "email", "role_id", "status_id", "username" },
                 values: new object[,]
                 {
-                    { 1L, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DateTime(2021, 10, 11, 18, 51, 10, 315, DateTimeKind.Local).AddTicks(8355), new DateTime(2021, 10, 11, 18, 51, 10, 315, DateTimeKind.Local).AddTicks(8383), null, null, null, 0, null, null, "Super", null, "Admin", null, null, null, null, "YHCTM7byxNlmg1x9CGp5nA==", null, null, "super.admin@test.com", null, 0, null, 1, null, 2, null, null, null, null, null },
-                    { 2L, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DateTime(2021, 10, 11, 18, 51, 10, 325, DateTimeKind.Local).AddTicks(9254), new DateTime(2021, 10, 11, 18, 51, 10, 325, DateTimeKind.Local).AddTicks(9289), null, null, null, 0, null, null, "Bid", null, "Inviter", null, null, null, null, "YHCTM7byxNlmg1x9CGp5nA==", null, null, "bid.inviter@test.com", null, 0, null, 2, null, 2, null, null, null, null, null },
-                    { 3L, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DateTime(2021, 10, 11, 18, 51, 10, 326, DateTimeKind.Local).AddTicks(308), new DateTime(2021, 10, 11, 18, 51, 10, 326, DateTimeKind.Local).AddTicks(321), null, null, null, 0, null, null, "Bid", null, "Bidder", null, null, null, null, "YHCTM7byxNlmg1x9CGp5nA==", null, null, "bid.bidder@test.com", null, 0, null, 3, null, 2, null, null, null, null, null }
+                    { 1L, null, new DateTime(2021, 10, 11, 20, 1, 43, 967, DateTimeKind.Local).AddTicks(3649), new DateTime(2021, 10, 11, 20, 1, 43, 967, DateTimeKind.Local).AddTicks(3683), null, null, "Super", "Admin", null, "YHCTM7byxNlmg1x9CGp5nA==", "super.admin@test.com", 1, 2, null },
+                    { 2L, null, new DateTime(2021, 10, 11, 20, 1, 43, 978, DateTimeKind.Local).AddTicks(370), new DateTime(2021, 10, 11, 20, 1, 43, 978, DateTimeKind.Local).AddTicks(407), null, null, "Bid", "Inviter", null, "YHCTM7byxNlmg1x9CGp5nA==", "bid.inviter@test.com", 2, 2, null },
+                    { 3L, null, new DateTime(2021, 10, 11, 20, 1, 43, 978, DateTimeKind.Local).AddTicks(1306), new DateTime(2021, 10, 11, 20, 1, 43, 978, DateTimeKind.Local).AddTicks(1312), null, null, "Bid", "Bidder", null, "YHCTM7byxNlmg1x9CGp5nA==", "bid.bidder@test.com", 3, 2, null }
                 });
 
             migrationBuilder.InsertData(
                 schema: "dbo",
                 table: "mb_company",
-                columns: new[] { "CompanyId", "Address1", "Address2", "Address3", "City", "CountryId", "Name", "ProvinceId", "ReferenceCode", "RegisteredAs", "Zip" },
-                values: new object[] { 1L, "Address1", "Address2", "Address3", "Kathmandu", 1, "Test Company", 3, null, null, "123" });
+                columns: new[] { "CompanyId", "Address1", "Address2", "Address3", "City", "CompanyEmail", "CompanyWebsite", "ContactPerson", "CountryId", "MembershipTypeId", "Name", "Phone1", "Phone2", "ProvinceId", "ReferenceCode", "RegisteredAs", "Zip" },
+                values: new object[] { 1L, "Address1", "Address2", "Address3", "Kathmandu", null, null, null, 1, 1, "Test Company", null, null, 3, "SP102111200143954", "Supplier", "123" });
 
             migrationBuilder.InsertData(
                 schema: "dbo",
@@ -1470,6 +1429,12 @@ namespace MeroBolee.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_mb_company_MembershipTypeId",
+                schema: "dbo",
+                table: "mb_company",
+                column: "MembershipTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_mb_company_ProvinceId",
                 schema: "dbo",
                 table: "mb_company",
@@ -1510,6 +1475,18 @@ namespace MeroBolee.Migrations
                 schema: "dbo",
                 table: "mb_company_document",
                 column: "UploadedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mb_company_type_CompanyId",
+                schema: "dbo",
+                table: "mb_company_type",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mb_company_type_CompanyTypeId",
+                schema: "dbo",
+                table: "mb_company_type",
+                column: "CompanyTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_mb_correspondence_email_SenderUserId",
@@ -1656,54 +1633,6 @@ namespace MeroBolee.Migrations
                 column: "tender_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_mb_user_category_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "category_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_city_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "city_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_company_type_Id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "company_type_Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_country_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "country_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_district_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "district_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_membership_Id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "membership_Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_municipality_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "municipality_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_province_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "province_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_mb_user_role_id",
                 schema: "dbo",
                 table: "mb_user",
@@ -1722,12 +1651,6 @@ namespace MeroBolee.Migrations
                 column: "username",
                 unique: true,
                 filter: "[username] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_mb_user_vdc_id",
-                schema: "dbo",
-                table: "mb_user",
-                column: "vdc_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_mb_user_company_CompanyId",
@@ -1775,11 +1698,19 @@ namespace MeroBolee.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "mb_city",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "mb_clarification_email",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "mb_company_document",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "mb_company_type",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -1827,15 +1758,27 @@ namespace MeroBolee.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "mb_municipality",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "mb_vdc",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "mb_correspondence_email",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "mb_document_status",
+                name: "lk_document_status",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "mb_document_type",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "lk_company_type",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -1851,7 +1794,7 @@ namespace MeroBolee.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "mb_request_help_status",
+                name: "lk_request_help_status",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -1859,31 +1802,11 @@ namespace MeroBolee.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "mb_district",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "mb_tender",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_admin_status",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_auction_status",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_user",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_category",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_city",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_company_type",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -1891,35 +1814,39 @@ namespace MeroBolee.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "mb_role",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_user_status",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_municipality",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_vdc",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_common_status",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "mb_district",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "mb_province",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "lk_admin_status",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "lk_auction_status",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "mb_category",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "mb_user",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "mb_country",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "lk_common_status",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "lk_user_status",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "mb_role",
                 schema: "dbo");
         }
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.CompanyType
 {
-    public class CompanyTypeRepository : RepositoryBase<CompanyTypeEntity>, ICompanyTypeRepository
+    public class CompanyTypeRepository : RepositoryBase<CompanyTypeLookupEntity>, ICompanyTypeRepository
     {
         private readonly IUnitOfWork unitOfWork;
         public CompanyTypeRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork) : base(dbFactory)
@@ -15,11 +15,11 @@ namespace MeroBolee.Repository.CompanyType
             this.unitOfWork = unitOfWork;
         }
 
-        public CompanyTypeEntity AddCompanyType(CompanyTypeEntity companyTypeEntity)
+        public CompanyTypeLookupEntity AddCompanyType(CompanyTypeLookupEntity companyTypeEntity)
         {
             try
             { 
-            meroBoleeDbContexts.CompanyTypeEntities.Add(companyTypeEntity);
+            meroBoleeDbContexts.CompanyTypeLookupEntities.Add(companyTypeEntity);
             unitOfWork.SaveChange();
             return companyTypeEntity;
             }
@@ -33,7 +33,7 @@ namespace MeroBolee.Repository.CompanyType
         {
             try 
             { 
-            meroBoleeDbContexts.CompanyTypeEntities.Remove(GetCompanyTypeDetail(id));
+            meroBoleeDbContexts.CompanyTypeLookupEntities.Remove(GetCompanyTypeDetail(id));
             unitOfWork.SaveChange();
             }
             catch (Exception)
@@ -42,20 +42,20 @@ namespace MeroBolee.Repository.CompanyType
             }
         }
 
-        public IEnumerable<CompanyTypeEntity> GetCompanyType(string search)
+        public IEnumerable<CompanyTypeLookupEntity> GetCompanyType(string search)
         {
             try
             {
-                return meroBoleeDbContexts.CompanyTypeEntities.Where(m => (search == null) || (m.Company_type.ToLower().Contains(search.ToLower()))).ToList();
+                return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => (search == null) || (m.Company_type.ToLower().Contains(search.ToLower()))).ToList();
             }
             catch (Exception) { throw new Exception(); }
         }
 
-        public CompanyTypeEntity GetCompanyTypeDetail(int id)
+        public CompanyTypeLookupEntity GetCompanyTypeDetail(int id)
         {
             try 
             { 
-            return meroBoleeDbContexts.CompanyTypeEntities.Where(m => m.Company_Type_Id == id).FirstOrDefault();
+            return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => m.Company_Type_Id == id).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -63,11 +63,11 @@ namespace MeroBolee.Repository.CompanyType
             }
         }
 
-        public CompanyTypeEntity UpdateCompanyType(int id, CompanyTypeEntity companyTypeEntity)
+        public CompanyTypeLookupEntity UpdateCompanyType(int id, CompanyTypeLookupEntity companyTypeEntity)
         {
             try
             {
-                CompanyTypeEntity companyType = GetCompanyTypeDetail(id);
+                CompanyTypeLookupEntity companyType = GetCompanyTypeDetail(id);
                 if (companyType != null)
                 {
                     companyType.Company_type = companyTypeEntity.Company_type;

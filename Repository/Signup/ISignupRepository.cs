@@ -28,6 +28,13 @@ namespace MeroBolee.Repository
                 unitOfWork.SaveChange();
                 meroBoleeDbContexts.UserEntities.Add(user);
                 unitOfWork.SaveChange();
+                UserCompany userCompany = new UserCompany
+                {
+                    UserId = user.User_Id,
+                    CompanyId = company.CompanyId
+                };
+                meroBoleeDbContexts.UserCompanies.Add(userCompany);
+                unitOfWork.SaveChange();
                 return true;
             }
             catch (Exception)

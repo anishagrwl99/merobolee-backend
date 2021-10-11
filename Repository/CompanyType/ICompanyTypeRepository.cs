@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.CompanyType
 {
-    public interface ICompanyTypeRepository : IRepositoryBase<CompanyTypeEntity>
+    public interface ICompanyTypeRepository : IRepositoryBase<CompanyTypeLookupEntity>
     {
-        CompanyTypeEntity AddCompanyType(CompanyTypeEntity companyTypeEntity);
-        IEnumerable<CompanyTypeEntity> GetCompanyType(string search);
-        CompanyTypeEntity GetCompanyTypeDetail(int id);
+        CompanyTypeLookupEntity AddCompanyType(CompanyTypeLookupEntity companyTypeEntity);
+        IEnumerable<CompanyTypeLookupEntity> GetCompanyType(string search);
+        CompanyTypeLookupEntity GetCompanyTypeDetail(int id);
 
-        CompanyTypeEntity UpdateCompanyType(int id, CompanyTypeEntity companyTypeEntity);
+        CompanyTypeLookupEntity UpdateCompanyType(int id, CompanyTypeLookupEntity companyTypeEntity);
         void DeleteCompanyType(int id);
     }
 }
