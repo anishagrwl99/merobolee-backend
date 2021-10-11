@@ -13,8 +13,8 @@ namespace MeroBolee.Service
     public interface ICallActionService
     {
         CallActionRequestResponseDto AddCallActionEmail(CallActionRequestDto dto);
-        List<CallActionResponseDto> GetAllCallAction(int supplierId);
-        List<CallActionResponseDto> GetAllCallActionNested(int supplierId);
+        List<CallActionResponseDto> GetAllCallAction(long userId);
+        List<CallActionResponseDto> GetAllCallActionNested(long userId);
         CallActionResponseDto GetCallActionDetail(int id);
         ResponseMsg ReadCallActionEmail(int id);
     }
@@ -59,13 +59,12 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-        public List<CallActionResponseDto> GetAllCallAction(int supplierId)
+        public List<CallActionResponseDto> GetAllCallAction(long userId)
         {
             try
             {
-                //collection.SelectMany(c => c.Children).Concat(collection).Where(c => c.id == id)
-
-                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmails(supplierId);
+                
+                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmails(userId);
 
                 List<CallActionResponseDto> response = new List<CallActionResponseDto>();
                 response = emails.Select(item => new CallActionResponseDto()
@@ -76,7 +75,9 @@ namespace MeroBolee.Service
                     Subject = item.Subject,
                     SentOn = item.EmailSentOn,
                     ParentId = item.ParentId,
-                    SenderName = $"{item.UserEntity.First_Name} {item.UserEntity.Last_Name}"
+                    SenderName = $"{item.UserEntity.First_Name} {item.UserEntity.Middle_Name} {item.UserEntity.Last_Name}",
+                    Parent = null,
+                    Responses = null
                 }).ToList();
 
                  
@@ -89,13 +90,13 @@ namespace MeroBolee.Service
             }
         }
 
-        public List<CallActionResponseDto> GetAllCallActionNested(int supplierId)
+        public List<CallActionResponseDto> GetAllCallActionNested(long userId)
         {
             try
             {
                 //collection.SelectMany(c => c.Children).Concat(collection).Where(c => c.id == id)
 
-                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmailsNested(supplierId);
+                List<CallActionEmailEntity> emails = callActionRepository.GetCallActionEmailsNested(userId);
 
                 List<CallActionResponseDto> response = new List<CallActionResponseDto>();
                 response = emails.Select(item => new CallActionResponseDto()

@@ -26,30 +26,9 @@ namespace MeroBolee.EntityMapper
                Address2 = obj.Address2,
                Address3 = obj.Address3,
                Zip = obj.Zip,
-               RegisteredAs = "Supplier",
+               RegisteredAs = "Bidder",
                MembershipTypeId = 1 //Registration
             };
-        }
-
-
-
-        private string GenerateReferenceCode(string registeredAs)
-        {
-            switch(registeredAs.ToLower())
-            {
-                case "supplier":
-                    return "SP" + GenerateReferenceCode();
-                case "bidinviter":
-                    return "BI" + GenerateReferenceCode();
-                default:
-                    return GenerateReferenceCode();
-            }
-        }
-
-        private string GenerateReferenceCode()
-        {
-            string val = DateTime.Now.ToString("MMyyddHHmmssfff");
-            return val;
         }
         
     }

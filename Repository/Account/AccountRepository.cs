@@ -12,7 +12,7 @@ namespace MeroBolee.Repository
 {
     public interface IAccountRepository
     {
-        AuthenticateResponse AuthenticateAsync(AuthenticateRequest request);
+        AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs);
     }
     public class AccountRepository : RepositoryBase<UserEntity>, IAccountRepository
     {
@@ -23,28 +23,47 @@ namespace MeroBolee.Repository
             this.unitOfWork = unitOfWork;
         }
 
-        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request)
+        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs)
         {
             try
             {
-                UserEntity userEntity = meroBoleeDbContexts.UserEntities
-                    .Where(x => x.Person_email == request.Email && x.Password == request.Password)
-                    .Include(x => x.Role)
-                    .FirstOrDefault();
 
-                if (userEntity != null)
-                {
-                    return new AuthenticateResponse
-                    {
-                        Id = userEntity.User_Id,
-                        FirstName = userEntity.First_Name,
-                        LastName = userEntity.Last_Name,
-                        Created = userEntity.Date_created,
-                        Email = userEntity.Person_email,
-                        Role = userEntity.Role.Role_Name,
-                    };
-                }
-                return null;
+                var user = from u in meroBoleeDbContexts.UserEntities
+                           join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                           join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
+                           join r in meroBoleeDbContexts.RoleEntities on u.Role_Id equals r.Role_Id
+                           where u.Person_email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs)
+                           select new AuthenticateResponse
+                           {
+                               Id = u.User_Id,
+                               FirstName = u.First_Name,
+                               LastName = u.Last_Name,
+                               CompanyId = c.CompanyId,
+                               CompanyName = c.Name,
+                               Created = u.Date_created,
+                               Email = u.Person_email,
+                               Role = r.Role_Name
+                           };
+
+                return user.FirstOrDefault();
+                //UserEntity userEntity = meroBoleeDbContexts.UserEntities
+                //    .Where(x => x.Person_email == request.Email && x.Password == request.Password)
+                //    .Include(x => x.Role)
+                //    .FirstOrDefault();
+
+                //if (userEntity != null)
+                //{
+                //    return new AuthenticateResponse
+                //    {
+                //        Id = userEntity.User_Id,
+                //        FirstName = userEntity.First_Name,
+                //        LastName = userEntity.Last_Name,
+                //        Created = userEntity.Date_created,
+                //        Email = userEntity.Person_email,
+                //        Role = userEntity.Role.Role_Name,
+                //    };
+                //}
+                //return null;
             }
             catch (Exception ex)
             {

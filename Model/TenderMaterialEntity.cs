@@ -32,8 +32,6 @@ namespace MeroBolee.Model
         [Column("quantity")]
         public int Quantity { get => quantity; set => quantity = value; }
 
-
-        [JsonIgnore]
         public virtual ICollection<MaterialFeatureEntity> MaterialFeatures { get => materialFeatureEntities; set => materialFeatureEntities = value; }
 
         [JsonIgnore]

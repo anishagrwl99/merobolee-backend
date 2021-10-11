@@ -28,18 +28,18 @@ namespace MeroBolee.Controllers
         }
 
         /// <summary>
-        /// Authenticate user
+        /// Authenticate supplier user
         /// </summary>
         /// <returns></returns>
         /// 
-        [HttpPost("Authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateRequest model)
+        [HttpPost("Authenticate/Supplier")]
+        public IActionResult AuthenticateSupplier([FromBody] AuthenticateRequest model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AuthenticateResponse response =  accountService.AuthenticateAsync(model);
+                    AuthenticateResponse response =  accountService.AuthenticateAsync(model, "Bidder");
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
@@ -61,6 +61,41 @@ namespace MeroBolee.Controllers
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
+
+
+        /// <summary>
+        /// Authenticate bid inviter user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("Authenticate/BidInviter")]
+        public IActionResult AuthenticateBidInviter([FromBody] AuthenticateRequest model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    AuthenticateResponse response = accountService.AuthenticateAsync(model, "BidInviter");
+                    if (response != null)
+                    {
+                        //setTokenCookie(response.RefreshToken);
+                        return Ok(response);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ResponseMsg response = new ResponseMsg
+                {
+                    statusCode = StatusCodes.Status400BadRequest.ToString(),
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+        }
 
         private void setTokenCookie(string token)
         {

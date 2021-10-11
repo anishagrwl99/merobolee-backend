@@ -50,7 +50,7 @@ namespace MeroBolee.Controllers.Correspondence
 
 
         [HttpGet("CallAction/List")]
-        public IActionResult GetAllCallAction([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId , [FromQuery] bool nested = false)
+        public IActionResult GetAllCallAction([FromQuery] PaginationQuery pagination, [FromQuery] long userId , [FromQuery] bool nested = false)
         {
             try
             {
@@ -59,11 +59,11 @@ namespace MeroBolee.Controllers.Correspondence
                 List<CallActionResponseDto> email = null;
                 if (nested)
                 {
-                    email = emailService.GetAllCallActionNested(supplierId);
+                    email = emailService.GetAllCallActionNested(userId);
                 }
                 else
                 {
-                    email = emailService.GetAllCallAction(supplierId);
+                    email = emailService.GetAllCallAction(userId);
                 }
                 int totalCount = email.Count();
                 if (totalCount == 0)

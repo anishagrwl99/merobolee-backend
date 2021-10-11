@@ -13,7 +13,7 @@ namespace MeroBolee.Dto
     public class AuthenticateResponse
     {
         public long Id { get; set; }
-        public int CompanyId { get; set; }
+        public long CompanyId { get; set; }
         public string CompanyName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -35,7 +35,7 @@ namespace MeroBolee.Service
             {
                 CompanyMapper mapper = new CompanyMapper();
                 CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data);
-                companyEntity.ReferenceCode = codeService.GenerateCode(ReferenceEnum.Supplier).Result;
+                companyEntity.ReferenceCode = codeService.GenerateCode(ReferenceEnum.Bidder).Result;
                 UserMapper userMapper = new UserMapper();
                 UserEntity user = userMapper.SupplierSignUpDToUserEntity(data);
                 user.Password = cryptoService.Encrypt(user.Password);

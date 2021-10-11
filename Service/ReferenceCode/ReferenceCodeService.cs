@@ -7,7 +7,7 @@ namespace MeroBolee.Service
 {
     public enum ReferenceEnum
     {
-        Supplier,
+        Bidder,
         BidInviter,
         Tender
     }
@@ -25,7 +25,7 @@ namespace MeroBolee.Service
                 string uniqueVal = DateTime.Now.ToString("MMyyddHHmmssfff");
                 switch (type)
                 {
-                    case ReferenceEnum.Supplier:
+                    case ReferenceEnum.Bidder:
                         return $"SP{uniqueVal}";
                     case ReferenceEnum.BidInviter:
                         return $"BI{uniqueVal}";

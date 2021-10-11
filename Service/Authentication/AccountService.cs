@@ -22,7 +22,7 @@ namespace MeroBolee.Service
     /// </summary>
     public interface IAccountService
     {
-        AuthenticateResponse AuthenticateAsync(AuthenticateRequest model);
+        AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs);
        
     }
 
@@ -42,12 +42,12 @@ namespace MeroBolee.Service
             jwtsetting = jwtSettings.Value;
         }
 
-        public  AuthenticateResponse AuthenticateAsync(AuthenticateRequest model)
+        public  AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs)
         {
             try
             {
                 model.Password = cryptoService.Encrypt(model.Password);
-                AuthenticateResponse account = accountRepository.AuthenticateAsync(model);
+                AuthenticateResponse account = accountRepository.AuthenticateAsync(model, companyRegisteredAs);
 
                 if (account != null)
                 {

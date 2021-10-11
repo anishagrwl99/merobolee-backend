@@ -321,7 +321,7 @@ namespace MeroBolee.Utility
                     Address3 = "Address3",
                     City = "Kathmandu",
                     Zip = "123",
-                    RegisteredAs = "Supplier",
+                    RegisteredAs = "Bidder,BidInviter",
                     ReferenceCode = $"SP{DateTime.Now.ToString("MMyyddHHmmssfff")}",
                     MembershipTypeId = 1
                 }
