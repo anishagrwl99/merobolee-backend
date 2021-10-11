@@ -23,5 +23,11 @@ namespace MeroBolee.Repository.BidderRequest
         IEnumerable<BidderRequestEntity> AllRequestByBidder(int bidderId);
 
         BidderRequestEntity UpdateRequest(int id, UpdateRequestDto updateRequest);
+
+        Task<List<LiveBiddingEntity>> GetExpiredBids();
+
+        Task<bool> DeleteLiveBids(List<LiveBiddingEntity> records);
+        Task<bool> AddHistory(List<BiddingHistoryEntity> records);
+
     }
 }

@@ -61,6 +61,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Hangfire;
+using Hangfire.SqlServer;
+
 
 namespace MeroBolee
 {
@@ -78,6 +81,7 @@ namespace MeroBolee
             //  .AddEnvironmentVariables();
             //configuration = builder.Build();
             Configuration = configuration;
+            HostingEnvironment = env.EnvironmentName;
         }
 
 
@@ -231,7 +235,7 @@ namespace MeroBolee
 
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
-           
+
 
             //signup
             services.AddScoped<ISignupRepository, SignupRepository>();
@@ -257,6 +261,27 @@ namespace MeroBolee
             services.AddScoped<ICompanyDocumentService, CompanyDocumentService>();
             services.AddScoped<IDocumentTypeService, DocumentTypeService>();
             services.AddScoped<IDocumentStatusService, DocumentStatusService>();
+
+
+
+            //Hangfire configuration
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("MeroBoleeConn"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
+
         }
 
 
@@ -265,7 +290,13 @@ namespace MeroBolee
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="backgroundJobs"></param>
+        /// <param name="bidservice"></param>
+        /// <param name="repo"></param>
+        /// <param name="cryptoService"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="unitOfWork"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs, IBiddingRequestService bidservice, IBidderRequestRepository repo, ICryptoService cryptoService, IDbFactory dbFactory, IUnitOfWork unitOfWork)
         {
             HostingEnvironment = env.EnvironmentName;
             app.UseStaticFiles();
@@ -273,7 +304,7 @@ namespace MeroBolee
             {
                 FileProvider = new PhysicalFileProvider(
                    Path.Combine(env.ContentRootPath, "Resource")),
-                        RequestPath = "/Resource"
+                RequestPath = "/Resource"
             });
 
             app.UseSwagger();
@@ -307,10 +338,47 @@ namespace MeroBolee
             // custom jwt auth middleware
             app.UseMiddleware<JwtMiddleware>();
 
+            app.UseHangfireDashboard();
+            //backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
+            //RecurringJob.AddOrUpdate(
+            //            "myrecurringjob"
+            //            () => Console.WriteLine("Recurring!"),
+            //            Cron.Daily);
+
+            //RecurringJob.AddOrUpdate("Move Live Bid To History", () => MoveBidToHistory(), Cron.Hourly());
+            //IServiceProvider serviceProvider = app.ApplicationServices;
+            //IBiddingRequestService bidservice = serviceProvider.GetService<IBiddingRequestService>();
+            //IBidderRequestRepository repo = serviceProvider.GetService<IBidderRequestRepository>();
+            //ICryptoService cryptoService = serviceProvider.GetService<ICryptoService>();
+            
+           // RecurringJob.AddOrUpdate("Move Live Bid To History", () => MoveBidToHistory(bidservice, repo, cryptoService), Cron.Minutely());
+            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+               // endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                       name: "default",
+                       pattern: "{controller=BackgroundJob}/{action=MoveRecord}/{id?}");
+
+                endpoints.MapHangfireDashboard();
             });
+        }
+
+
+        /// <summary>
+        /// Move a live bid data to history after tender bidding is expired
+        /// </summary>
+        /// <returns></returns>
+        public Task MoveBidToHistory(IBiddingRequestService bidservice, IBidderRequestRepository repo, ICryptoService cryptoService)
+        {
+            return Task.Run(async () =>
+            {
+                Console.WriteLine("Moving data");
+                await bidservice.MoveBidToHistory();
+                Console.WriteLine("Moved data");
+            });
+            
         }
     }
 }

@@ -47,13 +47,13 @@ namespace MeroBolee.Repository.BidderRequest
 
                 if (tender != null)
                 {
-                    if (bidderRequestEntity.Request_Send_Date < tender.Last_Request_Date)
+                    if (bidderRequestEntity.Request_Send_Date >= tender.Live_End_Date)
                     {
                         return null;
                     }
                     meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
                     unitOfWork.SaveChange();
-                    meroBoleeDbContexts.UserEntities.ToList();
+                    //meroBoleeDbContexts.UserEntities.ToList();
                     if (bidderRequestEntity.BidderRequestDocs == null)
                     {
                         bidderRequestEntity.BidderRequestDocs = null;
@@ -89,9 +89,16 @@ namespace MeroBolee.Repository.BidderRequest
         {
             try
             {
-                meroBoleeDbContexts.liveBiddingEntities.Add(bidEntity);
-                unitOfWork.SaveChange();
-                return bidEntity;
+                bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities.Where(x => x.Tender_Id == bidEntity.TenderId).FirstOrDefault();
+                if (bidEntity.BidDate <= bidEntity.TenderEntity.Live_End_Date)
+                {
+                    meroBoleeDbContexts.LiveBiddingEntities.Add(bidEntity);
+                    unitOfWork.SaveChange();
+
+                    return bidEntity;
+                }
+
+                return null;
             }
             catch (Exception ex)
             {
@@ -120,7 +127,7 @@ namespace MeroBolee.Repository.BidderRequest
                  * 
                  * */
 
-                List<LiveBiddingEntity> bids =  await meroBoleeDbContexts.liveBiddingEntities
+                List<LiveBiddingEntity> bids =  await meroBoleeDbContexts.LiveBiddingEntities
                     .GroupBy(o => new { o.SupplierId, o.TenderId, o.MaterialId })
                     .Select(g => new LiveBiddingEntity
                     {
@@ -170,6 +177,70 @@ namespace MeroBolee.Repository.BidderRequest
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+        public Task<List<LiveBiddingEntity>> GetExpiredBids()
+        {
+
+            try
+            {
+                return Task.Run<List<LiveBiddingEntity>>(() =>
+                {
+                    var list = from t in meroBoleeDbContexts.TenderEntities
+                    join b in meroBoleeDbContexts.LiveBiddingEntities on t.Tender_Id equals b.TenderId
+                    where t.Live_End_Date < DateTime.Now
+                    select new LiveBiddingEntity
+                    {
+                        Id = b.Id,
+                        BiddingRequestId = b.BiddingRequestId,
+                        SupplierId = b.SupplierId,
+                        TenderId = b.TenderId,
+                        MaterialId = b.MaterialId,
+                        Quotation = b.Quotation,
+                        BidDate = b.BidDate
+                    };
+                    return list.ToList<LiveBiddingEntity>();
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Task<bool> DeleteLiveBids(List<LiveBiddingEntity> records)
+        {
+            try
+            {
+                return Task.Run<bool>(() =>
+                {
+                    meroBoleeDbContexts.LiveBiddingEntities.RemoveRange(records);
+                    unitOfWork.SaveChange();
+                    return true;
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public Task<bool> AddHistory(List<BiddingHistoryEntity> records)
+        {
+            try
+            {
+                return Task.Run<bool>(async () =>
+                {
+                    await meroBoleeDbContexts.BiddingHistoryEntities.AddRangeAsync(records);
+                    unitOfWork.SaveChange();
+                    return true;
+                });
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

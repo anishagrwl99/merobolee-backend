@@ -25,7 +25,7 @@ namespace MeroBolee.Infrastructure
 
         public RepositoryBase(IDbFactory dbFactory)
         {
-            this.dbFactory = dbFactory;
+            this.dbFactory = dbFactory==null? new DbFactory(): dbFactory;
             dbSet = meroBoleeDbContexts.Set<T>();
         }
 

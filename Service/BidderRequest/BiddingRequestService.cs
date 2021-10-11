@@ -4,6 +4,7 @@ using MeroBolee.Model;
 using MeroBolee.Repository.BidderRequest;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,9 @@ namespace MeroBolee.Service.BidderReuest
     public class BiddingRequestService : BiddingRequestMapper, IBiddingRequestService
     {
         private readonly object _locker = new object();
-        private readonly IBidderRequestRepository bidderRequestRepository;
-        private readonly IMemoryCache memoryCache;
-        private readonly ICryptoService cryptoService;
+        private IBidderRequestRepository bidderRequestRepository;
+        private IMemoryCache memoryCache;
+        private ICryptoService cryptoService;
 
         public BiddingRequestService(IBidderRequestRepository bidderRequestRepository, IMemoryCache cache, ICryptoService cryptoService)
         {
@@ -46,12 +47,26 @@ namespace MeroBolee.Service.BidderReuest
                     LiveBiddingEntity entity = MaterialBiddingDtoToLiveBiddingEntity(materialDto);
                     entity.Quotation = cryptoService.Encrypt(entity.Quotation);
                     entity = await bidderRequestRepository.LiveBid(entity);
-                    // return LiveBiddingEntityToMaterialBiddingDto(entity);
-                    AddQuotationToCache(entity, entity.SupplierId, entity.MaterialId);
-                    LiveBidResponse response = GetPositionFromCache(entity.TenderId, entity.SupplierId, materialDto.Quotation);
-                    return response;
-                    //List<LiveBiddingEntity> bids = await bidderRequestRepository.TenderLiveBids(materialDto.TenderId);
-                    //return new LiveBidResponse();
+
+                    if (entity != null) //if tender is not expired 
+                    {
+                        AddQuotationToCache(entity, entity.SupplierId, entity.MaterialId);
+                        LiveBidResponse response = GetPositionFromCache(entity.TenderId, entity.SupplierId, materialDto.Quotation);
+                        return response;
+                    }
+                    else
+                    {
+                        return new LiveBidResponse
+                        {
+                            IsBidSuccess = false,
+                            IsLowestBidReceived = false,
+                            LowestBidRecievedTime = materialDto.BiddingDate,
+                            MaterialId = materialDto.MaterialId,
+                            Position = "NA",
+                            Quotation = materialDto.Quotation,
+                            Message = "Tender bidding has expired"
+                        };
+                    }
 
                 }
                 else
@@ -91,6 +106,37 @@ namespace MeroBolee.Service.BidderReuest
             return BidderRequestToEntity(bidderRequestRepository.UpdateRequest(id, updateRequest));
         }
 
+        public Task MoveBidToHistory()
+        {
+            return Task.Run(async () =>
+            {
+                List<LiveBiddingEntity> list = await bidderRequestRepository.GetExpiredBids();
+                List<BiddingHistoryEntity> historyEntities = new List<BiddingHistoryEntity>();
+                foreach (LiveBiddingEntity item in list)
+                {
+                    //Create history object with decrypted quotation
+                    BiddingHistoryEntity entity = new BiddingHistoryEntity
+                    {
+                        BiddingRequestId = item.BiddingRequestId,
+                        SupplierId =item.SupplierId,
+                        TenderId = item.TenderId,
+                        MaterialId = item.MaterialId,
+                        Quotation = cryptoService.Decrypt<decimal>(item.Quotation),
+                        BidDate = item.BidDate
+                    };
+                    historyEntities.Add(entity);
+                   
+                }
+                //Save History
+                bool isHistoryCreated = await bidderRequestRepository.AddHistory(historyEntities);
+
+                //delete item from live bid
+                if(isHistoryCreated)
+                {
+                    await bidderRequestRepository.DeleteLiveBids(list);
+                }
+            });
+        }
 
         private LiveBidResponse GetPositionFromCache(int tenderId, int supplierId, decimal quotation)
         {
@@ -126,7 +172,7 @@ namespace MeroBolee.Service.BidderReuest
                         ent.Quotation = obj.Quotation;
                     }
                 }
-                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings);
+                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings, obj.TenderEntity.Live_End_Date.AddMinutes(5));
             }
         }
 

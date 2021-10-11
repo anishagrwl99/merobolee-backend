@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Model;
+using MeroBolee.Repository.BidderRequest;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,8 @@ namespace MeroBolee.Service.BidderReuest
         GetBiddingRequestDto UpdateRequest(int id, UpdateRequestDto updateRequest);
 
         Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId);
+
+
+        Task MoveBidToHistory();
     }
 }

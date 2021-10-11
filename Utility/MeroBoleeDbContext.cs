@@ -94,6 +94,22 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<BiddingHistoryEntity>()
+              .HasOne(e => e.UserEntity)
+              .WithMany()
+              .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<BiddingHistoryEntity>()
+               .HasOne(e => e.TenderMaterialEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BiddingHistoryEntity>()
+               .HasOne(e => e.TenderEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<CompanyDocumentEntity>()
                .HasOne(e => e.UploadUserEntity)
                .WithMany()
@@ -263,11 +279,12 @@ namespace MeroBolee.Utility
                 );
         }
 
+        public DbSet<BiddingHistoryEntity> BiddingHistoryEntities { get; set; }
         public DbSet<CompanyEntity> CompanyEntities { get; set; }
         public DbSet<DocumentStatusEntity> DocumentStatusEntities { get; set; }
         public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
         public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
-        public DbSet<LiveBiddingEntity> liveBiddingEntities { get; set; }
+        public DbSet<LiveBiddingEntity> LiveBiddingEntities { get; set; }
         public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
         public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
         public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
