@@ -110,6 +110,7 @@ namespace MeroBolee
             services.AddControllers();
             services.AddMvc();
 
+
             services.AddDbContext<MeroBoleeDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
@@ -183,6 +184,7 @@ namespace MeroBolee
 
             // Dependency Injection
             services.AddScoped<ICryptoService, CryptoService>();
+            services.AddScoped<IReferenceCodeService, ReferenceCodeService>();
 
             services.AddScoped<IDbFactory, DbFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -290,13 +292,7 @@ namespace MeroBolee
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        /// <param name="backgroundJobs"></param>
-        /// <param name="bidservice"></param>
-        /// <param name="repo"></param>
-        /// <param name="cryptoService"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="unitOfWork"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs, IBiddingRequestService bidservice, IBidderRequestRepository repo, ICryptoService cryptoService, IDbFactory dbFactory, IUnitOfWork unitOfWork)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             HostingEnvironment = env.EnvironmentName;
             app.UseStaticFiles();
@@ -328,6 +324,9 @@ namespace MeroBolee
 
             //    app.Run(context => { throw new Exception("error"); });
 
+            //Use Hangfire dashboard
+            app.UseHangfireDashboard();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -335,25 +334,11 @@ namespace MeroBolee
 
             app.UseAuthorization();
             app.UseAuthentication();
+
             // custom jwt auth middleware
             app.UseMiddleware<JwtMiddleware>();
 
-            app.UseHangfireDashboard();
-            //backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
-
-            //RecurringJob.AddOrUpdate(
-            //            "myrecurringjob"
-            //            () => Console.WriteLine("Recurring!"),
-            //            Cron.Daily);
-
-            //RecurringJob.AddOrUpdate("Move Live Bid To History", () => MoveBidToHistory(), Cron.Hourly());
-            //IServiceProvider serviceProvider = app.ApplicationServices;
-            //IBiddingRequestService bidservice = serviceProvider.GetService<IBiddingRequestService>();
-            //IBidderRequestRepository repo = serviceProvider.GetService<IBidderRequestRepository>();
-            //ICryptoService cryptoService = serviceProvider.GetService<ICryptoService>();
-            
-           // RecurringJob.AddOrUpdate("Move Live Bid To History", () => MoveBidToHistory(bidservice, repo, cryptoService), Cron.Minutely());
-            
+     
             app.UseEndpoints(endpoints =>
             {
                // endpoints.MapControllers();
@@ -363,22 +348,6 @@ namespace MeroBolee
 
                 endpoints.MapHangfireDashboard();
             });
-        }
-
-
-        /// <summary>
-        /// Move a live bid data to history after tender bidding is expired
-        /// </summary>
-        /// <returns></returns>
-        public Task MoveBidToHistory(IBiddingRequestService bidservice, IBidderRequestRepository repo, ICryptoService cryptoService)
-        {
-            return Task.Run(async () =>
-            {
-                Console.WriteLine("Moving data");
-                await bidservice.MoveBidToHistory();
-                Console.WriteLine("Moved data");
-            });
-            
         }
     }
 }

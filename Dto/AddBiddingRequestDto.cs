@@ -35,10 +35,10 @@ namespace MeroBolee.Dto
 
     public class TenderMaterialBiddingDto
     {
-        public int BiddingId { get; set; }
-        public int TenderId { get; set; }
-        public int SupplierId { get; set; }
-        public int MaterialId { get; set; }
+        public long BiddingId { get; set; }
+        public long TenderId { get; set; }
+        public long SupplierId { get; set; }
+        public long MaterialId { get; set; }
         public decimal Quotation { get; set; }
         public DateTime BiddingDate { get; set; }
     }
@@ -47,7 +47,7 @@ namespace MeroBolee.Dto
     {
         public bool IsBidSuccess { get; set; }
         public string Position { get; set; }
-        public int MaterialId { get; set; }
+        public long MaterialId { get; set; }
         public string Message { get; set; }
         public decimal Quotation { get; set; }
         public bool IsLowestBidReceived { get; set; }

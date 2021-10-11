@@ -31,6 +31,6 @@ namespace MeroBolee.Dto
         public DateTime SentOn { get; set; }
         public string SupplierName { get; set; }
         public string SupplierCompany { get; set; }
-        public int TenderId { get; set; }
+        public long TenderId { get; set; }
     }
 }

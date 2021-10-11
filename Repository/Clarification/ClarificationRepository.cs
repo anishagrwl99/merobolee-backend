@@ -47,7 +47,6 @@ namespace MeroBolee.Repository
             return meroBoleeDbContexts
                 .ClarificationEmailEntities
                 .Include(x=>x.UserEntity)
-                .Include(x=>x.UserEntity.Company)
                 .Include(x=>x.CorrespondenceEmailEntity)
                 .Where(x=>x.CorrespondenceEmailEntity.SenderUserId == supplierId)
                 .ToList();
@@ -58,7 +57,6 @@ namespace MeroBolee.Repository
             return meroBoleeDbContexts
                 .ClarificationEmailEntities
                 .Include(x=>x.UserEntity)
-                .Include(x=>x.UserEntity.Company)
                 .Where(x => x.Id == id).FirstOrDefault();
         }
 

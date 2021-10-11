@@ -14,11 +14,13 @@ namespace MeroBolee.Service
     public class SignupService : ISignupService
     {
         private readonly ICryptoService cryptoService;
+        private readonly IReferenceCodeService codeService;
         private readonly ISignupRepository signupRepo;
 
-        public SignupService(ICryptoService cryptoService, ISignupRepository signupRepo)
+        public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo)
         {
             this.cryptoService = cryptoService;
+            this.codeService = codeService;
             this.signupRepo = signupRepo;
         }
 
@@ -27,12 +29,13 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public ResponseMsg SignupSupplier(SupplierSignUp data)
+        public  ResponseMsg SignupSupplier(SupplierSignUp data)
         {
             try
             {
                 CompanyMapper mapper = new CompanyMapper();
                 CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data);
+                companyEntity.ReferenceCode = codeService.GenerateCode(ReferenceEnum.Supplier).Result;
                 UserMapper userMapper = new UserMapper();
                 UserEntity user = userMapper.SupplierSignUpDToUserEntity(data);
                 user.Password = cryptoService.Encrypt(user.Password);

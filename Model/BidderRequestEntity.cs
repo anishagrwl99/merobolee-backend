@@ -11,11 +11,11 @@ namespace MeroBolee.Model
     [Table("mb_bidder_request")]
     public class BidderRequestEntity: BaseEntity
     {
-        private int request_Id;
+        private long request_Id;
         private Guid request_code;
-        private int user_id;
+        private long user_id;
         private UserEntity userEntity;
-        private int tender_Id;
+        private long tender_Id;
         private TenderEntity tenderEntity;
         private int admin_Status_Id;
         private AdminStatusEntity adminStatusEntity;
@@ -26,18 +26,18 @@ namespace MeroBolee.Model
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("request_id")]
         [JsonIgnore]
-        public int Request_Id { get => request_Id; set => request_Id = value; }
+        public long Request_Id { get => request_Id; set => request_Id = value; }
 
         [Column("request_code")]
         public Guid Request_code { get => request_code; set => request_code = value; }
         [Column("user_id")]
         [ForeignKey("UserEntity")]
-        public int User_id { get => user_id; set => user_id = value; }
+        public long User_id { get => user_id; set => user_id = value; }
         public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
 
         [Column("tender_id")]
         [ForeignKey("TenderEntity")]
-        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
         public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
 
         [Column("admin_status_id")]

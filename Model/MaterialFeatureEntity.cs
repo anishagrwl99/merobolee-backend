@@ -7,8 +7,8 @@ namespace MeroBolee.Model
     [Table("mb_material_feature")]
     public class MaterialFeatureEntity
     {
-        private int id;
-        private int material_id;
+        private long id;
+        private long material_id;
         private TenderMaterialEntity tenderMaterialEntity;
         private string featureName;
         private string featureValue;
@@ -16,12 +16,12 @@ namespace MeroBolee.Model
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         [JsonIgnore]
-        public int Id { get => id; set => id = value; }
+        public long Id { get => id; set => id = value; }
 
         [Column("material_id")]
         [ForeignKey("TenderMaterialEntity")]
         [JsonIgnore]
-        public int Material_id { get => material_id; set => material_id = value; }
+        public long Material_id { get => material_id; set => material_id = value; }
         [JsonIgnore]
         public TenderMaterialEntity TenderMaterialEntity { get => tenderMaterialEntity; set => tenderMaterialEntity = value; }
 

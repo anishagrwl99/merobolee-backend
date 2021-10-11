@@ -12,10 +12,10 @@ namespace MeroBolee.Model
         public int Id { get; set; }
 
         [ForeignKey("User")]
-        public int SenderUserId { get; set; }
+        public long SenderUserId { get; set; }
 
         [ForeignKey("Tender")]
-        public int TenderId { get; set; }
+        public long TenderId { get; set; }
 
         public string Subject { get; set; }
 

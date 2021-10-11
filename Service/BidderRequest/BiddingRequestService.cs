@@ -50,8 +50,8 @@ namespace MeroBolee.Service.BidderReuest
 
                     if (entity != null) //if tender is not expired 
                     {
-                        AddQuotationToCache(entity, entity.SupplierId, entity.MaterialId);
-                        LiveBidResponse response = GetPositionFromCache(entity.TenderId, entity.SupplierId, materialDto.Quotation);
+                        AddQuotationToCache(entity, entity.UserId, entity.MaterialId);
+                        LiveBidResponse response = GetPositionFromCache(entity.TenderId, entity.UserId, materialDto.Quotation);
                         return response;
                     }
                     else
@@ -118,7 +118,7 @@ namespace MeroBolee.Service.BidderReuest
                     BiddingHistoryEntity entity = new BiddingHistoryEntity
                     {
                         BiddingRequestId = item.BiddingRequestId,
-                        SupplierId =item.SupplierId,
+                        UserId =item.UserId,
                         TenderId = item.TenderId,
                         MaterialId = item.MaterialId,
                         Quotation = cryptoService.Decrypt<decimal>(item.Quotation),
@@ -138,7 +138,7 @@ namespace MeroBolee.Service.BidderReuest
             });
         }
 
-        private LiveBidResponse GetPositionFromCache(int tenderId, int supplierId, decimal quotation)
+        private LiveBidResponse GetPositionFromCache(long tenderId, long supplierId, decimal quotation)
         {
             string key = $"Tender_Bidding_{tenderId}";
             List<LiveBiddingEntity> biddings;
@@ -147,7 +147,7 @@ namespace MeroBolee.Service.BidderReuest
             return response;
         }
       
-        private void AddQuotationToCache(LiveBiddingEntity obj, int supplierId, int materialId)
+        private void AddQuotationToCache(LiveBiddingEntity obj, long supplierId, long materialId)
         {
             lock (_locker)
             {
@@ -162,7 +162,7 @@ namespace MeroBolee.Service.BidderReuest
                 else //Cache found
                 {
                     //Get minimum quotation from supplier
-                    LiveBiddingEntity ent = biddings.Where(x => x.SupplierId == supplierId && x.MaterialId == materialId).FirstOrDefault();
+                    LiveBiddingEntity ent = biddings.Where(x => x.UserId == supplierId && x.MaterialId == materialId).FirstOrDefault();
                     if (ent == null)
                     {
                         biddings.Add(obj);
@@ -194,15 +194,15 @@ namespace MeroBolee.Service.BidderReuest
             return false;
         }
 
-        private LiveBidResponse GetSupplierBiddingPosition(List<LiveBiddingEntity> livebids, int supplierId, decimal currentQuotation)
+        private LiveBidResponse GetSupplierBiddingPosition(List<LiveBiddingEntity> livebids, long supplierId, decimal currentQuotation)
         {
             try
             {
                 var a = livebids
-                    .GroupBy(x => new { x.TenderId, x.SupplierId })
+                    .GroupBy(x => new { x.TenderId, x.UserId })
                     .Select(x => new
                     {
-                        SupplierId = x.Key.SupplierId,
+                        SupplierId = x.Key.UserId,
                         TenderId = x.Key.TenderId,
                         Quotation = x.Sum(o => cryptoService.Decrypt<decimal>(o.Quotation))
                     })

@@ -14,18 +14,18 @@ namespace MeroBolee.Model
         public long Id { get; set; }
 
         [ForeignKey("BidderRequestEntity")]
-        public int BiddingRequestId { get; set; }
+        public long BiddingRequestId { get; set; }
 
         [ForeignKey("UserEntity")]
-        public int SupplierId { get; set; }
+        public long UserId { get; set; }
 
 
         [ForeignKey("TenderEntity")]
-        public int TenderId { get; set; }
+        public long TenderId { get; set; }
 
 
         [ForeignKey("TenderMaterialEntity")]
-        public int MaterialId { get; set; }
+        public long MaterialId { get; set; }
 
         [MaxLength(300)]
         public string Quotation { get; set; }
@@ -50,18 +50,18 @@ namespace MeroBolee.Model
         public long Id { get; set; }
 
         [ForeignKey("BidderRequestEntity")]
-        public int BiddingRequestId { get; set; }
+        public long BiddingRequestId { get; set; }
 
         [ForeignKey("UserEntity")]
-        public int SupplierId { get; set; }
+        public long UserId { get; set; }
 
 
         [ForeignKey("TenderEntity")]
-        public int TenderId { get; set; }
+        public long TenderId { get; set; }
 
 
         [ForeignKey("TenderMaterialEntity")]
-        public int MaterialId { get; set; }
+        public long MaterialId { get; set; }
 
         public decimal Quotation { get; set; }
 

@@ -10,7 +10,7 @@ namespace MeroBolee.Model
     public class FavouriteCategoryEntity
     {
         private int id;
-        private int user_id;
+        private long user_id;
         private int category_id;
         private UserEntity user;
         private CategoryEntity category;
@@ -19,7 +19,7 @@ namespace MeroBolee.Model
 
         [Column("user_id")]
         [ForeignKey("User")]
-        public int User_id { get => user_id; set => user_id = value; }
+        public long User_id { get => user_id; set => user_id = value; }
 
         [Column("category_id")]
         [ForeignKey("Category")]

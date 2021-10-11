@@ -13,7 +13,7 @@ namespace MeroBolee.Repository.User
     {
        Task<UserEntity> AddUser(UserEntity user, ICollection<IFormFile> files);
         IEnumerable<UserEntity> GetAllUser(string search);
-        UserEntity GetUserDetail(int id);
+        UserEntity GetUserDetail(long id);
        Task<UserEntity> UpdateUser(int id, UserEntity user, ICollection<IFormFile> files);
        
     }

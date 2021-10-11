@@ -69,7 +69,7 @@ namespace MeroBolee.Service
                     SentOn = item.EmailSentOn,
                     TenderId = item.TenderId,
                     SupplierName = $"{item.User.First_Name} {item.User.Last_Name}",
-                    SupplierCompany = item.User.Company.Name
+                    //SupplierCompany = item.User.Company.Name
 
                 }).ToList();
                 return response;
@@ -96,7 +96,7 @@ namespace MeroBolee.Service
                         SentOn = email.EmailSentOn,
                         TenderId = email.TenderId,
                         SupplierName = $"{email.User.First_Name} {email.User.Last_Name}",
-                        SupplierCompany = email.User.Company.Name
+                        //SupplierCompany = email.User.Company.Name
                     };
                     return response;
                 }

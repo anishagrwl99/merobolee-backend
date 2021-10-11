@@ -8,8 +8,8 @@ namespace MeroBolee.Model
     [Table("mb_tender_material")]
     public class TenderMaterialEntity
     {
-        private int id;
-        private int tender_Id;
+        private long id;
+        private long tender_Id;
         private TenderEntity tenderEntity;
         private string materials;
         private int quantity;
@@ -18,20 +18,25 @@ namespace MeroBolee.Model
         [Column("id")]
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
-        public int Id { get => id; set => id = value; }
+        public long Id { get => id; set => id = value; }
 
         [Column("tender_id")]
         [ForeignKey("TenderEntity")]
         [JsonIgnore]
-        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
-        [JsonIgnore]
-        public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
+        
 
         [Column("material")]
         public string Materials { get => materials; set => materials = value; }
 
         [Column("quantity")]
         public int Quantity { get => quantity; set => quantity = value; }
-        public ICollection<MaterialFeatureEntity> MaterialFeatures { get => materialFeatureEntities; set => materialFeatureEntities = value; }
+
+
+        [JsonIgnore]
+        public virtual ICollection<MaterialFeatureEntity> MaterialFeatures { get => materialFeatureEntities; set => materialFeatureEntities = value; }
+
+        [JsonIgnore]
+        public virtual TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
     }
 }

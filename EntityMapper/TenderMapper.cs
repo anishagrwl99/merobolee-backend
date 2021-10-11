@@ -59,7 +59,7 @@ namespace MeroBolee.EntityMapper
                 Tender_Status_Id = tenderDto.Tender_Status_Id,
                 Admin_Status_Id = tenderDto.Admin_Status_Id,
                 Cancel_remark = tenderDto.Cancel_Remark,
-                Posted_By = tenderDto.Posted_By,
+                UserId = tenderDto.Posted_By,
                 Last_Request_Date = tenderDto.Last_Request_Date,
                 Source_Fund = tenderDto.Source_Fund,
                 //    IFB_RFP_EOI1= tenderDto.IFB_RFP_EOI1,
@@ -97,7 +97,7 @@ namespace MeroBolee.EntityMapper
             getTender.Admin_Status_Id = tenderEntity.Admin_Status_Id;
             getTender.AdminStatus = tenderEntity.AdminStatusEntity.Status;
             getTender.Cancel_Remark = tenderEntity.Cancel_remark;
-            getTender.Posted_By = tenderEntity.Posted_By;
+            getTender.Posted_By = tenderEntity.UserId;
             getTender.User = tenderEntity.UserEntity;
             getTender.Last_Request_Date = tenderEntity.Last_Request_Date;
             getTender.Source_Fund = tenderEntity.Source_Fund;

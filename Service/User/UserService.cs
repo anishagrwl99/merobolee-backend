@@ -111,7 +111,7 @@ namespace MeroBolee.Service.User
             return UserEntityListToDto(userRepository.GetAllUser(search));
         }
 
-        public GetUserDto GetUserDetail(int id)
+        public GetUserDto GetUserDetail(long id)
         {
             return UserEntityToDto(userRepository.GetUserDetail(id));
         }

@@ -8,7 +8,7 @@ namespace MeroBolee.Dto
 {
     public class GetTenderDto
     {
-        private int tender_Id;
+        private long tender_Id;
         private Guid tender_Code;
         private string tender_Title;
         private int category_Id;
@@ -20,7 +20,7 @@ namespace MeroBolee.Dto
         private int project_Duration;
         private string duration_Type;
         private int bid_No;
-        private int posted_By;
+        private long posted_By;
         private UserEntity userEntity;
         private int tender_Status_Id;
         private string auctionStatus;
@@ -39,7 +39,7 @@ namespace MeroBolee.Dto
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
 
-        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
         public Guid Tender_Code { get => tender_Code; set => tender_Code = value; }
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
         public int Category_Id { get => category_Id; set => category_Id = value; }
@@ -51,7 +51,7 @@ namespace MeroBolee.Dto
         public int Project_Duration { get => project_Duration; set => project_Duration = value; }
         public string Duration_Type { get => duration_Type; set => duration_Type = value; }
         public int Bid_No { get => bid_No; set => bid_No = value; }
-        public int Posted_By { get => posted_By; set => posted_By = value; }
+        public long Posted_By { get => posted_By; set => posted_By = value; }
         public UserEntity User { get => userEntity; set => userEntity = value; }
 
         public int Tender_Status_Id { get => tender_Status_Id; set => tender_Status_Id = value; }

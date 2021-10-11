@@ -16,9 +16,6 @@ namespace MeroBolee.Controllers.City
     public class BackgroundJobController : Controller
     {
         private readonly IBiddingRequestService bidService;
-        private readonly PaginationMapper pagination = new PaginationMapper();
-        private readonly ResponseMsg response = new ResponseMsg();
-        private IUriService uriService;
 
         public BackgroundJobController(IBiddingRequestService bidService)
         {

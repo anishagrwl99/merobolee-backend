@@ -222,7 +222,7 @@ namespace MeroBolee.Service
             return null;
         }
 
-        private string GetEmailSenderName(UserEntity entity, int userId)
+        private string GetEmailSenderName(UserEntity entity, long userId)
         {
             string name = "";
             if (entity == null)

@@ -64,11 +64,11 @@ namespace MeroBolee.Model
     public class CompanyDocumentEntity
     {
         private long _id;
-        private int _companyId;
-        private int _userId;
+        private long _companyId;
+        private long _userId;
         private int _documentStatusId;
         private int _docCategoryId;
-        private int? _statusChangedBy;
+        private long? _statusChangedBy;
         private string _documentPath;
         private string _remarks;
 
@@ -81,7 +81,7 @@ namespace MeroBolee.Model
 
 
         [ForeignKey("Company")]
-        public int CompanyID
+        public long CompanyID
         {
             get { return _companyId; }
             set { _companyId = value; }
@@ -89,7 +89,7 @@ namespace MeroBolee.Model
 
        
         [ForeignKey("UploadUserEntity")]
-        public int UploadedBy
+        public long UploadedBy
         {
             get { return _userId; }
             set { _userId = value; }
@@ -97,7 +97,7 @@ namespace MeroBolee.Model
 
 
         [ForeignKey("StatusChangedUserEntity")]
-        public int? StatusChangedBy
+        public long? StatusChangedBy
         {
             get { return _statusChangedBy; }
             set { _statusChangedBy = value; }

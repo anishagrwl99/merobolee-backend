@@ -17,7 +17,7 @@ namespace MeroBolee.Model
         private string remark;
         private int help_status_id;
         private RequestHelpStatus requestHelpStatus;
-        private int user_id;
+        private long user_id;
         private UserEntity userEntity;
         private DateTime? help_close_date;
 
@@ -42,7 +42,7 @@ namespace MeroBolee.Model
       
         [Column("user_id")]
         [ForeignKey ("UserEntity")]
-        public int User_id { get => user_id; set => user_id = value; }
+        public long User_id { get => user_id; set => user_id = value; }
 
         [JsonIgnore]
         public UserEntity UserEntity { get => userEntity; set => userEntity = value; }

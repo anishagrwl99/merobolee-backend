@@ -25,10 +25,31 @@ namespace MeroBolee.EntityMapper
                Address1 = obj.Address1,
                Address2 = obj.Address2,
                Address3 = obj.Address3,
-               Zip = obj.Zip
+               Zip = obj.Zip,
+               RegisteredAs = "Supplier"
             };
         }
 
+
+
+        private string GenerateReferenceCode(string registeredAs)
+        {
+            switch(registeredAs.ToLower())
+            {
+                case "supplier":
+                    return "SP" + GenerateReferenceCode();
+                case "bidinviter":
+                    return "BI" + GenerateReferenceCode();
+                default:
+                    return GenerateReferenceCode();
+            }
+        }
+
+        private string GenerateReferenceCode()
+        {
+            string val = DateTime.Now.ToString("MMyyddHHmmssfff");
+            return val;
+        }
         
     }
 }

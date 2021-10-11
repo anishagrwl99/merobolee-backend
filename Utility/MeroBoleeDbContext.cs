@@ -245,7 +245,6 @@ namespace MeroBolee.Utility
                     Person_email = "super.admin@test.com",
                     Role_Id = 1,
                     Status_id = 2,
-                    CompanyId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123")
@@ -258,7 +257,6 @@ namespace MeroBolee.Utility
                     Person_email = "bid.inviter@test.com",
                     Role_Id = 2,
                     Status_id = 2,
-                    CompanyId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123")
@@ -271,14 +269,20 @@ namespace MeroBolee.Utility
                     Person_email = "bid.bidder@test.com",
                     Role_Id = 3,
                     Status_id = 2,
-                    CompanyId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123")
                 }
                 );
+
+            builder.Entity<UserCompany>().HasData(
+                new UserCompany { Id = 1, UserId = 1, CompanyId = 1},
+                new UserCompany { Id = 2, UserId = 2, CompanyId = 1},
+                new UserCompany { Id = 3, UserId = 3, CompanyId = 1}
+                );
         }
 
+        public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<BiddingHistoryEntity> BiddingHistoryEntities { get; set; }
         public DbSet<CompanyEntity> CompanyEntities { get; set; }
         public DbSet<DocumentStatusEntity> DocumentStatusEntities { get; set; }

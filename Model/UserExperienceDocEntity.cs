@@ -15,7 +15,7 @@ namespace MeroBolee.Model
         private int id;
         private string experienced_doc;
         private UserEntity user;
-        private int user_id;
+        private long user_id;
 
       
         [Column("experience_doc")]
@@ -26,7 +26,7 @@ namespace MeroBolee.Model
 
         [Column("user_id")]
         [ForeignKey("User")]
-        public int User_id { get => user_id; set => user_id = value; }
+        public long User_id { get => user_id; set => user_id = value; }
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]

@@ -19,7 +19,7 @@ namespace MeroBolee.EntityMapper
             return new LiveBiddingEntity
             {
                 BiddingRequestId = dto.BiddingId,
-                SupplierId = dto.SupplierId,
+                UserId = dto.SupplierId,
                 TenderId = dto.TenderId,
                 MaterialId = dto.MaterialId,
                 Quotation = dto.Quotation.ToString(),
@@ -35,7 +35,7 @@ namespace MeroBolee.EntityMapper
             return new TenderMaterialBiddingDto
             {
                 BiddingId = e.BiddingRequestId,
-                SupplierId = e.SupplierId,
+                SupplierId = e.UserId,
                 TenderId = e.TenderId,
                 MaterialId = e.MaterialId,
                 Quotation = Convert.ToDecimal(e.Quotation),

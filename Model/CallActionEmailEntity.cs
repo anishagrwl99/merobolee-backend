@@ -13,7 +13,7 @@ namespace MeroBolee.Model
         public long? ParentId { get; set; }
 
         [ForeignKey("UserEntity")]
-        public int SenderUserId { get; set; }
+        public long SenderUserId { get; set; }
 
         public string Subject { get; set; }
         public string MailBody { get; set; }

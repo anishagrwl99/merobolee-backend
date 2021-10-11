@@ -10,7 +10,7 @@ namespace MeroBolee.Model
     [Table("mb_tender")]
     public class TenderEntity : BaseEntity
     {
-        private int tender_Id;
+        private long tender_Id;
         private Guid tender_Code;
         private string tender_Title;
         private int category_Id;
@@ -26,7 +26,7 @@ namespace MeroBolee.Model
         private int tender_Duration;
         private string duration_Type;
         private int bid_No;
-        private int posted_By;
+        private long posted_By;
         private UserEntity userEntity;
         private int tender_Status_Id;
         private AuctionStatusEntity auctionStatusEntity;
@@ -40,7 +40,7 @@ namespace MeroBolee.Model
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("tender_id")]
-        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
 
         [Column("tender_code")]
         public Guid Tender_Code { get => tender_Code; set => tender_Code = value; }
@@ -68,7 +68,7 @@ namespace MeroBolee.Model
         public int Bid_No { get => bid_No; set => bid_No = value; }
         [Column("posted_by")]
         [ForeignKey("UserEntity")]
-        public int Posted_By { get => posted_By; set => posted_By = value; }
+        public long UserId { get => posted_By; set => posted_By = value; }
         public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
         [Column("tender_status_id")]
         [ForeignKey("AuctionStatusEntity")]

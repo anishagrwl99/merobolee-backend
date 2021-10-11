@@ -152,7 +152,7 @@ namespace MeroBolee.Repository.Tender
 
                 meroBoleeDbContexts.UserEntities.ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.Posted_By == id) && ((search == null)
+                return meroBoleeDbContexts.TenderEntities.Where(m => (m.UserId == id) && ((search == null)
                 || (m.Tender_Code.ToString().Contains(search))
                 || (m.Tender_Description.ToLower().Contains(search.ToLower()))
                 || (m.Tender_Duration.ToString().Contains(search.ToLower()))

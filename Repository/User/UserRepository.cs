@@ -209,7 +209,7 @@ namespace MeroBolee.Repository.User
             }
         }
 
-        public UserEntity GetUserDetail(int id)
+        public UserEntity GetUserDetail(long id)
         {
             try
             {

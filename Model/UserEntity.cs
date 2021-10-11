@@ -10,7 +10,7 @@ namespace MeroBolee.Model
     [Table("mb_user")]
     public class UserEntity : BaseEntity
     {
-        private int user_Id;
+        private long user_Id;
         private Guid user_Code;
         private int? country_Id;
         private int? province_Id;
@@ -68,12 +68,11 @@ namespace MeroBolee.Model
         private MunicipalityEntity municipality;
         private VDCEntity vdc;
         private CompanyTypeEntity companyType;
-        private CompanyEntity company;
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("user_id")]
-        public int User_Id { get => user_Id; set => user_Id = value; }
+        public long User_Id { get => user_Id; set => user_Id = value; }
 
         [Column("user_code")]        
         public Guid User_Code { get => user_Code; set => user_Code = value; }
@@ -203,7 +202,6 @@ namespace MeroBolee.Model
         public virtual DistrictEntity District { get => district; set => district = value; }
         public virtual CityEntity City { get => city; set => city = value; }
         public virtual UserStatusEntity  UserStatus { get => userStatus; set => userStatus = value; }
-        public virtual CompanyEntity Company { get => company; set => company = value; }
         public virtual MembershipTypeEntity MembershipType { get => membershipType; set => membershipType = value; }
         public virtual RoleEntity Role { get => role; set => role = value; }
 
@@ -245,9 +243,5 @@ namespace MeroBolee.Model
         [ForeignKey("UserStatus")]
         public int? Status_id { get => status_id; set => status_id = value; }
 
-
-
-        [ForeignKey("Company")]
-        public int CompanyId { get; set; }
     }
 }

@@ -128,10 +128,10 @@ namespace MeroBolee.Repository.BidderRequest
                  * */
 
                 List<LiveBiddingEntity> bids =  await meroBoleeDbContexts.LiveBiddingEntities
-                    .GroupBy(o => new { o.SupplierId, o.TenderId, o.MaterialId })
+                    .GroupBy(o => new { o.UserId, o.TenderId, o.MaterialId })
                     .Select(g => new LiveBiddingEntity
                     {
-                        SupplierId = g.Key.SupplierId,
+                        UserId = g.Key.UserId,
                         TenderId = g.Key.TenderId,
                         MaterialId = g.Key.MaterialId,
                         Quotation = g.Min(o => o.Quotation)
@@ -194,7 +194,7 @@ namespace MeroBolee.Repository.BidderRequest
                     {
                         Id = b.Id,
                         BiddingRequestId = b.BiddingRequestId,
-                        SupplierId = b.SupplierId,
+                        UserId = b.UserId,
                         TenderId = b.TenderId,
                         MaterialId = b.MaterialId,
                         Quotation = b.Quotation,

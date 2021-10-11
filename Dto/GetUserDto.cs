@@ -8,7 +8,7 @@ namespace MeroBolee.Dto
 {
     public class GetUserDto
     {
-        private int user_Id;
+        private long user_Id;
         private Guid company_Code;
         private int? country_Id;
         private int? province_Id;
@@ -68,7 +68,7 @@ namespace MeroBolee.Dto
         private DateTime? expried_Date;
         private int? status_id;
 
-        public int User_Id { get => user_Id; set => user_Id = value; }
+        public long User_Id { get => user_Id; set => user_Id = value; }
         public Guid Company_Code { get => company_Code; set => company_Code = value; }
         public int? Category_Id { get => category_Id; set => category_Id = value; }
         public string Category { get => category; set => category = value; }
