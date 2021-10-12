@@ -46,7 +46,7 @@ namespace MeroBolee.EntityMapper
             }
             return new TenderEntity
             {
-
+                CompanyId = tenderDto.CompanyId,
                 Tender_Title = tenderDto.Tender_Title,
                 Category_Id = tenderDto.Category_Id,
                 Tender_Description = tenderDto.Tender_Description,

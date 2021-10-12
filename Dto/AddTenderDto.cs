@@ -26,7 +26,7 @@ namespace MeroBolee.Dto
         private DateTime project_Start_Date;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
-        
+        private long company_id;
 
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
         public int Category_Id { get => category_Id; set => category_Id = value; }
@@ -47,5 +47,13 @@ namespace MeroBolee.Dto
         public string Source_Fund { get => source_Fund; set => source_Fund = value; }
      //   public string IFB_RFP_EOI1 { get => IFB_RFP_EOI; set => IFB_RFP_EOI = value; }
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
+
+
+        public long CompanyId
+        {
+            get { return company_id; }
+            set { company_id = value; }
+        }
+
     }
 }

@@ -12,15 +12,19 @@ namespace MeroBolee.Service.Tender
     public class TenderService: TenderMapper,ITenderService
     {
         private readonly ITenderRepository tenderRepository;
+        private readonly IReferenceCodeService referenceCodeService;
 
-        public TenderService(ITenderRepository tenderRepository)
+        public TenderService(ITenderRepository tenderRepository, IReferenceCodeService referenceCodeService)
         {
             this.tenderRepository = tenderRepository;
+            this.referenceCodeService = referenceCodeService;
         }
 
         public GetTenderDto AddTender(AddTenderDto tenderDto)
         {
-            return TenderEntityToDto(tenderRepository.AddTender(TenderDtoEntity(tenderDto)));
+            TenderEntity entity = TenderDtoEntity(tenderDto);
+            entity.Tender_Code = referenceCodeService.GenerateCode(ReferenceEnum.Tender).Result;
+            return TenderEntityToDto(tenderRepository.AddTender(entity));
         }
 
         public IEnumerable<GetTenderDto> FavouriteTender(int id, string search)
