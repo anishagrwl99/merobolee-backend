@@ -52,15 +52,15 @@ namespace MeroBolee.Repository
             //emails.SelectMany(c => c.Responses).Concat(emails);
             List<CallActionEmailEntity> userEmails =  meroBoleeDbContexts
                 .CallActionEmailEntities
-                .Include(x=>x.UserEntity)
-                .Where(x=>x.SenderUserId == supplierId)
+                .Include(x=>x.FromUserEntity)
+                .Where(x=>x.FromUserId == supplierId)
                 .ToList();
             List<CallActionEmailEntity> emails = new List<CallActionEmailEntity>(userEmails);
             foreach (CallActionEmailEntity email in userEmails)
             {
                 List<CallActionEmailEntity> related = meroBoleeDbContexts
                                                         .CallActionEmailEntities
-                                                        .Include(x => x.UserEntity)
+                                                        .Include(x => x.FromUserEntity)
                                                         .Where(x => x.Id == email.ParentId || x.ParentId == email.Id)
                                                         .ToList();
                 emails.AddRange(related);
@@ -75,7 +75,7 @@ namespace MeroBolee.Repository
                 if (!parentEmailId.HasValue) return null;
 
                 var email = from eml in meroBoleeDbContexts.CallActionEmailEntities
-                            join u in meroBoleeDbContexts.UserEntities on eml.SenderUserId equals u.User_Id
+                            join u in meroBoleeDbContexts.UserEntities on eml.FromUserId equals u.User_Id
                             where eml.Id == parentEmailId
                             select new CallActionResponseDto
                             {
@@ -103,7 +103,7 @@ namespace MeroBolee.Repository
             {
 
                 var email = from eml in meroBoleeDbContexts.CallActionEmailEntities
-                            join u in meroBoleeDbContexts.UserEntities on eml.SenderUserId equals u.User_Id
+                            join u in meroBoleeDbContexts.UserEntities on eml.FromUserId equals u.User_Id
                             where eml.ParentId == currentEmailId
                             select new CallActionResponseDto
                             {
@@ -133,7 +133,7 @@ namespace MeroBolee.Repository
                 if (!parentEmailId.HasValue) return null;
 
                 var email = from eml in meroBoleeDbContexts.CallActionEmailEntities
-                            join u in meroBoleeDbContexts.UserEntities on eml.SenderUserId equals u.User_Id
+                            join u in meroBoleeDbContexts.UserEntities on eml.FromUserId equals u.User_Id
                             where eml.ParentId == parentEmailId && eml.Id != responseEmailId
                             select new CallActionResponseDto
                             {
@@ -161,9 +161,9 @@ namespace MeroBolee.Repository
             //emails.SelectMany(c => c.Responses).Concat(emails);
             return meroBoleeDbContexts
                 .CallActionEmailEntities
-                .Include(x => x.UserEntity)
+                .Include(x => x.FromUserEntity)
                 .Include(x=>x.Responses)
-                .Where(x => x.ParentId == null && x.SenderUserId == supplierId)
+                .Where(x => x.ParentId == null && x.FromUserId == supplierId)
                 .ToList();
         }
 
@@ -171,7 +171,7 @@ namespace MeroBolee.Repository
         {
             return meroBoleeDbContexts
                 .CallActionEmailEntities
-                .Include(x => x.UserEntity)
+                .Include(x => x.FromUserEntity)
                 .Include(x => x.Responses)
                 .Include(x=>x.ParentEmail)
                 .Where(x => x.Id == id).FirstOrDefault();
@@ -180,7 +180,7 @@ namespace MeroBolee.Repository
         {
             return meroBoleeDbContexts
                 .CallActionEmailEntities
-                .Include(x => x.UserEntity)
+                .Include(x => x.FromUserEntity)
                 .Include(x => x.Responses)
                 .Where(x => x.ParentId == parentId && x.Id != emailId)
                 .ToList();

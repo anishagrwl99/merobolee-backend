@@ -4,14 +4,16 @@ using MeroBolee.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeroBolee.Migrations
 {
     [DbContext(typeof(MeroBoleeDbContext))]
-    partial class MeroBoleeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211012063806_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,24 +287,24 @@ namespace MeroBolee.Migrations
                         {
                             Category_Id = 1,
                             Category = "Transportation",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2127),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2167),
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4032),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4058),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 2,
                             Category = "Construction",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2199),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2203),
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4089),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4093),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 3,
                             Category = "Tourism",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2218),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(2221),
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4107),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(4111),
                             Status_Id = 1
                         });
                 });
@@ -585,22 +587,22 @@ namespace MeroBolee.Migrations
                         {
                             Company_Type_Id = 1,
                             Company_type = "Transportation",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7317),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7326)
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9499),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9512)
                         },
                         new
                         {
                             Company_Type_Id = 2,
                             Company_type = "Construction",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7339),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7343)
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9525),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9528)
                         },
                         new
                         {
                             Company_Type_Id = 3,
                             Company_type = "Tourism",
-                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7353),
-                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 682, DateTimeKind.Local).AddTicks(7356)
+                            Date_created = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9538),
+                            Date_modified = new DateTime(2021, 10, 12, 12, 23, 6, 671, DateTimeKind.Local).AddTicks(9542)
                         });
                 });
 

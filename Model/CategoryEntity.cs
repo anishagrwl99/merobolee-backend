@@ -8,7 +8,7 @@ using static MeroBolee.Model.PublishStatus;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_category")]
+    [Table("lk_category")]
     public class CategoryEntity : BaseEntity
     {
         private int category_Id;

@@ -9,7 +9,7 @@ namespace MeroBolee.Dto
     public class GetTenderDto
     {
         private long tender_Id;
-        private Guid tender_Code;
+        private string tender_Code;
         private string tender_Title;
         private int category_Id;
         private string category;
@@ -40,7 +40,7 @@ namespace MeroBolee.Dto
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
 
         public long Tender_Id { get => tender_Id; set => tender_Id = value; }
-        public Guid Tender_Code { get => tender_Code; set => tender_Code = value; }
+        public string Tender_Code { get => tender_Code; set => tender_Code = value; }
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
         public int Category_Id { get => category_Id; set => category_Id = value; }
         public string Category { get => category; set => category = value; }

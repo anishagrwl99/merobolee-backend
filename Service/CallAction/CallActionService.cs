@@ -38,7 +38,7 @@ namespace MeroBolee.Service
             {
                 CallActionEmailEntity email = new CallActionEmailEntity
                 {
-                    SenderUserId = dto.SenderId,
+                    FromUserId = dto.SenderId,
                     ParentId = dto.ParentId,
                     Subject = dto.Subject,
                     MailBody = dto.EmailBody,
@@ -75,7 +75,7 @@ namespace MeroBolee.Service
                     Subject = item.Subject,
                     SentOn = item.EmailSentOn,
                     ParentId = item.ParentId,
-                    SenderName = $"{item.UserEntity.First_Name} {item.UserEntity.Middle_Name} {item.UserEntity.Last_Name}",
+                    SenderName = $"{item.FromUserEntity.First_Name} {item.FromUserEntity.Middle_Name} {item.FromUserEntity.Last_Name}",
                     Parent = null,
                     Responses = null
                 }).ToList();
@@ -107,14 +107,14 @@ namespace MeroBolee.Service
                     Subject = item.Subject,
                     SentOn = item.EmailSentOn,
                     ParentId = item.ParentId,
-                    SenderName = $"{item.UserEntity.First_Name} {item.UserEntity.Last_Name}",
+                    SenderName = $"{item.FromUserEntity.First_Name} {item.FromUserEntity.Last_Name}",
 
                     Responses = item.Responses.Select(x => new CallActionResponseDto()
                     {
                         Id = x.Id,
                         ParentId = x.ParentId,
                         Subject = x.Subject,
-                        SenderName = GetEmailSenderName(x.UserEntity, x.SenderUserId),//$"{x.UserEntity.First_Name} {x.UserEntity.Last_Name}"
+                        SenderName = GetEmailSenderName(x.FromUserEntity, x.FromUserId),//$"{x.UserEntity.First_Name} {x.UserEntity.Last_Name}"
 
                     }).ToList()
 
@@ -144,7 +144,7 @@ namespace MeroBolee.Service
                         Body = email.MailBody,
                         SentOn = email.EmailSentOn,
                         ParentId = email.ParentId,
-                        SenderName =  $"{email.UserEntity.First_Name} {email.UserEntity.Last_Name}",
+                        SenderName =  $"{email.FromUserEntity.First_Name} {email.FromUserEntity.Last_Name}",
                         
                         
                     };
@@ -157,7 +157,7 @@ namespace MeroBolee.Service
                             Subject = email.ParentEmail.Subject,
                             Body = email.ParentEmail.MailBody,
                             SentOn = email.ParentEmail.EmailSentOn,
-                            SenderName = GetEmailSenderName(email.ParentEmail.UserEntity, email.ParentEmail.SenderUserId)
+                            SenderName = GetEmailSenderName(email.ParentEmail.FromUserEntity, email.ParentEmail.FromUserId)
                             
                         };
                         var parentResponses = callActionRepository.GetCallActionParentEmailsResponses(email.Id, email.ParentId.Value);
@@ -169,7 +169,7 @@ namespace MeroBolee.Service
                                 ParentId = x.ParentId,
                                 Subject = x.Subject,
                                 Body = x.MailBody,
-                                SenderName = GetEmailSenderName(x.UserEntity, x.SenderUserId),
+                                SenderName = GetEmailSenderName(x.FromUserEntity, x.FromUserId),
 
                             })
                             .ToList();
@@ -184,7 +184,7 @@ namespace MeroBolee.Service
                             ParentId = x.ParentId,
                             Subject = x.Subject,
                             Body = x.MailBody,
-                            SenderName = GetEmailSenderName(x.UserEntity, x.SenderUserId),//$"{x.UserEntity.First_Name} {x.UserEntity.Last_Name}"
+                            SenderName = GetEmailSenderName(x.FromUserEntity, x.FromUserId),//$"{x.UserEntity.First_Name} {x.UserEntity.Last_Name}"
 
                         }).ToList();
                     }

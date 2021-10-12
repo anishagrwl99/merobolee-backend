@@ -8,7 +8,7 @@ namespace MeroBolee.Dto
 {
     public class BiddingRequestTender
     {
-        private Guid tender_Code;
+        private string tender_Code;
         private string tender_Title;
         private int category_Id;
         private string category;
@@ -25,7 +25,7 @@ namespace MeroBolee.Dto
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
 
-        public Guid Tender_Code { get => tender_Code; set => tender_Code = value; }
+        public string Tender_Code { get => tender_Code; set => tender_Code = value; }
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
         public int Category_Id { get => category_Id; set => category_Id = value; }
         public string Category { get => category; set => category = value; }

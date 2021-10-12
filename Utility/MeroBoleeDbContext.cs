@@ -120,7 +120,7 @@ namespace MeroBolee.Utility
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CallActionEmailEntity>()
-               .HasOne(e => e.UserEntity)
+               .HasOne(e => e.FromUserEntity)
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -163,6 +163,11 @@ namespace MeroBolee.Utility
 
             modelBuilder.Entity<CompanyDocumentEntity>()
                .HasOne(e => e.UploadUserEntity)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TenderEntity>()
+               .HasOne(e => e.Company)
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 

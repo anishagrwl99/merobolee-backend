@@ -9,7 +9,7 @@ namespace MeroBolee.Model
     [Table("mb_correspondence_email")]
     public class CorrespondenceEmailEntity
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [ForeignKey("User")]
         public long SenderUserId { get; set; }

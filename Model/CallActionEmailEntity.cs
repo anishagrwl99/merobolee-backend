@@ -12,8 +12,11 @@ namespace MeroBolee.Model
         [ForeignKey("ParentEmail")]
         public long? ParentId { get; set; }
 
-        [ForeignKey("UserEntity")]
-        public long SenderUserId { get; set; }
+        [ForeignKey("FromUserEntity")]
+        public long FromUserId { get; set; }
+
+        [ForeignKey("ToUserEntity")]
+        public long ToUserId { get; set; }
 
         public string Subject { get; set; }
         public string MailBody { get; set; }
@@ -21,7 +24,8 @@ namespace MeroBolee.Model
         public string Attachments { get; set; }
         public DateTime EmailSentOn { get; set; }
         public DateTime DateCreated { get; set; }
-        public virtual UserEntity UserEntity { get; set; }
+        public virtual UserEntity FromUserEntity { get; set; }
+        public virtual UserEntity ToUserEntity { get; set; }
 
         public virtual List<CallActionEmailEntity> Responses { get; set; }
         public virtual CallActionEmailEntity ParentEmail { get; set; }

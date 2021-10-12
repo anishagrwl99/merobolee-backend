@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Model
@@ -11,7 +12,7 @@ namespace MeroBolee.Model
     public class TenderEntity : BaseEntity
     {
         private long tender_Id;
-        private Guid tender_Code;
+        private string tender_Code;
         private string tender_Title;
         private int category_Id;
         private CategoryEntity categoryEntity;
@@ -33,6 +34,7 @@ namespace MeroBolee.Model
         private int admin_Status_Id;
         private AdminStatusEntity adminStatusEntity;
         private string cancel_remark;
+        private long company_id;
         //private int payment_Status_Id;
         //private PaymentStatusEntity paymentStatusEntity;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
@@ -43,7 +45,8 @@ namespace MeroBolee.Model
         public long Tender_Id { get => tender_Id; set => tender_Id = value; }
 
         [Column("tender_code")]
-        public Guid Tender_Code { get => tender_Code; set => tender_Code = value; }
+        [MaxLength(20)]
+        public string Tender_Code { get => tender_Code; set => tender_Code = value; }
 
         [Column("tender_title")]
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
@@ -94,5 +97,17 @@ namespace MeroBolee.Model
         //public string IFB_RFP_EOI1 { get => IFB_RFP_EOI; set => IFB_RFP_EOI = value; }
         [Column("project_start_date")]
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
+
+
+        [ForeignKey("Company")]
+        [Column("company_id")]
+        public long CompanyId {
+            get { return company_id; }
+            set { company_id = value; }
+        }
+
+
+        [JsonIgnore]
+        public virtual CompanyEntity Company { get; set; }
     }
 }

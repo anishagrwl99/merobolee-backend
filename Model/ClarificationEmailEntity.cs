@@ -7,13 +7,13 @@ namespace MeroBolee.Model
     [Table("mb_clarification_email")]
     public class ClarificationEmailEntity
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [ForeignKey("UserEntity")]
         public long SenderUserId { get; set; }
 
         [ForeignKey("CorrespondenceEmailEntity")]
-        public int CorrespondenceId { get; set; }
+        public long CorrespondenceId { get; set; }
         public string Subject { get; set; }
         public string MailBody { get; set; }
         public bool IsRead { get; set; }
