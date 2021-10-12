@@ -107,8 +107,7 @@ namespace MeroBolee
                });
 
             });
-            services.AddControllers();
-            services.AddMvc();
+          
 
 
             services.AddDbContext<MeroBoleeDbContext>(o =>
@@ -283,6 +282,9 @@ namespace MeroBolee
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
+
+            services.AddControllers();
+            services.AddMvc();
 
         }
 

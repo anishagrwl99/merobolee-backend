@@ -50,13 +50,13 @@ namespace MeroBolee.Controllers.Correspondence
 
 
         [HttpGet("Correspondence/List")]
-        public IActionResult GetAllCorrespondence([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId)
+        public IActionResult GetAllCorrespondence([FromQuery] PaginationQuery pagination, [FromQuery] int userId)
         {
             try
             {
                 string url = Url.Action("GetAllCorrespondence", null, null, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
-                List<CorrespondenceResponseDto> email = emailService.GetAllCorrespondances(supplierId);;
+                List<CorrespondenceResponseDto> email = emailService.GetAllCorrespondances(userId);;
                 int totalCount = email.Count();
                 if (totalCount == 0)
                 {

@@ -50,13 +50,13 @@ namespace MeroBolee.Controllers
 
 
         [HttpGet("Clarification/List")]
-        public IActionResult GetAllClarification([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId)
+        public IActionResult GetAllClarification([FromQuery] PaginationQuery pagination, [FromQuery] int userId)
         {
             try
             {
                 string url = Url.Action("GetAllClarification", null, null, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
-                List<ClarificationResponseDto> email = emailService.GetAllClarification(supplierId);;
+                List<ClarificationResponseDto> email = emailService.GetAllClarification(userId);;
                 int totalCount = email.Count();
                 if (totalCount == 0)
                 {
