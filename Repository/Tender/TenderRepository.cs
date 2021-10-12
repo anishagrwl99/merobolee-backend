@@ -135,10 +135,37 @@ namespace MeroBolee.Repository.Tender
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
+        public IEnumerable<TenderEntity> GetMyTender(long companyId, string search)
+        {
+            return meroBoleeDbContexts.TenderEntities
+                    .Include(x=>x.UserEntity)
+                    .Include(x=>x.AuctionStatusEntity)
+                    .Include(x=>x.AdminStatusEntity)
+                    .Include(x=>x.TenderMaterialEntities)
+                    .Include(x=>x.TenderTermsConditionEntities)
+                    .Include(x=>x.CategoryEntity)
+                    .Where(m => m.CompanyId == companyId
+                    //&& (m.Live_Start_Date>= DateTime.Now)
+                    && ((search == null)
+                //|| (m.Tender_Code.ToString().Contains(search))
+                //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                || (m.Tender_Title.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_live_interval.ToString().Contains(search.ToLower()))
+                //|| (m.Live_Start_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Live_End_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Duration_Type.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                //|| (m.Tender_fee.ToString().Contains(search.ToLower()))
+                //|| (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
+                )).ToList();
+        }
         public IEnumerable<TenderEntity> GetTenderByAuctioneer(int id, string search)
         {
             try
@@ -187,13 +214,22 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
                 meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
-                meroBoleeDbContexts.TenderMaterialEntities.ToList();
-                meroBoleeDbContexts.MaterialFeatureEntities.ToList();
+                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x=>x.Tender_Id == id).ToList();
+                meroBoleeDbContexts
+                    .TenderMaterialEntities
+                    .Include(x=>x.MaterialFeatures)
+                    .Where(x=>x.Tender_Id == id).ToList();
+
+                //long[] materialIds = material.Select(x => x.Id).ToArray();
+
+                //meroBoleeDbContexts.MaterialFeatureEntities
+                //    .Where(x=>x.Material_id.ToString().Contains(string.Join(",", materialIds)))
+                //    .ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
-                meroBoleeDbContexts.UserEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == id).FirstOrDefault();
+                TenderEntity ent = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == id).FirstOrDefault();
+                meroBoleeDbContexts.UserEntities.Where(x=>x.User_Id == ent.UserId).ToList();
+                return ent;
             }
             catch (Exception)
             {

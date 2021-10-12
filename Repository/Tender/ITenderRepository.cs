@@ -18,5 +18,7 @@ namespace MeroBolee.Repository.Tender
         IEnumerable<TenderEntity> UpcomingTender(string search);
         IEnumerable<TenderEntity> FavouriteTender(int id, string search);
         IEnumerable<TenderEntity> TenderByStatus(int id, string search);
+
+        IEnumerable<TenderEntity> GetMyTender(long companyId ,string search);
     }
 }

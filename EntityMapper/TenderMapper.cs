@@ -88,7 +88,7 @@ namespace MeroBolee.EntityMapper
             getTender.Tender_Description = tenderEntity.Tender_Description;
             getTender.Tender_live_interval = tenderEntity.Tender_live_interval;
             getTender.Live_Start_Date = tenderEntity.Live_Start_Date;
-            getTender.Live_End_Date = tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+            getTender.Live_End_Date = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
             getTender.Project_Duration = tenderEntity.Tender_Duration;
             getTender.Duration_Type = tenderEntity.Duration_Type;
             getTender.Bid_No = tenderEntity.Bid_No;
