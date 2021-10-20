@@ -9,5 +9,7 @@ namespace MeroBolee.Infrastructure
     {
         public string statusCode { get; set; }
         public string Message { get; set; }
+
+        public object Data { get; set; }
     }
 }

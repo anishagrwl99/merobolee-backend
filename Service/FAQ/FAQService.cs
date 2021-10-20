@@ -1,4 +1,6 @@
-﻿using MeroBolee.Model;
+﻿using MeroBolee.Dto;
+using MeroBolee.EntityMapper;
+using MeroBolee.Model;
 using MeroBolee.Repository.FAQ;
 using System;
 using System.Collections.Generic;
@@ -7,42 +9,69 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service.FAQ
 {
-    public class FAQService: IFAQService
+    /// <summary>
+    /// FAQ service implementation
+    /// </summary>
+    public class FAQService: FAQMapper, IFAQService
     {
         private readonly IFAQRepository fAQRepository;
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="fAQRepository"></param>
         public FAQService(IFAQRepository fAQRepository)
         {
             this.fAQRepository = fAQRepository;
         }
 
+        /// <summary>
+        /// Delete a FAQ that is no longer required or relevant
+        /// </summary>
+        /// <param name="id">Id of a FAQ to delete</param>
         public void DeleteFAQ(int id)
         {
             fAQRepository.DeleteFAQ(id);
         }
 
-        public IEnumerable<FAQEntity> GetAllFAQ()
+
+        /// <summary>
+        /// Get all FAQs 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FAQResponseDto> GetAllFAQ()
         {
-            return fAQRepository.GetAllFAQ();
+            return fAQRepository.GetAllFAQ().Select(x=> ToResponseDto(x)).ToList<FAQResponseDto>();
         }
 
-        public IEnumerable<FAQEntity> GetAllPublishFAQ()
+        /// <summary>
+        /// Get a FAQ by an ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public FAQResponseDto GetFAQ(int id)
         {
-            return fAQRepository.GetAllPublishFAQ();
+            return ToResponseDto(fAQRepository.GetFAQ(id));
         }
 
-        public FAQEntity GetFAQ(int id)
+        /// <summary>
+        /// Add a FAQ into database
+        /// </summary>
+        /// <param name="FAQ"></param>
+        /// <returns></returns>
+        public FAQResponseDto PostQuestion(FAQAddDto FAQ)
         {
-            return fAQRepository.GetFAQ(id);
+            return ToResponseDto(fAQRepository.PostQuestion(ToEntity(FAQ)));
         }
 
-        public FAQEntity PostQuestion(FAQEntity FAQ)
+        /// <summary>
+        /// Update a FAQ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="FAQ"></param>
+        /// <returns></returns>
+        public FAQResponseDto UpdateFAQ(int id, FAQAddDto FAQ)
         {
-            return fAQRepository.PostQuestion(FAQ);
-        }
-
-        public FAQEntity UpdateFAQ(int id, FAQEntity FAQ)
-        {
-            return fAQRepository.UpdateFAQ(id, FAQ);
+            return ToResponseDto(fAQRepository.UpdateFAQ(id, ToEntity(FAQ)));
         }
     }
 }

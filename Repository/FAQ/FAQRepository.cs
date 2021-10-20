@@ -7,14 +7,29 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.FAQ
 {
-    public class FAQRepository: RepositoryBase<FAQEntity>, IFAQRepository
+    /// <summary>
+    /// FAQ repo implementation
+    /// </summary>
+    public class FAQRepository : RepositoryBase<FAQEntity>, IFAQRepository
     {
         private readonly IUnitOfWork unitOfWork;
+
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="dbFactory"></param>
+        /// <param name="unitOfWork"></param>
         public FAQRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork) : base(dbFactory)
         {
-            this.unitOfWork = unitOfWork; 
+            this.unitOfWork = unitOfWork;
         }
 
+
+        /// <summary>
+        /// Delete a FAQ from database
+        /// </summary>
+        /// <param name="id">A record id that needs to delete</param>
         public void DeleteFAQ(int id)
         {
             try
@@ -24,10 +39,16 @@ namespace MeroBolee.Repository.FAQ
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
+
+
+        /// <summary>
+        /// Returns all FAQs from database
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<FAQEntity> GetAllFAQ()
         {
             try
@@ -35,26 +56,17 @@ namespace MeroBolee.Repository.FAQ
                 meroBoleeDbContexts.StatusEntities.ToList();
                 return meroBoleeDbContexts.FAQEntities.ToList();
             }
-            catch (InvalidOperationException)
-            {
-                throw new InvalidOperationException();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
-        public IEnumerable<FAQEntity> GetAllPublishFAQ()
-        {
-            meroBoleeDbContexts.StatusEntities.ToList();
-            return meroBoleeDbContexts.FAQEntities.Where(m => m.PublishStatus.Status.ToLower() == "publish").ToList();
-        }
-
+        /// <summary>
+        /// Get a specific FAQ from database
+        /// </summary>
+        /// <param name="id">A record id that needs to be retrieved</param>
+        /// <returns></returns>
         public FAQEntity GetFAQ(int id)
         {
             try
@@ -67,16 +79,19 @@ namespace MeroBolee.Repository.FAQ
                 meroBoleeDbContexts.StatusEntities.ToList();
                 return fAQ;
             }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
+
+
+        /// <summary>
+        /// Add a FAQ into database
+        /// </summary>
+        /// <param name="FAQ">A FAQ object to add</param>
+        /// <returns></returns>
         public FAQEntity PostQuestion(FAQEntity FAQ)
         {
             try
@@ -86,19 +101,21 @@ namespace MeroBolee.Repository.FAQ
                 meroBoleeDbContexts.StatusEntities.ToList();
                 return FAQ;
             }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
+        /// <summary>
+        /// Update a faq 
+        /// </summary>
+        /// <param name="id">A FAQ record id which need to be updated</param>
+        /// <param name="FAQ">A FAQ object with new details</param>
+        /// <returns></returns>
         public FAQEntity UpdateFAQ(int id, FAQEntity FAQ)
         {
-           
+
             try
             {
                 FAQEntity fAQEntity = GetFAQ(id);
@@ -108,15 +125,13 @@ namespace MeroBolee.Repository.FAQ
                 }
                 fAQEntity.Question = FAQ.Question;
                 fAQEntity.Answer = FAQ.Answer;
-                fAQEntity.Status_id = FAQ.Status_id;
                 fAQEntity.Date_modified = FAQ.Date_modified;
-                //   categoryEntity.Modified_time_stamp = categoryEntity.Modified_time_stamp;
                 unitOfWork.SaveChange();
                 return fAQEntity;
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
     }

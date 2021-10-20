@@ -1,4 +1,5 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service.FAQ;
 using Microsoft.AspNetCore.Http;
@@ -23,38 +24,32 @@ namespace MeroBolee.Controllers.FAQ
             this.FAQService = FAQService;
         }
         /// <summary>
-        /// To add FAQ and status is commonStatus
+        /// To add FAQ
         /// </summary>
         /// <returns></returns>
         [HttpPost("FAQ")]
-        public IActionResult Add([FromBody] FAQEntity addFAQ)
+        public IActionResult Add([FromBody] FAQAddDto addFAQ)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
 
-                    return Ok(new Responses<FAQEntity>(FAQService.PostQuestion(addFAQ), "200", "Record is successfully added"));
+                    return Ok(new Responses<FAQResponseDto>(FAQService.PostQuestion(addFAQ), "200", "Record is successfully added"));
                 }
                 else
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -71,73 +66,19 @@ namespace MeroBolee.Controllers.FAQ
                 string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<FAQEntity> FAQ = FAQService.GetAllFAQ();
+                IEnumerable<FAQResponseDto> FAQ = FAQService.GetAllFAQ();
                 int totalCount = FAQ.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<FAQEntity>>(FAQ, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<FAQResponseDto>>(FAQ, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(FAQ, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-
-        }
-
-        /// <summary>
-        /// To display all FAQ which is publish
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <returns></returns>
-        [HttpGet("PublishFAQ")]
-        public IActionResult GetAllPublish([FromQuery] PaginationQuery pagination)
-        {
-            try
-            {
-                string url = Url.Action("GetAllPublish", null, null, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<FAQEntity> FAQ = FAQService.GetAllPublishFAQ();
-                int totalCount = FAQ.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<FAQEntity>>(FAQ, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(FAQ, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (SqlException)
-            {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
@@ -167,23 +108,11 @@ namespace MeroBolee.Controllers.FAQ
                     return Ok(new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -205,34 +134,21 @@ namespace MeroBolee.Controllers.FAQ
                 }
                 else
                 {
-                    FAQEntity getFAQ = FAQService.GetFAQ(id);
+                    FAQResponseDto getFAQ = FAQService.GetFAQ(id);
                     if (getFAQ == null)
                     {
                         response.statusCode = "404";
                         response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
-                    return Ok(new Responses<FAQEntity>(getFAQ, "200", "Record found"));
+                    return Ok(new Responses<FAQResponseDto>(getFAQ, "200", "Record found"));
                 }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
@@ -244,7 +160,7 @@ namespace MeroBolee.Controllers.FAQ
         /// <param name="addFAQ"></param>
         /// <returns></returns>
         [HttpPut("FAQ")]
-        public IActionResult Update([FromQuery] int id, [FromBody] FAQEntity addFAQ)
+        public IActionResult Update([FromBody] FAQAddDto addFAQ, [FromQuery] int id)
         {
             try
             {
@@ -258,51 +174,39 @@ namespace MeroBolee.Controllers.FAQ
                 {
                     if (ModelState.IsValid)
                     {
-                        FAQEntity getFAQ = FAQService.UpdateFAQ(id, addFAQ);
+                        FAQResponseDto getFAQ = FAQService.UpdateFAQ(id, addFAQ);
                         if (getFAQ == null)
                         {
                             response.statusCode = "404";
                             response.Message = "Record not Found";
                             return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                         }
-                        return Ok(new Responses<FAQEntity>(getFAQ, "200", "Record is successfully updated"));
+                        return Ok(new Responses<FAQResponseDto>(getFAQ, "200", "Record is successfully updated"));
                     }
                     else
                     {
                         response.statusCode = "400";
                         response.Message = "Invalid Format";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
 
-        private PagedResponse<FAQEntity> ResultAfterPagination(IEnumerable<FAQEntity> getFAQ, PaginationQuery pagination, int totalCount)
+        private PagedResponse<FAQResponseDto> ResultAfterPagination(IEnumerable<FAQResponseDto> getFAQ, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
-                return new PagedResponse<FAQEntity>(getFAQ, totalCount);
+                return new PagedResponse<FAQResponseDto>(getFAQ, totalCount);
             }
 
             var get = getFAQ.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
