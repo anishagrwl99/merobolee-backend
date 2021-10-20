@@ -28,6 +28,11 @@ namespace MeroBolee.Dto
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
         private long company_id;
 
+        public long CompanyId
+        {
+            get { return company_id; }
+            set { company_id = value; }
+        }
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
         public int Category_Id { get => category_Id; set => category_Id = value; }
         public string Tender_Description { get => tender_Description; set => tender_Description = value; }
@@ -49,11 +54,7 @@ namespace MeroBolee.Dto
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
 
 
-        public long CompanyId
-        {
-            get { return company_id; }
-            set { company_id = value; }
-        }
+       
 
     }
 }

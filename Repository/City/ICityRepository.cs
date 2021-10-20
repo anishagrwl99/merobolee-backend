@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.City
 {
-     public interface ICityRepository : IRepositoryBase<CityEntity>
+    public interface ICityRepository : IRepositoryBase<CityEntity>
     {
         CityEntity AddCity(CityEntity cityEntity);
         IEnumerable<CityEntity> GetCity(string search);

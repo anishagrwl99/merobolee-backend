@@ -47,9 +47,7 @@ namespace MeroBolee.EntityMapper
                 //Experienced_document = userDto.Experienced_document,
                 //Bank_credit_letter = userDto.Bank_credit_letter,
                 Username = userDto.Username,
-                Password= userDto.Password,
-                Role_Id = userDto.Role_Id,
-                Status_id= userDto.Status_id,
+                Password= userDto.Password
              //   Activate_Date= userDto.Activate_date
     };
 

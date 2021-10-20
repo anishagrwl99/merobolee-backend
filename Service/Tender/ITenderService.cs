@@ -18,6 +18,6 @@ namespace MeroBolee.Service.Tender
         IEnumerable<GetTenderDto> FavouriteTender(int id, string search);
         IEnumerable<GetTenderDto> TenderByStatus(int id, string search);
 
-        IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search);
+        IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType);
     }
 }

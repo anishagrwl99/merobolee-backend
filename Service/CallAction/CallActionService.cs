@@ -39,6 +39,7 @@ namespace MeroBolee.Service
                 CallActionEmailEntity email = new CallActionEmailEntity
                 {
                     FromUserId = dto.SenderId,
+                    ToUserId = dto.ToUserId,
                     ParentId = dto.ParentId,
                     Subject = dto.Subject,
                     MailBody = dto.EmailBody,

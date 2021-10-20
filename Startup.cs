@@ -263,6 +263,9 @@ namespace MeroBolee
             services.AddScoped<IDocumentTypeService, DocumentTypeService>();
             services.AddScoped<IDocumentStatusService, DocumentStatusService>();
 
+            //Company
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<ICompanyService, CompanyService>();
 
 
             //Hangfire configuration

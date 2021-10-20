@@ -14,6 +14,7 @@ namespace MeroBolee.Model
         private long request_Id;
         private Guid request_code;
         private long user_id;
+        private long company_id;
         private UserEntity userEntity;
         private long tender_Id;
         private TenderEntity tenderEntity;
@@ -50,6 +51,16 @@ namespace MeroBolee.Model
 
         [Column("remark")]
         public string Remark { get => remark; set => remark = value; }
+
+
+        
+        [Column("company_id")]
+        public long CompanyId
+        {
+            get { return company_id; }
+            set { company_id = value; }
+        }
+
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
 
         public virtual List<LiveBiddingEntity> LiveBiddingEntities { get; set; }

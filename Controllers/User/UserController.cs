@@ -34,16 +34,17 @@ namespace MeroBolee.Controllers.User
             {
                 if (ModelState.IsValid)
                 {
-                    if (((long.TryParse(addUser.Company_Contact1, out _) == true) && (long.TryParse(addUser.Person_contact1, out _) == true)) || (long.TryParse(addUser.Company_Contact2, out _) == true) || (long.TryParse(addUser.Person_contact2, out _) == true))
-                    {
-                        return Ok(new Responses<GetUserDto>(await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Contact Number must be numeric";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
+                    return Ok(new Responses<GetUserDto>(await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
+                    //if (((long.TryParse(addUser.Company_Contact1, out _) == true) && (long.TryParse(addUser.Person_contact1, out _) == true)) || (long.TryParse(addUser.Company_Contact2, out _) == true) || (long.TryParse(addUser.Person_contact2, out _) == true))
+                    //{
+
+                    //}
+                    //else
+                    //{
+                    //    response.statusCode = "400";
+                    //    response.Message = "Contact Number must be numeric";
+                    //    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    //}
                 }
                 else
                 {

@@ -11,10 +11,10 @@ namespace MeroBolee.Repository.User
 {
    public interface IUserRepository : IRepositoryBase<UserEntity>
     {
-       Task<UserEntity> AddUser(UserEntity user, ICollection<IFormFile> files);
+       Task<UserEntity> AddUser(UserEntity user);
         IEnumerable<UserEntity> GetAllUser(string search);
         UserEntity GetUserDetail(long id);
-       Task<UserEntity> UpdateUser(int id, UserEntity user, ICollection<IFormFile> files);
+       Task<UserEntity> UpdateUser(int id, UserEntity user);
        
     }
 }

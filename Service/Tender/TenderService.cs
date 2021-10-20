@@ -37,9 +37,9 @@ namespace MeroBolee.Service.Tender
             return TenderEntityListToDto(tenderRepository.GetMarketplaceTender(search));
         }
 
-        public IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search)
+        public IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType)
         {
-            return TenderEntityListToDto(tenderRepository.GetMyTender(companyId, search));
+            return TenderEntityListToDto(tenderRepository.GetMyTender(companyId, search, companyType));
         }
 
         public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int id, string search)

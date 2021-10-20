@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MeroBolee.Model
 {
     [Table("mb_company")]
-    public class CompanyEntity
+    public class CompanyEntity: BaseEntity
     {
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

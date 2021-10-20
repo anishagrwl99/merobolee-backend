@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service.City
 {
-     public interface ICityService
+    public interface ICityService
     {
         GetCityDto AddCity(AddCityDto cityDto);
         IEnumerable<GetCityDto> GetCity(string search);

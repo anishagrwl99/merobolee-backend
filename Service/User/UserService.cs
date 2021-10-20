@@ -28,7 +28,7 @@ namespace MeroBolee.Service.User
             user.Password = cryptoService.Encrypt(user.Password);
             try
             {
-                return UserEntityToDto(await userRepository.AddUser(user, userDto.Experienced_document));
+                return UserEntityToDto(await userRepository.AddUser(user));
             }
             catch (Exception ex)
             {    
@@ -51,19 +51,19 @@ namespace MeroBolee.Service.User
         public async Task<GetUserDto> SignUp(SignUpDto userDto)
         {
             UserEntity user = SignUpDtoEntity(userDto);
-            return UserEntityToDto(await userRepository.AddUser(user,userDto.Experienced_document));
+            return UserEntityToDto(await userRepository.AddUser(user));
         }
 
         public  async Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto)
         {
             UserEntity user = UserDtoEntity(userDto);
-            return UserEntityToDto(await userRepository.UpdateUser(id, user, userDto.Experienced_document));
+            return UserEntityToDto(await userRepository.UpdateUser(id, user));
         }
 
         public async Task<GetUserDto> UpdateUserByUser(int id, SignUpDto userDto)
         {
             UserEntity user = SignUpDtoEntity(userDto);
-            return UserEntityToDto( await userRepository.UpdateUser(id, user, userDto.Experienced_document));
+            return UserEntityToDto( await userRepository.UpdateUser(id, user));
         }
 
        

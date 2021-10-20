@@ -11,9 +11,9 @@ namespace MeroBolee.Dto
     {
 
      
-        private int user_id;
-      //  private UserEntity userEntity;
-        private int tender_Id;
+        private long user_id;
+        private long company_id;
+        private long tender_Id;
         //private TenderEntity tenderEntity;
         private int admin_Status_Id;
         //private AdminStatusEntity adminStatusEntity;
@@ -21,9 +21,20 @@ namespace MeroBolee.Dto
         //private string remark;
         private ICollection<IFormFile> bidderRequestDocs;
 
-        public int User_id { get => user_id; set => user_id = value; }
+        public long User_id { get => user_id; set => user_id = value; }
+
+
+       
+
+        public long Company_Id
+        {
+            get { return company_id; }
+            set { company_id = value; }
+        }
+
+
         //public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
-        public int Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
         //public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
         public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
         //public AdminStatusEntity AdminStatusEntity { get => adminStatusEntity; set => adminStatusEntity = value; }

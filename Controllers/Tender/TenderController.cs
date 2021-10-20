@@ -50,22 +50,6 @@ namespace MeroBolee.Controllers.Tender
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                response.statusCode = "500";
-                response.Message = "Internal Server Error";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-
-            catch (SqlException ex)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-
-
             catch (Exception e)
             {
                 response.statusCode = "400";
@@ -110,7 +94,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("Tender/MyTenders")]
+        [HttpGet("Tender/BidInviter/MyTenders")]
         public IActionResult GetBidInviterTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search="")
         {
             try
@@ -118,7 +102,37 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetBidInviterTenders", null, null, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetMyTenders(companyId, search);
+                IEnumerable<GetTenderDto> tenders = tenderService.GetMyTenders(companyId, search, CompanyTypeEnum.BidInviter);
+                int totalCount = tenders.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get a tender on which bidding is done by a bidder (supplier) company
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Bidder/MyTenders")]
+        public IActionResult GetBidderTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
+        {
+            try
+            {
+                string url = Url.Action("GetBidInviterTenders", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<GetTenderDto> tenders = tenderService.GetMyTenders(companyId, search, CompanyTypeEnum.Bidder);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {

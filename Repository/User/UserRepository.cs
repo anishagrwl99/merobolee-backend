@@ -20,7 +20,7 @@ namespace MeroBolee.Repository.User
         {
             this.unitOfWork = unitOfWork;
         }
-        public async Task<UserEntity> AddUser(UserEntity user,ICollection<IFormFile> experience)
+        public async Task<UserEntity> AddUser(UserEntity user)
         {
             
             try
@@ -169,7 +169,7 @@ namespace MeroBolee.Repository.User
             }
         }
         
-        public async Task<UserEntity> UpdateUser(int id, UserEntity userdto, ICollection<IFormFile> files)
+        public async Task<UserEntity> UpdateUser(int id, UserEntity userdto)
         {
             try
             {
@@ -190,35 +190,7 @@ namespace MeroBolee.Repository.User
                     user.First_Name = userdto.First_Name;
                     user.Middle_Name = userdto.Middle_Name;
                     user.Last_Name = userdto.Last_Name;
-                    user.Designation = userdto.Designation;
-                    if (files == null)
-                    {
-                        List<UserExperienceDocEntity> docEntities = meroBoleeDbContexts.UserExperienceDocEntities.Where(m => m.User_id == user.User_Id).ToList();
-                        foreach (var file in docEntities)
-                        {
-                            meroBoleeDbContexts.UserExperienceDocEntities.Remove(file);
-                            unitOfWork.SaveChange();
-                        }
-                    }
-                    else
-                    {
-                        foreach (var doc in files)
-                        {
-                            List<UserExperienceDocEntity> docEntities = meroBoleeDbContexts.UserExperienceDocEntities.Where(m => m.User_id == user.User_Id).ToList();
-                            foreach (var file in docEntities)
-                            {
-                                meroBoleeDbContexts.UserExperienceDocEntities.Remove(file);
-                                unitOfWork.SaveChange();
-                            }
-                            meroBoleeDbContexts.UserExperienceDocEntities.Add(new UserExperienceDocEntity
-                            {
-                                User_id = user.User_Id,
-                                Experienced_doc = await uploadImage.Upload(doc, user.Company_Name)
-                            }
-                            );
-                            unitOfWork.SaveChange();
-                        }
-                    }
+                    user.Designation = userdto.Designation;                    
 
                     //  user.User_experience = userdto.User_experience;
                     user.Username = userdto.Username;

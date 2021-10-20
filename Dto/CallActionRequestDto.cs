@@ -5,7 +5,8 @@ namespace MeroBolee.Dto
 {
     public class CallActionRequestDto
     {
-        public int SenderId { get; set; }
+        public long SenderId { get; set; }
+        public long ToUserId { get; set; }
         public long? ParentId { get; set; }
         public string Subject { get; set; }
         public string EmailBody { get; set; }
