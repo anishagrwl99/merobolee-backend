@@ -9,7 +9,7 @@ namespace MeroBolee.EntityMapper
 {
     public class CompanyMapper
     {
-        public CompanyEntity SupplierSignUpDToCompanyEntity(UserSignUpDto obj)
+        public CompanyEntity SupplierSignUpDToCompanyEntity(UserSignUpDto obj, CompanyTypeEnum companyTypeEnum)
         {
             if (obj == null)
             {
@@ -26,7 +26,7 @@ namespace MeroBolee.EntityMapper
                Address2 = obj.Address2,
                Address3 = obj.Address3,
                Zip = obj.Zip,
-               RegisteredAs = "Bidder",
+               RegisteredAs = companyTypeEnum == CompanyTypeEnum.Bidder ?  "Bidder" : "BidInviter",
                MembershipTypeId = 1 //Registration
             };
         }

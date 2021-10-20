@@ -10,7 +10,7 @@ namespace MeroBolee.EntityMapper
 {
     public class UserMapper
     {
-        public UserEntity SupplierSignUpDToUserEntity(UserSignUpDto obj)
+        public UserEntity SupplierSignUpDToUserEntity(UserSignUpDto obj, CompanyTypeEnum companyTypeEnum)
         {
             if (obj == null) return null;
 
@@ -22,7 +22,7 @@ namespace MeroBolee.EntityMapper
                 Password = obj.Password,
                 Date_created= DateTime.Now,
                 Date_modified = DateTime.Now,
-                Role_Id = 3, //Bidder(Supplier) role
+                Role_Id = companyTypeEnum == CompanyTypeEnum.Bidder ? 3 : 2, //Bidder(Supplier) role
                 Status_id = 1 //Registered status
             };
         }
