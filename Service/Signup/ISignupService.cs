@@ -6,17 +6,36 @@ using MeroBolee.Repository;
 
 namespace MeroBolee.Service
 {
+    /// <summary>
+    /// Signup service interface
+    /// </summary>
     public interface ISignupService
     {
-        ResponseMsg SignupSupplier(SupplierSignUp data);
+
+        /// <summary>
+        /// Method to signup onbording company
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="companyTypeEnum"></param>
+        /// <returns></returns>
+        ResponseMsg SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum);
     }
 
+    /// <summary>
+    /// Signup service implementation
+    /// </summary>
     public class SignupService : ISignupService
     {
         private readonly ICryptoService cryptoService;
         private readonly IReferenceCodeService codeService;
         private readonly ISignupRepository signupRepo;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="cryptoService"></param>
+        /// <param name="codeService"></param>
+        /// <param name="signupRepo"></param>
         public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo)
         {
             this.cryptoService = cryptoService;
@@ -28,14 +47,16 @@ namespace MeroBolee.Service
         /// 
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="companyTypeEnum"></param>
         /// <returns></returns>
-        public  ResponseMsg SignupSupplier(SupplierSignUp data)
+        public ResponseMsg SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum)
         {
             try
             {
                 CompanyMapper mapper = new CompanyMapper();
                 CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data);
-                companyEntity.ReferenceCode = codeService.GenerateCode(ReferenceEnum.Bidder).Result;
+                companyEntity.ReferenceCode = companyTypeEnum== CompanyTypeEnum.Bidder ? 
+                        codeService.GenerateCode(ReferenceEnum.Bidder).Result : codeService.GenerateCode(ReferenceEnum.BidInviter).Result;
                 UserMapper userMapper = new UserMapper();
                 UserEntity user = userMapper.SupplierSignUpDToUserEntity(data);
                 user.Password = cryptoService.Encrypt(user.Password);
@@ -65,5 +86,6 @@ namespace MeroBolee.Service
                 Message = "Bad data supplied"
             };
         }
+
     }
 }

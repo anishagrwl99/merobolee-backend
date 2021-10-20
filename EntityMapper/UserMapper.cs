@@ -10,7 +10,7 @@ namespace MeroBolee.EntityMapper
 {
     public class UserMapper
     {
-        public UserEntity SupplierSignUpDToUserEntity(SupplierSignUp obj)
+        public UserEntity SupplierSignUpDToUserEntity(UserSignUpDto obj)
         {
             if (obj == null) return null;
 

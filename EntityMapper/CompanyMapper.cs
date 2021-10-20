@@ -9,7 +9,7 @@ namespace MeroBolee.EntityMapper
 {
     public class CompanyMapper
     {
-        public CompanyEntity SupplierSignUpDToCompanyEntity(SupplierSignUp obj)
+        public CompanyEntity SupplierSignUpDToCompanyEntity(UserSignUpDto obj)
         {
             if (obj == null)
             {
