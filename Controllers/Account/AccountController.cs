@@ -28,11 +28,11 @@ namespace MeroBolee.Controllers
         }
 
         /// <summary>
-        /// Authenticate supplier user
+        /// Authenticate bidder (supplier) user
         /// </summary>
         /// <returns></returns>
         /// 
-        [HttpPost("Authenticate/Supplier")]
+        [HttpPost("Authenticate/Bidder")]
         public IActionResult AuthenticateSupplier([FromBody] AuthenticateRequest model)
         {
             try

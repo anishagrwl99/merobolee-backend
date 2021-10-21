@@ -149,7 +149,7 @@ namespace MeroBolee.Controllers
             catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;//"Something went wrong";
+                response.Message = $"{ex.Message} {(ex.InnerException != null? ex.InnerException.Message : "")}";//"Something went wrong";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
