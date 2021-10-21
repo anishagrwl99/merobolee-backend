@@ -11,10 +11,11 @@ namespace MeroBolee.Repository.Mail
     public class MailRepository : RepositoryBase<MailEntity>, IMailRepository
     {
         private readonly IUnitOfWork unitOfWork;
-        private UploadImage uploadImage = new UploadImage();
-        public MailRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork) : base(dbFactory) 
+        private IUploadFile uploadImage;
+        public MailRepository(IDbFactory dbFactory, IUploadFile uploadFileService, IUnitOfWork unitOfWork) : base(dbFactory) 
         {
             this.unitOfWork = unitOfWork;
+            uploadImage = uploadFileService;
         }
 
         public async void PostMail(MailEntity mailEntity, ICollection<IFormFile> attachment)

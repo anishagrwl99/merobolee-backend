@@ -184,6 +184,7 @@ namespace MeroBolee
             // Dependency Injection
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<IReferenceCodeService, ReferenceCodeService>();
+            services.AddScoped<IUploadFile, UploadImage>();
 
             services.AddScoped<IDbFactory, DbFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -14,11 +14,12 @@ namespace MeroBolee.Repository.BidderRequest
     public class BidderRequestRepository: RepositoryBase<BidderRequestEntity>, IBidderRequestRepository
     {
         private readonly IUnitOfWork unitOfWork;
-        private UploadImage uploadImage = new UploadImage();
+        private IUploadFile uploadImage;
 
-        public BidderRequestRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory): base(dbFactory)
+        public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory): base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
+            uploadImage = uploadFileService;
         }
 
         public IEnumerable<BidderRequestEntity> AllRequestByBidder(int bidderId)

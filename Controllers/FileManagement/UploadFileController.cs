@@ -17,15 +17,15 @@ namespace MeroBolee.Controllers
 
 
 
-        public UploadImage upload = new UploadImage();
+        public IUploadFile upload;
         private readonly IWebHostEnvironment environment;
         private readonly UserService userService;
 
 
-        public FileManagementController(IWebHostEnvironment environment)
+        public FileManagementController(IWebHostEnvironment environment, IUploadFile uploadFileService)
         {
             this.environment = environment;
-           // this.userService = userService;
+            upload = uploadFileService;
         }
 
 

@@ -15,10 +15,11 @@ namespace MeroBolee.Repository.User
     public class UserRepository : RepositoryBase<UserEntity>, IUserRepository
     {
         private readonly IUnitOfWork unitOfWork;
-        private UploadImage uploadImage = new UploadImage();
-        public UserRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork): base(dbFactory)
+        private IUploadFile uploadImage;
+        public UserRepository(IDbFactory dbFactory, IUploadFile uploadFileService, IUnitOfWork unitOfWork): base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
+            uploadImage = uploadFileService;
         }
         public async Task<UserEntity> AddUser(UserEntity user)
         {

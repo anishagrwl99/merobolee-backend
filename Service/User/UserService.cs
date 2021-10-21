@@ -16,11 +16,12 @@ namespace MeroBolee.Service.User
     {
         private readonly IUserRepository userRepository;
         private readonly ICryptoService cryptoService;
-        private UploadImage uploadImage = new UploadImage();
-        public UserService(IUserRepository userRepository, ICryptoService cryptoService)
+        private IUploadFile uploadImage;
+        public UserService(IUserRepository userRepository, ICryptoService cryptoService, IUploadFile uploadFileService)
         {
             this.userRepository = userRepository;
             this.cryptoService = cryptoService;
+            this.uploadImage = uploadFileService;
         }
         public async Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/)
         {

@@ -22,11 +22,11 @@ namespace MeroBolee.Service
     {
 
         private readonly ICompanyDocumentRepository companyDocRepository;
-        private UploadImage docUpload;
-        public CompanyDocumentService(ICompanyDocumentRepository companyDocRepository)
+        private IUploadFile docUpload;
+        public CompanyDocumentService(ICompanyDocumentRepository companyDocRepository, IUploadFile uploadFileService)
         {
             this.companyDocRepository = companyDocRepository;
-            docUpload = new UploadImage();
+            docUpload = uploadFileService;
         }
 
         public async Task<DocumentDto> AddDocument(DocumentDto obj)
@@ -45,7 +45,7 @@ namespace MeroBolee.Service
                 if (ent != null) return obj;
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
