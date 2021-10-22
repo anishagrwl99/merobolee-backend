@@ -24,7 +24,6 @@ namespace MeroBolee.Model
         private DateTime? expried_Date;
         private int? status_id;
         private UserStatusEntity userStatus;
-        private  MembershipTypeEntity membershipType;
         private RoleEntity role;
 
         [Key]

@@ -27,7 +27,9 @@ namespace MeroBolee.EntityMapper
                Address3 = obj.Address3,
                Zip = obj.Zip,
                RegisteredAs = companyTypeEnum == CompanyTypeEnum.Bidder ?  "Bidder" : "BidInviter",
-               MembershipTypeId = 1 //Registration
+               MembershipTypeId = 1, //Registration
+               Date_created = DateTime.Now,
+               Date_modified = DateTime.Now
             };
         }
 
@@ -51,7 +53,9 @@ namespace MeroBolee.EntityMapper
                 CompanyWebsite = dto.CompanyWebsite,
                 Phone1 = dto.Phone1,
                 Phone2 = dto.Phone2,
-                MembershipTypeId = 2
+                MembershipTypeId = 2,
+                Date_created = DateTime.Now,
+                Date_modified = DateTime.Now
             };
         }
 
@@ -92,7 +96,6 @@ namespace MeroBolee.EntityMapper
                 Person_email = dto.Person_email,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
-
             };
         }
 
