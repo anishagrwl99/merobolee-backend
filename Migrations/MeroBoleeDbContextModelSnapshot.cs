@@ -133,11 +133,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("company_id");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Remark")
@@ -267,11 +267,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("category");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<int>("Status_Id")
@@ -289,24 +289,24 @@ namespace MeroBolee.Migrations
                         {
                             Category_Id = 1,
                             Category = "Transportation",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5106),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5135),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5446),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5478),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 2,
                             Category = "Construction",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5161),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5164),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5503),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5506),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 3,
                             Category = "Tourism",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5178),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(5182),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5520),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 214, DateTimeKind.Local).AddTicks(5523),
                             Status_Id = 1
                         });
                 });
@@ -324,11 +324,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("city_title");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<int?>("Municipality_Id")
@@ -475,11 +475,11 @@ namespace MeroBolee.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<int>("MembershipTypeId")
@@ -529,12 +529,12 @@ namespace MeroBolee.Migrations
                             Address3 = "Address3",
                             City = "Kathmandu",
                             CountryId = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(9575),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 320, DateTimeKind.Local).AddTicks(9586),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(140),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(155),
                             MembershipTypeId = 1,
                             Name = "Test Company",
                             ProvinceId = 3,
-                            ReferenceCode = "SP102120160307921",
+                            ReferenceCode = "SP102122111835979",
                             RegisteredAs = "Bidder,BidInviter",
                             Zip = "123"
                         });
@@ -554,11 +554,11 @@ namespace MeroBolee.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.HasKey("Id");
@@ -583,11 +583,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("company_type");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.HasKey("Company_Type_Id");
@@ -599,22 +599,22 @@ namespace MeroBolee.Migrations
                         {
                             Company_Type_Id = 1,
                             Company_type = "Transportation",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1066),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1080)
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1498),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1507)
                         },
                         new
                         {
                             Company_Type_Id = 2,
                             Company_type = "Construction",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1093),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1097)
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1518),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1522)
                         },
                         new
                         {
                             Company_Type_Id = 3,
                             Company_type = "Tourism",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1106),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 9, 321, DateTimeKind.Local).AddTicks(1109)
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1531),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 37, 215, DateTimeKind.Local).AddTicks(1534)
                         });
                 });
 
@@ -679,11 +679,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("country_name");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.HasKey("Country_Id");
@@ -697,8 +697,8 @@ namespace MeroBolee.Migrations
                             Abbre = "NP",
                             Country_Code = "NEP",
                             Country_Name = "Nepal",
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(4376),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(4381)
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(4736),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(4741)
                         });
                 });
 
@@ -711,11 +711,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("District_Name")
@@ -827,11 +827,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("answer");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Question")
@@ -950,11 +950,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("cc");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("FromEmail")
@@ -1010,11 +1010,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<float>("Discount")
@@ -1051,8 +1051,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 918, DateTimeKind.Local).AddTicks(4257),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(916),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 974, DateTimeKind.Local).AddTicks(107),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(1245),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1063,8 +1063,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 2,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(1639),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(1644),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(1923),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(1928),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1075,8 +1075,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 3,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(1646),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(1647),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(1930),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(1931),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1095,11 +1095,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<int?>("District_id")
@@ -1159,11 +1159,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("country_id");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Province")
@@ -1181,56 +1181,56 @@ namespace MeroBolee.Migrations
                         {
                             Province_Id = 1,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6263),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6268),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6621),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6626),
                             Province = "Province No. 1"
                         },
                         new
                         {
                             Province_Id = 2,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6272),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6273),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6630),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6631),
                             Province = "Province No. 2"
                         },
                         new
                         {
                             Province_Id = 3,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6274),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6275),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6633),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6633),
                             Province = "Bagmati Province"
                         },
                         new
                         {
                             Province_Id = 4,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6277),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6278),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6635),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6636),
                             Province = "Gandaki Province"
                         },
                         new
                         {
                             Province_Id = 5,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6279),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6280),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6637),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6638),
                             Province = "Lumbini Province"
                         },
                         new
                         {
                             Province_Id = 6,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6281),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6282),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6640),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6641),
                             Province = "Karnali Province"
                         },
                         new
                         {
                             Province_Id = 7,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6284),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 920, DateTimeKind.Local).AddTicks(6284),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6642),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 977, DateTimeKind.Local).AddTicks(6643),
                             Province = "Sudurpashchim Province"
                         });
                 });
@@ -1273,11 +1273,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Description")
@@ -1361,11 +1361,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Role_Name")
@@ -1380,22 +1380,22 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Role_Id = 1,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3618),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3624),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4513),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4519),
                             Role_Name = "Super Admin"
                         },
                         new
                         {
                             Role_Id = 2,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3626),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3627),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4522),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4523),
                             Role_Name = "Bid Inviter"
                         },
                         new
                         {
                             Role_Id = 3,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3629),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 921, DateTimeKind.Local).AddTicks(3630),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4524),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 35, 978, DateTimeKind.Local).AddTicks(4525),
                             Role_Name = "Bidder"
                         });
                 });
@@ -1429,11 +1429,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("company_id");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Duration_Type")
@@ -1611,11 +1611,11 @@ namespace MeroBolee.Migrations
                         .HasColumnName("activate_date");
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Designation")
@@ -1680,8 +1680,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 1L,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 926, DateTimeKind.Local).AddTicks(2628),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 926, DateTimeKind.Local).AddTicks(2645),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 36, 0, DateTimeKind.Local).AddTicks(5761),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 36, 0, DateTimeKind.Local).AddTicks(5782),
                             First_Name = "Super",
                             Last_Name = "Admin",
                             Password = "YHCTM7byxNlmg1x9CGp5nA==",
@@ -1693,8 +1693,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 2L,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 934, DateTimeKind.Local).AddTicks(4046),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 934, DateTimeKind.Local).AddTicks(4069),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 36, 21, DateTimeKind.Local).AddTicks(3052),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 36, 21, DateTimeKind.Local).AddTicks(3075),
                             First_Name = "Bid",
                             Last_Name = "Inviter",
                             Password = "YHCTM7byxNlmg1x9CGp5nA==",
@@ -1706,8 +1706,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 3L,
-                            Date_created = new DateTime(2021, 10, 20, 16, 3, 7, 934, DateTimeKind.Local).AddTicks(4404),
-                            Date_modified = new DateTime(2021, 10, 20, 16, 3, 7, 934, DateTimeKind.Local).AddTicks(4406),
+                            Date_created = new DateTime(2021, 10, 22, 11, 18, 36, 21, DateTimeKind.Local).AddTicks(3460),
+                            Date_modified = new DateTime(2021, 10, 22, 11, 18, 36, 21, DateTimeKind.Local).AddTicks(3463),
                             First_Name = "Bid",
                             Last_Name = "Bidder",
                             Password = "YHCTM7byxNlmg1x9CGp5nA==",
@@ -1788,11 +1788,11 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("Date_modified")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_modified");
 
                     b.Property<int?>("District_Id")

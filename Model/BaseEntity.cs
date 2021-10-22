@@ -6,39 +6,33 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
+    /// <summary>
+    /// Base model for entity
+    /// </summary>
     public class BaseEntity
     {
         private DateTime? date_created;
-        [Column("date_created", TypeName = "date")]
+        private DateTime? date_modified;
+
+        /// <summary>
+        /// Date time on which record is created
+        /// </summary>
+        [Column("date_created", TypeName = "datetime")]
         public DateTime Date_created
         {
             get => date_created ?? DateTime.Now;
             set => date_created = value;
         }
 
-        //private TimeSpan created_time_stamp = DateTime.Now.TimeOfDay;
-        //[Column("created_timestamp")]
-        //public TimeSpan Created_time_stamp
-        //{
-        //    get => created_time_stamp;
-        //    set => created_time_stamp = value;
-        //}
-
-        private DateTime? date_modified;
-        [Column("date_modified", TypeName = "date")]
+       
+        /// <summary>
+        /// Date time on which record is last modified
+        /// </summary>
+        [Column("date_modified", TypeName = "datetime")]
         public DateTime Date_modified
         {
             get => date_modified ?? DateTime.Now;
             set => date_modified = value;
         }
-
-        //private TimeSpan modified_time_stamp = DateTime.Now.TimeOfDay;
-        //[Column("modified_timestamp")]
-        //public TimeSpan Modified_time_stamp
-        //{
-        //    get => modified_time_stamp;
-        //    set => modified_time_stamp = value;
-        //}
-
     }
 }
