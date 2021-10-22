@@ -32,7 +32,7 @@ namespace MeroBolee.Infrastructure
                 {
                     return null;
                 }
-                var extension = "." + Path.GetExtension(file.FileName);// "." + file.FileName.Split('.')[file.FileName.Split('.').Length-1]; // to get extension of file
+                var extension = Path.GetExtension(file.FileName);// "." + file.FileName.Split('.')[file.FileName.Split('.').Length-1]; // to get extension of file
                 fileName = DateTime.Now.Ticks + extension; // to change name of file for security reason
                 var pathBuilt = Path.Combine(host.ContentRootPath, folder + "\\" + folderName); // to create path for file
                 if (!Directory.Exists(pathBuilt))
