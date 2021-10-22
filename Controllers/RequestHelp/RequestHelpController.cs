@@ -103,6 +103,7 @@ namespace MeroBolee.Controllers.RequestHelp
         /// To display all RequestHelp of individual bidder
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("RequestHelpByBidder")]
         public IActionResult GetAllPublish([FromQuery] PaginationQuery pagination, int id)

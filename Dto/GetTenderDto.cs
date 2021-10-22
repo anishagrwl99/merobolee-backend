@@ -29,7 +29,6 @@ namespace MeroBolee.Dto
         private float tender_fee;
         private DateTime last_Request_Date;
         private string source_Fund;
-        private string IFB_RFP_EOI;
         private DateTime project_Start_Date;
         private string cancel_Remark;
         private DateTime? publish_Date;

@@ -30,7 +30,7 @@ namespace MeroBolee.Controllers.WatchList
         /// </summary>
         /// <returns></returns>
         [HttpPost("Tender/AddToWatchList")]
-        public async Task<IActionResult> Add(AddWatchList watchListEntity)
+        public IActionResult Add(AddWatchList watchListEntity)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace MeroBolee.Controllers.WatchList
                     watchListService.AddWatchList(watchListEntity);
                     response.statusCode = "200";
                     response.Message = "Sucessfully added in watchlist";
-                     return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                    return  StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
                 {
@@ -55,25 +55,11 @@ namespace MeroBolee.Controllers.WatchList
                 response.Message = "Username or Email already exists";
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
-
-            catch (DbUpdateException)
-            {
-                response.statusCode = "500";
-                response.Message = "Internal Server Error";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
                 response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -81,9 +67,10 @@ namespace MeroBolee.Controllers.WatchList
         /// To show interest bid of bidder
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="supplierId"></param>
         /// <returns></returns>
         [HttpGet("Tender/WatchLists")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId )
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId)
         {
             try
             {

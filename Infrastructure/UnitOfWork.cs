@@ -24,5 +24,10 @@ namespace MeroBolee.Infrastructure
         {
             meroBoleeDbContexts.SaveChanges();
         }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return meroBoleeDbContexts.SaveChangesAsync();
+        }
     }
 }

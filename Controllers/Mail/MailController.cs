@@ -38,7 +38,7 @@ namespace MeroBolee.Controllers.Mail
             {
 
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = ex.Message;// "Something went wrong";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 

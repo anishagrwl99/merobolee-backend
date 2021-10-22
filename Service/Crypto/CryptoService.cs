@@ -10,9 +10,25 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
+    /// <summary>
+    /// Crypto service interface
+    /// </summary>
     public interface ICryptoService
     {
+        /// <summary>
+        /// Decrypt encrypted content and return specific type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cipherText"></param>
+        /// <returns></returns>
         T Decrypt<T>(string cipherText);
+        
+        
+        /// <summary>
+        /// Encrypt content and return encrypted content as string
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <returns></returns>
         string Encrypt(string plainText);
     }
 
@@ -22,8 +38,8 @@ namespace MeroBolee.Service
     /// </summary>
     public class CryptoService : ICryptoService
     {
-        private string _encryptionKey;
-        private byte[] _encryptionByte;
+        private readonly string _encryptionKey;
+        private readonly byte[] _encryptionByte;
 
         /// <summary>
         /// Default Constructor
@@ -37,6 +53,11 @@ namespace MeroBolee.Service
             _encryptionByte = Convert.FromBase64String(config.EncryptionByteHash);
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="encryptionKey">Key for encryption</param>
+        /// <param name="saltHash">Hash salt</param>
         public CryptoService(string  encryptionKey, string saltHash)
         {
             _encryptionKey = encryptionKey;
@@ -52,7 +73,7 @@ namespace MeroBolee.Service
         public string Encrypt(string plainText)
         {
 
-            RijndaelManaged objrij = new RijndaelManaged();
+            RijndaelManaged objrij = new();
             //set the mode for operation of the algorithm
             objrij.Mode = CipherMode.CBC;
             //set the padding mode used in the algorithm.
@@ -89,7 +110,7 @@ namespace MeroBolee.Service
         /// <returns></returns>
         public T Decrypt<T>(string cipherText)
         {
-            RijndaelManaged objrij = new RijndaelManaged();
+            RijndaelManaged objrij = new();
             objrij.Mode = CipherMode.CBC;
             objrij.Padding = PaddingMode.PKCS7;
             objrij.KeySize = 0x80;

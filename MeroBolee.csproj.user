@@ -6,6 +6,7 @@
     <ShowAllFiles>false</ShowAllFiles>
     <NameOfLastUsedPublishProfile>D:\Projects\NextNepal\meroboli\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
     <ActiveDebugProfile>IIS Express (prod)</ActiveDebugProfile>
+    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

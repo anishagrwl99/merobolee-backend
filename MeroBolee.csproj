@@ -6,10 +6,15 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>D:\Next_Nepal\NextNepal\MeroBoli\MeroBolee\MeroBolee.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<ApplicationIcon>favicon.ico</ApplicationIcon>
+		<Nullable>annotations</Nullable>
 	</PropertyGroup>
 	
   <ItemGroup>

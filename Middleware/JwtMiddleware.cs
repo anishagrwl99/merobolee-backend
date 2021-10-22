@@ -93,9 +93,9 @@ namespace MeroBolee.Middleware
                 context.Items["Account"] = user;
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return false;
+                throw;
                 // do nothing if jwt validation fails
                 // account is not attached to context so request won't have access to secure routes
             }

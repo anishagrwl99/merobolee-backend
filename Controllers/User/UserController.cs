@@ -137,6 +137,7 @@ namespace MeroBolee.Controllers.User
         /// To display all user by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("User")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)

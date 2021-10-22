@@ -80,13 +80,13 @@ namespace MeroBolee.Repository.BidderRequest
                 return null;
                 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
-        public async Task<LiveBiddingEntity> LiveBid(LiveBiddingEntity bidEntity)
+        public LiveBiddingEntity LiveBid(LiveBiddingEntity bidEntity)
         {
             try
             {
@@ -101,12 +101,11 @@ namespace MeroBolee.Repository.BidderRequest
 
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
             }
-            return null;
         }
         public async Task<List<LiveBiddingEntity>> TenderLiveBids(int tenderId)
         {

@@ -61,6 +61,7 @@ namespace MeroBolee.Controllers.Country
         /// To display all country by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Country")]
         public IActionResult GetAllCountry([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)

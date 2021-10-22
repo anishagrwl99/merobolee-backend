@@ -22,6 +22,12 @@ namespace MeroBolee.Service
     /// </summary>
     public interface IAccountService
     {
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="companyRegisteredAs"></param>
+        /// <returns></returns>
         AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs);
        
     }
@@ -35,6 +41,12 @@ namespace MeroBolee.Service
         private readonly JWTSettings jwtsetting;
         private readonly ICryptoService cryptoService;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="cryptoService"></param>
+        /// <param name="accountRepository"></param>
+        /// <param name="jwtSettings"></param>
         public AccountService(ICryptoService cryptoService, IAccountRepository accountRepository, IOptions<JWTSettings> jwtSettings)
         {
             this.cryptoService = cryptoService;
@@ -42,6 +54,12 @@ namespace MeroBolee.Service
             jwtsetting = jwtSettings.Value;
         }
 
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="companyRegisteredAs"></param>
+        /// <returns></returns>
         public  AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs)
         {
             try
@@ -69,10 +87,9 @@ namespace MeroBolee.Service
                 }
                 return account;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw ex;
+                throw ;
             }
         }
 
@@ -112,7 +129,7 @@ namespace MeroBolee.Service
         //        x.Created.AddDays(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow);
         //}
 
-        private string randomTokenString()
+        private static string randomTokenString()
         {
             using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
             var randomBytes = new byte[40];

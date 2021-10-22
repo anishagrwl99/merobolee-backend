@@ -61,6 +61,7 @@ namespace MeroBolee.Controllers.Tender
         /// To display all tender list by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Marketplace")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
@@ -93,6 +94,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/MyTenders")]
         public IActionResult GetBidInviterTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search="")
@@ -123,6 +125,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Bidder/MyTenders")]
         public IActionResult GetBidderTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
@@ -152,6 +155,8 @@ namespace MeroBolee.Controllers.Tender
         /// To display tender list of bidder's interest by bidder id
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("InterestTender")]
         public IActionResult GetInterestTender([FromQuery] PaginationQuery pagination, int id, [FromQuery] string search = null)
@@ -194,6 +199,8 @@ namespace MeroBolee.Controllers.Tender
         /// To display all tender list posted by auctioneer by auctioneer id
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("TenderByAuctioneer")]
         public IActionResult GetTenderByAuctioneer([FromQuery] PaginationQuery pagination, int id, [FromQuery] string search = null)
@@ -236,6 +243,7 @@ namespace MeroBolee.Controllers.Tender
         /// To display only upcoming tender by bidder
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Upcoming")]
         public IActionResult GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
@@ -278,6 +286,8 @@ namespace MeroBolee.Controllers.Tender
         /// To display tender list according to tender status id
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("TenderByStatus")]
         public IActionResult GetTenderByStatus([FromQuery] PaginationQuery pagination, int id, [FromQuery] string search = null)

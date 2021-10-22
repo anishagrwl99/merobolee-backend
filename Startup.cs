@@ -67,11 +67,28 @@ using Hangfire.SqlServer;
 
 namespace MeroBolee
 {
+    /// <summary>
+    /// Startup 
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// App configuration
+        /// </summary>
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// App host environment
+        /// </summary>
         public static string HostingEnvironment { get; set; }
-        private string _corsPolicy = "MeroBoleeClients";
+        private readonly string _corsPolicy = "MeroBoleeClients";
+
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="env"></param>
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             //var builder = new ConfigurationBuilder()
@@ -85,11 +102,15 @@ namespace MeroBolee
         }
 
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
-            services.Configure<UserMailSetting>(Configuration.GetSection("UserMailSetting"));
+            services.Configure<SMTPServerInfo>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
@@ -154,7 +175,7 @@ namespace MeroBolee
                                     Id = "Bearer"
                                 }
                             },
-                            new string[] {}
+                            Array.Empty<string>()
 
                     }
                 });
@@ -232,7 +253,7 @@ namespace MeroBolee
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IDisplayMailService, DisplayMailService>();
             services.AddScoped<IMailRepository, MailRepository>();
-            services.AddScoped<IMailByUserService, MailByUserService>();
+            services.AddScoped<IEmailService, EmailService>();
 
 
             services.AddScoped<IAccountRepository, AccountRepository>();

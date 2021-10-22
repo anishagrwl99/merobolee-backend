@@ -69,6 +69,7 @@ namespace MeroBolee.Controllers.District
         /// To display all district by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("District")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)

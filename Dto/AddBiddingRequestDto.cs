@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+    /// <summary>
+    /// Bidding request dto
+    /// </summary>
     public class AddBiddingRequestDto
     {
 
@@ -21,11 +24,16 @@ namespace MeroBolee.Dto
         //private string remark;
         private ICollection<IFormFile> bidderRequestDocs;
 
+        /// <summary>
+        /// User Id
+        /// </summary>
         public long User_id { get => user_id; set => user_id = value; }
 
 
        
-
+        /// <summary>
+        /// Company id
+        /// </summary>
         public long Company_Id
         {
             get { return company_id; }
@@ -33,20 +41,43 @@ namespace MeroBolee.Dto
         }
 
 
-        //public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
+        /// <summary>
+        /// Tender Id
+        /// </summary>
         public long Tender_Id { get => tender_Id; set => tender_Id = value; }
-        //public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+
+        /// <summary>
+        /// Admin status id
+        /// </summary>
         public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
-        //public AdminStatusEntity AdminStatusEntity { get => adminStatusEntity; set => adminStatusEntity = value; }
-        //public DateTime Request_Send_Date { get => request_Send_Date; set => request_Send_Date = value; }
-        //public string Remark { get => remark; set => remark = value; }
+        
+
+
+        /// <summary>
+        /// Bidder request docs
+        /// </summary>
         public ICollection<IFormFile> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
+        
+        
+        /// <summary>
+        /// Bidding time
+        /// </summary>
         public DateTime BiddingTime { get; set; }
     }
 
+    /// <summary>
+    /// Tender material bidding dto
+    /// </summary>
     public class TenderMaterialBiddingDto
     {
+        /// <summary>
+        /// Bidding id
+        /// </summary>
         public long BiddingId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public long TenderId { get; set; }
         public long SupplierId { get; set; }
         public long MaterialId { get; set; }

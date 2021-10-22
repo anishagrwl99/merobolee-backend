@@ -74,7 +74,7 @@ namespace MeroBolee.Service
                 }).ToList();
                 return response;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

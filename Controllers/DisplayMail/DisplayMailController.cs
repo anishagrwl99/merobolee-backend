@@ -26,6 +26,7 @@ namespace MeroBolee.Controllers.DisplayMail
         /// To show reply from merobolee to bidder
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("Clarificaiton")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromBody] string email)
@@ -68,6 +69,7 @@ namespace MeroBolee.Controllers.DisplayMail
         /// To sent mail from bidder to merobolee
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("Correspondence")]
         public IActionResult GetSentByBidder([FromQuery] PaginationQuery pagination, [FromBody] string email)
@@ -110,6 +112,7 @@ namespace MeroBolee.Controllers.DisplayMail
         /// To sent mail from bidder to merobolee
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("CallForAction")]
         public IActionResult CallForAction([FromQuery] PaginationQuery pagination, [FromBody] string email)

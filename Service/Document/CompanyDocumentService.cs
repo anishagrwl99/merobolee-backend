@@ -14,7 +14,7 @@ namespace MeroBolee.Service
     public interface ICompanyDocumentService
     {
         public Task<DocumentDto> AddDocument(DocumentDto obj);
-        public Task<DocumentUpdateStatusDto> ChangeStatus(DocumentUpdateStatusDto obj);
+        public DocumentUpdateStatusDto ChangeStatus(DocumentUpdateStatusDto obj);
         public List<DocumentResponseDto> GetAllDocument(int companyId , string baseUrl);
     }
 
@@ -52,7 +52,7 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<DocumentUpdateStatusDto> ChangeStatus(DocumentUpdateStatusDto obj)
+        public DocumentUpdateStatusDto ChangeStatus(DocumentUpdateStatusDto obj)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace MeroBolee.Service
                 if (ent != null) return obj;
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -73,7 +73,7 @@ namespace MeroBolee.Service
             {
                 return ToListDto(companyDocRepository.GetAllDocument(companyId), baseUrl);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

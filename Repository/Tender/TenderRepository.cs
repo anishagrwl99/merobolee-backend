@@ -8,16 +8,29 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.Tender
 {
+ 
+    /// <summary>
+    /// Tender repo impelentation
+    /// </summary>
     public class TenderRepository : RepositoryBase<TenderEntity>, ITenderRepository
     {
-        private readonly IDbFactory dbFactory;
         private readonly IUnitOfWork unitOfWork;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="unitOfWork"></param>
+        /// <param name="dbFactory"></param>
         public TenderRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Add tender to db
+        /// </summary>
+        /// <param name="tenderEntity"></param>
+        /// <returns></returns>
         public TenderEntity AddTender(TenderEntity tenderEntity)
         {
             try
@@ -55,11 +68,18 @@ namespace MeroBolee.Repository.Tender
 
         }
 
+        
+        /// <summary>
+        /// Favourite tender
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> FavouriteTender(int id, string search)
         {
             try
             {
-                List<TenderEntity> tenderlist = new List<TenderEntity>();
+                List<TenderEntity> tenderlist = new();
                 var favourite = meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.User_id == id).ToList();
                 foreach (var item in favourite)
                 {
@@ -101,6 +121,12 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+
+        /// <summary>
+        /// Marketplace tender
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> GetMarketplaceTender(string search)
         {
             try
@@ -139,6 +165,15 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+
+
+        /// <summary>
+        /// my tender
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="search"></param>
+        /// <param name="companyType"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> GetMyTender(long companyId, string search, CompanyTypeEnum companyType)
         {
             if (companyType == CompanyTypeEnum.BidInviter)
@@ -190,6 +225,13 @@ namespace MeroBolee.Repository.Tender
                 return tenders;
             }
         }
+
+        /// <summary>
+        /// get tender by auctioneer
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> GetTenderByAuctioneer(int id, string search)
         {
             try
@@ -231,6 +273,11 @@ namespace MeroBolee.Repository.Tender
         //    return meroBoleeDbContexts.TenderEntities.Where(m => m.AdminStatusEntity.Status.ToLower() == "approved").ToList();
         //}
 
+        /// <summary>
+        /// get tender detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public TenderEntity GetTenderDetail(int id)
         {
             try
@@ -261,6 +308,14 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+
+
+        /// <summary>
+        /// tender by status
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> TenderByStatus(int id, string search)
         {
             try
@@ -297,6 +352,12 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+
+        /// <summary>
+        /// upcoming tender
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public IEnumerable<TenderEntity> UpcomingTender(string search)
         {
             try
@@ -335,6 +396,12 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+        /// <summary>
+        /// update tender
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="tenderEntity"></param>
+        /// <returns></returns>
         public TenderEntity UpdateTender(int id, TenderEntity tenderEntity)
         {
             try

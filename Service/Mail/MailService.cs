@@ -87,7 +87,6 @@ namespace MeroBolee.Service.Mail
         {
             try
             {
-                bool isSent;
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
@@ -126,7 +125,7 @@ namespace MeroBolee.Service.Mail
                 } ,mailRequest.Attachments);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

@@ -24,7 +24,7 @@ namespace MeroBolee.Controllers.City
 
 
         [HttpGet("/BackgroundJob/MoveBidHistory")]
-        public async Task<IActionResult> MoveRecord()
+        public IActionResult MoveRecord()
         {
             try
             {

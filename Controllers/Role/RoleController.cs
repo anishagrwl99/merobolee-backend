@@ -62,6 +62,7 @@ namespace MeroBolee.Controllers.Role
         /// To display all role by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Role")]
         public IActionResult GetAllRole([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)

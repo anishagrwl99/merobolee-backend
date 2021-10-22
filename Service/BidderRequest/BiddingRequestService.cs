@@ -37,7 +37,7 @@ namespace MeroBolee.Service.BidderReuest
            //// return bids;
            //return null;
         }
-        public async Task<LiveBidResponse> LiveBid(TenderMaterialBiddingDto materialDto)
+        public LiveBidResponse LiveBid(TenderMaterialBiddingDto materialDto)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace MeroBolee.Service.BidderReuest
                 {
                     LiveBiddingEntity entity = MaterialBiddingDtoToLiveBiddingEntity(materialDto);
                     entity.Quotation = cryptoService.Encrypt(entity.Quotation);
-                    entity = await bidderRequestRepository.LiveBid(entity);
+                    entity = bidderRequestRepository.LiveBid(entity);
 
                     if (entity != null) //if tender is not expired 
                     {
@@ -78,7 +78,7 @@ namespace MeroBolee.Service.BidderReuest
                     return response;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

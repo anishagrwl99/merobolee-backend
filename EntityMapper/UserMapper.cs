@@ -8,8 +8,17 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.EntityMapper
 {
+    /// <summary>
+    /// User Mapper 
+    /// </summary>
     public class UserMapper
     {
+        /// <summary>
+        /// Map dto to entity
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="companyTypeEnum"></param>
+        /// <returns></returns>
         public UserEntity SupplierSignUpDToUserEntity(UserSignUpDto obj, CompanyTypeEnum companyTypeEnum)
         {
             if (obj == null) return null;
@@ -26,6 +35,13 @@ namespace MeroBolee.EntityMapper
                 Status_id = 1 //Registered status
             };
         }
+
+
+        /// <summary>
+        /// User dto to entity
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         public UserEntity UserDtoEntity(AddUserDto userDto)
         {
             if (userDto == null)
@@ -43,7 +59,11 @@ namespace MeroBolee.EntityMapper
             };
 
         }
-
+        /// <summary>
+        /// map singup dto dto user entity
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         public UserEntity SignUpDtoEntity(SignUpDto userDto)
         {
             if (userDto == null)
@@ -66,6 +86,11 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        /// <summary>
+        /// user entity to dto
+        /// </summary>
+        /// <param name="userEntity"></param>
+        /// <returns></returns>
         public GetUserDto UserEntityToDto(UserEntity userEntity)
         {
             if (userEntity == null)
@@ -73,7 +98,7 @@ namespace MeroBolee.EntityMapper
                 return null;
             }
 
-            GetUserDto getUser = new GetUserDto();
+            GetUserDto getUser = new();
 
             if (userEntity.Role == null)
             {
@@ -112,13 +137,18 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        /// <summary>
+        /// user entity to dto
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public IEnumerable<GetUserDto> UserEntityListToDto(IEnumerable<UserEntity> user)
         {
 
-            List<GetUserDto> getUsers = new List<GetUserDto>();
+            List<GetUserDto> getUsers = new();
             if (user == null)
             {
-                return getUsers = null;
+                return null;
             }
 
             foreach (UserEntity userEntity in user)

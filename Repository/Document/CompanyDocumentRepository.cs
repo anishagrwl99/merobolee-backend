@@ -33,7 +33,7 @@ namespace MeroBolee.Repository
                 unitOfWork.SaveChange();
                 return obj;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -58,7 +58,7 @@ namespace MeroBolee.Repository
                 }
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -76,7 +76,7 @@ namespace MeroBolee.Repository
                     .Where(x => x.CompanyID == companyId)
                     .ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -93,7 +93,7 @@ namespace MeroBolee.Repository
                     .FirstOrDefault();
                     
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

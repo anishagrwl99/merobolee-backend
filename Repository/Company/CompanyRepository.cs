@@ -65,7 +65,7 @@ namespace MeroBolee.Repository.City
                 unitOfWork.SaveChange();
                 return user;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

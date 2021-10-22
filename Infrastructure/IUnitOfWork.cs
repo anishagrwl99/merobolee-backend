@@ -8,5 +8,7 @@ namespace MeroBolee.Infrastructure
     public interface IUnitOfWork
     {
         void SaveChange();
+
+        Task<int> SaveChangesAsync();
     }
 }

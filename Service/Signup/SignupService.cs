@@ -53,11 +53,11 @@ namespace MeroBolee.Service
         {
             try
             {
-                CompanyMapper mapper = new CompanyMapper();
+                CompanyMapper mapper = new();
                 CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
                 companyEntity.ReferenceCode = companyTypeEnum== CompanyTypeEnum.Bidder ? 
                         codeService.GenerateCode(ReferenceEnum.Bidder).Result : codeService.GenerateCode(ReferenceEnum.BidInviter).Result;
-                UserMapper userMapper = new UserMapper();
+                UserMapper userMapper = new();
                 UserEntity user = userMapper.SupplierSignUpDToUserEntity(data, companyTypeEnum);
                 user.Password = cryptoService.Encrypt(user.Password);
                 bool result = signupRepo.SignupSupplier(companyEntity, user);

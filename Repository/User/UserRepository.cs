@@ -39,7 +39,7 @@ namespace MeroBolee.Repository.User
                     user.Activate_Date = DateTime.Now.Date;
 
                     meroBoleeDbContexts.UserEntities.Add(user);
-                    unitOfWork.SaveChange();
+                    await unitOfWork.SaveChangesAsync();
                     meroBoleeDbContexts.UserStatusEntities.ToList();
                     meroBoleeDbContexts.CountryEntities.ToList();
                     meroBoleeDbContexts.ProvinceEntities.ToList();
@@ -200,7 +200,7 @@ namespace MeroBolee.Repository.User
                     user.Activate_Date = userdto.Activate_Date;
                     user.Date_modified = user.Date_modified;
                     //user.Modified_time_stamp= user.Modified_time_stamp;
-                    unitOfWork.SaveChange();
+                    await unitOfWork.SaveChangesAsync();
                     meroBoleeDbContexts.RoleEntities.ToList();
                     return user;
                 }

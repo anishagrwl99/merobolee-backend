@@ -68,6 +68,7 @@ namespace MeroBolee.Controllers.Municipality
         /// To display all Municipality by Admin
         /// </summary>
         /// <param name="pagination"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Municipality")]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)

@@ -10,19 +10,44 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
 {
+    /// <summary>
+    /// Account repo interface
+    /// </summary>
     public interface IAccountRepository
     {
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="registeredAs"></param>
+        /// <returns></returns>
         AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs);
     }
+
+
+    /// <summary>
+    /// account repo implementation
+    /// </summary>
     public class AccountRepository : RepositoryBase<UserEntity>, IAccountRepository
     {
-        private readonly IUnitOfWork unitOfWork;
+        //private readonly IUnitOfWork unitOfWork;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="unitOfWork"></param>
+        /// <param name="dbFactory"></param>
         public AccountRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory) : base(dbFactory)
         {
-            this.unitOfWork = unitOfWork;
+           // this.unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="registeredAs"></param>
+        /// <returns></returns>
         public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs)
         {
             try
@@ -65,10 +90,9 @@ namespace MeroBolee.Repository
                 //}
                 //return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw ex;
+                throw;
             }
 
         }

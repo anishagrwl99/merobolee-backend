@@ -31,7 +31,7 @@ namespace MeroBolee.Service
             {
                 return statRepo.Get();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

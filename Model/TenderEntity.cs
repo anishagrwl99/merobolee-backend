@@ -20,7 +20,6 @@ namespace MeroBolee.Model
         private int tender_live_interval;
         private DateTime  last_Request_Date;
         private string source_Fund;
-        private string IFB_RFP_EOI;
         private DateTime project_Start_Date;
         private DateTime live_Start_Date;
         private DateTime live_End_Date;

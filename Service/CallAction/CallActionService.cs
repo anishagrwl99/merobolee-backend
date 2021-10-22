@@ -84,7 +84,7 @@ namespace MeroBolee.Service
                  
                 return response;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -124,7 +124,7 @@ namespace MeroBolee.Service
 
                 return response;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

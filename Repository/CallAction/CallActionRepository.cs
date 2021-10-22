@@ -40,7 +40,7 @@ namespace MeroBolee.Repository
                 return obj;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

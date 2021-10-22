@@ -11,15 +11,24 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers
 {
+    /// <summary>
+    /// Document endpoint controller
+    /// </summary>
     public class DocumentController : Controller
     {
         private readonly ICompanyDocumentService documentService;
         private readonly IDocumentTypeService docTypeService;
         private readonly IDocumentStatusService statService;
-        private readonly PaginationMapper pagination = new PaginationMapper();
-        private readonly ResponseMsg response = new ResponseMsg();
+        private readonly PaginationMapper pagination = new();
+        private readonly ResponseMsg response = new();
         private IUriService uriService;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="documentService"></param>
+        /// <param name="docTypeService"></param>
+        /// <param name="statService"></param>
         public DocumentController(ICompanyDocumentService documentService, IDocumentTypeService docTypeService, IDocumentStatusService statService)
         {
             this.documentService = documentService;
@@ -126,16 +135,16 @@ namespace MeroBolee.Controllers
         /// <summary>
         /// Upload a document by document type
         /// </summary>
-        /// <param name="document"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Document/Upload")]
-        public async Task<IActionResult> Upload([FromQuery] DocumentDto document)
+        public async Task<IActionResult> Upload([FromQuery] DocumentDto model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    DocumentDto doc = await documentService.AddDocument(document);
+                    DocumentDto doc = await documentService.AddDocument(model);
                     return Ok(new Responses<DocumentDto>(doc, "200", "Record is successfully added"));
                 }
                 else
@@ -161,14 +170,14 @@ namespace MeroBolee.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Document/ChangeStatus")]
-        public async Task<IActionResult> ChangeStatus([FromBody] DocumentUpdateStatusDto dto)
+        public IActionResult ChangeStatus([FromBody] DocumentUpdateStatusDto dto)
 
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    DocumentUpdateStatusDto doc = await documentService.ChangeStatus(dto);
+                    DocumentUpdateStatusDto doc = documentService.ChangeStatus(dto);
                     return Ok(new Responses<DocumentUpdateStatusDto>(doc, "200", "Record is successfully added"));
                 }
                 else

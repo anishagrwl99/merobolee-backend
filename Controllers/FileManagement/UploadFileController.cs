@@ -14,12 +14,8 @@ namespace MeroBolee.Controllers
 {
     public class FileManagementController : Controller
     {
-
-
-
         public IUploadFile upload;
         private readonly IWebHostEnvironment environment;
-        private readonly UserService userService;
 
 
         public FileManagementController(IWebHostEnvironment environment, IUploadFile uploadFileService)

@@ -44,7 +44,7 @@ namespace MeroBolee.Controllers.Signup
             }
             catch (Exception ex)
             {
-                ResponseMsg msg = new ResponseMsg
+                ResponseMsg msg = new()
                 {
                     statusCode = "500",
                     Message = ex.Message
@@ -71,7 +71,7 @@ namespace MeroBolee.Controllers.Signup
             }
             catch (Exception ex)
             {
-                ResponseMsg msg = new ResponseMsg
+                ResponseMsg msg = new()
                 {
                     statusCode = "500",
                     Message = ex.Message

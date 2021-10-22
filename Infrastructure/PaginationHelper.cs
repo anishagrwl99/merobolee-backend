@@ -13,11 +13,7 @@ namespace MeroBolee.Infrastructure
             int totals = total % paginationFilteration.pageSize;
             if (totalPage == 0 || totalPage < (total / paginationFilteration.pageSize) || totals > 0)
             {
-                totalPage = totalPage + 1;
-            }
-            else
-            {
-                totalPage = totalPage;
+                totalPage ++;
             }
 
             var NextPage = (paginationFilteration.pageNumber >= 1 && paginationFilteration.pageNumber < totalPage)

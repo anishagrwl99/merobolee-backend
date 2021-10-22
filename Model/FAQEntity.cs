@@ -13,7 +13,6 @@ namespace MeroBolee.Model
         private int faq_id;
         private string question;
         private string answer;
-        private PublishStatus publishStatus;
 
         [Column("faq_id")]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -22,7 +22,6 @@ namespace MeroBolee.Dto
         private string cancel_Remark;
         private DateTime last_Request_Date;
         private string source_Fund;
-        private string IFB_RFP_EOI;
         private DateTime project_Start_Date;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
         private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;

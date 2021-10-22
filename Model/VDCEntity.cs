@@ -15,7 +15,6 @@ namespace MeroBolee.Model
         private string vdc_Name;
         private int? district_Id;
         private DistrictEntity district;
-        private ICollection<UserEntity> user_entity;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("vdc_id")]
