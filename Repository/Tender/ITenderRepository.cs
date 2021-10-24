@@ -11,14 +11,16 @@ namespace MeroBolee.Repository.Tender
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
         IEnumerable<TenderEntity> GetMarketplaceTender(string search);
-        IEnumerable<TenderEntity> GetTenderByAuctioneer(int id, string search);
+        IEnumerable<TenderEntity> GetTenderByAuctioneer(int userId, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(int id);
         TenderEntity UpdateTender(int id, TenderEntity tenderEntity);
         IEnumerable<TenderEntity> UpcomingTender(string search);
-        IEnumerable<TenderEntity> FavouriteTender(int id, string search);
-        IEnumerable<TenderEntity> TenderByStatus(int id, string search);
+        IEnumerable<TenderEntity> FavouriteTender(int userId, string search);
+        IEnumerable<TenderEntity> TenderByStatus(int statusId, string search);
 
         IEnumerable<TenderEntity> GetMyTender(long companyId ,string search, CompanyTypeEnum companyType);
+        IEnumerable<TenderEntity> GetBidIniviterTenderHistory(long companyId ,string search);
+        IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId ,string search);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository.Tender
 {
- 
+
     /// <summary>
     /// Tender repo impelentation
     /// </summary>
@@ -68,19 +68,19 @@ namespace MeroBolee.Repository.Tender
 
         }
 
-        
+
         /// <summary>
         /// Favourite tender
         /// </summary>
         /// <param name="id"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public IEnumerable<TenderEntity> FavouriteTender(int id, string search)
+        public IEnumerable<TenderEntity> FavouriteTender(int userId, string search)
         {
             try
             {
                 List<TenderEntity> tenderlist = new();
-                var favourite = meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.User_id == id).ToList();
+                var favourite = meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.User_id == userId).ToList();
                 foreach (var item in favourite)
                 {
                     var tender = meroBoleeDbContexts.TenderEntities.Where(m => (m.Category_Id == item.Category_id) && ((search == null)
@@ -168,7 +168,7 @@ namespace MeroBolee.Repository.Tender
 
 
         /// <summary>
-        /// my tender
+        /// bid inviter tender
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="search"></param>
@@ -205,13 +205,13 @@ namespace MeroBolee.Repository.Tender
             }
             else
             {
-                List<TenderEntity> tenders =  (from req in meroBoleeDbContexts.BidderRequestEntities
-                        join ten in meroBoleeDbContexts.TenderEntities on req.Tender_Id equals ten.Tender_Id
-                        where (req.CompanyId == companyId
-                                && ((search == null)
-                                 || (ten.Tender_Title.ToLower().Contains(search.ToLower()))
-                           ))
-                        select ten
+                List<TenderEntity> tenders = (from req in meroBoleeDbContexts.BidderRequestEntities
+                                              join ten in meroBoleeDbContexts.TenderEntities on req.Tender_Id equals ten.Tender_Id
+                                              where (req.CompanyId == companyId
+                                                      && ((search == null)
+                                                       || (ten.Tender_Title.ToLower().Contains(search.ToLower()))
+                                                 ))
+                                              select ten
                          ).ToList<TenderEntity>();
                 meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
@@ -226,13 +226,88 @@ namespace MeroBolee.Repository.Tender
             }
         }
 
+
+        /// <summary>
+        /// bid inivter tender history
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public IEnumerable<TenderEntity> GetBidIniviterTenderHistory(long companyId, string search)
+        {
+
+            return meroBoleeDbContexts.TenderEntities
+                    .Include(x => x.UserEntity)
+                    .Include(x => x.AuctionStatusEntity)
+                    .Include(x => x.AdminStatusEntity)
+                    .Include(x => x.TenderMaterialEntities)
+                    .Include(x => x.TenderTermsConditionEntities)
+                    .Include(x => x.CategoryEntity)
+                    .Where(m => m.CompanyId == companyId
+                    //&& (m.Live_Start_Date>= DateTime.Now)
+                    && ((search == null)
+                //|| (m.Tender_Code.ToString().Contains(search))
+                //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                || (m.Tender_Title.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_live_interval.ToString().Contains(search.ToLower()))
+                //|| (m.Live_Start_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Live_End_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Duration_Type.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                //|| (m.Tender_fee.ToString().Contains(search.ToLower()))
+                //|| (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
+                )).ToList();
+
+        }
+
+
+        /// <summary>
+        /// bid inviter tender listing
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId, string search)
+        {
+
+            return meroBoleeDbContexts.TenderEntities
+                    .Include(x => x.UserEntity)
+                    .Include(x => x.AuctionStatusEntity)
+                    .Include(x => x.AdminStatusEntity)
+                    .Include(x => x.TenderMaterialEntities)
+                    .Include(x => x.TenderTermsConditionEntities)
+                    .Include(x => x.CategoryEntity)
+                    .Where(m => m.CompanyId == companyId
+                    //&& (m.Live_Start_Date>= DateTime.Now)
+                    && ((search == null)
+                //|| (m.Tender_Code.ToString().Contains(search))
+                //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                || (m.Tender_Title.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_live_interval.ToString().Contains(search.ToLower()))
+                //|| (m.Live_Start_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Live_End_Date.ToString().Contains(search.ToLower()))
+                //|| (m.Duration_Type.ToLower().Contains(search.ToLower()))
+                //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
+                //|| (m.Tender_fee.ToString().Contains(search.ToLower()))
+                //|| (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
+                )).ToList();
+
+        }
+
+
         /// <summary>
         /// get tender by auctioneer
         /// </summary>
         /// <param name="id"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public IEnumerable<TenderEntity> GetTenderByAuctioneer(int id, string search)
+        public IEnumerable<TenderEntity> GetTenderByAuctioneer(int userId, string search)
         {
             try
             {
@@ -245,7 +320,7 @@ namespace MeroBolee.Repository.Tender
 
                 meroBoleeDbContexts.UserEntities.ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.UserId == id) && ((search == null)
+                return meroBoleeDbContexts.TenderEntities.Where(m => (m.UserId == userId) && ((search == null)
                 || (m.Tender_Code.ToString().Contains(search))
                 || (m.Tender_Description.ToLower().Contains(search.ToLower()))
                 || (m.Tender_Duration.ToString().Contains(search.ToLower()))
@@ -285,11 +360,11 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
                 meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x=>x.Tender_Id == id).ToList();
+                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.Tender_Id == id).ToList();
                 meroBoleeDbContexts
                     .TenderMaterialEntities
-                    .Include(x=>x.MaterialFeatures)
-                    .Where(x=>x.Tender_Id == id).ToList();
+                    .Include(x => x.MaterialFeatures)
+                    .Where(x => x.Tender_Id == id).ToList();
 
                 //long[] materialIds = material.Select(x => x.Id).ToArray();
 
@@ -299,7 +374,7 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
                 TenderEntity ent = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == id).FirstOrDefault();
-                meroBoleeDbContexts.UserEntities.Where(x=>x.User_Id == ent.UserId).ToList();
+                meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == ent.UserId).ToList();
                 return ent;
             }
             catch (Exception)
@@ -316,7 +391,7 @@ namespace MeroBolee.Repository.Tender
         /// <param name="id"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public IEnumerable<TenderEntity> TenderByStatus(int id, string search)
+        public IEnumerable<TenderEntity> TenderByStatus(int statusId, string search)
         {
             try
             {
@@ -329,7 +404,7 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
                 meroBoleeDbContexts.UserEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.Tender_Status_Id == id && m.AdminStatusEntity.Status.ToLower() == "approved") && ((search == null)
+                return meroBoleeDbContexts.TenderEntities.Where(m => (m.Tender_Status_Id == statusId && m.AdminStatusEntity.Status.ToLower() == "approved") && ((search == null)
                     || (m.Tender_Code.ToString().Contains(search))
                     || (m.Tender_Description.ToLower().Contains(search.ToLower()))
                     || (m.Tender_Duration.ToString().Contains(search.ToLower()))
@@ -372,8 +447,8 @@ namespace MeroBolee.Repository.Tender
 
                 meroBoleeDbContexts.UserEntities.ToList();
                 return meroBoleeDbContexts.TenderEntities
-                    .Where(m => (m.AuctionStatusEntity.Status.ToLower() == "upcoming" 
-                    && m.AdminStatusEntity.Status.ToLower() == "approved") 
+                    .Where(m => (m.AuctionStatusEntity.Status.ToLower() == "upcoming"
+                    && m.AdminStatusEntity.Status.ToLower() == "approved")
                     && ((search == null)
                     //|| (m.Tender_Code.ToString().Contains(search))
                     //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))

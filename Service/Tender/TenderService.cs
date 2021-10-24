@@ -27,9 +27,9 @@ namespace MeroBolee.Service.Tender
             return TenderEntityToDto(tenderRepository.AddTender(entity));
         }
 
-        public IEnumerable<GetTenderDto> FavouriteTender(int id, string search)
+        public IEnumerable<GetTenderDto> FavouriteTender(int userId, string search)
         {
-            return TenderEntityListToDto(tenderRepository.FavouriteTender(id, search));
+            return TenderEntityListToDto(tenderRepository.FavouriteTender(userId, search));
         }
 
         public IEnumerable<GetTenderDto> GetMarketplaceTender(string search)
@@ -42,9 +42,19 @@ namespace MeroBolee.Service.Tender
             return TenderEntityListToDto(tenderRepository.GetMyTender(companyId, search, companyType));
         }
 
-        public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int id, string search)
+        public IEnumerable<GetTenderDto> GetBidIniviterTenderHistory(long companyId, string search)
         {
-            return TenderEntityListToDto(tenderRepository.GetTenderByAuctioneer(id, search));
+            return TenderEntityListToDto(tenderRepository.GetBidIniviterTenderHistory(companyId, search));
+        }
+
+        public IEnumerable<GetTenderDto> GetBidInviterTenderListing(long companyId, string search)
+        {
+            return TenderEntityListToDto(tenderRepository.GetBidIniviterTenderHistory(companyId, search));
+        }
+
+        public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search)
+        {
+            return TenderEntityListToDto(tenderRepository.GetTenderByAuctioneer(userId, search));
         }
 
         public GetTenderDto GetTenderDetail(int id)
@@ -52,9 +62,9 @@ namespace MeroBolee.Service.Tender
             return TenderEntityToDto(tenderRepository.GetTenderDetail(id));
         }
 
-        public IEnumerable<GetTenderDto> TenderByStatus(int id, string search)
+        public IEnumerable<GetTenderDto> TenderByStatus(int statusId, string search)
         {
-            return TenderEntityListToDto(tenderRepository.TenderByStatus(id, search));
+            return TenderEntityListToDto(tenderRepository.TenderByStatus(statusId, search));
         }
 
         public IEnumerable<GetTenderDto> UpcomingTender(string search)
