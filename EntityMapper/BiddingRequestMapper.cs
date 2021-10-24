@@ -141,7 +141,7 @@ namespace MeroBolee.EntityMapper
                     Last_Request_Date = tenderEntity.Last_Request_Date,
                     Project_Start_Date = tenderEntity.Project_Start_Date,
                     TenderMaterials = tenderEntity.TenderMaterialEntities,
-                    TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
+                    TenderTermsCondition =  tenderEntity.TenderTermsConditionEntities
 
                 };
             }

@@ -24,7 +24,8 @@ namespace MeroBolee.Model
 
         [Column("term_condition")]
         public string Term_Condition { get => term_Condition; set => term_Condition = value; }
+        
         [JsonIgnore]
-        public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+        public virtual TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
     }
 }

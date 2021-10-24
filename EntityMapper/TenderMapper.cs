@@ -44,7 +44,7 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            return new TenderEntity
+            TenderEntity entity =  new TenderEntity
             {
                 CompanyId = tenderDto.CompanyId,
                 Tender_Title = tenderDto.Tender_Title,
@@ -65,12 +65,34 @@ namespace MeroBolee.EntityMapper
                 //    IFB_RFP_EOI1= tenderDto.IFB_RFP_EOI1,
                 Project_Start_Date = tenderDto.Project_Start_Date,
                 //  Payment_Status_Id = tenderDto.Payment_Status_Id,
-                TenderMaterialEntities = tenderDto.TenderMaterial,
-                TenderTermsConditionEntities = tenderDto.TenderTermsCondition,
+                TenderTermsConditionEntities = new TenderTermsConditionEntity
+                {
+                    Term_Condition = tenderDto.TermsAndCondition
+                },
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
-
+            entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
+            foreach (var item in tenderDto.TenderMaterial)
+            {
+                TenderMaterialEntity obj = new TenderMaterialEntity
+                {
+                    Materials = item.Name,
+                    Quantity = item.Quantity
+                };
+                obj.MaterialFeatures = new List<MaterialFeatureEntity>();
+                foreach (var feature in item.Features)
+                {
+                    MaterialFeatureEntity f = new MaterialFeatureEntity
+                    {
+                        FeatureName = feature.FeatureName,
+                        FeatureValue = feature.FeatureValue
+                    };
+                    obj.MaterialFeatures.Add(f);
+                }
+                entity.TenderMaterialEntities.Add(obj);
+            }
+            return entity;
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity)
         {

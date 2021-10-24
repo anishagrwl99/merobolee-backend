@@ -35,6 +35,6 @@ namespace MeroBolee.Model
         public virtual ICollection<MaterialFeatureEntity> MaterialFeatures { get => materialFeatureEntities; set => materialFeatureEntities = value; }
 
         [JsonIgnore]
-        public virtual TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+        public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
     }
 }

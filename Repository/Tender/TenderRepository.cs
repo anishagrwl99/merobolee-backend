@@ -61,7 +61,7 @@ namespace MeroBolee.Repository.Tender
                 throw;
             }
 
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

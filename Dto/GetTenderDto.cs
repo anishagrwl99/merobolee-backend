@@ -36,7 +36,7 @@ namespace MeroBolee.Dto
         //private int payment_Status_Id;
         //private string paymentStatus;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
-        private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
+        private TenderTermsConditionEntity tenderTermsConditionEntities;
 
         public long Tender_Id { get => tender_Id; set => tender_Id = value; }
         public string Tender_Code { get => tender_Code; set => tender_Code = value; }
@@ -61,7 +61,7 @@ namespace MeroBolee.Dto
         //public int Payment_Status_Id { get => payment_Status_Id; set => payment_Status_Id = value; }
         //public string PaymentStatus { get => paymentStatus; set => paymentStatus = value; }
         public ICollection<TenderMaterialEntity> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public TenderTermsConditionEntity TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
         public string Cancel_Remark { get => cancel_Remark; set => cancel_Remark = value; }
         public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
         public string Source_Fund { get => source_Fund; set => source_Fund = value; }

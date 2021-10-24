@@ -37,7 +37,7 @@ namespace MeroBolee.Model
         //private int payment_Status_Id;
         //private PaymentStatusEntity paymentStatusEntity;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
-        private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
+        private TenderTermsConditionEntity tenderTermsConditionEntities;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("tender_id")]
@@ -85,7 +85,7 @@ namespace MeroBolee.Model
         //public int Payment_Status_Id { get => payment_Status_Id; set => payment_Status_Id = value; }
         //public PaymentStatusEntity PaymentStatusEntity { get => paymentStatusEntity; set => paymentStatusEntity = value; }
         public ICollection<TenderMaterialEntity> TenderMaterialEntities { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsConditionEntities { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public TenderTermsConditionEntity TenderTermsConditionEntities { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
        [Column("cancel_remark")]
         public string Cancel_remark { get => cancel_remark; set => cancel_remark = value; }
         [Column("last_request_date")]

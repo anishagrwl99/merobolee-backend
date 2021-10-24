@@ -22,8 +22,7 @@ namespace MeroBolee.Model
         [ForeignKey("TenderMaterialEntity")]
         [JsonIgnore]
         public long Material_id { get => material_id; set => material_id = value; }
-        [JsonIgnore]
-        public TenderMaterialEntity TenderMaterialEntity { get => tenderMaterialEntity; set => tenderMaterialEntity = value; }
+       
 
         [Column("feature_name")]
         public string FeatureName { get => featureName; set => featureName = value; }
@@ -37,5 +36,8 @@ namespace MeroBolee.Model
             set { featureValue = value; }
         }
 
+
+        [JsonIgnore]
+        public virtual TenderMaterialEntity TenderMaterialEntity { get => tenderMaterialEntity; set => tenderMaterialEntity = value; }
     }
 }

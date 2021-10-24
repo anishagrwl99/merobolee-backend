@@ -23,7 +23,7 @@ namespace MeroBolee.Dto
         private DateTime last_Request_Date;
         private DateTime project_Start_Date;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
-        private ICollection<TenderTermsConditionEntity> tenderTermsConditionEntities;
+        private TenderTermsConditionEntity tenderTermsConditionEntities;
 
         public string Tender_Code { get => tender_Code; set => tender_Code = value; }
         public string Tender_Title { get => tender_Title; set => tender_Title = value; }
@@ -40,6 +40,6 @@ namespace MeroBolee.Dto
         public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
         public ICollection<TenderMaterialEntity> TenderMaterials { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public ICollection<TenderTermsConditionEntity> TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
+        public TenderTermsConditionEntity TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
     }
 }
