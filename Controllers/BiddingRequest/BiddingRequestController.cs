@@ -82,6 +82,10 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
+        
+        
+        
+        
         /// <summary>
         /// Submit a live bid (incomplete) Need to add more business rules. You can bid but validation won't happen
         /// </summary>
@@ -120,6 +124,17 @@ namespace MeroBolee.Controllers.BiddingRequest
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
+
+
+
+        [HttpGet("Bidding/ResetBid")]
+        public IActionResult ResetLiveBid([FromQuery] long tenderId)
+        {
+            return Ok(true);
+            //return ResetBidDto;
+        }
+
 
         /// <summary>
         /// To display all bids Request by Admin

@@ -38,4 +38,12 @@ namespace MeroBolee.Dto
         public string Remark { get => remark; set => remark = value; }
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
     }
+
+
+    public class ResetBidDto
+    {
+        public bool ResetTimer { get; set; }
+        public int RemainingMinute { get; set; }
+        public int RemainingSecond { get; set; }
+    }
 }

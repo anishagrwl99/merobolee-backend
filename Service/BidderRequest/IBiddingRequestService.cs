@@ -27,5 +27,7 @@ namespace MeroBolee.Service.BidderReuest
 
 
         Task MoveBidToHistory();
+
+        Task<ResetBidDto> ResetLiveBid(long tenderId);
     }
 }
