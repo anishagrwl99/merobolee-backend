@@ -344,7 +344,7 @@ namespace MeroBolee.Utility
                     Status_id = 2,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123")
+                    Password = cryptoService.Encrypt("123123")
                 },
                 new UserEntity
                 {
@@ -356,7 +356,7 @@ namespace MeroBolee.Utility
                     Status_id = 2,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123")
+                    Password = cryptoService.Encrypt("123123")
                 },
                 new UserEntity
                 {
@@ -368,7 +368,7 @@ namespace MeroBolee.Utility
                     Status_id = 2,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123")
+                    Password = cryptoService.Encrypt("123123")
                 }
                 );
 
