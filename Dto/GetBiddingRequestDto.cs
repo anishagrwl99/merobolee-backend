@@ -42,8 +42,11 @@ namespace MeroBolee.Dto
 
     public class ResetBidDto
     {
-        public bool ResetTimer { get; set; }
+        public bool IsBiddingExpired { get; set; }
+        public bool IsQuotationReceived { get; set; }
+        public long Interval { get; set; }
         public int RemainingMinute { get; set; }
         public int RemainingSecond { get; set; }
+        public DateTime MinQuotationRecivedAt { get; set; }
     }
 }

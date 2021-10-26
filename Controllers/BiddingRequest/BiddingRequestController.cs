@@ -119,19 +119,44 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
 
 
+        /// <summary>
+        /// Get a remaining time interval to bid a tender
+        /// </summary>
+        /// <param name="tenderId">A tender id whose interval needs to check</param>
+        /// <returns></returns>
 
-        [HttpGet("Bidding/ResetBid")]
-        public IActionResult ResetLiveBid([FromQuery] long tenderId)
+        [HttpGet("Bidding/CheckBiddingTime")]
+        public async Task<IActionResult> CheckBiddingTime([FromQuery] long tenderId)
         {
-            return Ok(true);
+            try
+            {
+                ResetBidDto response = await biddingRequestService.CheckBiddingTime(tenderId);
+                if(response != null)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return NotFound(new Responses<ResetBidDto>(response, "404", "Tender record not found"));
+                }
+                
+            }
+            catch (Exception e)
+            {
+
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+           
             //return ResetBidDto;
         }
 

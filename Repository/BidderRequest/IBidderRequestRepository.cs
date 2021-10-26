@@ -28,6 +28,7 @@ namespace MeroBolee.Repository.BidderRequest
 
         Task<bool> DeleteLiveBids(List<LiveBiddingEntity> records);
         Task<bool> AddHistory(List<BiddingHistoryEntity> records);
+        TenderEntity GetTenderDetail(long tenderId);
 
     }
 }

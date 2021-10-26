@@ -90,7 +90,9 @@ namespace MeroBolee.Repository.BidderRequest
         {
             try
             {
-                bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities.Where(x => x.Tender_Id == bidEntity.TenderId).FirstOrDefault();
+                bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
+                    .Where(x => x.Tender_Id == bidEntity.TenderId)
+                    .FirstOrDefault();
                 if (bidEntity.BidDate <= bidEntity.TenderEntity.Live_End_Date)
                 {
                     meroBoleeDbContexts.LiveBiddingEntities.Add(bidEntity);
@@ -243,6 +245,13 @@ namespace MeroBolee.Repository.BidderRequest
 
                 throw;
             }
+        }
+
+        public TenderEntity GetTenderDetail(long tenderId)
+        {
+            return meroBoleeDbContexts.TenderEntities
+                .Where(x => x.Tender_Id == tenderId)
+                .FirstOrDefault();
         }
     }
 }
