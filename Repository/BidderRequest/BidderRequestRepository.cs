@@ -36,48 +36,57 @@ namespace MeroBolee.Repository.BidderRequest
         {
             try
             {
+                BidderRequestEntity ent = meroBoleeDbContexts.BidderRequestEntities
+                                            .Include(x => x.UserEntity)
+                                            .Include(x => x.AdminStatusEntity)
+                                            .Where(x => x.Request_Id == bidderRequestEntity.Request_Id)
+                                            .FirstOrDefault();
                 TenderEntity tender = meroBoleeDbContexts
-                                        .TenderEntities
-                                        .Include(x=>x.CategoryEntity)
-                                        .Include(x=>x.TenderMaterialEntities)
-                                        .Include(x=>x.TenderTermsConditionEntities)
-                                        .Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id)
-                                        .FirstOrDefault();
+                                           .TenderEntities
+                                           .Include(x => x.CategoryEntity)
+                                           .Include(x => x.TenderMaterialEntities)
+                                           .Include(x => x.TenderTermsConditionEntities)
+                                           .Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id)
+                                           .FirstOrDefault();
 
-                
-
-                if (tender != null)
+                if (ent == null)
                 {
-                    if (bidderRequestEntity.Request_Send_Date >= tender.Live_End_Date)
+                    if (tender != null)
                     {
-                        return null;
-                    }
-                    meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
-                    unitOfWork.SaveChange();
-                    //meroBoleeDbContexts.UserEntities.ToList();
-                    if (bidderRequestEntity.BidderRequestDocs == null)
-                    {
-                        bidderRequestEntity.BidderRequestDocs = null;
-
-                    }
-                    else
-                    {
-                        foreach (var doc in requestDoc)
+                        if (bidderRequestEntity.Request_Send_Date >= tender.Live_End_Date)
                         {
-                            meroBoleeDbContexts.BidderRequestDocEntities.Add(new BidderRequestDocEntity
-                            {
-                                Request_id = bidderRequestEntity.Request_Id,
-                                Document = await uploadImage.Upload(doc, bidderRequestEntity.UserEntity.Username)
-                            }
-                            );
-                            unitOfWork.SaveChange();
+                            return null;
                         }
+                        meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
+                        unitOfWork.SaveChange();
+                        //meroBoleeDbContexts.UserEntities.ToList();
+                        if (bidderRequestEntity.BidderRequestDocs == null)
+                        {
+                            bidderRequestEntity.BidderRequestDocs = null;
+
+                        }
+                        else
+                        {
+                            foreach (var doc in requestDoc)
+                            {
+                                meroBoleeDbContexts.BidderRequestDocEntities.Add(new BidderRequestDocEntity
+                                {
+                                    Request_id = bidderRequestEntity.Request_Id,
+                                    Document = await uploadImage.Upload(doc, bidderRequestEntity.UserEntity.Username)
+                                }
+                                );
+                                unitOfWork.SaveChange();
+                            }
+                        }
+                        bidderRequestEntity.UserEntity = meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == bidderRequestEntity.User_id).FirstOrDefault();
+                        bidderRequestEntity.AdminStatusEntity = meroBoleeDbContexts.AdminStatusEntities.Where(x => x.Status_Id == bidderRequestEntity.Admin_Status_Id).FirstOrDefault();
+                        bidderRequestEntity.TenderEntity = tender;
+                        return bidderRequestEntity;
                     }
-                    bidderRequestEntity.UserEntity = meroBoleeDbContexts.UserEntities.Where(x=> x.User_Id == bidderRequestEntity.User_id).FirstOrDefault();
-                    bidderRequestEntity.AdminStatusEntity = meroBoleeDbContexts.AdminStatusEntities.Where(x => x.Status_Id == bidderRequestEntity.Admin_Status_Id).FirstOrDefault();
-                    return bidderRequestEntity;
+                    return null;
                 }
-                return null;
+                ent.TenderEntity = tender;
+                return ent;
                 
             }
             catch (Exception)
