@@ -64,7 +64,13 @@ namespace MeroBolee.Controllers.BiddingRequest
         }
 
 
-
+        /// <summary>
+        /// Get a bidding position in a applied tender
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="tenderId"></param>
+        /// <param name="supplierId"></param>
+        /// <returns></returns>
         [HttpGet("Bidding/Position")]
         public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination , [FromQuery] int tenderId, [FromQuery] int supplierId)
         {
