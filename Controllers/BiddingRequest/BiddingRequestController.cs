@@ -91,7 +91,6 @@ namespace MeroBolee.Controllers.BiddingRequest
         
         
         
-        
         /// <summary>
         /// Submit a live bid (incomplete) Need to add more business rules. You can bid but validation won't happen
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Model;
+using MeroBolee.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,27 @@ namespace MeroBolee.EntityMapper
     public class BiddingRequestMapper
     {
 
-        public LiveBiddingEntity MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto)
+        public List<LiveBiddingEntity> MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto, ICryptoService cryptoService)
         {
             if (dto == null)
             {
                 return null;
             }
-            return new LiveBiddingEntity
+            List<LiveBiddingEntity> entities = new List<LiveBiddingEntity>();
+            foreach (var item in dto.MaterialQuotation)
             {
-                BiddingRequestId = dto.BiddingId,
-                UserId = dto.SupplierId,
-                TenderId = dto.TenderId,
-                MaterialId = dto.MaterialId,
-                Quotation = dto.Quotation.ToString(),
-                BidDate = dto.BiddingDate
-            };
+                entities.Add(new  LiveBiddingEntity
+                {
+                    BiddingRequestId = dto.BiddingId,
+                    UserId = dto.SupplierId,
+                    TenderId = dto.TenderId,
+                    MaterialId = item.MaterialId,
+                    Quotation = cryptoService.Encrypt(item.Quotation.ToString()),
+                    BidDate = dto.BiddingDate
+                });
+            }
+            return entities;
+            
         }
         public TenderMaterialBiddingDto LiveBiddingEntityToMaterialBiddingDto(LiveBiddingEntity e)
         {
@@ -37,8 +44,15 @@ namespace MeroBolee.EntityMapper
                 BiddingId = e.BiddingRequestId,
                 SupplierId = e.UserId,
                 TenderId = e.TenderId,
-                MaterialId = e.MaterialId,
-                Quotation = Convert.ToDecimal(e.Quotation),
+                MaterialQuotation = new List<TenderMaterialQuotationDto>
+                {
+                    new TenderMaterialQuotationDto
+                    {
+                        MaterialId = e.MaterialId,
+                        Quotation = Convert.ToDecimal(e.Quotation),
+                    }
+                },
+
                 BiddingDate = e.BidDate
             };
         }
@@ -141,7 +155,7 @@ namespace MeroBolee.EntityMapper
                     Last_Request_Date = tenderEntity.Last_Request_Date,
                     Project_Start_Date = tenderEntity.Project_Start_Date,
                     TenderMaterials = tenderEntity.TenderMaterialEntities,
-                    TenderTermsCondition =  tenderEntity.TenderTermsConditionEntities
+                    TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
 
                 };
             }

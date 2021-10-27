@@ -44,14 +44,16 @@ namespace MeroBolee.Service.BidderReuest
                 bool isQuotationValid = IsQuotationValid(materialDto);
                 if (isQuotationValid)
                 {
-                    LiveBiddingEntity entity = MaterialBiddingDtoToLiveBiddingEntity(materialDto);
-                    entity.Quotation = cryptoService.Encrypt(entity.Quotation);
-                    entity = bidderRequestRepository.LiveBid(entity);
+                    List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService);
+                    //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
+                    entities = bidderRequestRepository.LiveBid(entities);
 
-                    if (entity != null) //if tender is not expired 
+                    if (entities != null) //if tender is not expired 
                     {
-                        AddQuotationToCache(entity, entity.UserId, entity.MaterialId);
-                        LiveBidResponse response = GetPositionFromCache(entity.TenderId, entity.UserId, materialDto.Quotation);
+
+                        AddQuotationToCache(entities, materialDto.TenderId,  materialDto.SupplierId);
+                        decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
+                        LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                         return response;
                     }
                     else
@@ -61,9 +63,9 @@ namespace MeroBolee.Service.BidderReuest
                             IsBidSuccess = false,
                             IsLowestBidReceived = false,
                             LowestBidRecievedTime = materialDto.BiddingDate,
-                            MaterialId = materialDto.MaterialId,
+                            MaterialQuotation = materialDto.MaterialQuotation,
                             Position = "NA",
-                            Quotation = materialDto.Quotation,
+                            
                             Message = "Tender bidding has expired"
                         };
                     }
@@ -71,9 +73,10 @@ namespace MeroBolee.Service.BidderReuest
                 }
                 else
                 {
-                    LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, materialDto.Quotation);
+                    decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
+                    LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                     response.IsBidSuccess = false;
-                    response.MaterialId = materialDto.MaterialId;
+                    response.MaterialQuotation = materialDto.MaterialQuotation;
                     response.Message = "You have already quotated less than current quotation";
                     return response;
                 }
@@ -197,51 +200,81 @@ namespace MeroBolee.Service.BidderReuest
             return response;
         }
 
-        private void AddQuotationToCache(LiveBiddingEntity obj, long supplierId, long materialId)
+        private void AddQuotationToCache(List<LiveBiddingEntity> bids, long tenderId, long supplierId)
         {
             lock (_locker)
             {
-                string key = $"Tender_Bidding_{obj.TenderId}";
+                string key = $"Tender_Bidding_{tenderId}";
                 List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
                 memoryCache.TryGetValue<List<LiveBiddingEntity>>(key, out biddings);
                 if (biddings == null || biddings.Count < 1) //No cache yet
                 {
                     biddings = new List<LiveBiddingEntity>();
-                    biddings.Add(obj);
+                    biddings.AddRange(bids);
                 }
                 else //Cache found
                 {
                     //Get minimum quotation from supplier
-                    LiveBiddingEntity ent = biddings.Where(x => x.UserId == supplierId && x.MaterialId == materialId).FirstOrDefault();
-                    if (ent == null)
+                    foreach (LiveBiddingEntity bid in bids)
                     {
-                        biddings.Add(obj);
-                    }
-                    else
-                    {
-                        ent.Quotation = obj.Quotation;
-                    }
+                        LiveBiddingEntity ent = biddings
+                            .Where(x => x.UserId == supplierId && x.MaterialId == bid.MaterialId)
+                            .FirstOrDefault();
+
+                        if (ent == null)
+                        {
+                            biddings.Add(bid);
+                        }
+                        else
+                        {
+                            ent.Quotation = bid.Quotation;
+                        }
+                    }                   
                 }
-                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings, obj.TenderEntity.Live_End_Date.AddMinutes(5));
+                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings, bids.FirstOrDefault().TenderEntity.Live_End_Date.AddMinutes(5));
             }
         }
 
         private bool IsQuotationValid(TenderMaterialBiddingDto dto)
         {
             decimal minimumQuotation = 0;
-            string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{dto.MaterialId}";
-            memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
-            if (minimumQuotation == 0) //no bid found for this material
+            bool isValid = false;
+            foreach (var item in dto.MaterialQuotation)
             {
-                memoryCache.Set<decimal>(key, dto.Quotation);
-                return true;
+                string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
+                memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
+                if (minimumQuotation <= 0) //no bid found for this material
+                {
+                    memoryCache.Set<decimal>(key, item.Quotation);
+                    isValid = true;
+                    item.IsPrevCacheAvailable = false;
+                }
+                else if (item.Quotation < minimumQuotation)
+                {
+                    memoryCache.Set<decimal>(key, item.Quotation);
+                    isValid = true;
+                    item.IsPrevCacheAvailable = true;
+                    item.PreviousQuotation = minimumQuotation;
+                }
+                isValid = false;
             }
-            else if (dto.Quotation < minimumQuotation)
+
+            if(!isValid)
             {
-                memoryCache.Set<decimal>(key, dto.Quotation);
-                return true;
+                foreach (var item in dto.MaterialQuotation)
+                {
+                    string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
+                    if (item.IsPrevCacheAvailable)
+                    {
+                        memoryCache.Set<decimal>(key, item.PreviousQuotation);
+                    }
+                    if (!item.IsPrevCacheAvailable)
+                    {
+                        memoryCache.Remove(key);
+                    }                    
+                }
             }
-            return false;
+            return isValid;
         }
 
         private LiveBidResponse GetSupplierBiddingPosition(List<LiveBiddingEntity> livebids, long supplierId, decimal currentQuotation)
@@ -267,7 +300,15 @@ namespace MeroBolee.Service.BidderReuest
                     {
                         IsBidSuccess = true,
                         Position = ind <= 5 ? $"L{ind}" : "L6",
-                        Quotation = b.Quotation,
+                        MaterialQuotation = new List<TenderMaterialQuotationDto>
+                        {
+                            new TenderMaterialQuotationDto
+                            {
+                                MaterialId = 0,
+                                Quotation = b.Quotation
+                            }
+                        },
+                        //Quotation = b.Quotation,
                         Message = "Bidding position is calculated",
                         IsLowestBidReceived = false,
                         LowestBidRecievedTime = DateTime.MinValue
@@ -304,7 +345,14 @@ namespace MeroBolee.Service.BidderReuest
                     {
                         IsBidSuccess = false,
                         Position = "NA",
-                        Quotation = 0,
+                        MaterialQuotation = new List<TenderMaterialQuotationDto>
+                        {
+                            new TenderMaterialQuotationDto
+                            {
+                                MaterialId = 0,
+                                Quotation = 0
+                            }
+                        },
                         Message = "Bidding not found to calculate position",
                         IsLowestBidReceived = false,
                         LowestBidRecievedTime = DateTime.MinValue

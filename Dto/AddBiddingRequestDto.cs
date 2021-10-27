@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
@@ -80,18 +81,36 @@ namespace MeroBolee.Dto
         /// </summary>
         public long TenderId { get; set; }
         public long SupplierId { get; set; }
+        public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
+        public DateTime BiddingDate { get; set; }
+    }
+
+    public class TenderMaterialQuotationDto
+    {
         public long MaterialId { get; set; }
         public decimal Quotation { get; set; }
-        public DateTime BiddingDate { get; set; }
+
+
+
+        /// <summary>
+        /// True if material quotation is available in memory cache. No need to pass value from caller as it is maintained within application
+        /// </summary>
+        [JsonIgnore]
+        public bool IsPrevCacheAvailable { get; set; }
+
+        /// <summary>
+        /// Will contain quotation amount when current quotation amount is invalid due to some other material quotation is invalid
+        /// </summary>
+        [JsonIgnore]
+        public decimal PreviousQuotation { get; set; }
     }
 
     public class LiveBidResponse
     {
         public bool IsBidSuccess { get; set; }
         public string Position { get; set; }
-        public long MaterialId { get; set; }
+        public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
         public string Message { get; set; }
-        public decimal Quotation { get; set; }
         public bool IsLowestBidReceived { get; set; }
         public DateTime LowestBidRecievedTime { get; set; }
     }

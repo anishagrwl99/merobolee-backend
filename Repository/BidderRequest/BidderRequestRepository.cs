@@ -95,18 +95,25 @@ namespace MeroBolee.Repository.BidderRequest
             }
         }
 
-        public LiveBiddingEntity LiveBid(LiveBiddingEntity bidEntity)
+        public List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity)
         {
             try
             {
-                bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
-                    .Where(x => x.Tender_Id == bidEntity.TenderId)
+                var tenderEntity = meroBoleeDbContexts.TenderEntities
+                    .Where(x => x.Tender_Id == bidEntity.FirstOrDefault().TenderId)
                     .FirstOrDefault();
-                if (bidEntity.BidDate <= bidEntity.TenderEntity.Live_End_Date)
+                //bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
+                //    .Where(x => x.Tender_Id == bidEntity.TenderId)
+                //    .FirstOrDefault();
+                if (bidEntity.FirstOrDefault().BidDate <= tenderEntity.Live_End_Date)
                 {
-                    meroBoleeDbContexts.LiveBiddingEntities.Add(bidEntity);
+                    meroBoleeDbContexts.LiveBiddingEntities.AddRange(bidEntity);
                     unitOfWork.SaveChange();
 
+                    foreach (var bidItem in bidEntity)
+                    {
+                        bidItem.TenderEntity = tenderEntity;
+                    }
                     return bidEntity;
                 }
 
