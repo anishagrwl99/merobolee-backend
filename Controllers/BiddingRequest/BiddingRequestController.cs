@@ -52,6 +52,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
@@ -119,6 +120,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
@@ -172,15 +174,29 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <returns></returns>
         [HttpPost("Bidding/AutoBid")]
-        public async Task<IActionResult> AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
+        public  IActionResult AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
         {
             try
             {
                 if(ModelState.IsValid)
                 {
-
+                    LiveBidResponse response =  biddingRequestService.AutoBid(autoBidDto);
+                    if (response.IsBidSuccess)
+                    {
+                        return Ok(new Responses<LiveBidResponse>(response, "200", response.Message));
+                    }
+                    else
+                    {
+                        return StatusCode(400, new Responses<LiveBidResponse>(response, "400", response.Message));
+                    }
                 }
-                return Ok();
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
             }
             catch (Exception e)
             {
