@@ -11,12 +11,12 @@ using MeroBolee.Service;
 
 namespace MeroBolee.Repository.BidderRequest
 {
-    public class BidderRequestRepository: RepositoryBase<BidderRequestEntity>, IBidderRequestRepository
+    public class BidderRequestRepository : RepositoryBase<BidderRequestEntity>, IBidderRequestRepository
     {
         private readonly IUnitOfWork unitOfWork;
         private IUploadFile uploadImage;
 
-        public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory): base(dbFactory)
+        public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
             uploadImage = uploadFileService;
@@ -87,7 +87,7 @@ namespace MeroBolee.Repository.BidderRequest
                 }
                 ent.TenderEntity = tender;
                 return ent;
-                
+
             }
             catch (Exception)
             {
@@ -145,7 +145,7 @@ namespace MeroBolee.Repository.BidderRequest
                  * 
                  * */
 
-                List<LiveBiddingEntity> bids =  await meroBoleeDbContexts.LiveBiddingEntities
+                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
                     .GroupBy(o => new { o.UserId, o.TenderId, o.MaterialId })
                     .Select(g => new LiveBiddingEntity
                     {
@@ -155,7 +155,7 @@ namespace MeroBolee.Repository.BidderRequest
                         Quotation = g.Min(o => o.Quotation)
                     }).ToListAsync();
                 return bids;
-                
+
             }
             catch (Exception)
             {
@@ -189,7 +189,7 @@ namespace MeroBolee.Repository.BidderRequest
             {
                 BidderRequestEntity bidderRequest = meroBoleeDbContexts.BidderRequestEntities.Where(m => m.User_id == id).First();
                 bidderRequest.Admin_Status_Id = updateRequest.Status_Id;
-                bidderRequest.Remark =updateRequest.Remark ;
+                bidderRequest.Remark = updateRequest.Remark;
                 bidderRequest.Date_modified = DateTime.Now;
                 return bidderRequest;
             }
@@ -206,18 +206,18 @@ namespace MeroBolee.Repository.BidderRequest
                 return Task.Run<List<LiveBiddingEntity>>(() =>
                 {
                     var list = from t in meroBoleeDbContexts.TenderEntities
-                    join b in meroBoleeDbContexts.LiveBiddingEntities on t.Tender_Id equals b.TenderId
-                    where t.Live_End_Date < DateTime.Now
-                    select new LiveBiddingEntity
-                    {
-                        Id = b.Id,
-                        BiddingRequestId = b.BiddingRequestId,
-                        UserId = b.UserId,
-                        TenderId = b.TenderId,
-                        MaterialId = b.MaterialId,
-                        Quotation = b.Quotation,
-                        BidDate = b.BidDate
-                    };
+                               join b in meroBoleeDbContexts.LiveBiddingEntities on t.Tender_Id equals b.TenderId
+                               where t.Live_End_Date < DateTime.Now
+                               select new LiveBiddingEntity
+                               {
+                                   Id = b.Id,
+                                   BiddingRequestId = b.BiddingRequestId,
+                                   UserId = b.UserId,
+                                   TenderId = b.TenderId,
+                                   MaterialId = b.MaterialId,
+                                   Quotation = b.Quotation,
+                                   BidDate = b.BidDate
+                               };
                     return list.ToList<LiveBiddingEntity>();
                 });
             }

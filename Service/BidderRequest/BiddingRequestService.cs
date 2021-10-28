@@ -54,6 +54,7 @@ namespace MeroBolee.Service.BidderReuest
                         AddQuotationToCache(entities, materialDto.TenderId,  materialDto.SupplierId);
                         decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
                         LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
+                        response.MaterialQuotation = materialDto.MaterialQuotation;
                         return response;
                     }
                     else
@@ -87,6 +88,10 @@ namespace MeroBolee.Service.BidderReuest
                 throw;
             }
 
+        }
+        public LiveBidResponse AutoBid(TenderMaterialBiddingDto bidDto)
+        {
+            return null;
         }
 
         public Task<ResetBidDto> CheckBiddingTime(long tenderId)
@@ -256,7 +261,11 @@ namespace MeroBolee.Service.BidderReuest
                     item.IsPrevCacheAvailable = true;
                     item.PreviousQuotation = minimumQuotation;
                 }
-                isValid = false;
+                else if(minimumQuotation>0)
+                {
+                    item.IsPrevCacheAvailable = true;
+                    item.PreviousQuotation = minimumQuotation;
+                }
             }
 
             if(!isValid)
@@ -268,7 +277,7 @@ namespace MeroBolee.Service.BidderReuest
                     {
                         memoryCache.Set<decimal>(key, item.PreviousQuotation);
                     }
-                    if (!item.IsPrevCacheAvailable)
+                    else
                     {
                         memoryCache.Remove(key);
                     }                    
@@ -296,6 +305,9 @@ namespace MeroBolee.Service.BidderReuest
                 var b = a.Where(x => x.SupplierId == supplierId).FirstOrDefault();
                 if (b != null)
                 {
+                    string timeKey = $"{a.FirstOrDefault().TenderId}_Lowest_Bid_Time";
+                    ResetBidDto dto = null;
+                    memoryCache.TryGetValue<ResetBidDto>(timeKey, out dto);
                     LiveBidResponse resp = new LiveBidResponse
                     {
                         IsBidSuccess = true,
@@ -311,7 +323,7 @@ namespace MeroBolee.Service.BidderReuest
                         //Quotation = b.Quotation,
                         Message = "Bidding position is calculated",
                         IsLowestBidReceived = false,
-                        LowestBidRecievedTime = DateTime.MinValue
+                        LowestBidRecievedTime = dto == null?  DateTime.Now : dto.MinQuotationRecivedAt
                     };
 
                     if (currentQuotation > 0)
@@ -322,7 +334,7 @@ namespace MeroBolee.Service.BidderReuest
                             resp.IsLowestBidReceived = true;
                             resp.LowestBidRecievedTime = DateTime.Now;
                            
-                            ResetBidDto dto = new ResetBidDto
+                            dto = new ResetBidDto
                             {
                                 MinQuotationRecivedAt = DateTime.Now,
                                 RemainingMinute = c.Interval,
@@ -331,7 +343,7 @@ namespace MeroBolee.Service.BidderReuest
                                 IsQuotationReceived = true,
                                 IsBiddingExpired = false
                             };
-                            string timeKey = $"{c.TenderId}_Lowest_Bid_Time";
+                            timeKey = $"{c.TenderId}_Lowest_Bid_Time";
                             memoryCache.Set<ResetBidDto>(timeKey, dto);
                             //Lowest Quotation Received - set Flag to reset timer
                         }

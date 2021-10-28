@@ -166,6 +166,30 @@ namespace MeroBolee.Controllers.BiddingRequest
         }
 
 
+
+        /// <summary>
+        /// Automatically bid to a tender with a price less than 1% of previous price
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Bidding/AutoBid")]
+        public async Task<IActionResult> AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
         /// <summary>
         /// To display all bids Request by Admin
         /// </summary>
