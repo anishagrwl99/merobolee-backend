@@ -13,10 +13,15 @@ namespace MeroBolee.Model
     /// <summary>
     /// Email sentbox for sender
     /// </summary>
+    
+    [Table("mb_email")]
     public class EmailEntity : BaseEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
+        [ForeignKey("Tender")]
+        public long TenderId { get; set; }
 
 
         [Column(TypeName = "VARCHAR")]
@@ -41,12 +46,17 @@ namespace MeroBolee.Model
 
         [JsonIgnore]
         public virtual ICollection<UserEmailEntity> UserEmails { get; set; }
+
+        [JsonIgnore]
+        public virtual TenderEntity Tender { get; set; }
     }
 
 
     /// <summary>
     /// Email inbox for receiver
     /// </summary>
+    
+    [Table("mb_user_email_inbox")]
     public class UserEmailEntity : BaseEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

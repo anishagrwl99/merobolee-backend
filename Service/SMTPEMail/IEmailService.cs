@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Mail
+namespace MeroBolee.Service.SMTPMail
 {
     /// <summary>
     /// Email service interface
     /// </summary>
-    public interface IEmailService
+    public interface ISMTPEmailService
     {
 
 

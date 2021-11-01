@@ -12,12 +12,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Mail
+namespace MeroBolee.Service.SMTPMail
 {
     /// <summary>
     /// Email service
     /// </summary>
-    public class EmailService : IEmailService
+    public class SMTPEmailService : ISMTPEmailService
     {
         private readonly SMTPServerInfo smtpServer;
         private readonly IMailRepository mailRepository;
@@ -28,7 +28,7 @@ namespace MeroBolee.Service.Mail
         /// </summary>
         /// <param name="smtpSettings"></param>
         /// <param name="mailRepository"></param>
-        public EmailService(IOptions<SMTPServerInfo> smtpSettings, IMailRepository mailRepository)
+        public SMTPEmailService(IOptions<SMTPServerInfo> smtpSettings, IMailRepository mailRepository)
         {
             smtpServer = smtpSettings.Value;
             this.mailRepository = mailRepository;

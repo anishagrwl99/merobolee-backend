@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 using MeroBolee.Repository.Mail;
 using Microsoft.AspNetCore.Http;
 
-namespace MeroBolee.Service.Mail
+namespace MeroBolee.Service.SMTPMail
 {
-    public class MailService : IMailService
+    public class SMTPMailService : ISMTPMailService
     {
         private readonly MailSettings _mailSettings;
         //private UserMailSetting userMailSetting;
         private readonly IMailRepository mailRepository; 
-        public MailService(IOptions<MailSettings> mailSettings, IMailRepository mailRepository)
+        public SMTPMailService(IOptions<MailSettings> mailSettings, IMailRepository mailRepository)
         {
             _mailSettings = mailSettings.Value;
             this.mailRepository = mailRepository; 

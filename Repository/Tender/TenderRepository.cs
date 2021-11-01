@@ -520,5 +520,24 @@ namespace MeroBolee.Repository.Tender
             }
 
         }
+
+
+        /// <summary>
+        /// Get a tender id from a tender code
+        /// </summary>
+        /// <param name="tenderCode">Unique tender code of a tender</param>
+        /// <returns><see cref="Tuple{T1, T2}"/></returns>
+        public Tuple<long, long> GetTenderIdFromCode(string tenderCode)
+        {
+
+            Tuple<long, long> tender_User = (from t in meroBoleeDbContexts.TenderEntities
+                             join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
+                             join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
+                             join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
+                             where t.Tender_Code == tenderCode
+                             select Tuple.Create(t.Tender_Id, u.User_Id)
+                     ).FirstOrDefault();
+            return tender_User;
+        }
     }
 }

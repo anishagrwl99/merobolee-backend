@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using MeroBolee.Service.Mail;
+using MeroBolee.Service.SMTPMail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

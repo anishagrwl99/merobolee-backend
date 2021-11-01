@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using MeroBolee.Service.Mail;
+using MeroBolee.Service.SMTPMail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,9 +12,9 @@ namespace MeroBolee.Controllers.Mail
 {
     public class MailController : Controller
     {
-        private readonly IMailService mailService;
+        private readonly ISMTPMailService mailService;
         private readonly ResponseMsg response = new ResponseMsg();
-        public MailController(IMailService mailService)
+        public MailController(ISMTPMailService mailService)
         {
             this.mailService = mailService;
         }

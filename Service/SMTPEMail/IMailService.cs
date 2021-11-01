@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Mail
+namespace MeroBolee.Service.SMTPMail
 {
-    public interface IMailService
+    public interface ISMTPMailService
     {
         Task SendEmailAsync(MailRequest mailRequest);
       //  Task SendWelcomeEmailAsync(WelcomeRequest request);

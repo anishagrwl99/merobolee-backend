@@ -29,7 +29,6 @@ using MeroBolee.Service.Country;
 using MeroBolee.Service.District;
 using MeroBolee.Service.FAQ;
 using MeroBolee.Service.FavouriteCategory;
-using MeroBolee.Service.Mail;
 using MeroBolee.Service.Membership;
 using MeroBolee.Service.Municipality;
 using MeroBolee.Service.Province;
@@ -63,7 +62,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
-
+using MeroBolee.Service.SMTPMail;
 
 namespace MeroBolee
 {
@@ -250,10 +249,10 @@ namespace MeroBolee
             services.AddScoped<IFAQService, FAQService>();
             services.AddScoped<IRequestHelpRepository, RequestHelpRepository>();
             services.AddScoped<IRequestHelpService, RequestHelpService>();
-            services.AddScoped<IMailService, MailService>();
+            services.AddScoped<ISMTPMailService, SMTPMailService>();
             services.AddScoped<IDisplayMailService, DisplayMailService>();
             services.AddScoped<IMailRepository, MailRepository>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
 
             services.AddScoped<IAccountRepository, AccountRepository>();

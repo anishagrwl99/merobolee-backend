@@ -76,5 +76,15 @@ namespace MeroBolee.Service.Tender
         {
             return TenderEntityToDto(tenderRepository.UpdateTender(id, TenderDtoEntity(tenderDto)));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tenderCode"></param>
+        /// <returns><see cref="Tuple{T1, T2}"/></returns>
+        public Tuple<long, long> GetTenderIdFromCode(string tenderCode)
+        {
+            return tenderRepository.GetTenderIdFromCode(tenderCode);
+        }
     }
 }

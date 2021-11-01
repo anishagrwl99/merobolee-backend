@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using MeroBolee.Service.Mail;
+using MeroBolee.Service.SMTPMail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
@@ -17,14 +17,14 @@ namespace MeroBolee.Controllers.Mail
     /// </summary>
     public class MailByUserController : Controller
     {
-        private readonly IEmailService mailService;
+        private readonly ISMTPEmailService mailService;
         private readonly ResponseMsg response = new();
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="mailService"></param>
-        public MailByUserController(IEmailService mailService)
+        public MailByUserController(ISMTPEmailService mailService)
         {
             this.mailService = mailService;
         }
