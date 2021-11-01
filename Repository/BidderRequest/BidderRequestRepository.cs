@@ -95,6 +95,25 @@ namespace MeroBolee.Repository.BidderRequest
             }
         }
 
+        public List<LiveBiddingEntity> AutoBid(List<LiveBiddingEntity> bidEntity)
+        {
+            try
+            {
+                var tenderEntity = meroBoleeDbContexts.TenderEntities
+                    .Where(x => x.Tender_Id == bidEntity.FirstOrDefault().TenderId)
+                    .FirstOrDefault();
+                foreach (var bidItem in bidEntity)
+                {
+                    bidItem.TenderEntity = tenderEntity;
+                }
+                return bidEntity;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity)
         {
             try

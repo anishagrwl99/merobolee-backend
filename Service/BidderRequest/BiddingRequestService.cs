@@ -116,11 +116,8 @@ namespace MeroBolee.Service.BidderReuest
                         });
                     }
                 }
-            }
 
-            if (autoBidEntities.Count > 0)
-            {
-                var entities = bidderRequestRepository.LiveBid(autoBidEntities);
+                var entities = bidderRequestRepository.AutoBid(autoBidEntities);
                 AddQuotationToCache(entities, bidDto.TenderId, bidDto.SupplierId);
                 decimal currentQuotation = entities.Sum(x => cryptoService.Decrypt<decimal>(x.Quotation));
                 LiveBidResponse response = GetPositionFromCache(bidDto.TenderId, bidDto.SupplierId, currentQuotation);
@@ -131,17 +128,20 @@ namespace MeroBolee.Service.BidderReuest
                 }).ToList();
                 response.IsBidSuccess = true;
                 return response;
-            }
 
-            return new LiveBidResponse
+            }
+            else
             {
-                IsBidSuccess = false,
-                IsLowestBidReceived = false,
-                LowestBidRecievedTime = bidDto.BiddingDate,
-                MaterialQuotation = null,
-                Position = "NA",
-                Message = "Tender bidding has expired"
-            };
+                return new LiveBidResponse
+                {
+                    IsBidSuccess = false,
+                    IsLowestBidReceived = false,
+                    LowestBidRecievedTime = bidDto.BiddingDate,
+                    MaterialQuotation = null,
+                    Position = "NA",
+                    Message = "Tender bidding has expired"
+                };
+            }
         }
 
         public Task<ResetBidDto> CheckBiddingTime(long tenderId)

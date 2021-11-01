@@ -14,6 +14,7 @@ namespace MeroBolee.Repository.BidderRequest
         Task<BidderRequestEntity> SendRequest(BidderRequestEntity bidderRequestEntity, ICollection<IFormFile> requestDoc);
 
         List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity);
+        List<LiveBiddingEntity> AutoBid(List<LiveBiddingEntity> bidEntity);
         Task<List<LiveBiddingEntity>> TenderLiveBids(int tenderId);
 
        BidderRequestEntity ShowRequest(int requestId);
