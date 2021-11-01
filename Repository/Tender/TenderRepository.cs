@@ -51,17 +51,8 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.CategoryEntities.ToList();
                 return tenderEntity;
             }
-            catch (ArgumentNullException)
-            {
-                throw;
-            }
-            catch (DbUpdateException)
-            {
 
-                throw;
-            }
-
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

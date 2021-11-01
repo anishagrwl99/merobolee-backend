@@ -23,13 +23,16 @@ namespace MeroBolee.Model
         [ForeignKey("Tender")]
         public long TenderId { get; set; }
 
+        [ForeignKey("Company")]
+        public long CompanyId { get; set; }
 
-        [Column(TypeName = "VARCHAR")]
+
+        [Column(TypeName = "VARCHAR(300)")]
         [Required(ErrorMessage = "Email subject is required.")]
         public string Subject { get; set; }
 
 
-        [Column(TypeName = "VARCHAR")]
+        [Column(TypeName = "VARCHAR(max)")]
         [Required(ErrorMessage = "Email body is required.")]
         public string Body { get; set; }
 
@@ -49,6 +52,9 @@ namespace MeroBolee.Model
 
         [JsonIgnore]
         public virtual TenderEntity Tender { get; set; }
+
+        [JsonIgnore]
+        public virtual CompanyEntity Company { get; set; }
     }
 
 
@@ -56,7 +62,7 @@ namespace MeroBolee.Model
     /// Email inbox for receiver
     /// </summary>
     
-    [Table("mb_user_email_inbox")]
+    [Table("mb_user_email")]
     public class UserEmailEntity : BaseEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -68,6 +74,9 @@ namespace MeroBolee.Model
         /// </summary>
         [ForeignKey("User")]
         public long UserId { get; set; }
+
+
+
 
 
         /// <summary>
@@ -82,6 +91,8 @@ namespace MeroBolee.Model
 
         [JsonIgnore]
         public virtual EmailEntity Email { get; set; }
+
+
     }
 
 }

@@ -89,6 +89,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);                    
                 }
                 isValidTender = true;
+                entity.Body = "";
                 return EntityToDto(entity, false);
             }
             isValidTender = false;
@@ -120,6 +121,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 isValidTender = true;
+                entity.Body = "";
                 return EntityToDto(entity, false);
             }
             isValidTender = false;

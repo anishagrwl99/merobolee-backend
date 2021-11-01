@@ -18,6 +18,7 @@ namespace MeroBolee.EntityMapper
                 AuthorId = dto.UserId,
                 Body = dto.Body,
                 Subject = dto.Subject,
+                CompanyId = dto.CompanyId,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };

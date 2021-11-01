@@ -96,6 +96,7 @@ namespace MeroBolee.Repository
                                            where e.Id == emailId
                                            select new EmailEntity
                                            {
+                                               Id  = e.Id,
                                                AuthorId = e.AuthorId,
                                                Body = e.Body,
                                                Subject = e.Subject,
