@@ -23,9 +23,6 @@ namespace MeroBolee.Utility
         public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
         public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
         public DbSet<LiveBiddingEntity> LiveBiddingEntities { get; set; }
-        public DbSet<CallActionEmailEntity> CallActionEmailEntities { get; set; }
-        public DbSet<ClarificationEmailEntity> ClarificationEmailEntities { get; set; }
-        public DbSet<CorrespondenceEmailEntity> CorrespondenceEmailEntities { get; set; }
         public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<CountryEntity> CountryEntities { get; set; }
@@ -111,21 +108,6 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<CorrespondenceEmailEntity>()
-               .HasOne(e => e.User)
-               .WithMany()
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ClarificationEmailEntity>()
-               .HasOne(e => e.UserEntity)
-               .WithMany()
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<CallActionEmailEntity>()
-               .HasOne(e => e.FromUserEntity)
-               .WithMany()
-               .OnDelete(DeleteBehavior.Restrict);
-
             //modelBuilder.Entity<LiveBiddingEntity>()
             //   .HasOne(e => e.BidderRequestEntity)
             //   .WithOne()
@@ -173,10 +155,25 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
-            //modelBuilder.Entity<CompanyDocumentEntity>()
-            //   .HasOne(e => e.StatusChangedUserEntity)
-            //   .WithMany()
-            //   .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmailEntity>()
+               .HasOne(e => e.User)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EmailEntity>()
+              .HasOne(e => e.Tender)
+              .WithMany()
+              .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EmailEntity>()
+              .HasOne(e => e.Company)
+              .WithMany()
+              .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserEmailEntity>()
+               .HasOne(e => e.User)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
 
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
