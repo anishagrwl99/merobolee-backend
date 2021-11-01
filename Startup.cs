@@ -288,6 +288,11 @@ namespace MeroBolee
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<ICompanyService, CompanyService>();
 
+            //EMail
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IEmailService, EmailService>();
+
+
 
             //Hangfire configuration
             // Add Hangfire services.
