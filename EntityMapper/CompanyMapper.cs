@@ -20,6 +20,7 @@ namespace MeroBolee.EntityMapper
             {
                Name = obj.Name,
                CountryId = obj.CountryId,
+               CompanyStatusId = 1,//Registered
                ProvinceId = obj.ProvinceId,
                City =obj.City,
                Address1 = obj.Address1,
@@ -28,6 +29,7 @@ namespace MeroBolee.EntityMapper
                Zip = obj.Zip,
                RegisteredAs = companyTypeEnum == CompanyTypeEnum.Bidder ?  "Bidder" : "BidInviter",
                MembershipTypeId = 1, //Registration
+               CompanyEmail = obj.Email,
                Date_created = DateTime.Now,
                Date_modified = DateTime.Now
             };
@@ -41,6 +43,7 @@ namespace MeroBolee.EntityMapper
             {
                 Name = dto.CompanyName,
                 CountryId = dto.CountryId,
+                CompanyStatusId = 1, //Registered
                 ProvinceId = dto.ProvinceId,
                 City = dto.City,
                 Address1 = dto.Address1,

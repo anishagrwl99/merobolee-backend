@@ -64,6 +64,7 @@ namespace MeroBolee.Service.City
                 entity.Password = cryptoService.Encrypt(user.Password);
                 entity.Role_Id = role;
                 entity.Status_id = 1;
+                entity.IsEmailReceiver = true;
                 entity = CompanyRepository.AddUser(companyId, entity);
                 return UserEntityToResponse(entity);
             }

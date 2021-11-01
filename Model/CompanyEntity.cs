@@ -8,6 +8,16 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
+    [Table("lk_company_status")]
+    public class CompanyStatusEntity
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Column(TypeName = "VARCHAR(100)")]
+        public string Status { get; set; }
+    }
+
     [Table("mb_company")]
     public class CompanyEntity: BaseEntity
     {
@@ -15,7 +25,9 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long CompanyId { get; set; }
 
- 
+        [ForeignKey("CompanyStatus")]
+        public int? CompanyStatusId { get; set; }
+
         public string Name { get; set; }
 
         [ForeignKey("Country")]
@@ -63,8 +75,15 @@ namespace MeroBolee.Model
 
 
         public virtual CountryEntity Country { get; set; }
+
+        [JsonIgnore]
         public virtual ProvinceEntity Province { get; set; }
+
+        [JsonIgnore]
         public virtual MembershipTypeEntity MembershipType { get; set; }
+
+        [JsonIgnore]
+        public virtual CompanyStatusEntity CompanyStatus { get; set; }
 
     }
 }

@@ -221,10 +221,19 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<UserStatusEntity>().HasData(
-                new UserStatusEntity() { Status_Id = 1, Status = "Registered" },
-                new UserStatusEntity() { Status_Id = 2, Status = "Approved" },
+                new UserStatusEntity() { Status_Id = 1, Status = "Active" },
+                new UserStatusEntity() { Status_Id = 2, Status = "Temporary Disabled" },
                 new UserStatusEntity() { Status_Id = 3, Status = "Suspended" },
-                new UserStatusEntity() { Status_Id = 4, Status = "Terminated" }
+                new UserStatusEntity() { Status_Id = 4, Status = "Deleted" }
+                );
+
+            builder.Entity<CompanyStatusEntity>().HasData(
+                new CompanyStatusEntity() { Id = 1, Status = "Registered" },
+                new CompanyStatusEntity() { Id = 2, Status = "Verifying" },
+                new CompanyStatusEntity() { Id = 3, Status = "Require More Documents" },
+                new CompanyStatusEntity() { Id = 4, Status = "Verified" },
+                new CompanyStatusEntity() { Id = 5, Status = "Suspended" },
+                new CompanyStatusEntity() { Id = 6, Status = "Deactivate" }
                 );
 
         }

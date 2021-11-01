@@ -32,7 +32,8 @@ namespace MeroBolee.EntityMapper
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now,
                 Role_Id = companyTypeEnum == CompanyTypeEnum.Bidder ? 3 : 2, //Bidder(Supplier) role
-                Status_id = 1 //Registered status
+                Status_id = 1, //Registered status
+                IsEmailReceiver = true
             };
         }
 

@@ -25,6 +25,7 @@ namespace MeroBolee.Model
         private int? status_id;
         private UserStatusEntity userStatus;
         private RoleEntity role;
+        private bool _isEmailReceiver = true;
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -39,6 +40,12 @@ namespace MeroBolee.Model
         [ForeignKey("Role")]
         public int? Role_Id { get => role_Id; set => role_Id = value; }
 
+
+        public bool IsEmailReceiver
+        {
+            get { return _isEmailReceiver; }
+            set { _isEmailReceiver = value; }
+        }
 
 
         [Column("first_name")]
