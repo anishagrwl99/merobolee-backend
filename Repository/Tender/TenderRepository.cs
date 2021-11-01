@@ -525,7 +525,7 @@ namespace MeroBolee.Repository.Tender
                              join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
                              join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
                              join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
-                             where t.Tender_Code == tenderCode
+                             where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
                              select Tuple.Create(t.Tender_Id, u.User_Id)
                      ).FirstOrDefault();
             return tender_User;
