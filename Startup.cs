@@ -263,18 +263,6 @@ namespace MeroBolee
             services.AddScoped<ISignupRepository, SignupRepository>();
             services.AddScoped<ISignupService, SignupService>();
 
-            //correspondence Email
-            services.AddScoped<ICorrespondenceRepository, CorrespondenceRepository>();
-            services.AddScoped<ICorrespondenceService, CorrespondenceService>();
-
-            //Clarification Email
-            services.AddScoped<IClarificationRepository, ClarificationRepository>();
-            services.AddScoped<IClarificationService, ClarificationService>();
-
-            //Call Action Email
-            services.AddScoped<ICallActionRepository, CallActionRepository>();
-            services.AddScoped<ICallActionService, CallActionService>();
-
 
             //Document
             services.AddScoped<ICompanyDocumentRepository, CompanyDocumentRepository>();
