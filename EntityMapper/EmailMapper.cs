@@ -9,7 +9,7 @@ namespace MeroBolee.EntityMapper
 {
     public class EmailMapper
     {
-        public EmailEntity DtoToEntity(SendEmailDto dto)
+        public EmailEntity DtoToEntity(SendEmailDto dto, bool isDraft = false)
         {
             if (dto == null) return null;
 
@@ -19,6 +19,7 @@ namespace MeroBolee.EntityMapper
                 Body = dto.Body,
                 Subject = dto.Subject,
                 CompanyId = dto.CompanyId,
+                IsDraft = isDraft,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };

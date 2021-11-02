@@ -46,6 +46,7 @@ namespace MeroBolee.Controllers.Correspondence
                     {
                         response.statusCode = "400";
                         response.Message = "Tender code is invalid";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
@@ -79,7 +80,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPreAuctionEmail(email);
+                    EmailResponseDto res = emailService.ReplyPreAuctionEmailByAdmin(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -88,6 +89,7 @@ namespace MeroBolee.Controllers.Correspondence
                     {
                         response.statusCode = "400";
                         response.Message = "Tender code is invalid";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
@@ -110,6 +112,47 @@ namespace MeroBolee.Controllers.Correspondence
 
 
         /// <summary>
+        /// Reply to a pre auction email. Reply is done by bidder on admin reply email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpPost("Email/Bidder/PreAuction/Reply")]
+        public IActionResult ReplyToPreAuctionEmailBidder([FromBody] ReplyEmailDto email)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    EmailResponseDto res = emailService.ReplyPreAuctionEmailByBidder(email);
+                    if (res != null)
+                    {
+                        return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Tender code is invalid";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
         /// Email draft composed by bidder.
         /// </summary>
         /// <param name="email"></param>
@@ -121,7 +164,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = null;// emailService.ReplyPreAuctionEmail(email);
+                    EmailResponseDto res = emailService.SaveDraftPreAuctionEmailBidder(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -156,13 +199,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PreAuction/Draft/Send")]
-        public IActionResult SendDraftPreAuctionEmailBidder([FromBody] SendEmailDto email)
+        public IActionResult SendDraftPreAuctionEmailBidder([FromBody] ReplyEmailDto email)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = null;// emailService.ReplyPreAuctionEmail(email);
+                    EmailResponseDto res =  emailService.SendDraftEmail(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));

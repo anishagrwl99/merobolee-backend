@@ -17,6 +17,7 @@ namespace MeroBolee.Repository
         public EmailEntity GetEmailDetail(long emailId);
         UserEmailEntity ReadEmail(long emailId, long userId);
 
+        EmailEntity SendDraftEmail(ReplyEmailDto dto);
 
         /// <summary>
         /// Get a parent email tender id and authorid
@@ -57,7 +58,7 @@ namespace MeroBolee.Repository
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
                                             join ue in meroBoleeDbContexts.UserEmailEntities on e.Id equals ue.EmailId
                                             join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
-                                            where ue.UserId == userId
+                                            where ue.UserId == userId && e.IsDraft == false
                                             select new EmailEntity
                                             {
                                                 Id = e.Id,
@@ -83,7 +84,7 @@ namespace MeroBolee.Repository
         {
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
                                             join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
-                                            where e.AuthorId == userId
+                                            where e.AuthorId == userId && e.IsDraft == false
                                             select new EmailEntity
                                             {
                                                 Id = e.Id,
@@ -155,6 +156,31 @@ namespace MeroBolee.Repository
             }
         }
 
+
+        public EmailEntity SendDraftEmail(ReplyEmailDto dto)
+        {
+            try
+            {
+                EmailEntity email = meroBoleeDbContexts.EmailEntities
+                    .Include(x=>x.User)
+                    .Where(x => x.Id == dto.EmailId).FirstOrDefault();
+                if(email != null)
+                {
+                    email.Subject = dto.Subject;
+                    email.Body = dto.Body;
+                    email.IsDraft = false;
+
+                    meroBoleeDbContexts.EmailEntities.Update(email);
+                    unitOfWork.SaveChange();
+                }
+                return email;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public Tuple<long, long> GetEmailTenderIdAndAuthorId(long emailId)
         {
             return (from e in meroBoleeDbContexts.EmailEntities
