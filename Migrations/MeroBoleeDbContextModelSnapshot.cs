@@ -244,24 +244,24 @@ namespace MeroBolee.Migrations
                         {
                             Category_Id = 1,
                             Category = "Transportation",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4758),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4789),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4411),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4439),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 2,
                             Category = "Construction",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4816),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4820),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4479),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4484),
                             Status_Id = 1
                         },
                         new
                         {
                             Category_Id = 3,
                             Category = "Tourism",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4834),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(4837),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4500),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 657, DateTimeKind.Local).AddTicks(4505),
                             Status_Id = 1
                         });
                 });
@@ -449,12 +449,12 @@ namespace MeroBolee.Migrations
                             Address3 = "Address3",
                             City = "Kathmandu",
                             CountryId = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(8120),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 869, DateTimeKind.Local).AddTicks(8129),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(145),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(158),
                             MembershipTypeId = 1,
                             Name = "Test Company",
                             ProvinceId = 3,
-                            ReferenceCode = "SP112101173418593",
+                            ReferenceCode = "SP112102164345130",
                             RegisteredAs = "Bidder,BidInviter",
                             Zip = "123"
                         });
@@ -566,22 +566,22 @@ namespace MeroBolee.Migrations
                         {
                             Company_Type_Id = 1,
                             Company_type = "Transportation",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(26),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(36)
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2818),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2830)
                         },
                         new
                         {
                             Company_Type_Id = 2,
                             Company_type = "Construction",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(48),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(51)
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2844),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2848)
                         },
                         new
                         {
                             Company_Type_Id = 3,
                             Company_type = "Tourism",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(61),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 19, 870, DateTimeKind.Local).AddTicks(64)
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2859),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 46, 658, DateTimeKind.Local).AddTicks(2863)
                         });
                 });
 
@@ -624,8 +624,8 @@ namespace MeroBolee.Migrations
                             Abbre = "NP",
                             Country_Code = "NEP",
                             Country_Name = "Nepal",
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(9592),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(9598)
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(869),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(874)
                         });
                 });
 
@@ -765,6 +765,9 @@ namespace MeroBolee.Migrations
                     b.Property<DateTime>("Date_modified")
                         .HasColumnType("datetime")
                         .HasColumnName("date_modified");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -1021,8 +1024,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 589, DateTimeKind.Local).AddTicks(9470),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(6166),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 126, DateTimeKind.Local).AddTicks(7567),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 128, DateTimeKind.Local).AddTicks(7389),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1033,8 +1036,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 2,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(6838),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(6843),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 128, DateTimeKind.Local).AddTicks(8068),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 128, DateTimeKind.Local).AddTicks(8073),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1045,8 +1048,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Membership_Id = 3,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(6845),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 591, DateTimeKind.Local).AddTicks(6846),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 128, DateTimeKind.Local).AddTicks(8075),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 128, DateTimeKind.Local).AddTicks(8076),
                             Discount = 0f,
                             Duration = 1,
                             Duration_Type = "Year",
@@ -1151,56 +1154,56 @@ namespace MeroBolee.Migrations
                         {
                             Province_Id = 1,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1550),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1554),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2760),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2765),
                             Province = "Province No. 1"
                         },
                         new
                         {
                             Province_Id = 2,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1558),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1559),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2768),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2769),
                             Province = "Province No. 2"
                         },
                         new
                         {
                             Province_Id = 3,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1560),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1561),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2771),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2772),
                             Province = "Bagmati Province"
                         },
                         new
                         {
                             Province_Id = 4,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1563),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1564),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2773),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2774),
                             Province = "Gandaki Province"
                         },
                         new
                         {
                             Province_Id = 5,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1565),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1566),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2775),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2778),
                             Province = "Lumbini Province"
                         },
                         new
                         {
                             Province_Id = 6,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1568),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1569),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2868),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2869),
                             Province = "Karnali Province"
                         },
                         new
                         {
                             Province_Id = 7,
                             Country_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1570),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(1571),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2871),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 129, DateTimeKind.Local).AddTicks(2872),
                             Province = "Sudurpashchim Province"
                         });
                 });
@@ -1350,22 +1353,22 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Role_Id = 1,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8920),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8926),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(99),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(113),
                             Role_Name = "Super Admin"
                         },
                         new
                         {
                             Role_Id = 2,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8928),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8929),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(116),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(117),
                             Role_Name = "Bid Inviter"
                         },
                         new
                         {
                             Role_Id = 3,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8930),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 592, DateTimeKind.Local).AddTicks(8931),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(118),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 130, DateTimeKind.Local).AddTicks(119),
                             Role_Name = "Bidder"
                         });
                 });
@@ -1687,8 +1690,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 1L,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 598, DateTimeKind.Local).AddTicks(7956),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 598, DateTimeKind.Local).AddTicks(7977),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 134, DateTimeKind.Local).AddTicks(9756),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 134, DateTimeKind.Local).AddTicks(9776),
                             First_Name = "Super",
                             IsEmailReceiver = true,
                             Last_Name = "Admin",
@@ -1701,8 +1704,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 2L,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 603, DateTimeKind.Local).AddTicks(6821),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 603, DateTimeKind.Local).AddTicks(6844),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 141, DateTimeKind.Local).AddTicks(1305),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 141, DateTimeKind.Local).AddTicks(1331),
                             First_Name = "Bid",
                             IsEmailReceiver = true,
                             Last_Name = "Inviter",
@@ -1715,8 +1718,8 @@ namespace MeroBolee.Migrations
                         new
                         {
                             User_Id = 3L,
-                            Date_created = new DateTime(2021, 11, 1, 17, 34, 18, 603, DateTimeKind.Local).AddTicks(7179),
-                            Date_modified = new DateTime(2021, 11, 1, 17, 34, 18, 603, DateTimeKind.Local).AddTicks(7181),
+                            Date_created = new DateTime(2021, 11, 2, 16, 43, 45, 141, DateTimeKind.Local).AddTicks(1698),
+                            Date_modified = new DateTime(2021, 11, 2, 16, 43, 45, 141, DateTimeKind.Local).AddTicks(1700),
                             First_Name = "Bid",
                             IsEmailReceiver = true,
                             Last_Name = "Bidder",
