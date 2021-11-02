@@ -2,17 +2,21 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service.City;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.City
 {
-    public class CompanyController : Controller
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Bid Inviter, Bidder")]
+    public class CompanyController : BaseController
     {
         private readonly ICompanyService companyService;
         private readonly PaginationMapper pagination = new PaginationMapper();
