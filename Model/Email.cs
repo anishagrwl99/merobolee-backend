@@ -44,6 +44,9 @@ namespace MeroBolee.Model
         public long AuthorId { get; set; }
 
 
+        public bool IsDraft { get; set; }
+
+
         [JsonIgnore]
         public virtual UserEntity User { get; set; }
 

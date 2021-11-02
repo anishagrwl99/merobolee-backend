@@ -10,9 +10,11 @@ namespace MeroBolee.Dto
     public class SendEmailDto
     {
         [Required(ErrorMessage = "User company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
         public long CompanyId { get; set; }
 
         [Required(ErrorMessage = "Sender user id is required.")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
         public long UserId { get; set; }
 
 
@@ -30,6 +32,14 @@ namespace MeroBolee.Dto
         public string Body { get; set; }
     }
 
+    public class ReplyEmailDto: SendEmailDto
+    {
+
+        [Required(ErrorMessage = "Parent email id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid parent email id")]
+        public long EmailId { get; set; }
+    }
+
 
     public class EmailResponseDto
     {
@@ -42,6 +52,9 @@ namespace MeroBolee.Dto
 
         public DateTime SentDate { get; set; }
         public string AuthorName { get; set; }
+
+        public string TenderCode { get; set; }
+
 
         [JsonIgnore]
         public bool IsTenderFound { get; set; }
