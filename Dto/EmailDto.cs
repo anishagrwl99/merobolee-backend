@@ -40,6 +40,9 @@ namespace MeroBolee.Dto
         public string Body { get; set; }
         public bool IsRead { get; set; }
 
+        public DateTime SentDate { get; set; }
+        public string AuthorName { get; set; }
+
         [JsonIgnore]
         public bool IsTenderFound { get; set; }
     }

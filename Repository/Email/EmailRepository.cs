@@ -51,10 +51,12 @@ namespace MeroBolee.Repository
                                             where ue.UserId == userId
                                             select new EmailEntity
                                             {
+                                                Id = e.Id,
                                                 AuthorId = e.AuthorId,
                                                 Body = "",
                                                 Subject = e.Subject,
                                                 TenderId = e.TenderId,
+                                                Date_created = e.Date_created,
                                                 User = u,
                                                 UserEmails = new List<UserEmailEntity>(){
                                                     new UserEmailEntity()
@@ -75,10 +77,12 @@ namespace MeroBolee.Repository
                                             where e.AuthorId == userId
                                             select new EmailEntity
                                             {
+                                                Id = e.Id,
                                                 AuthorId = e.AuthorId,
                                                 Body = "",
                                                 Subject = e.Subject,
                                                 TenderId = e.TenderId,
+                                                Date_created = e.Date_created,
                                                 User = u,
                                                 UserEmails = null
                                             }

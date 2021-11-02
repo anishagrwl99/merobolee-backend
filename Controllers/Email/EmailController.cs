@@ -100,12 +100,12 @@ namespace MeroBolee.Controllers.Correspondence
         {
             try
             {
-                string url = Url.Action("GetInbox", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetInbox", null, new { userId = userId, companyId=companyId}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 List<EmailResponseDto> email = emailService.GetInbox(userId);
                
                 int totalCount = email.Count();
-                if (totalCount == 0)
+                if (email == null || totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
                 }
@@ -124,12 +124,12 @@ namespace MeroBolee.Controllers.Correspondence
         {
             try
             {
-                string url = Url.Action("Outbox", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("Outbox", null, new { userId = userId, companyId = companyId }, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 List<EmailResponseDto> email = emailService.GetOutbox(userId);
 
                 int totalCount = email.Count();
-                if (totalCount == 0)
+                if (email == null || totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
                 }

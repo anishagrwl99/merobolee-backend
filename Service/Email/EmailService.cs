@@ -86,7 +86,8 @@ namespace MeroBolee.Service
                                                 UserId = tender_user.Item2
                                             }
                                         };
-                    emailRepository.AddEmail(entity);                    
+
+                    emailRepository.AddEmail(entity);
                 }
                 isValidTender = true;
                 entity.Body = "";
