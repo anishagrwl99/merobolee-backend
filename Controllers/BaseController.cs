@@ -15,8 +15,6 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
     public class BaseController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext context)
