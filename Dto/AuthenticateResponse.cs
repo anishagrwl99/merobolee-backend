@@ -12,14 +12,21 @@ namespace MeroBolee.Dto
     /// </summary>
     public class AuthenticateResponse
     {
-        public long Id { get; set; }
+       
         public long CompanyId { get; set; }
+        public int CompanyStatusId { get; set; }
         public string CompanyName { get; set; }
+        public string CompanyEmail { get; set; }
+
+        public long Id { get; set; }
+        public int UserStatusId { get; set; }
         public string FirstName { get; set; }
+        public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
         public DateTime Created { get; set; }
+        public DateTime TokenExpiryTime { get; set; }
         public string JwtToken { get; set; }
 
         [JsonIgnore] // refresh token is returned in http only cookie

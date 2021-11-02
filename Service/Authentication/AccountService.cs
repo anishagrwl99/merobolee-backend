@@ -4,6 +4,7 @@ using MeroBolee.Repository;
 using MeroBolee.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,7 +30,7 @@ namespace MeroBolee.Service
         /// <param name="companyRegisteredAs"></param>
         /// <returns></returns>
         AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs);
-       
+
     }
 
     /// <summary>
@@ -60,7 +61,7 @@ namespace MeroBolee.Service
         /// <param name="model"></param>
         /// <param name="companyRegisteredAs"></param>
         /// <returns></returns>
-        public  AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs)
+        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs)
         {
             try
             {
@@ -69,9 +70,9 @@ namespace MeroBolee.Service
 
                 if (account != null)
                 {
-
+                    DateTime expiryTime;
                     // authentication successful so generate jwt and refresh tokens
-                    var jwtToken = generateJwtToken(account);
+                    var jwtToken = generateToken(account, out expiryTime);// generateJwtToken(account);
                     //var refreshToken = generateRefreshToken(ipAddress);
                     //account.RefreshTokens.Add(refreshToken);
 
@@ -81,7 +82,7 @@ namespace MeroBolee.Service
                     // save changes to db
                     //_context.Update(account);
                     //_context.SaveChanges();
-
+                    account.TokenExpiryTime = expiryTime;
                     account.JwtToken = jwtToken;
                     //account.RefreshToken = refreshToken.Token;
                 }
@@ -89,21 +90,48 @@ namespace MeroBolee.Service
             }
             catch (Exception)
             {
-                throw ;
+                throw;
             }
         }
 
 
+        private string generateToken(AuthenticateResponse acc, out DateTime tokenExpiresAt)
+        {
+            string info = JsonConvert.SerializeObject(acc);
+            var claims = new List<Claim>();
+            claims.Add(new Claim("id", acc.Id.ToString()));
+            claims.Add(new Claim("user", info));           
+            claims.Add(new Claim(ClaimTypes.Role, acc.Role));
+            claims.Add(new Claim(ClaimTypes.Name, $"{acc.FirstName} {acc.MiddleName} {acc.LastName}"));
+            claims.Add(new Claim(ClaimTypes.Email, acc.Email));
 
+            var token = JwtHelper.GetJwtToken(jwtsetting, acc.Email, out tokenExpiresAt, claims.ToArray());
+            string tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenStr;
+
+        }
+
+
+        [Obsolete]
         private string generateJwtToken(AuthenticateResponse account)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(jwtsetting.Secret);
+            string info = JsonConvert.SerializeObject(account);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Audience = jwtsetting.Issuer,
                 Issuer = jwtsetting.Issuer,
-                Subject = new ClaimsIdentity(new[] { new Claim("id", account.Id.ToString()) }),
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim("id", account.Id.ToString()) ,
+                    new Claim("user", info),
+                    new Claim("UserStatus", account.UserStatusId.ToString()),
+                    new Claim(ClaimTypes.Role, account.Role),
+                    new Claim(ClaimTypes.NameIdentifier, $"{account.FirstName} {account.LastName}"),
+                    new Claim(ClaimTypes.Name, $"{account.FirstName} {account.MiddleName} {account.LastName}"),
+                    new Claim(ClaimTypes.Email, account.Email)
+                }),
+                NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.AddMinutes(jwtsetting.TokenExpiryInMinute),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -136,6 +164,39 @@ namespace MeroBolee.Service
             rngCryptoServiceProvider.GetBytes(randomBytes);
             // convert random bytes to hex string
             return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+    }
+
+    public class JwtHelper
+    {
+        public static JwtSecurityToken GetJwtToken(JWTSettings jWTSettings, string username, out DateTime tokenExpiryDate, Claim[] additionalClaims = null)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,username),
+                // this guarantees the token is unique
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            if (additionalClaims is object)
+            {
+                var claimList = new List<Claim>(claims);
+                claimList.AddRange(additionalClaims);
+                claims = claimList.ToArray();
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTSettings.Secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            tokenExpiryDate = DateTime.UtcNow.AddMinutes(jWTSettings.TokenExpiryInMinute);
+            return new JwtSecurityToken(
+                issuer: jWTSettings.Issuer,
+                audience: jWTSettings.Issuer,
+                expires: tokenExpiryDate,
+                claims: claims,
+                signingCredentials: creds
+            );
+
         }
     }
 }

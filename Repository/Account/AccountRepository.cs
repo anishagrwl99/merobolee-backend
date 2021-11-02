@@ -39,7 +39,7 @@ namespace MeroBolee.Repository
         /// <param name="dbFactory"></param>
         public AccountRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory) : base(dbFactory)
         {
-           // this.unitOfWork = unitOfWork;
+            // this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -62,12 +62,17 @@ namespace MeroBolee.Repository
                            {
                                Id = u.User_Id,
                                FirstName = u.First_Name,
+                               MiddleName = u.Middle_Name,
                                LastName = u.Last_Name,
-                               CompanyId = c.CompanyId,
-                               CompanyName = c.Name,
                                Created = u.Date_created,
                                Email = u.Person_email,
-                               Role = r.Role_Name
+                               Role = r.Role_Name,
+                               UserStatusId = u.Status_id == null ? 0 : u.Status_id.Value,
+
+                               CompanyId = c.CompanyId,
+                               CompanyName = c.Name,
+                               CompanyEmail = c.CompanyEmail,
+                               CompanyStatusId = c.CompanyStatusId == null ? 0 : c.CompanyStatusId.Value
                            };
 
                 return user.FirstOrDefault();
