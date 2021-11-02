@@ -16,6 +16,14 @@ namespace MeroBolee.Repository
         public List<EmailEntity> GetOutboxEmails(long userId);
         public EmailEntity GetEmailDetail(long emailId);
         UserEmailEntity ReadEmail(long emailId, long userId);
+
+
+        /// <summary>
+        /// Get a parent email tender id and authorid
+        /// </summary>
+        /// <param name="emailId">Email Id on which reply is made</param>
+        /// <returns><see cref="Tuple{T1, T2}"/> where T1 is TenderId and T2 is AuthorId</returns>
+        Tuple<long, long> GetEmailTenderIdAndAuthorId(long emailId);
     }
 
 
@@ -33,6 +41,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.EmailEntities.Add(obj);
                 unitOfWork.SaveChange();
+                obj.User = meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == obj.AuthorId).FirstOrDefault();
                 return obj;
 
             }
@@ -144,6 +153,14 @@ namespace MeroBolee.Repository
 
                 throw;
             }
+        }
+
+        public Tuple<long, long> GetEmailTenderIdAndAuthorId(long emailId)
+        {
+            return (from e in meroBoleeDbContexts.EmailEntities
+             where e.Id == emailId
+             select Tuple.Create(e.TenderId, e.AuthorId)
+             ).FirstOrDefault();
         }
     }
 }

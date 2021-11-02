@@ -15,11 +15,20 @@ namespace MeroBolee.Service
     public interface IEmailService
     {
         EmailResponseDto SendPreAuctionEmail(SendEmailDto dto, out bool isValidTender);
+
+        EmailResponseDto ReplyPreAuctionEmail(ReplyEmailDto dto);
+
         EmailResponseDto SendPostAuctionEmail(SendEmailDto dto, out bool isValidTender);
+
+        EmailResponseDto ReplyPostAuctionEmailByBidInviter(ReplyEmailDto dto);
+        EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto);
+
         List<EmailResponseDto> GetInbox(long userId);
         List<EmailResponseDto> GetOutbox(long userId);
         EmailResponseDto GetEmailDetail(long emailId);
         bool ReadEmail(long emailId, long userId);
+
+        
 
     }
 
@@ -126,6 +135,121 @@ namespace MeroBolee.Service
                 return EntityToDto(entity, false);
             }
             isValidTender = false;
+            return null;
+        }
+
+        public EmailResponseDto ReplyPreAuctionEmail(ReplyEmailDto dto)
+        {
+            Tuple<long, long> parentEmail_Tender_Author = emailRepository.GetEmailTenderIdAndAuthorId(dto.EmailId);
+
+            if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
+            {
+                EmailEntity entity = DtoToEntity(dto);
+                if (entity != null)
+                {
+                    entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
+                    entity.UserEmails = new List<UserEmailEntity>()
+                                        {
+                                            //User who sent an email
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = parentEmail_Tender_Author.Item2
+                                            }
+                                        };
+                    emailRepository.AddEmail(entity);
+                }
+                entity.Body = "";
+                return EntityToDto(entity, false);
+            }
+            return null;
+        }
+
+        public EmailResponseDto ReplyPostAuctionEmailByBidInviter(ReplyEmailDto dto)
+        {
+            Tuple<long, long> parentEmail_Tender_Author = emailRepository.GetEmailTenderIdAndAuthorId(dto.EmailId);
+            if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
+            {
+                EmailEntity entity = DtoToEntity(dto);
+                if (entity != null)
+                {
+
+
+                    entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
+                    entity.UserEmails = new List<UserEmailEntity>()
+                                        {
+                                            //Merobolee default user
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = 1
+                                            },
+
+                                            //Supplier 
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = parentEmail_Tender_Author.Item2
+                                            }
+                                        };
+
+                    emailRepository.AddEmail(entity);
+                }
+                entity.Body = "";
+                return EntityToDto(entity, false);
+            }
+            return null;
+        }
+
+        public EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto)
+        {
+            Tuple<long, long> parentEmail_Tender_Author = emailRepository.GetEmailTenderIdAndAuthorId(dto.EmailId);
+            Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
+            if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
+            {
+                EmailEntity entity = DtoToEntity(dto);
+                if (entity != null)
+                {
+
+
+                    entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
+                    entity.UserEmails = new List<UserEmailEntity>()
+                                        {
+                                            //Bid Inviter
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = 1
+                                            },
+
+                                            //Supplier 
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = tender_user.Item2
+                                            }
+                                        };
+
+                    emailRepository.AddEmail(entity);
+                }
+                entity.Body = "";
+                return EntityToDto(entity, false);
+            }
             return null;
         }
 
