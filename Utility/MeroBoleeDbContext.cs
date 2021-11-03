@@ -330,21 +330,57 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<CompanyEntity>().HasData(
-                new CompanyEntity
-                {
-                    CompanyId = 1,
-                    Name = "Test Company",
-                    CountryId = 1,
-                    ProvinceId = 3,
-                    Address1 = "Address1",
-                    Address2 = "Address2",
-                    Address3 = "Address3",
-                    City = "Kathmandu",
-                    Zip = "123",
-                    RegisteredAs = "Bidder,BidInviter",
-                    ReferenceCode = $"SP{DateTime.Now.ToString("MMyyddHHmmssfff")}",
-                    MembershipTypeId = 1
-                }
+                    new CompanyEntity
+                    {
+                        CompanyId = 1,
+                        Name = "Merobolee",
+                        CountryId = 1,
+                        ProvinceId = 3,
+                        Address1 = "Address1",
+                        Address2 = "Address2",
+                        Address3 = "Address3",
+                        City = "Kathmandu",
+                        Zip = "123",
+                        CompanyEmail = "super.admin@test.com",
+                        RegisteredAs = "SuperAdmin",
+                        ReferenceCode = $"MB{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        MembershipTypeId = 1,
+                        CompanyStatusId = 4
+                    },
+                    new CompanyEntity
+                    {
+                        CompanyId = 2,
+                        Name = "Bid Inviter Company",
+                        CountryId = 1,
+                        ProvinceId = 3,
+                        Address1 = "Address1",
+                        Address2 = "Address2",
+                        Address3 = "Address3",
+                        City = "Kathmandu",
+                        Zip = "123",
+                        CompanyEmail = "bid.inviter@test.com",
+                        RegisteredAs = "BidInviter",
+                        ReferenceCode = $"BI{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        MembershipTypeId = 1,
+                        CompanyStatusId = 4
+                    },
+                    new CompanyEntity
+                    {
+                        CompanyId = 3,
+                        Name = "Supplier Company",
+                        CountryId = 1,
+                        ProvinceId = 3,
+                        Address1 = "Address1",
+                        Address2 = "Address2",
+                        Address3 = "Address3",
+                        City = "Kathmandu",
+                        Zip = "123",
+                        CompanyEmail = "bid.bidder@test.com",
+                        RegisteredAs = "Bidder",
+                        ReferenceCode = $"SP{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        MembershipTypeId = 1,
+                        CompanyStatusId = 4
+                    }
                 );
 
             CryptoService cryptoService = new CryptoService("zPwPEx9!EARv[MM#", "QyFXAoBgAoAJAARTVXhjkg==");
@@ -356,10 +392,10 @@ namespace MeroBolee.Utility
                     Last_Name = "Admin",
                     Person_email = "super.admin@test.com",
                     Role_Id = 1,
-                    Status_id = 2,
+                    Status_id = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123")
+                    Password = cryptoService.Encrypt("123123"),
                 },
                 new UserEntity
                 {
@@ -368,7 +404,7 @@ namespace MeroBolee.Utility
                     Last_Name = "Inviter",
                     Person_email = "bid.inviter@test.com",
                     Role_Id = 2,
-                    Status_id = 2,
+                    Status_id = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123")
@@ -380,7 +416,7 @@ namespace MeroBolee.Utility
                     Last_Name = "Bidder",
                     Person_email = "bid.bidder@test.com",
                     Role_Id = 3,
-                    Status_id = 2,
+                    Status_id = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123")
@@ -389,8 +425,8 @@ namespace MeroBolee.Utility
 
             builder.Entity<UserCompany>().HasData(
                 new UserCompany { Id = 1, UserId = 1, CompanyId = 1 },
-                new UserCompany { Id = 2, UserId = 2, CompanyId = 1 },
-                new UserCompany { Id = 3, UserId = 3, CompanyId = 1 }
+                new UserCompany { Id = 2, UserId = 2, CompanyId = 2 },
+                new UserCompany { Id = 3, UserId = 3, CompanyId = 3 }
                 );
         }
 
