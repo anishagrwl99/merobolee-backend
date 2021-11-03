@@ -70,6 +70,7 @@ namespace MeroBolee.Migrations
                 columns: new[] { "CompanyId", "Address1", "Address2", "Address3", "City", "CompanyEmail", "CompanyStatusId", "CompanyWebsite", "ContactPerson", "CountryId", "date_created", "date_modified", "MembershipTypeId", "Name", "Phone1", "Phone2", "ProvinceId", "ReferenceCode", "RegisteredAs", "Zip" },
                 values: new object[,]
                 {
+                     { 2L, "Address1", "Address2", "Address3", "Kathmandu", "bid.bidinviter@test.com", 4, null, null, 1, new DateTime(2021, 11, 3, 12, 42, 11, 972, DateTimeKind.Local).AddTicks(3378), new DateTime(2021, 11, 3, 12, 42, 11, 972, DateTimeKind.Local).AddTicks(3382), 1, "Bid Inviter Company", null, null, 3, "BI112103124211495", "Bidder", "123" },
                     { 3L, "Address1", "Address2", "Address3", "Kathmandu", "bid.bidder@test.com", 4, null, null, 1, new DateTime(2021, 11, 3, 12, 42, 11, 972, DateTimeKind.Local).AddTicks(3378), new DateTime(2021, 11, 3, 12, 42, 11, 972, DateTimeKind.Local).AddTicks(3382), 1, "Supplier Company", null, null, 3, "SP112103124211495", "Bidder", "123" }
                 });
 
