@@ -13,6 +13,8 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
+
+        public DbSet<TenderWinnerEntity> TenderWinnerEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
         public DbSet<UserEmailEntity> UserEmailEntities { get; set; }
         public DbSet<CompanyTypeEntity> CompanyTypeEntities { get; set; }
