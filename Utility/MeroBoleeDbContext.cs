@@ -177,6 +177,11 @@ namespace MeroBolee.Utility
                .WithMany()
                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<TenderWinnerEntity>()
+                .HasOne(e => e.Tender)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
