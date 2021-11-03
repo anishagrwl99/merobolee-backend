@@ -25,7 +25,7 @@ namespace MeroBolee.EntityMapper
             };
         }
 
-        public EmailResponseDto EntityToDto(EmailEntity entity, bool isInbox)
+        public EmailResponseDto EntityToDto(EmailEntity entity, bool isInbox, string tenderCode)
         {
             if (entity == null) return null;
 
@@ -33,6 +33,7 @@ namespace MeroBolee.EntityMapper
             {
                 Body = entity.Body,
                 EmailId = entity.Id,
+                TenderCode = tenderCode,
                 IsRead = isInbox ? entity.UserEmails.FirstOrDefault().IsRead : false,
                 SenderUserId = entity.AuthorId,
                 Subject = entity.Subject,

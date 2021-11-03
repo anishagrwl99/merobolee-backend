@@ -60,7 +60,7 @@ namespace MeroBolee.Service
         public EmailResponseDto GetEmailDetail(long emailId)
         {
             EmailEntity entity = emailRepository.GetEmailDetail(emailId);
-            return EntityToDto(entity, false);
+            return EntityToDto(entity, false, entity.TenderCode);
         }
 
         public List<EmailResponseDto> GetInbox(long userId)
@@ -118,7 +118,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
@@ -148,7 +148,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
@@ -178,7 +178,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
@@ -208,22 +208,22 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
 
         public EmailResponseDto ReplyPostAuctionEmailByBidInviter(ReplyEmailDto dto)
         {
-            Tuple<long, long> parentEmail_Tender_Author = emailRepository.GetEmailTenderIdAndAuthorId(dto.EmailId);
-            if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
+            Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+            if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
             {
                 EmailEntity entity = DtoToEntity(dto);
                 if (entity != null)
                 {
 
 
-                    entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
+                    entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
                     entity.UserEmails = new List<UserEmailEntity>()
                                         {
                                             //Merobolee default user
@@ -233,7 +233,7 @@ namespace MeroBolee.Service
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = 1
+                                                UserId = _adminUserId
                                             },
 
                                             //Supplier 
@@ -243,43 +243,43 @@ namespace MeroBolee.Service
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = parentEmail_Tender_Author.Item2
+                                                UserId = tenderWinner.Item2
                                             }
                                         };
 
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
 
         public EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto)
         {
-            Tuple<long, long> parentEmail_Tender_Author = emailRepository.GetEmailTenderIdAndAuthorId(dto.EmailId);
+            Tuple<long, long> tender_winner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
             Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
-            if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
+            if (tender_winner.Item1 > 0 && tender_winner.Item2 > 0)
             {
                 EmailEntity entity = DtoToEntity(dto);
                 if (entity != null)
                 {
 
 
-                    entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
+                    entity.TenderId = tender_winner.Item1;//Item 1 is tender id
                     entity.UserEmails = new List<UserEmailEntity>()
                                         {
-                                            //Bid Inviter
+                                            //Bid Winner
                                             new UserEmailEntity
                                             {
                                                 Date_created = DateTime.Now,
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = 1
+                                                UserId = tender_winner.Item2
                                             },
 
-                                            //Supplier 
+                                            //Bid Inviter 
                                             new UserEmailEntity
                                             {
                                                 Date_created = DateTime.Now,
@@ -293,7 +293,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
@@ -334,7 +334,7 @@ namespace MeroBolee.Service
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
-                return EntityToDto(entity, false);
+                return EntityToDto(entity, false, dto.TenderCode);
             }
             return null;
         }
@@ -344,7 +344,7 @@ namespace MeroBolee.Service
         public EmailResponseDto SendDraftEmail(ReplyEmailDto dto)
         {
             EmailEntity e = emailRepository.SendDraftEmail(dto);
-            return EntityToDto(e, false);
+            return EntityToDto(e, false, dto.TenderCode);
         }
 
         #endregion
@@ -390,7 +390,7 @@ namespace MeroBolee.Service
                         emailRepository.AddEmail(entity);
                     }
                     entity.Body = "";
-                    return EntityToDto(entity, false);
+                    return EntityToDto(entity, false, dto.TenderCode);
                 }
                 return null;
             }
@@ -448,7 +448,7 @@ namespace MeroBolee.Service
                         emailRepository.AddEmail(entity);
                     }
                     entity.Body = "";
-                    return EntityToDto(entity, false);
+                    return EntityToDto(entity, false, dto.TenderCode);
                 }
                 return null;
             }

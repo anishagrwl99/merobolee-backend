@@ -47,6 +47,9 @@ namespace MeroBolee.Model
         public bool IsDraft { get; set; }
 
 
+        [NotMapped]
+        public string TenderCode { get; set; }
+
         [JsonIgnore]
         public virtual UserEntity User { get; set; }
 

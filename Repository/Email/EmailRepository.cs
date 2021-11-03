@@ -131,6 +131,7 @@ namespace MeroBolee.Repository
             {
                 EmailEntity emailDetail = (from e in meroBoleeDbContexts.EmailEntities
                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                           join t in meroBoleeDbContexts.TenderEntities  on e.TenderId equals t.Tender_Id
                                            where e.Id == emailId
                                            select new EmailEntity
                                            {
@@ -139,6 +140,7 @@ namespace MeroBolee.Repository
                                                Body = e.Body,
                                                Subject = e.Subject,
                                                TenderId = e.TenderId,
+                                               TenderCode = t.Tender_Code,
                                                User = u,
                                                UserEmails = null
                                            }
@@ -187,12 +189,19 @@ namespace MeroBolee.Repository
             {
                 EmailEntity email = meroBoleeDbContexts.EmailEntities
                     .Include(x=>x.User)
+                    .Include(x=>x.UserEmails)
                     .Where(x => x.Id == dto.EmailId).FirstOrDefault();
                 if(email != null)
                 {
                     email.Subject = dto.Subject;
                     email.Body = dto.Body;
                     email.IsDraft = false;
+                    email.Date_modified = DateTime.Now;
+
+                    foreach (var item in email.UserEmails)
+                    {
+                        item.Date_modified = DateTime.Now;
+                    }
 
                     meroBoleeDbContexts.EmailEntities.Update(email);
                     unitOfWork.SaveChange();

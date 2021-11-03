@@ -24,18 +24,18 @@ namespace MeroBolee.Controllers.Correspondence
 
 
         /// <summary>
-        /// Send an email before tender goes to auction. Email sent by bidder
+        /// Reply to a pre auction email. Reply is done by admin only
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        [HttpPost("Email/Bidder/PreAuction/Send")]
-        public IActionResult SendPreAuctionEmail([FromBody] SendEmailDto email)
+        [HttpPost("Email/Admin/PreAuction/Reply")]
+        public IActionResult ReplyToPreAuctionEmail([FromBody] ReplyEmailDto email)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.SendPreAuctionEmailBidder(email,  false);
+                    EmailResponseDto res = emailService.ReplyPreAuctionEmailByAdmin(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -67,18 +67,18 @@ namespace MeroBolee.Controllers.Correspondence
 
 
         /// <summary>
-        /// Reply to a pre auction email. Reply is done by admin only
+        /// Send an email before tender goes to auction. Email sent by bidder
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        [HttpPost("Email/Admin/PreAuction/Reply")]
-        public IActionResult ReplyToPreAuctionEmail([FromBody] ReplyEmailDto email)
+        [HttpPost("Email/Bidder/PreAuction/Send")]
+        public IActionResult SendPreAuctionEmail([FromBody] SendEmailDto email)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPreAuctionEmailByAdmin(email);
+                    EmailResponseDto res = emailService.SendPreAuctionEmailBidder(email,  false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -230,7 +230,7 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
-
+        /*
 
         /// <summary>
         /// Email draft composed by admin.
@@ -314,7 +314,7 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
-
+        */
 
         /// <summary>
         /// Send an email after tender goes to auction and won by bidder. Email sent by Bidder
@@ -444,7 +444,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Send")]
-        public IActionResult SendPostAuctionEmailByBidInviter([FromBody] ReplyEmailDto email)
+        public IActionResult SendPostAuctionEmailByBidInviter([FromBody] SendEmailDto email)
         {
             try
             {
@@ -783,8 +783,8 @@ namespace MeroBolee.Controllers.Correspondence
                 uriService = new UriService(url);
                 List<EmailResponseDto> email = emailService.GetInbox(userId);
                
-                int totalCount = email.Count();
-                if (email == null || totalCount == 0)
+                int totalCount = email == null? 0 : email.Count();
+                if (totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
                 }
@@ -816,8 +816,8 @@ namespace MeroBolee.Controllers.Correspondence
                 uriService = new UriService(url);
                 List<EmailResponseDto> email = emailService.GetOutbox(userId);
 
-                int totalCount = email.Count();
-                if (email == null || totalCount == 0)
+                int totalCount = email == null? 0:  email.Count();
+                if (totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
                 }
@@ -850,8 +850,8 @@ namespace MeroBolee.Controllers.Correspondence
                 uriService = new UriService(url);
                 List<EmailResponseDto> email = emailService.GetDraft(userId);
 
-                int totalCount = email.Count();
-                if (email == null || totalCount == 0)
+                int totalCount = email == null? 0:  email.Count();
+                if (totalCount == 0)
                 {
                     return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
                 }
