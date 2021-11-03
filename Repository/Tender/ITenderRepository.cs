@@ -23,5 +23,7 @@ namespace MeroBolee.Repository.Tender
         IEnumerable<TenderEntity> GetBidIniviterTenderHistory(long companyId ,string search);
         IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId ,string search);
         Tuple<long, long> GetTenderIdFromCode(string tenderCode);
+
+        Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
     }
 }

@@ -522,13 +522,27 @@ namespace MeroBolee.Repository.Tender
         {
 
             Tuple<long, long> tender_User = (from t in meroBoleeDbContexts.TenderEntities
-                             join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
-                             join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
-                             join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
-                             where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
-                             select Tuple.Create(t.Tender_Id, u.User_Id)
-                     ).FirstOrDefault();
+                                             join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
+                                             join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
+                                             join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
+                                             where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
+                                             select Tuple.Create(t.Tender_Id, u.User_Id)
+                                            ).FirstOrDefault();
             return tender_User;
+        }
+
+
+        public Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode)
+        {
+            Tuple<long, long> tender_Winner = (from t in meroBoleeDbContexts.TenderEntities
+                                               join tw in meroBoleeDbContexts.TenderWinnerEntities on t.Tender_Id equals tw.TenderId
+                                               join c in meroBoleeDbContexts.CompanyEntities on tw.WinnerCompanyId equals c.CompanyId
+                                               join cu in meroBoleeDbContexts.UserCompanies on c.CompanyId equals cu.CompanyId
+                                               join u in meroBoleeDbContexts.UserEntities on cu.UserId equals u.User_Id
+                                               where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
+                                               select Tuple.Create(t.Tender_Id, u.User_Id)
+                                              ).FirstOrDefault();
+            return tender_Winner;
         }
     }
 }

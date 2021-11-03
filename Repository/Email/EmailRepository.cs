@@ -14,6 +14,7 @@ namespace MeroBolee.Repository
         public EmailEntity AddEmail(EmailEntity obj);
         public List<EmailEntity> GetInboxEmails(long userId);
         public List<EmailEntity> GetOutboxEmails(long userId);
+        public List<EmailEntity> GetDraftEmails(long userId);
         public EmailEntity GetEmailDetail(long emailId);
         UserEmailEntity ReadEmail(long emailId, long userId);
 
@@ -101,6 +102,29 @@ namespace MeroBolee.Repository
 
             return userEmails.OrderBy(x => x.Date_created).ToList();
         }
+
+        public List<EmailEntity> GetDraftEmails(long userId)
+        {
+            List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
+                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                            where e.AuthorId == userId && e.IsDraft == true
+                                            select new EmailEntity
+                                            {
+                                                Id = e.Id,
+                                                AuthorId = e.AuthorId,
+                                                Body = "",
+                                                Subject = e.Subject,
+                                                TenderId = e.TenderId,
+                                                Date_created = e.Date_created,
+                                                User = u,
+                                                UserEmails = null
+                                            }
+
+                                        ).ToList<EmailEntity>();
+
+            return userEmails.OrderBy(x => x.Date_created).ToList();
+        }
+
         public EmailEntity GetEmailDetail(long emailId)
         {
             try

@@ -14,27 +14,34 @@ namespace MeroBolee.Service
 {
     public interface IEmailService
     {
-        EmailResponseDto SendPreAuctionEmail(SendEmailDto dto, out bool isValidTender);
+        EmailResponseDto SendPreAuctionEmailBidder(SendEmailDto dto, bool isDraft);
 
         EmailResponseDto ReplyPreAuctionEmailByAdmin(ReplyEmailDto dto);
         EmailResponseDto ReplyPreAuctionEmailByBidder(ReplyEmailDto dto);
 
-        EmailResponseDto SendPostAuctionEmail(SendEmailDto dto, out bool isValidTender);
+        EmailResponseDto SendPostAuctionEmailBidder(SendEmailDto dto, bool isDraft);
 
         EmailResponseDto ReplyPostAuctionEmailByBidInviter(ReplyEmailDto dto);
         EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto);
 
         List<EmailResponseDto> GetInbox(long userId);
         List<EmailResponseDto> GetOutbox(long userId);
+        List<EmailResponseDto> GetDraft(long userId);
         EmailResponseDto GetEmailDetail(long emailId);
         bool ReadEmail(long emailId, long userId);
 
-
-        EmailResponseDto SaveDraftPreAuctionEmailBidder(SendEmailDto dto); 
-        EmailResponseDto SendDraftEmail(ReplyEmailDto dto); 
+        EmailResponseDto SendDraftEmail(ReplyEmailDto dto);
 
 
+        EmailResponseDto SaveDraftPreAuctionEmailAdmin(SendEmailDto dto);
 
+
+        //Bid Inviter
+        EmailResponseDto SendPostAuctionEmailBidInviter(SendEmailDto dto, bool isDraft);
+
+
+        //Admin
+        EmailResponseDto SendPostAuctionEmailAdmin(SendEmailDto dto, bool isDraft);
     }
 
     public class EmailService : EmailMapper, IEmailService
@@ -68,12 +75,18 @@ namespace MeroBolee.Service
             return EntityToDtoList(entities, false);
         }
 
-        public EmailResponseDto SendPostAuctionEmail(SendEmailDto dto, out bool isValidTender)
+        public List<EmailResponseDto> GetDraft(long userId)
+        {
+            List<EmailEntity> entities = emailRepository.GetDraftEmails(userId);
+            return EntityToDtoList(entities, false);
+        }
+
+        public EmailResponseDto SendPostAuctionEmailBidder(SendEmailDto dto, bool isDraft)
         {
             Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
             if (tender_user.Item1 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, isDraft);
                 if (entity != null)
                 {
 
@@ -104,21 +117,19 @@ namespace MeroBolee.Service
 
                     emailRepository.AddEmail(entity);
                 }
-                isValidTender = true;
                 entity.Body = "";
                 return EntityToDto(entity, false);
             }
-            isValidTender = false;
             return null;
         }
 
-        public EmailResponseDto SendPreAuctionEmail(SendEmailDto dto, out bool isValidTender)
+        public EmailResponseDto SendPreAuctionEmailBidder(SendEmailDto dto, bool isDraft)
         {
             Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
 
             if (tender_user.Item1 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, isDraft);
                 if (entity != null)
                 {
                     entity.TenderId = tender_user.Item1;//Item 1 is tender id
@@ -136,11 +147,9 @@ namespace MeroBolee.Service
                                         };
                     emailRepository.AddEmail(entity);
                 }
-                isValidTender = true;
                 entity.Body = "";
                 return EntityToDto(entity, false);
             }
-            isValidTender = false;
             return null;
         }
 
@@ -299,7 +308,8 @@ namespace MeroBolee.Service
 
         #region Draft
 
-        public EmailResponseDto SaveDraftPreAuctionEmailBidder(SendEmailDto dto)
+
+        public EmailResponseDto SaveDraftPreAuctionEmailAdmin(SendEmailDto dto)
         {
             Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
 
@@ -318,7 +328,7 @@ namespace MeroBolee.Service
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = _adminUserId
+                                                UserId = tender_user.Item2
                                             }
                                         };
                     emailRepository.AddEmail(entity);
@@ -329,11 +339,126 @@ namespace MeroBolee.Service
             return null;
         }
 
+
+
         public EmailResponseDto SendDraftEmail(ReplyEmailDto dto)
         {
             EmailEntity e = emailRepository.SendDraftEmail(dto);
             return EntityToDto(e, false);
         }
+
+        #endregion
+
+
+        #region Bid Inviter
+        public EmailResponseDto SendPostAuctionEmailBidInviter(SendEmailDto dto, bool isDraft)
+        {
+            try
+            {
+                Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+                if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
+                {
+                    EmailEntity entity = DtoToEntity(dto, isDraft);
+                    if (entity != null)
+                    {
+
+
+                        entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
+                        entity.UserEmails = new List<UserEmailEntity>()
+                                        {
+                                            //Merobolee default user
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = _adminUserId
+                                            },
+
+                                            //Tender default user
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = tenderWinner.Item2
+                                            }
+                                        };
+
+                        emailRepository.AddEmail(entity);
+                    }
+                    entity.Body = "";
+                    return EntityToDto(entity, false);
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        #endregion
+
+
+
+        #region Admin
+
+        public EmailResponseDto SendPostAuctionEmailAdmin(SendEmailDto dto, bool isDraft)
+
+        {
+            try
+            {
+                Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+                Tuple<long, long> tenderCreator = tenderService.GetTenderIdFromCode(dto.TenderCode);
+                if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
+                {
+                    EmailEntity entity = DtoToEntity(dto, isDraft);
+                    if (entity != null)
+                    {
+
+
+                        entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
+                        entity.UserEmails = new List<UserEmailEntity>()
+                                        {
+                                            //Tender winner default user
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = tenderWinner.Item2
+                                            },
+
+                                            //Tender default user
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = tenderCreator.Item2
+                                            }
+                                        };
+
+                        emailRepository.AddEmail(entity);
+                    }
+                    entity.Body = "";
+                    return EntityToDto(entity, false);
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
         #endregion
     }

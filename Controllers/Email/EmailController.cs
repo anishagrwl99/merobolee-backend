@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Correspondence
 {
-    public class EmailController : Controller
+    public class EmailController : BaseController
     {
         private readonly IEmailService emailService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -35,9 +35,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-
-                    EmailResponseDto res = emailService.SendPreAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendPreAuctionEmailBidder(email,  false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -132,7 +130,6 @@ namespace MeroBolee.Controllers.Correspondence
                     {
                         response.statusCode = "400";
                         response.Message = "Tender code is invalid";
-                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
@@ -164,7 +161,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.SaveDraftPreAuctionEmailBidder(email);
+                    EmailResponseDto res = emailService.SendPreAuctionEmailBidder(email, true);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -247,7 +244,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = null;// emailService.ReplyPreAuctionEmail(email);
+                    EmailResponseDto res =  emailService.SaveDraftPreAuctionEmailAdmin(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -283,13 +280,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PreAuction/Draft/Send")]
-        public IActionResult SendDraftPreAuctionEmailAdmin([FromBody] SendEmailDto email)
+        public IActionResult SendDraftPreAuctionEmailAdmin([FromBody] ReplyEmailDto email)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = null;// emailService.ReplyPreAuctionEmail(email);
+                    EmailResponseDto res =  emailService.SendDraftEmail(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -325,14 +322,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PostAuction/Send")]
-        public IActionResult SendPostAuctionEmail([FromBody] SendEmailDto email)
+        public IActionResult SendPostAuctionEmailBidder([FromBody] SendEmailDto email)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-                    EmailResponseDto res = emailService.SendPostAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailBidder(email, false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -368,13 +364,11 @@ namespace MeroBolee.Controllers.Correspondence
         [HttpPost("Email/Bidder/PostAuction/Draft/Save")]
         public IActionResult SaveDraftPostAuctionEmailBidder([FromBody] SendEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-                    EmailResponseDto res = emailService.SendPostAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailBidder(email, true);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -409,15 +403,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PostAuction/Draft/Send")]
-        public IActionResult SendDraftPostAuctionEmailBidder([FromBody] SendEmailDto email)
+        public IActionResult SendDraftPostAuctionEmailBidder([FromBody] ReplyEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-                    EmailResponseDto res = emailService.SendPostAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendDraftEmail(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -452,15 +444,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Send")]
-        public IActionResult SendPostAuctionEmailByBidInviter([FromBody] SendEmailDto email)
+        public IActionResult SendPostAuctionEmailByBidInviter([FromBody] ReplyEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-                    EmailResponseDto res = emailService.SendPostAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailBidInviter(email, false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -468,7 +458,7 @@ namespace MeroBolee.Controllers.Correspondence
                     else
                     {
                         response.statusCode = "400";
-                        response.Message = "Tender code is invalid";
+                        response.Message = "Tender code is invalid or tender winner is not decided yet";
                         response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
@@ -535,14 +525,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Draft/Save")]
-        public IActionResult SaveDraftPostAuctionEmailByTenderAdmin([FromBody] ReplyEmailDto email)
+        public IActionResult SaveDraftPostAuctionEmailByTenderAdmin([FromBody] SendEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPostAuctionEmailByBidInviter(email);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailBidInviter(email, true);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -580,12 +569,11 @@ namespace MeroBolee.Controllers.Correspondence
         [HttpPost("Email/BidInviter/PostAuction/Draft/Send")]
         public IActionResult SendDraftPostAuctionEmailByTenderAdmin([FromBody] ReplyEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPostAuctionEmailByBidInviter(email);
+                    EmailResponseDto res = emailService.SendDraftEmail(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -624,13 +612,11 @@ namespace MeroBolee.Controllers.Correspondence
         [HttpPost("Email/Admin/PostAuction/Send")]
         public IActionResult SendPostAuctionEmailByAdmin([FromBody] SendEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool isTenderFound = false;
-                    EmailResponseDto res = emailService.SendPostAuctionEmail(email, out isTenderFound);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailAdmin(email, false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -706,14 +692,13 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PostAuction/Draft/Save")]
-        public IActionResult SaveDraftPostAuctionEmailByAdmin([FromBody] ReplyEmailDto email)
+        public IActionResult SaveDraftPostAuctionEmailByAdmin([FromBody] SendEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPostAuctionEmailByBidInviter(email);
+                    EmailResponseDto res = emailService.SendPostAuctionEmailAdmin(email,true);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -750,12 +735,11 @@ namespace MeroBolee.Controllers.Correspondence
         [HttpPost("Email/Admin/PostAuction/Draft/Send")]
         public IActionResult SendDraftPostAuctionEmailByAdmin([FromBody] ReplyEmailDto email)
         {
-            throw new NotImplementedException();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.ReplyPostAuctionEmailByBidInviter(email);
+                    EmailResponseDto res = emailService.SendDraftEmail(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -847,6 +831,39 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
+
+
+
+        /// <summary>
+        /// Email drafts of a user
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Email/Draft")]
+        public IActionResult Draft([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId)
+        {
+            try
+            {
+                string url = Url.Action("Draft", null, new { userId = userId, companyId = companyId }, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                List<EmailResponseDto> email = emailService.GetDraft(userId);
+
+                int totalCount = email.Count();
+                if (email == null || totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<EmailResponseDto>>(email, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(email, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
 
         /// <summary>

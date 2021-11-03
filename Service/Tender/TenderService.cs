@@ -86,5 +86,11 @@ namespace MeroBolee.Service.Tender
         {
             return tenderRepository.GetTenderIdFromCode(tenderCode);
         }
+
+
+        public Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode)
+        {
+            return tenderRepository.GetTenderWinnerIdFromCode(tenderCode);
+        }
     }
 }
