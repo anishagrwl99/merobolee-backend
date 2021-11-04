@@ -30,6 +30,8 @@ namespace MeroBolee.Model
         [MaxLength(300)]
         public string Quotation { get; set; }
 
+        public long BatchNo { get; set; }
+
         public DateTime BidDate { get; set; }
 
 
@@ -64,6 +66,8 @@ namespace MeroBolee.Model
         public long MaterialId { get; set; }
 
         public decimal Quotation { get; set; }
+
+        public long BatchNo { get; set; }
 
         public DateTime BidDate { get; set; }
 

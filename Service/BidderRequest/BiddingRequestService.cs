@@ -44,7 +44,11 @@ namespace MeroBolee.Service.BidderReuest
                 bool isQuotationValid = IsQuotationValid(materialDto);
                 if (isQuotationValid)
                 {
-                    List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService);
+                    string batch = $"Tender_Batch_{materialDto.SupplierId}_{materialDto.TenderId}";
+                    long batchNo = 0;
+                    memoryCache.TryGetValue<long>(batch, out batchNo);
+
+                    List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService, batchNo);
                     //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
                     entities = bidderRequestRepository.LiveBid(entities);
 
@@ -230,7 +234,8 @@ namespace MeroBolee.Service.BidderReuest
                         TenderId = item.TenderId,
                         MaterialId = item.MaterialId,
                         Quotation = cryptoService.Decrypt<decimal>(item.Quotation),
-                        BidDate = item.BidDate
+                        BidDate = item.BidDate,
+                        BatchNo = item.BatchNo
                     };
                     historyEntities.Add(entity);
 
@@ -260,8 +265,15 @@ namespace MeroBolee.Service.BidderReuest
             lock (_locker)
             {
                 string key = $"Tender_Bidding_{tenderId}";
+                string batch = $"Tender_Batch_{supplierId}_{tenderId}";
+                DateTime expiryDate = bids.FirstOrDefault().TenderEntity.Live_End_Date.AddMinutes(5);
+                long batchNo = 0;
                 List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
                 memoryCache.TryGetValue<List<LiveBiddingEntity>>(key, out biddings);
+                memoryCache.TryGetValue<long>(batch, out batchNo);
+                batchNo++;
+                memoryCache.Set<long>(batch, batchNo, expiryDate);
+
                 if (biddings == null || biddings.Count < 1) //No cache yet
                 {
                     biddings = new List<LiveBiddingEntity>();
@@ -286,7 +298,7 @@ namespace MeroBolee.Service.BidderReuest
                         }
                     }
                 }
-                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings, bids.FirstOrDefault().TenderEntity.Live_End_Date.AddMinutes(5));
+                memoryCache.Set<List<LiveBiddingEntity>>(key, biddings, expiryDate);
             }
         }
 

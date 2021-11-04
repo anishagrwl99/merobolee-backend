@@ -11,7 +11,7 @@ namespace MeroBolee.EntityMapper
     public class BiddingRequestMapper
     {
 
-        public List<LiveBiddingEntity> MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto, ICryptoService cryptoService)
+        public List<LiveBiddingEntity> MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto, ICryptoService cryptoService, long batchNo)
         {
             if (dto == null)
             {
@@ -27,7 +27,8 @@ namespace MeroBolee.EntityMapper
                     TenderId = dto.TenderId,
                     MaterialId = item.MaterialId,
                     Quotation = cryptoService.Encrypt(item.Quotation.ToString()),
-                    BidDate = dto.BiddingDate
+                    BidDate = dto.BiddingDate,
+                    BatchNo = batchNo
                 });
             }
             return entities;
