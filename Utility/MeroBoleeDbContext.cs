@@ -204,10 +204,9 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<AuctionStatusEntity>().HasData(
-                new AuctionStatusEntity() { Status_Id = 1, Status = "Created" },
-                new AuctionStatusEntity() { Status_Id = 2, Status = "Running" },
-                new AuctionStatusEntity() { Status_Id = 3, Status = "Closed" },
-                new AuctionStatusEntity() { Status_Id = 4, Status = "Upcoming" }
+                new AuctionStatusEntity() { Status_Id = 1, Status = "Pending Approval" },
+                new AuctionStatusEntity() { Status_Id = 2, Status = "Approved" },
+                new AuctionStatusEntity() { Status_Id = 3, Status = "Closed" }
                 );
 
             builder.Entity<PublishStatus>().HasData(
