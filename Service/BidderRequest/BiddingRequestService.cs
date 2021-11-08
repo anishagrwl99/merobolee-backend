@@ -155,6 +155,13 @@ namespace MeroBolee.Service.BidderReuest
                 string timeKey = $"{tenderId}_Lowest_Bid_Time";
                 ResetBidDto dto = null;
                 memoryCache.TryGetValue<ResetBidDto>(timeKey, out dto);
+
+                if(dto!= null && dto.IsTenderExpired)
+                {
+                    return dto;
+                }
+
+
                 if (dto != null)
                 {
                     long totalElapsedSeconds = (long)(DateTime.Now - dto.MinQuotationRecivedAt).TotalSeconds;
@@ -164,11 +171,23 @@ namespace MeroBolee.Service.BidderReuest
                     dto.RemainingMinute = (int)(remainingSec / 60);
                     dto.RemainingSecond = (int)(remainingSec % 60);
 
-                    if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false)
+                    if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false && dto.RemainingSecond < 1)
                     {
-                        dto.RemainingMinute = (int)dto.Interval;
-                        dto.RemainingSecond = 0;
+                        dto.RemainingMinute = (int)dto.Interval;                       
                         dto.MinQuotationRecivedAt = DateTime.Now;
+                        dto.FullIntervalCountWithoutReceivingBid++;
+
+                        if(dto.RemainingSecond < 0) //if request is not receive and second moves to negative
+                        {
+                            int sec = Math.Abs(dto.RemainingSecond);
+                            dto.RemainingMinute = (int)((dto.Interval * 60  - (int)(sec / 60))/60) - 1;
+                            dto.RemainingSecond = 60 - (int)(sec % 60);
+                        }
+                        else
+                        {
+                            dto.RemainingSecond = 0;
+                        }
+
                     }
                 }
                 else
@@ -182,18 +201,27 @@ namespace MeroBolee.Service.BidderReuest
                             RemainingMinute = e.Tender_live_interval,
                             RemainingSecond = 0,
                             Interval = e.Tender_live_interval,
-                            IsBiddingExpired = false,
-                            IsQuotationReceived = false
+                            IsTenderExpired = false,
+                            IsQuotationReceived = false,
+                            FullIntervalCountWithoutReceivingBid = 0,
+                            TenderLiveEndDate = e.Live_End_Date
                         };
-                        memoryCache.Set<ResetBidDto>(timeKey, dto);
+                        
                     }
                 }
-                if (dto.RemainingMinute == 0 && dto.RemainingSecond == 0 && dto.IsQuotationReceived)
+
+                //check if bidding expired
+                if (dto != null
+                        && (dto.FullIntervalCountWithoutReceivingBid >= 2
+                            || dto.TenderLiveEndDate < DateTime.Now
+                           )
+                        )
                 {
-                    dto.IsBiddingExpired = true;
+                    dto.IsTenderExpired = true;
+                    dto.RemainingMinute = 0;
+                    dto.RemainingSecond = 0;                   
                 }
-
-
+                memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
                 return dto;
             });
         }
@@ -352,6 +380,7 @@ namespace MeroBolee.Service.BidderReuest
         {
             try
             {
+                DateTime tenderEndDate = livebids.FirstOrDefault().TenderEntity.Live_End_Date;
                 var a = livebids
                     .GroupBy(x => new { x.TenderId, x.UserId })
                     .Select(x => new
@@ -403,10 +432,12 @@ namespace MeroBolee.Service.BidderReuest
                                 RemainingSecond = 0,
                                 Interval = c.Interval,
                                 IsQuotationReceived = true,
-                                IsBiddingExpired = false
+                                IsTenderExpired = false,
+                                FullIntervalCountWithoutReceivingBid = -1,
+                                TenderLiveEndDate = tenderEndDate
                             };
                             timeKey = $"{c.TenderId}_Lowest_Bid_Time";
-                            memoryCache.Set<ResetBidDto>(timeKey, dto);
+                            memoryCache.Set<ResetBidDto>(timeKey, dto, tenderEndDate.AddMinutes(5));
                             //Lowest Quotation Received - set Flag to reset timer
                         }
                     }

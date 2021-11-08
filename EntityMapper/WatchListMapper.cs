@@ -49,16 +49,9 @@ namespace MeroBolee.EntityMapper
                 Tender_Title = tender.Tender_Title,
                 Tender_Description = tender.Tender_Description,
                 Tender_Duration = tender.Tender_Duration,
-                Last_Request_Date = tender.Last_Request_Date,
-                Source_Fund = tender.Source_Fund,
-              //  IFB_RFP_EOI1 = tender.IFB_RFP_EOI1,
-                Project_Start_Date = tender.Project_Start_Date,
                 Live_Start_Date = tender.Live_Start_Date,
                 Live_End_Date = tender.Live_End_Date,
                 Publish_Date = tender.Date_created,
-                //Publish_Time = tender.Created_time_stamp,
-                Status_id= tender.Admin_Status_Id,
-                Status=tender.AdminStatusEntity,
                 Category_Id= tender.Category_Id,
                 Category=CategoryTODto(tender.CategoryEntity)
             

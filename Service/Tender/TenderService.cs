@@ -92,5 +92,22 @@ namespace MeroBolee.Service.Tender
         {
             return tenderRepository.GetTenderWinnerIdFromCode(tenderCode);
         }
+
+        public void EndTenderAuction(long tenderId)
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    tenderRepository.EndTenderAuction(tenderId);
+                });
+              
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

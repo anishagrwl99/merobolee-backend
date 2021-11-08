@@ -37,5 +37,13 @@ namespace MeroBolee.Service.Tender
         /// <param name="tenderCode"></param>
         /// <returns></returns>
         Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
+
+
+
+        /// <summary>
+        /// End live tender auction if there is no bid is done
+        /// </summary>
+        /// <param name="tenderId"></param>
+        void EndTenderAuction(long tenderId);
     }
 }

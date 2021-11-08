@@ -113,6 +113,8 @@ namespace MeroBolee.Dto
         public string Message { get; set; }
         public bool IsLowestBidReceived { get; set; }
         public DateTime LowestBidRecievedTime { get; set; }
+
+        
     }
 
 }

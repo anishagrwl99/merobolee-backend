@@ -8,56 +8,31 @@ namespace MeroBolee.Dto
 {
     public class AddTenderDto
     {
-        private string tender_Title;
-        private int category_Id;
-        private string tender_Description;
-        private int tender_live_interval;
-        private DateTime live_Start_Date;
-        private int tender_Duration;
-        private string duration_Type;
-        private int bid_No;
-        private int posted_By;
-        private int tender_Status_Id;
-        private int admin_Status_Id;
-        private string cancel_Remark;
-        private DateTime last_Request_Date;
-        private string source_Fund;
-        private DateTime project_Start_Date;
+        private string tenderTitle;
+        private int categoryId;
+        private string tenderDescription;
+        private int tenderliveinterval;
+        private DateTime liveStartDate;
+        private int tenderDuration;
+        private string durationType;
+        private int postedBy;
+        private int tenderStatusId;
         private ICollection<TenderMaterialDto> tenderMaterialEntities;
-        private long company_id;
+        private long companyid;
+        private string termsAndCondition;
 
-        public long CompanyId
-        {
-            get { return company_id; }
-            set { company_id = value; }
-        }
-        public string Tender_Title { get => tender_Title; set => tender_Title = value; }
-        public int Category_Id { get => category_Id; set => category_Id = value; }
-        public string Tender_Description { get => tender_Description; set => tender_Description = value; }
-        public int Tender_live_interval { get => tender_live_interval; set => tender_live_interval = value; }
-        public DateTime Live_Start_Date { get => live_Start_Date; set => live_Start_Date = value; }
-        public int Tender_Duration { get => tender_Duration; set => tender_Duration = value; }
-        public string Duration_Type { get => duration_Type; set => duration_Type = value; }
-        public int Bid_No { get => bid_No; set => bid_No = value; }
-        public int Posted_By { get => posted_By; set => posted_By = value; }
-        public int Tender_Status_Id { get => tender_Status_Id; set => tender_Status_Id = value; }
-        public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
-      //  public int Payment_Status_Id { get => payment_Status_Id; set => payment_Status_Id = value; }
+        public long CompanyId { get => companyid; set => companyid = value; }
+        public int CategoryId { get => categoryId; set => categoryId = value; }
+        public string TenderTitle { get => tenderTitle; set => tenderTitle = value; }       
+        public string TenderDescription { get => tenderDescription; set => tenderDescription = value; }
+        public int Tenderliveinterval { get => tenderliveinterval; set => tenderliveinterval = value; }
+        public DateTime LiveStartDate { get => liveStartDate; set => liveStartDate = value; }
+        public int TenderDuration { get => tenderDuration; set => tenderDuration = value; }
+        public string DurationType { get => durationType; set => durationType = value; }
+        public int CreatedBy { get => postedBy; set => postedBy = value; }
+        public int TenderStatusId { get => tenderStatusId; set => tenderStatusId = value; }
         public ICollection<TenderMaterialDto> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-      
-        public string Cancel_Remark { get => cancel_Remark; set => cancel_Remark = value; }
-        public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
-        public string Source_Fund { get => source_Fund; set => source_Fund = value; }
-     //   public string IFB_RFP_EOI1 { get => IFB_RFP_EOI; set => IFB_RFP_EOI = value; }
-        public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
-
-        private string _termsAndCondition;
-
-        public string TermsAndCondition
-        {
-            get { return _termsAndCondition; }
-            set { _termsAndCondition = value; }
-        }
+        public string TermsAndCondition { get => termsAndCondition; set => termsAndCondition = value; }
 
     }
 

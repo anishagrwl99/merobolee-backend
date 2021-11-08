@@ -15,6 +15,12 @@ namespace MeroBolee.Repository.Tender
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(int id);
         TenderEntity UpdateTender(int id, TenderEntity tenderEntity);
+
+        /// <summary>
+        /// Upcoming tenders within 7 days
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         IEnumerable<TenderEntity> UpcomingTender(string search);
         IEnumerable<TenderEntity> FavouriteTender(int userId, string search);
         IEnumerable<TenderEntity> TenderByStatus(int statusId, string search);
@@ -25,5 +31,11 @@ namespace MeroBolee.Repository.Tender
         Tuple<long, long> GetTenderIdFromCode(string tenderCode);
 
         Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
+
+        /// <summary>
+        /// End tender auction if bidding is not received
+        /// </summary>
+        /// <param name="tenderId"></param>
+        bool EndTenderAuction(long tenderId);
     }
 }

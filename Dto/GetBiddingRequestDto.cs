@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
@@ -42,11 +43,17 @@ namespace MeroBolee.Dto
 
     public class ResetBidDto
     {
-        public bool IsBiddingExpired { get; set; }
+        public bool IsTenderExpired { get; set; }
         public bool IsQuotationReceived { get; set; }
         public long Interval { get; set; }
         public int RemainingMinute { get; set; }
         public int RemainingSecond { get; set; }
         public DateTime MinQuotationRecivedAt { get; set; }
+
+        [JsonIgnore]
+        public DateTime TenderLiveEndDate { get; set; }
+
+        [JsonIgnore]
+        public int FullIntervalCountWithoutReceivingBid { get; set; }
     }
 }

@@ -153,8 +153,6 @@ namespace MeroBolee.EntityMapper
                     Project_Duration = tenderEntity.Tender_Duration,
                     Duration_Type = tenderEntity.Duration_Type,
                     Publish_Date = tenderEntity.Date_created,
-                    Last_Request_Date = tenderEntity.Last_Request_Date,
-                    Project_Start_Date = tenderEntity.Project_Start_Date,
                     TenderMaterials = tenderEntity.TenderMaterialEntities,
                     TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
 

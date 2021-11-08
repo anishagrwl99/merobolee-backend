@@ -38,7 +38,7 @@ namespace MeroBolee.Controllers.Tender
             {
                 if (ModelState.IsValid)
                 {
-                    if (tender.Live_Start_Date <= DateTime.Today)
+                    if (tender.LiveStartDate <= DateTime.Today)
                     {
                         response.statusCode = "400";
                         response.Message = "Start Date must be future date";
