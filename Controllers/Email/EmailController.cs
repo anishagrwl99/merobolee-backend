@@ -869,14 +869,14 @@ namespace MeroBolee.Controllers.Correspondence
         /// <summary>
         /// Email detail
         /// </summary>
-        /// <param name="emaiId"></param>
+        /// <param name="emailId"></param>
         /// <returns></returns>
         [HttpGet("Email/Detail")]
-        public IActionResult GetEmailDetail([FromQuery] long emaiId)
+        public IActionResult GetEmailDetail([FromQuery] long emailId)
         {
             try
             {
-                if (emaiId == 0)
+                if (emailId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
@@ -884,7 +884,7 @@ namespace MeroBolee.Controllers.Correspondence
                 }
                 else
                 {
-                    EmailResponseDto email = emailService.GetEmailDetail(emaiId);
+                    EmailResponseDto email = emailService.GetEmailDetail(emailId);
                     if (email == null)
                     {
                         return StatusCode(StatusCodes.Status404NotFound, new Responses<EmailResponseDto>(email, "404", "Record not found"));

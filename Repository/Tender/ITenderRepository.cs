@@ -1,4 +1,5 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,10 @@ namespace MeroBolee.Repository.Tender
         /// <returns></returns>
         IEnumerable<TenderEntity> UpcomingTender(string search);
         IEnumerable<TenderEntity> FavouriteTender(int userId, string search);
-        IEnumerable<TenderEntity> TenderByStatus(int statusId, string search);
 
         IEnumerable<TenderEntity> GetMyTender(long companyId ,string search, CompanyTypeEnum companyType);
-        IEnumerable<TenderEntity> GetBidIniviterTenderHistory(long companyId ,string search);
+        IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId ,string search);
+        IEnumerable<TenderCard> GetBidIniviterTenderListing(long companyId ,string search);
         IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId ,string search);
         Tuple<long, long> GetTenderIdFromCode(string tenderCode);
 

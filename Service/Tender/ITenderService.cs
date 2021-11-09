@@ -16,11 +16,10 @@ namespace MeroBolee.Service.Tender
         GetTenderDto UpdateTender(int id, AddTenderDto tenderDto);
         IEnumerable<GetTenderDto> UpcomingTender(string search);
         IEnumerable<GetTenderDto> FavouriteTender(int userId, string search);
-        IEnumerable<GetTenderDto> TenderByStatus(int statusId, string search);
 
         IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType);
-        IEnumerable<GetTenderDto> GetBidIniviterTenderHistory(long companyId, string search);
-        IEnumerable<GetTenderDto> GetBidInviterTenderListing(long companyId, string search);
+        IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search);
+        IEnumerable<TenderCard> GetBidInviterTenderListing(long companyId, string search);
 
 
         /// <summary>

@@ -19,7 +19,6 @@ namespace MeroBolee.Dto
         private DateTime live_End_Date;
         private int project_Duration;
         private string duration_Type;
-        private int bid_No;
         private long posted_By;
         private UserEntity userEntity;
         private int tender_Status_Id;
@@ -32,7 +31,6 @@ namespace MeroBolee.Dto
         private DateTime project_Start_Date;
         private string cancel_Remark;
         private DateTime? publish_Date;
-        private TimeSpan publish_time;
         //private int payment_Status_Id;
         //private string paymentStatus;
         private ICollection<TenderMaterialEntity> tenderMaterialEntities;
@@ -49,7 +47,6 @@ namespace MeroBolee.Dto
         public DateTime Live_End_Date { get => live_End_Date; set => live_End_Date = value; }
         public int Project_Duration { get => project_Duration; set => project_Duration = value; }
         public string Duration_Type { get => duration_Type; set => duration_Type = value; }
-        public int Bid_No { get => bid_No; set => bid_No = value; }
         public long Posted_By { get => posted_By; set => posted_By = value; }
         public UserEntity User { get => userEntity; set => userEntity = value; }
 
@@ -68,6 +65,18 @@ namespace MeroBolee.Dto
      //   public string IFB_RFP_EOI1 { get => IFB_RFP_EOI; set => IFB_RFP_EOI = value; }
         public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
         public DateTime? Publish_Date { get => publish_Date; set => publish_Date = value; }
-        public TimeSpan Publish_time { get => publish_time; set => publish_time = value; }
+    }
+
+
+    public class TenderCard
+    {
+        public long TenderId { get; set; }
+        public string TenderTitle { get; set; }
+        public string TenderCode { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public DateTime StartDate { get; set; }
+        public string Status { get; set; }
+        
     }
 }

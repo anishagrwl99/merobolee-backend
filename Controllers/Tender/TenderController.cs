@@ -160,11 +160,11 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetBidInviterTenderHistory", null, new { companyId = companyId , search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetBidIniviterTenderHistory(companyId, search);
+                IEnumerable<TenderCard> tenders = tenderService.GetBidIniviterTenderHistory(companyId, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -191,11 +191,11 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetBidInviterTenderListing", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetBidInviterTenderListing(companyId, search);
+                IEnumerable<TenderCard> tenders = tenderService.GetBidInviterTenderListing(companyId, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -370,38 +370,6 @@ namespace MeroBolee.Controllers.Tender
         }
 
         /// <summary>
-        /// To display tender list according to tender status id
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="id"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/TenderByStatus")]
-        public IActionResult GetTenderByStatus([FromQuery] PaginationQuery pagination, int statusId, [FromQuery] string search = null)
-        {
-            try
-            {
-                string url = Url.Action("GetTenderByStatus", null, new { statusId = statusId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.TenderByStatus(statusId, search);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-
-        }
-
-        /// <summary>
         /// To individual detail of tender by tender id
         /// </summary>
         /// <param name="id"></param>
@@ -445,6 +413,20 @@ namespace MeroBolee.Controllers.Tender
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
                 return new PagedResponse<GetTenderDto>(tenders, totalCount);
+            }
+
+            var get = tenders.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
+        private PagedResponse<TenderCard> ResultAfterPagination(IEnumerable<TenderCard> tenders, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<TenderCard>(tenders, totalCount);
             }
 
             var get = tenders.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();

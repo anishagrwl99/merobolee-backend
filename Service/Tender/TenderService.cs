@@ -42,14 +42,14 @@ namespace MeroBolee.Service.Tender
             return TenderEntityListToDto(tenderRepository.GetMyTender(companyId, search, companyType));
         }
 
-        public IEnumerable<GetTenderDto> GetBidIniviterTenderHistory(long companyId, string search)
+        public IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search)
         {
-            return TenderEntityListToDto(tenderRepository.GetBidIniviterTenderHistory(companyId, search));
+            return tenderRepository.GetBidIniviterTenderHistory(companyId, search);
         }
 
-        public IEnumerable<GetTenderDto> GetBidInviterTenderListing(long companyId, string search)
+        public IEnumerable<TenderCard> GetBidInviterTenderListing(long companyId, string search)
         {
-            return TenderEntityListToDto(tenderRepository.GetBidIniviterTenderHistory(companyId, search));
+            return tenderRepository.GetBidIniviterTenderListing(companyId, search);
         }
 
         public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search)
@@ -60,11 +60,6 @@ namespace MeroBolee.Service.Tender
         public GetTenderDto GetTenderDetail(int id)
         {
             return TenderEntityToDto(tenderRepository.GetTenderDetail(id));
-        }
-
-        public IEnumerable<GetTenderDto> TenderByStatus(int statusId, string search)
-        {
-            return TenderEntityListToDto(tenderRepository.TenderByStatus(statusId, search));
         }
 
         public IEnumerable<GetTenderDto> UpcomingTender(string search)
