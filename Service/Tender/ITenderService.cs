@@ -10,11 +10,11 @@ namespace MeroBolee.Service.Tender
     public interface ITenderService
     {
         GetTenderDto AddTender(AddTenderDto tenderDto);
-        IEnumerable<GetTenderDto> GetMarketplaceTender(string search);
+        IEnumerable<TenderCard> GetMarketplaceTender(string search);
         IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search);
         GetTenderDto GetTenderDetail(int id);
         GetTenderDto UpdateTender(int id, AddTenderDto tenderDto);
-        IEnumerable<GetTenderDto> UpcomingTender(string search);
+        IEnumerable<TenderCard> UpcomingTender(string search);
         IEnumerable<GetTenderDto> FavouriteTender(int userId, string search);
 
         IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType);

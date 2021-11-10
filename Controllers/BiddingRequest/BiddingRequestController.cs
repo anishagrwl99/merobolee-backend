@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.BiddingRequest
 {
-    public class BiddingRequestController : Controller
+    public class BiddingRequestController : BaseController
     {
         private readonly IBiddingRequestService biddingRequestService;
         private readonly PaginationMapper pagination = new PaginationMapper();

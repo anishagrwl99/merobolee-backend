@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Tender
 {
-    public class TenderController : Controller
+    public class TenderController : BaseController
     {
         private readonly ITenderService tenderService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -217,18 +217,18 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Marketplace")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public IActionResult Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("Marketplace", null, new { search=search}, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetMarketplaceTender(search);
+                IEnumerable<TenderCard> tenders = tenderService.GetMarketplaceTender(search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -310,7 +310,7 @@ namespace MeroBolee.Controllers.Tender
         /// To display all tender list posted by auctioneer by auctioneer id
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Bidder/TenderByAuctioneer")]
@@ -352,11 +352,11 @@ namespace MeroBolee.Controllers.Tender
                 string url = Url.Action("GetUpCommingTender", null, new {search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.UpcomingTender(search);
+                IEnumerable<TenderCard> tenders = tenderService.UpcomingTender(search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
             }

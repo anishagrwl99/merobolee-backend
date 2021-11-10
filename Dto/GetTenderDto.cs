@@ -75,7 +75,7 @@ namespace MeroBolee.Dto
         public string TenderCode { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime LiveStartDate { get; set; }
         public string Status { get; set; }
         
     }

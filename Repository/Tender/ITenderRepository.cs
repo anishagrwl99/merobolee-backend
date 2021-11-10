@@ -11,7 +11,7 @@ namespace MeroBolee.Repository.Tender
    public interface ITenderRepository: IRepositoryBase<TenderEntity>
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
-        IEnumerable<TenderEntity> GetMarketplaceTender(string search);
+        IEnumerable<TenderCard> GetMarketplaceTender(string search);
         IEnumerable<TenderEntity> GetTenderByAuctioneer(int userId, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(int id);
@@ -22,7 +22,7 @@ namespace MeroBolee.Repository.Tender
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        IEnumerable<TenderEntity> UpcomingTender(string search);
+        IEnumerable<TenderCard> UpcomingTender(string search);
         IEnumerable<TenderEntity> FavouriteTender(int userId, string search);
 
         IEnumerable<TenderEntity> GetMyTender(long companyId ,string search, CompanyTypeEnum companyType);

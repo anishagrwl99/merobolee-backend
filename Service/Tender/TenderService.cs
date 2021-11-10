@@ -32,9 +32,9 @@ namespace MeroBolee.Service.Tender
             return TenderEntityListToDto(tenderRepository.FavouriteTender(userId, search));
         }
 
-        public IEnumerable<GetTenderDto> GetMarketplaceTender(string search)
+        public IEnumerable<TenderCard> GetMarketplaceTender(string search)
         {
-            return TenderEntityListToDto(tenderRepository.GetMarketplaceTender(search));
+            return tenderRepository.GetMarketplaceTender(search);
         }
 
         public IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType)
@@ -62,9 +62,9 @@ namespace MeroBolee.Service.Tender
             return TenderEntityToDto(tenderRepository.GetTenderDetail(id));
         }
 
-        public IEnumerable<GetTenderDto> UpcomingTender(string search)
+        public IEnumerable<TenderCard> UpcomingTender(string search)
         {
-            return TenderEntityListToDto(tenderRepository.UpcomingTender(search));
+            return tenderRepository.UpcomingTender(search);
         }
 
         public GetTenderDto UpdateTender(int id, AddTenderDto tenderDto)
