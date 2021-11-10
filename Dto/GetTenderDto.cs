@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
@@ -77,6 +78,15 @@ namespace MeroBolee.Dto
         public string CategoryName { get; set; }
         public DateTime LiveStartDate { get; set; }
         public string Status { get; set; }
-        
+
+        [JsonIgnore]
+        public int StatusId { get; set; }
+
+    }
+
+    public class BidInviterTenderListing
+    {
+        public List<TenderCard> PendingTenders { get; set; }
+        public List<TenderCard> ActiveTenders { get; set; }
     }
 }

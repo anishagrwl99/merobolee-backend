@@ -19,7 +19,7 @@ namespace MeroBolee.Service.Tender
 
         IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType);
         IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search);
-        IEnumerable<TenderCard> GetBidInviterTenderListing(long companyId, string search);
+        BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search);
 
 
         /// <summary>

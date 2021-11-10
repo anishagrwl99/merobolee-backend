@@ -298,7 +298,7 @@ namespace MeroBolee.Repository.Tender
                 return (from t in meroBoleeDbContexts.TenderEntities
                         join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
                         join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.Status_Id
-                        where t.CompanyId == companyId && t.Tender_Status_Id == 2 && (search == null || t.Tender_Title.Contains(search))
+                        where t.CompanyId == companyId && t.Tender_Status_Id != 3 && (search == null || t.Tender_Title.Contains(search))
                         select new TenderCard
                         {
                             TenderId = t.Tender_Id,

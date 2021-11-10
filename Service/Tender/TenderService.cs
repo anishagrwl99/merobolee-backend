@@ -47,9 +47,15 @@ namespace MeroBolee.Service.Tender
             return tenderRepository.GetBidIniviterTenderHistory(companyId, search);
         }
 
-        public IEnumerable<TenderCard> GetBidInviterTenderListing(long companyId, string search)
+        public BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search)
         {
-            return tenderRepository.GetBidIniviterTenderListing(companyId, search);
+            IEnumerable<TenderCard> tenders =  tenderRepository.GetBidIniviterTenderListing(companyId, search);
+            BidInviterTenderListing listing = new BidInviterTenderListing
+            {
+                PendingTenders = tenders.Where(x => x.StatusId == 1).ToList(),
+                ActiveTenders = tenders.Where(x=>x.StatusId == 2).ToList()               
+            };
+            return listing;
         }
 
         public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search)
