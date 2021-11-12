@@ -68,7 +68,7 @@ namespace MeroBolee.Repository.Tender
         /// <param name="userId"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public IEnumerable<TenderEntity> FavouriteTender(int userId, string search)
+        public IEnumerable<TenderEntity> FavouriteTender(long userId, string search)
         {
             try
             {
@@ -374,7 +374,7 @@ namespace MeroBolee.Repository.Tender
         /// <param name="id"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public IEnumerable<TenderEntity> GetTenderByAuctioneer(int userId, string search)
+        public IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search)
         {
             try
             {
@@ -419,18 +419,18 @@ namespace MeroBolee.Repository.Tender
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TenderEntity GetTenderDetail(int id)
+        public TenderEntity GetTenderDetail(long tenderId)
         {
             try
             {
                 meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
                 meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.Tender_Id == id).ToList();
+                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.Tender_Id == tenderId).ToList();
                 meroBoleeDbContexts
                     .TenderMaterialEntities
                     .Include(x => x.MaterialFeatures)
-                    .Where(x => x.Tender_Id == id).ToList();
+                    .Where(x => x.Tender_Id == tenderId).ToList();
 
                 //long[] materialIds = material.Select(x => x.Id).ToArray();
 
@@ -439,7 +439,7 @@ namespace MeroBolee.Repository.Tender
                 //    .ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
-                TenderEntity ent = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == id).FirstOrDefault();
+                TenderEntity ent = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == tenderId).FirstOrDefault();
                 meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == ent.CreatedBy).ToList();
                 return ent;
             }
@@ -517,14 +517,14 @@ namespace MeroBolee.Repository.Tender
         /// <summary>
         /// update tender
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tenderId"></param>
         /// <param name="tenderEntity"></param>
         /// <returns></returns>
-        public TenderEntity UpdateTender(int id, TenderEntity tenderEntity)
+        public TenderEntity UpdateTender(long tenderId, TenderEntity tenderEntity)
         {
             try
             {
-                TenderEntity tender = GetTenderDetail(id);
+                TenderEntity tender = GetTenderDetail(tenderId);
                 tender.Tender_Title = tenderEntity.Tender_Title;
                 tender.Category_Id = tenderEntity.Category_Id;
                 tender.Tender_Description = tenderEntity.Tender_Description;
@@ -610,6 +610,21 @@ namespace MeroBolee.Repository.Tender
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+
+
+        public TenderEntity ApproveTenderByBidInviter(TenderEntity ent)
+        {
+            try
+            {
+                meroBoleeDbContexts.TenderEntities.Update(ent);
+                unitOfWork.SaveChange();
+                return ent;
+            }
+            catch 
+            {
                 throw;
             }
         }

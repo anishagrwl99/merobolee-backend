@@ -110,5 +110,23 @@ namespace MeroBolee.Service.Tender
                 throw;
             }
         }
+
+        public TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto)
+        {
+            try
+            {
+                TenderEntity t = tenderRepository.GetTenderDetail(dto.TenderId);
+                t.Tender_Status_Id = 2;//Approved
+                t.Date_modified = DateTime.Now;
+                t.ApprovedBy = dto.UserId;
+                tenderRepository.ApproveTenderByBidInviter(t);
+                return dto;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

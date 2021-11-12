@@ -56,9 +56,9 @@ namespace MeroBolee.Controllers.Tender
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -207,6 +207,32 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
+
+        [HttpPost("Tender/BidInviter/Approve")]
+        public IActionResult ApproveTender([FromBody] TenderApproveDto dto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    TenderApproveDto res = tenderService.ApproveTenderByBidInviter(dto);
+                    return Ok(new Responses<TenderApproveDto>(res, "200", "Record is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
 
         /// <summary>

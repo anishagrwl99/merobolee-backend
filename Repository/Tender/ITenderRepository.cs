@@ -12,10 +12,10 @@ namespace MeroBolee.Repository.Tender
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
         IEnumerable<TenderCard> GetMarketplaceTender(string search);
-        IEnumerable<TenderEntity> GetTenderByAuctioneer(int userId, string search);
+        IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
-        TenderEntity GetTenderDetail(int id);
-        TenderEntity UpdateTender(int id, TenderEntity tenderEntity);
+        TenderEntity GetTenderDetail(long id);
+        TenderEntity UpdateTender(long id, TenderEntity tenderEntity);
 
         /// <summary>
         /// Upcoming tenders within 7 days
@@ -23,7 +23,7 @@ namespace MeroBolee.Repository.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         IEnumerable<TenderCard> UpcomingTender(string search);
-        IEnumerable<TenderEntity> FavouriteTender(int userId, string search);
+        IEnumerable<TenderEntity> FavouriteTender(long userId, string search);
 
         IEnumerable<TenderEntity> GetMyTender(long companyId ,string search, CompanyTypeEnum companyType);
         IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId ,string search);
@@ -38,5 +38,12 @@ namespace MeroBolee.Repository.Tender
         /// </summary>
         /// <param name="tenderId"></param>
         bool EndTenderAuction(long tenderId);
+
+        /// <summary>
+        /// Approve a tender by a bid inviter for listing
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
+        TenderEntity ApproveTenderByBidInviter(TenderEntity ent);
     }
 }

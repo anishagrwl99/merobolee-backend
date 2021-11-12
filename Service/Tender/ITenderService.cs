@@ -44,5 +44,12 @@ namespace MeroBolee.Service.Tender
         /// </summary>
         /// <param name="tenderId"></param>
         void EndTenderAuction(long tenderId);
+
+        /// <summary>
+        /// Approve a tender for listing by bid inviter once listing is done by admin
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto);
     }
 }
