@@ -1,10 +1,12 @@
-﻿using MeroBolee.Model;
+﻿using MeroBolee.Dto;
+using MeroBolee.Model;
 using MeroBolee.Service;
 using MeroBolee.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,18 +14,15 @@ using System;
 namespace MeroBolee.Controllers.Environment
 {
 
-    [ApiController]
-   
+    [ApiController]   
     public class TestController : ControllerBase
     {
         private readonly IWebHostEnvironment environment;
-        private readonly MeroBoleeDbContext _context;
         private readonly ICryptoService cryptoService;
 
-        public TestController(IWebHostEnvironment environment, MeroBoleeDbContext context, ICryptoService cryptoService)
+        public TestController(IWebHostEnvironment environment,  ICryptoService cryptoService)
         {
             this.environment = environment;
-            _context = context;
             this.cryptoService = cryptoService;
         }
 
@@ -51,8 +50,8 @@ namespace MeroBolee.Controllers.Environment
         {
             try
             {
-                UserEntity account = HttpContext.Items["Account"] as UserEntity;
-                return Ok($"Token belongs to : {account.Person_email}");
+                AuthenticateResponse account = HttpContext.Items["RequestUser"] as AuthenticateResponse;
+                return Ok($"Token belongs to : {account.FirstName}");
             }
             catch (Exception ex)
             {
@@ -61,18 +60,36 @@ namespace MeroBolee.Controllers.Environment
             }
         }
 
-        [HttpPost("GetConnection")]
-        public ActionResult GetConnectionString()
+        [HttpGet("RequestingAppUrl")]
+        public IActionResult GetRequestingAppUrl()
         {
             try
             {
-                return Ok(_context.Database.GetDbConnection().ConnectionString);
+                RequestHeaders header = Request.GetTypedHeaders();
+                Uri uriReferer = header.Referer;
+                
+                string referer = uriReferer.ToString(); //Request.Headers["Referer"].ToString();
+                return Ok(referer);
+
             }
             catch (Exception ex)
             {
-                return StatusCode(-1, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        //[HttpPost("GetConnection")]
+        //public ActionResult GetConnectionString()
+        //{
+        //    try
+        //    {
+        //        return Ok(_context.Database.GetDbConnection().ConnectionString);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(-1, ex.Message);
+        //    }
+        //}
 
 
         [HttpPost("Encrypt")]
