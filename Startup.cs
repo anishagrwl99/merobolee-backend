@@ -9,7 +9,6 @@ using MeroBolee.Repository.Country;
 using MeroBolee.Repository.District;
 using MeroBolee.Repository.FAQ;
 using MeroBolee.Repository.FavouriteCategory;
-using MeroBolee.Repository.Mail;
 using MeroBolee.Repository.Membership;
 using MeroBolee.Repository.Municipality;
 using MeroBolee.Repository.Province;
@@ -249,9 +248,6 @@ namespace MeroBolee
             services.AddScoped<IFAQService, FAQService>();
             services.AddScoped<IRequestHelpRepository, RequestHelpRepository>();
             services.AddScoped<IRequestHelpService, RequestHelpService>();
-            services.AddScoped<ISMTPMailService, SMTPMailService>();
-            services.AddScoped<IDisplayMailService, DisplayMailService>();
-            services.AddScoped<IMailRepository, MailRepository>();
             services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
 

@@ -1,6 +1,5 @@
 ﻿using MailKit.Security;
 using MeroBolee.Model;
-using MeroBolee.Repository.Mail;
 using MeroBolee.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -20,7 +19,6 @@ namespace MeroBolee.Service.SMTPMail
     public class SMTPEmailService : ISMTPEmailService
     {
         private readonly SMTPServerInfo smtpServer;
-        private readonly IMailRepository mailRepository;
         private readonly MailKit.Net.Smtp.SmtpClient smtp;
 
         /// <summary>
@@ -28,10 +26,9 @@ namespace MeroBolee.Service.SMTPMail
         /// </summary>
         /// <param name="smtpSettings"></param>
         /// <param name="mailRepository"></param>
-        public SMTPEmailService(IOptions<SMTPServerInfo> smtpSettings, IMailRepository mailRepository)
+        public SMTPEmailService(IOptions<SMTPServerInfo> smtpSettings)
         {
             smtpServer = smtpSettings.Value;
-            this.mailRepository = mailRepository;
             smtp = new MailKit.Net.Smtp.SmtpClient();
         }
 
@@ -142,16 +139,5 @@ namespace MeroBolee.Service.SMTPMail
                 smtp.Dispose();//no longer required
             }
         }
-
-        /// <summary>
-        /// Write email content to database
-        /// </summary>
-        /// <param name="mailEntity"></param>
-        /// <param name="attachment"></param>
-        public void PostMail(MailEntity mailEntity, ICollection<IFormFile> attachment)
-        {
-            mailRepository.PostMail(mailEntity, attachment);
-        }
-
     }
 }
