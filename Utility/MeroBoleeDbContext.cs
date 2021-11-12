@@ -182,6 +182,11 @@ namespace MeroBolee.Utility
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<WatchListEntity>()
+                .HasOne(e => e.CompanyEntity)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
