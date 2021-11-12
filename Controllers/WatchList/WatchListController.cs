@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.WatchList
 {
-    public class WatchListController : Controller
+    public class WatchListController : BaseController
     {
         private readonly IWatchListService watchListService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -30,7 +30,7 @@ namespace MeroBolee.Controllers.WatchList
         /// </summary>
         /// <returns></returns>
         [HttpPost("Tender/AddToWatchList")]
-        public IActionResult Add(AddWatchList watchListEntity)
+        public IActionResult Add([FromBody]AddWatchList watchListEntity)
         {
             try
             {
@@ -45,15 +45,10 @@ namespace MeroBolee.Controllers.WatchList
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
 
-            }
-            catch (UnauthorizedAccessException)
-            {
-                response.statusCode = "400";
-                response.Message = "Username or Email already exists";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
             catch (Exception e)
             {
@@ -67,47 +62,36 @@ namespace MeroBolee.Controllers.WatchList
         /// To show interest bid of bidder
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="supplierId"></param>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Tender/WatchLists")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] int supplierId)
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId)
         {
             try
             {
-                if (supplierId == 0)
+                if (userId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAll", null, new { supplierId = userId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetWatchListDto> watchList = watchListService.GetAllWatchList(supplierId);
+                IEnumerable<TenderCard> watchList = watchListService.GetAllWatchList(userId, companyId);
                 int totalCount = watchList.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetWatchListDto>>(watchList, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(watchList, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(watchList, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
@@ -118,11 +102,11 @@ namespace MeroBolee.Controllers.WatchList
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("Tender/RemoveFromWatchList")]
-        public IActionResult Delete([FromQuery] int id)
+        public IActionResult Delete([FromQuery] int watchlistId)
         {
             try
             {
-                if (id == 0)
+                if (watchlistId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
@@ -130,38 +114,26 @@ namespace MeroBolee.Controllers.WatchList
                 }
                 else
                 {
-                    watchListService.RemoveWatchList(id);
+                    watchListService.RemoveWatchList(watchlistId);
                     response.statusCode = "200";
                     response.Message = "Record is successfully deleted";
                     return Ok(new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
-        private PagedResponse<GetWatchListDto> ResultAfterPagination(IEnumerable<GetWatchListDto> watchListDtos, PaginationQuery pagination, int totalCount)
+        private PagedResponse<TenderCard> ResultAfterPagination(IEnumerable<TenderCard> watchListDtos, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
-                return new PagedResponse<GetWatchListDto>(watchListDtos, totalCount);
+                return new PagedResponse<TenderCard>(watchListDtos, totalCount);
             }
 
             var get = watchListDtos.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();

@@ -9,8 +9,8 @@ namespace MeroBolee.Service.WatchList
 {
     public interface IWatchListService
     {
-        void AddWatchList(AddWatchList watchList);
-        IEnumerable<GetWatchListDto> GetAllWatchList(int id);
+        AddWatchList AddWatchList(AddWatchList watchList);
+        IEnumerable<TenderCard> GetAllWatchList(long userId, long companyId);
         void RemoveWatchList(int id);
     }
 }

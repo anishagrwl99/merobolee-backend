@@ -11,10 +11,11 @@ namespace MeroBolee.EntityMapper
     {
         public WatchListEntity WatchListDtoToEntity(AddWatchList addWatchList)
         {
-            return new WatchListEntity 
+            return new WatchListEntity
             {
-            User_Id= addWatchList.User_Id,
-            Tender_Id= addWatchList.Tender_Id
+                UserId = addWatchList.UserId,
+                TenderId = addWatchList.TenderId,
+                CompanyId = addWatchList.CompanyId
             };
         }
 
@@ -24,14 +25,14 @@ namespace MeroBolee.EntityMapper
             foreach (var item in watch)
             {
                 getWatches.Add(new GetWatchListDto
-                { 
-                 Id= item.Id,
-                 User_id= item.User_Id,
-                 Tender_Detail=TenderEntityToDto(item.TenderEntity)
-                
+                {
+                    Id = item.Id,
+                    UserId = item.UserId,
+                    Tender_Detail = TenderEntityToDto(item.TenderEntity),
+                    CompanyId = item.CompanyId
                 }
                 );
-            
+
             }
             return getWatches;
         }
@@ -52,12 +53,10 @@ namespace MeroBolee.EntityMapper
                 Live_Start_Date = tender.Live_Start_Date,
                 Live_End_Date = tender.Live_End_Date,
                 Publish_Date = tender.Date_created,
-                Category_Id= tender.Category_Id,
-                Category=CategoryTODto(tender.CategoryEntity)
-            
-            
+                Category_Id = tender.Category_Id,
+                Category = CategoryTODto(tender.CategoryEntity)
             };
-        
+
         }
 
         private WatchCategoryDto CategoryTODto(CategoryEntity category)
@@ -66,10 +65,10 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            return new WatchCategoryDto 
+            return new WatchCategoryDto
             {
-            Id= category.Category_Id,
-            Categgory= category.Category
+                Id = category.Category_Id,
+                Categgory = category.Category
             };
         }
     }

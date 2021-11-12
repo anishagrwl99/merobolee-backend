@@ -1,4 +1,5 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
@@ -28,18 +29,36 @@ namespace MeroBolee.Repository.WatchLIst
             }
         }
 
-        public IEnumerable<WatchListEntity> GetAllWatchList(int id)
+        public IEnumerable<TenderCard> GetAllWatchList(long userId, long companyId)
         {
             try
             {
-                meroBoleeDbContexts.TenderEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
-                return meroBoleeDbContexts.WatchListEntities.Where(m => m.User_Id == id).ToList();
+                return (from w in meroBoleeDbContexts.WatchListEntities
+                        join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Tender_Id
+                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                        join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.Status_Id
+                        where w.CompanyId == companyId
+                        select new TenderCard
+                        {
+                            TenderId = t.Tender_Id,
+                            TenderCode = t.Tender_Code,
+                            TenderTitle = t.Tender_Title,
+                            CategoryId = c.Category_Id,
+                            CategoryName = c.Category,
+                            LiveStartDate = t.Live_Start_Date,
+                            Status = s.Status
+                        }
+
+                    ).ToList();
+
+                //meroBoleeDbContexts.TenderEntities.ToList();
+                //meroBoleeDbContexts.CategoryEntities.ToList();
+                //meroBoleeDbContexts.AdminStatusEntities.ToList();
+                //return meroBoleeDbContexts.WatchListEntities.Where(m => m.User_Id == id).ToList();
             }
-            catch (Exception)
+            catch
             {
-                throw new Exception();
+                throw;
             }
         }
 

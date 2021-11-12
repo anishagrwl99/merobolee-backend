@@ -1,4 +1,5 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace MeroBolee.Repository.WatchLIst
     public interface IWatchListRepository : IRepositoryBase<WatchListEntity>
     {
         void AddWatchList(WatchListEntity watchList);
-        IEnumerable<WatchListEntity> GetAllWatchList(int id);
+        IEnumerable<TenderCard> GetAllWatchList(long userId, long companyId);
         void RemoveWatchList(int id);
     }
 }
