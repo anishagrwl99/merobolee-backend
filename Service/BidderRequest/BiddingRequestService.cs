@@ -27,7 +27,14 @@ namespace MeroBolee.Service.BidderReuest
         }
         public async Task<GetBiddingRequestDto> SendRequest(AddBiddingRequestDto bidderRequest)
         {
-            return EnterBiddingRoomToEntity(await bidderRequestRepository.SendRequest(BidderRequestDtoRequest(bidderRequest), bidderRequest.BidderRequestDocs));
+            try
+            {
+                return EnterBiddingRoomToEntity(await bidderRequestRepository.SendRequest(BidderRequestDtoRequest(bidderRequest), bidderRequest.BidderRequestDocs));
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId)

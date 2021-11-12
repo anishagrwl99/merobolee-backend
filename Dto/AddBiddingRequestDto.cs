@@ -15,11 +15,10 @@ namespace MeroBolee.Dto
     {
 
      
-        private long user_id;
-        private long company_id;
-        private long tender_Id;
+        private long userid;
+        private long companyid;
+        private long tenderId;
         //private TenderEntity tenderEntity;
-        private int admin_Status_Id;
         //private AdminStatusEntity adminStatusEntity;
         //private DateTime request_Send_Date;
         //private string remark;
@@ -28,30 +27,25 @@ namespace MeroBolee.Dto
         /// <summary>
         /// User Id
         /// </summary>
-        public long User_id { get => user_id; set => user_id = value; }
+        public long UserId { get => userid; set => userid = value; }
 
 
        
         /// <summary>
         /// Company id
         /// </summary>
-        public long Company_Id
+        public long CompanyId
         {
-            get { return company_id; }
-            set { company_id = value; }
+            get { return companyid; }
+            set { companyid = value; }
         }
 
 
         /// <summary>
         /// Tender Id
         /// </summary>
-        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long TenderId { get => tenderId; set => tenderId = value; }
 
-        /// <summary>
-        /// Admin status id
-        /// </summary>
-        public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
-        
 
 
         /// <summary>

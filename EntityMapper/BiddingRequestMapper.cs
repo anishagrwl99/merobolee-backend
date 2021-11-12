@@ -68,10 +68,10 @@ namespace MeroBolee.EntityMapper
             {
                 return new BidderRequestEntity
                 {
-                    User_id = addBiddingRequest.User_id,
-                    Tender_Id = addBiddingRequest.Tender_Id,
-                    CompanyId = addBiddingRequest.Company_Id,
-                    Admin_Status_Id = addBiddingRequest.Admin_Status_Id,
+                    User_id = addBiddingRequest.UserId,
+                    Tender_Id = addBiddingRequest.TenderId,
+                    CompanyId = addBiddingRequest.CompanyId,
+                    Admin_Status_Id = 1,
                     Request_Send_Date = addBiddingRequest.BiddingTime,
                     Request_code = Guid.NewGuid(),
                     Date_created = addBiddingRequest.BiddingTime,
