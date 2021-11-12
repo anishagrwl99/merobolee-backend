@@ -145,7 +145,7 @@ namespace MeroBolee
                 {
                     Version = "v1",
                     Title = "MeroBolee",
-                    Description = "JWT Authentication. To test bearer token check <b>/TestToken</b> endpoint. All other endpoints allows anonymous connection. Token should be passed in request header."
+                    Description = "Pass JWT Token on header of every request. Anonymous request is allowed only on endpoints under Account and Signup."
                 });
                 //c.SwaggerDoc("v1", new OpenApiInfo { Title = "MeroBolee", Version = "v1" }); // Configuration for documentation of API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"; // To enable XML comment in API
