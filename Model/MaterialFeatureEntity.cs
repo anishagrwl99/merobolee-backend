@@ -21,7 +21,7 @@ namespace MeroBolee.Model
         [Column("material_id")]
         [ForeignKey("TenderMaterialEntity")]
         [JsonIgnore]
-        public long Material_id { get => material_id; set => material_id = value; }
+        public long MaterialId { get => material_id; set => material_id = value; }
        
 
         [Column("feature_name")]

@@ -13,7 +13,7 @@ namespace MeroBolee.Dto
     {
         private string category;
 
-        private int status_Id;
+        private int statusId;
 
         /// <summary>
         /// Category test
@@ -23,6 +23,6 @@ namespace MeroBolee.Dto
         /// <summary>
         /// Status id
         /// </summary>
-        public int Status_Id { get => status_Id; set => status_Id = value; }
+        public int StatusId { get => statusId; set => statusId = value; }
     }
 }

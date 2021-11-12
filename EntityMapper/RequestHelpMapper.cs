@@ -21,10 +21,10 @@ namespace MeroBolee.EntityMapper
             {
                 return new RequestHelpEntity 
                 { 
-                 Problem_title= postRequestHelpDto.Problem_title,
+                 Problem_title= postRequestHelpDto.ProblemTitle,
                  Description= postRequestHelpDto.Description,
-                 Help_status_id= postRequestHelpDto.Help_status_id,
-                 User_id= postRequestHelpDto.User_id
+                 Help_status_id= postRequestHelpDto.HelpStatusId,
+                 User_id= postRequestHelpDto.UserId
                 };
             }
         
@@ -41,11 +41,11 @@ namespace MeroBolee.EntityMapper
             {
                 return new RequestHelpEntity
                 {
-                    Problem_title = updateRequestDto.Problem_title,
+                    Problem_title = updateRequestDto.ProblemTitle,
                     Description = updateRequestDto.Description,
-                    Help_status_id = updateRequestDto.Help_status_id,
+                    Help_status_id = updateRequestDto.HelpStatusId,
                     Remark= updateRequestDto.Remark,
-                    Help_close_date= updateRequestDto.Resolve_date
+                    Help_close_date= updateRequestDto.ResolveDate
                 };
             }
 
@@ -62,14 +62,14 @@ namespace MeroBolee.EntityMapper
             {
                 return new GetRequestHelpDto
                 {
-                    Problem_title = requestHelpEntity.Problem_title,
+                    ProblemTitle = requestHelpEntity.Problem_title,
                     Description = requestHelpEntity.Description,
-                    Help_status_id = requestHelpEntity.Help_status_id,
+                    HelpStatusId = requestHelpEntity.Help_status_id,
                     Remark = requestHelpEntity.Remark,
-                    Resolve_date = requestHelpEntity.Help_close_date,
+                    ResolvDate = requestHelpEntity.Help_close_date,
                     Username= requestHelpEntity.UserEntity.Username,
-                    User_code= requestHelpEntity.UserEntity.User_Code,
-                    User_id= requestHelpEntity.User_id
+                    UserCode= requestHelpEntity.UserEntity.User_Code,
+                    UserId= requestHelpEntity.User_id
                 };
             }
 

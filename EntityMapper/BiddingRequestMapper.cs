@@ -92,14 +92,14 @@ namespace MeroBolee.EntityMapper
                 return new GetBiddingRequestDto
                 {
                     BidId = bidderRequestEntity.Request_Id,
-                    Request_code = bidderRequestEntity.Request_code,
-                    User_id = bidderRequestEntity.User_id,
+                    RequestCode = bidderRequestEntity.Request_code,
+                    UserId = bidderRequestEntity.User_id,
                     Username = bidderRequestEntity.UserEntity.Username,
-                    Admin_Status_Id = bidderRequestEntity.Admin_Status_Id,
+                    AdminStatusId = bidderRequestEntity.Admin_Status_Id,
                     //AdminStatus = bidderRequestEntity.AdminStatusEntity,
-                    Request_Send_Date = bidderRequestEntity.Request_Send_Date,
+                    RequestSendDate = bidderRequestEntity.Request_Send_Date,
                     Remark = bidderRequestEntity.Remark,
-                    Tender_Id = bidderRequestEntity.Tender_Id
+                    TenderId = bidderRequestEntity.Tender_Id
                     //BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
                     //Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
                 };
@@ -117,14 +117,14 @@ namespace MeroBolee.EntityMapper
                 return new GetBiddingRequestDto
                 {
                     BidId = bidderRequestEntity.Request_Id,
-                    Request_code = bidderRequestEntity.Request_code,
-                    User_id = bidderRequestEntity.User_id,
+                    RequestCode = bidderRequestEntity.Request_code,
+                    UserId = bidderRequestEntity.User_id,
                     Username = bidderRequestEntity.UserEntity.Username,
-                    Admin_Status_Id = bidderRequestEntity.Admin_Status_Id,
+                    AdminStatusId = bidderRequestEntity.Admin_Status_Id,
                     //AdminStatus = bidderRequestEntity.AdminStatusEntity,
-                    Request_Send_Date = bidderRequestEntity.Request_Send_Date,
+                    RequestSendDate = bidderRequestEntity.Request_Send_Date,
                     Remark = bidderRequestEntity.Remark,
-                    Tender_Id = bidderRequestEntity.Tender_Id,
+                    TenderId = bidderRequestEntity.Tender_Id,
                     BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
                     Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
                 };
@@ -142,17 +142,17 @@ namespace MeroBolee.EntityMapper
             {
                 return new BiddingRequestTender
                 {
-                    Tender_Code = tenderEntity.Tender_Code,
-                    Tender_Title = tenderEntity.Tender_Title,
-                    Category_Id = tenderEntity.Category_Id,
+                    TenderCode = tenderEntity.Tender_Code,
+                    TenderTitle = tenderEntity.Tender_Title,
+                    CategoryId = tenderEntity.Category_Id,
                     Category = tenderEntity.CategoryEntity.Category,
-                    Tender_Description = tenderEntity.Tender_Description,
-                    Tender_live_interval = tenderEntity.Tender_live_interval,
-                    Live_Start_Date = tenderEntity.Live_Start_Date,
-                    Live_End_Date = tenderEntity.Live_End_Date,
-                    Project_Duration = tenderEntity.Tender_Duration,
-                    Duration_Type = tenderEntity.Duration_Type,
-                    Publish_Date = tenderEntity.Date_created,
+                    TenderDescription = tenderEntity.Tender_Description,
+                    TenderLiveInterval = tenderEntity.Tender_live_interval,
+                    LiveStartDate = tenderEntity.Live_Start_Date,
+                    LiveEndDate = tenderEntity.Live_End_Date,
+                    ProjectDuration = tenderEntity.Tender_Duration,
+                    DurationType = tenderEntity.Duration_Type,
+                    PublishDate = tenderEntity.Date_created,
                     TenderMaterials = tenderEntity.TenderMaterialEntities,
                     TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
 

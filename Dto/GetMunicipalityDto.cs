@@ -9,12 +9,12 @@ namespace MeroBolee.Dto
     {
         private int id;
         private string municipality;
-        private int? district_Id;
+        private int? districtId;
         private string district;
 
         public int Id { get => id; set => id = value; }
         public string Municipality { get => municipality; set => municipality = value; }
-        public int? District_Id { get => district_Id; set => district_Id = value; }
+        public int? DistrictId { get => districtId; set => districtId = value; }
         public string District { get => district; set => district = value; }
     }
 }

@@ -92,11 +92,11 @@ namespace MeroBolee.EntityMapper
             return new UserEntity
             {
                 User_Code = Guid.NewGuid(),
-                First_Name = dto.First_Name,
-                Middle_Name = dto.Middle_Name,
-                Last_Name = dto.Last_Name,
+                First_Name = dto.FirstName,
+                Middle_Name = dto.MiddleName,
+                Last_Name = dto.LastName,
                 Designation = dto.Designation,
-                Person_email = dto.Person_email,
+                Person_email = dto.PersonEmail,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -108,11 +108,11 @@ namespace MeroBolee.EntityMapper
 
             return new AddUserReponseDto
             {
-                First_Name = entity.First_Name,
-                Middle_Name = entity.Middle_Name,
-                Last_Name = entity.Last_Name,
+                FirstName = entity.First_Name,
+                MiddleName = entity.Middle_Name,
+                LastName = entity.Last_Name,
                 Designation = entity.Designation,
-                Person_email = entity.Person_email,
+                PersonEmail = entity.Person_email,
                 UserId = entity.User_Id
             };
         }

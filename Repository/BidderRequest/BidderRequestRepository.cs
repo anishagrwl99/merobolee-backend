@@ -207,7 +207,7 @@ namespace MeroBolee.Repository.BidderRequest
             try
             {
                 BidderRequestEntity bidderRequest = meroBoleeDbContexts.BidderRequestEntities.Where(m => m.User_id == id).First();
-                bidderRequest.Admin_Status_Id = updateRequest.Status_Id;
+                bidderRequest.Admin_Status_Id = updateRequest.StatusId;
                 bidderRequest.Remark = updateRequest.Remark;
                 bidderRequest.Date_modified = DateTime.Now;
                 return bidderRequest;

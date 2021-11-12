@@ -23,7 +23,7 @@ namespace MeroBolee.Model
         [Column("tender_id")]
         [ForeignKey("TenderEntity")]
         [JsonIgnore]
-        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long TenderId { get => tender_Id; set => tender_Id = value; }
         
 
         [Column("material")]

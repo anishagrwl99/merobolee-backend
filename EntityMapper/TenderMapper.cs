@@ -59,7 +59,7 @@ namespace MeroBolee.EntityMapper
                 CreatedBy = tenderDto.CreatedBy,
                 TenderTermsConditionEntities = new TenderTermsConditionEntity
                 {
-                    Term_Condition = tenderDto.TermsAndCondition
+                    TermCondition = tenderDto.TermsAndCondition
                 },
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
@@ -94,21 +94,21 @@ namespace MeroBolee.EntityMapper
             }
 
             GetTenderDto getTender = new GetTenderDto();
-            getTender.Tender_Id = tenderEntity.Tender_Id;
-            getTender.Tender_Code = tenderEntity.Tender_Code;
-            getTender.Tender_Title = tenderEntity.Tender_Title;
-            getTender.Category_Id = tenderEntity.Category_Id;
+            getTender.TenderId = tenderEntity.Tender_Id;
+            getTender.TenderCode = tenderEntity.Tender_Code;
+            getTender.TenderTitle = tenderEntity.Tender_Title;
+            getTender.CategoryId = tenderEntity.Category_Id;
             getTender.Category = tenderEntity.CategoryEntity.Category;
-            getTender.Tender_Description = tenderEntity.Tender_Description;
-            getTender.Tender_live_interval = tenderEntity.Tender_live_interval;
-            getTender.Live_Start_Date = tenderEntity.Live_Start_Date;
-            getTender.Live_End_Date = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-            getTender.Project_Duration = tenderEntity.Tender_Duration;
-            getTender.Duration_Type = tenderEntity.Duration_Type;
-            getTender.Tender_Status_Id = tenderEntity.Tender_Status_Id;
+            getTender.TenderDescription = tenderEntity.Tender_Description;
+            getTender.TenderLiveInterval = tenderEntity.Tender_live_interval;
+            getTender.LiveStartDate = tenderEntity.Live_Start_Date;
+            getTender.LiveEndDate = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+            getTender.ProjectDuration = tenderEntity.Tender_Duration;
+            getTender.DurationType = tenderEntity.Duration_Type;
+            getTender.TenderStatusId = tenderEntity.Tender_Status_Id;
             getTender.AuctionStatus = tenderEntity.AuctionStatusEntity.Status;
-            getTender.Cancel_Remark = tenderEntity.Cancel_remark;
-            getTender.Posted_By = tenderEntity.CreatedBy;
+            getTender.CancelRemark = tenderEntity.Cancel_remark;
+            getTender.PostedBy = tenderEntity.CreatedBy;
             getTender.User = tenderEntity.CreatedByUser;
             getTender.Publish_Date = tenderEntity.Date_created;
             getTender.TenderMaterial = tenderEntity.TenderMaterialEntities;

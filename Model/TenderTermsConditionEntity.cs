@@ -20,10 +20,10 @@ namespace MeroBolee.Model
         [Column("tender_id")]
         [ForeignKey("TenderEntity")]
         [JsonIgnore]
-        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long TenderId { get => tender_Id; set => tender_Id = value; }
 
         [Column("term_condition")]
-        public string Term_Condition { get => term_Condition; set => term_Condition = value; }
+        public string TermCondition { get => term_Condition; set => term_Condition = value; }
         
         [JsonIgnore]
         public virtual TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }

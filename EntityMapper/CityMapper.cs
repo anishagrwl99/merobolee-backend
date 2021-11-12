@@ -19,8 +19,8 @@ namespace MeroBolee.EntityMapper
             return new CityEntity
             {
                 City_Name = addCityDto.City,
-                Municipality_Id = addCityDto.Municipality_Id.HasValue ? addCityDto.Municipality_Id : null,
-                Vdc_Id = addCityDto.VDC_Id.HasValue ? addCityDto.VDC_Id.Value : null
+                Municipality_Id = addCityDto.MunicipalityId.HasValue ? addCityDto.MunicipalityId : null,
+                Vdc_Id = addCityDto.VDCId.HasValue ? addCityDto.VDCId.Value : null
             };
         }
 
@@ -37,7 +37,7 @@ namespace MeroBolee.EntityMapper
                 City = cityEntity.City_Name,
                 Municipality_Id = cityEntity.Municipality ==null? null: cityEntity.Municipality.Municipality_id,
                 Municipality = cityEntity.Municipality == null ? null : cityEntity.Municipality.Municipality_Name,
-                VDC_Id = cityEntity.VDC == null? null: cityEntity.VDC.Vdc_Id,
+                VDCId = cityEntity.VDC == null? null: cityEntity.VDC.Vdc_Id,
                 Vdc = cityEntity.VDC == null ? null : cityEntity.VDC.Vdc_Name                
             };
         }
@@ -58,7 +58,7 @@ namespace MeroBolee.EntityMapper
                     City = city.City_Name,
                     Municipality_Id = city.Municipality == null? null: city.Municipality.Municipality_id,
                     Municipality = city.Municipality==null? null: city.Municipality.Municipality_Name,
-                    VDC_Id = city.VDC == null? null: city.VDC.Vdc_Id,
+                    VDCId = city.VDC == null? null: city.VDC.Vdc_Id,
                     Vdc = city.VDC == null?  null: city.VDC.Vdc_Name
                 });
                 /*

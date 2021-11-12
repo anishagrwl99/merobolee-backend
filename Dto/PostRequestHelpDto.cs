@@ -7,14 +7,14 @@ namespace MeroBolee.Dto
 {
     public class PostRequestHelpDto
     {
-        private string problem_title;
+        private string problemTitle;
         private string description;
-        private int help_status_id;
-        private int user_id;
+        private int helpStatusid;
+        private int userId;
 
-        public string Problem_title { get => problem_title; set => problem_title = value; }
+        public string ProblemTitle { get => problemTitle; set => problemTitle = value; }
         public string Description { get => description; set => description = value; }
-        public int Help_status_id { get => help_status_id; set => help_status_id = value; }
-        public int User_id { get => user_id; set => user_id = value; }
+        public int HelpStatusId { get => helpStatusid; set => helpStatusid = value; }
+        public int UserId { get => userId; set => userId = value; }
     }
 }

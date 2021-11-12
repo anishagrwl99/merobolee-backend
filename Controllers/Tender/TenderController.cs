@@ -397,14 +397,14 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// To individual detail of tender by tender id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Tender/TenderDetail")]
-        public IActionResult GetById([FromQuery] int id)
+        public IActionResult GetById([FromQuery] int tenderId)
         {
             try
             {
-                if (id == 0)
+                if (tenderId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
@@ -412,7 +412,7 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    GetTenderDto tenderEntity = tenderService.GetTenderDetail(id);
+                    GetTenderDto tenderEntity = tenderService.GetTenderDetail(tenderId);
                     if (tenderEntity == null)
                     {
                         response.statusCode = "404";

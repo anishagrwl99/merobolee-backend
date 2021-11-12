@@ -32,7 +32,7 @@ namespace MeroBolee.EntityMapper
             {
                 addGetRoles.Add(new GetRoleDto
                     {
-                        Role_Id= role.Role_Id,
+                        RoleId= role.Role_Id,
                         Role=role.Role_Name                    
                     }          
                     );                    
@@ -47,7 +47,7 @@ namespace MeroBolee.EntityMapper
             }
             return new GetRoleDto 
             {
-            Role_Id= roleEntity.Role_Id,
+            RoleId= roleEntity.Role_Id,
             Role= roleEntity.Role_Name
             };
         }

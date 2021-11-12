@@ -426,11 +426,11 @@ namespace MeroBolee.Repository.Tender
                 meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
                 meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.Tender_Id == tenderId).ToList();
+                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).ToList();
                 meroBoleeDbContexts
                     .TenderMaterialEntities
                     .Include(x => x.MaterialFeatures)
-                    .Where(x => x.Tender_Id == tenderId).ToList();
+                    .Where(x => x.TenderId == tenderId).ToList();
 
                 //long[] materialIds = material.Select(x => x.Id).ToArray();
 

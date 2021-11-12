@@ -8,8 +8,8 @@ namespace MeroBolee.Dto
     public class GetCompanyTypeDto
     {
         private int id;
-        private string company_type;
+        private string companytype;
         public int Id { get => id; set => id = value; }
-        public string Company_type { get => company_type; set => company_type = value; }
+        public string CompanyType { get => companytype; set => companytype = value; }
     }
 }

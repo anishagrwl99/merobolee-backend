@@ -18,7 +18,7 @@ namespace MeroBolee.EntityMapper
             return new VDCEntity
             {
                 Vdc_Name = addVDC.Vdc,
-                District_Id = addVDC.District_Id
+                District_Id = addVDC.DistrictId
             };
 
         }
@@ -35,7 +35,7 @@ namespace MeroBolee.EntityMapper
                 {
                     Id = vdcEntity.Vdc_Id,
                     Vdc = vdcEntity.Vdc_Name,
-                    District_Id = null,
+                    DistrictId = null,
                     District = null
                 };
             }
@@ -44,7 +44,7 @@ namespace MeroBolee.EntityMapper
             {
                 Id = vdcEntity.Vdc_Id,
                 Vdc = vdcEntity.Vdc_Name,
-                District_Id = vdcEntity.District_Id,
+                DistrictId = vdcEntity.District_Id,
                 District = vdcEntity.District.District_Name
             };
 
@@ -66,7 +66,7 @@ namespace MeroBolee.EntityMapper
                   {
                       Id = vdcEntity.Vdc_Id,
                       Vdc = vdcEntity.Vdc_Name,
-                      District_Id = vdcEntity.District_Id,
+                      DistrictId = vdcEntity.District_Id,
                       District = vdcEntity.District.District_Name
                   }
                 );

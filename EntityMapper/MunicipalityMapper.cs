@@ -18,7 +18,7 @@ namespace MeroBolee.EntityMapper
             return new MunicipalityEntity
             {
                 Municipality_Name = addMunicipality.Municipality,
-                District_id= addMunicipality.District_Id
+                District_id= addMunicipality.DistrictId
             };
 
         }
@@ -35,7 +35,7 @@ namespace MeroBolee.EntityMapper
                 {
                     Id= municipalityEntity.Municipality_id,
                     Municipality= municipalityEntity.Municipality_Name,
-                    District_Id= null,
+                    DistrictId= null,
                     District=null
                 };
             }
@@ -44,7 +44,7 @@ namespace MeroBolee.EntityMapper
             {
                 Id = municipalityEntity.Municipality_id,
                 Municipality = municipalityEntity.Municipality_Name,
-                District_Id= municipalityEntity.District_id,
+                DistrictId= municipalityEntity.District_id,
                 District= municipalityEntity.District.District_Name
             };
 
@@ -66,7 +66,7 @@ namespace MeroBolee.EntityMapper
                   {
                       Id = municipalityEntity.Municipality_id,
                       Municipality = municipalityEntity.Municipality_Name,
-                      District_Id = municipalityEntity.District_id,
+                      DistrictId = municipalityEntity.District_id,
                       District = municipalityEntity.District.District_Name
                   }
                 );

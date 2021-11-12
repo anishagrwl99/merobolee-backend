@@ -17,7 +17,7 @@ namespace MeroBolee.EntityMapper
             return new DistrictEntity
             {
                 District_Name = addDistrictDto.District,
-                Province_Id = addDistrictDto.Province_Id
+                Province_Id = addDistrictDto.ProvinceId
 
             };
 
@@ -34,7 +34,7 @@ namespace MeroBolee.EntityMapper
                 {
                     Id = districtEntity.District_Id,
                     District = districtEntity.District_Name,
-                    Province_Id = null,
+                    ProvinceId = null,
                     Province = null
                 };
             }
@@ -42,7 +42,7 @@ namespace MeroBolee.EntityMapper
             {
                 Id = districtEntity.District_Id,
                 District =districtEntity.District_Name,
-                Province_Id = districtEntity.Province_Id,
+                ProvinceId = districtEntity.Province_Id,
                 Province = districtEntity.Province.Province
 
             };
@@ -65,7 +65,7 @@ namespace MeroBolee.EntityMapper
                   {
                       Id = district.District_Id,
                       District = district.District_Name,
-                      Province_Id = district.Province_Id,
+                      ProvinceId = district.Province_Id,
                       Province = district.Province.Province
                   }
                 );

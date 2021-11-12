@@ -8,10 +8,13 @@ namespace MeroBolee.Dto
     public class AddDistrictDto
     {
         private string district;
+        private int provinceId;
+
+
         public string District { get => district; set => district = value; }
 
-        private int province_Id;
-        public int Province_Id { get => province_Id; set => province_Id = value; }
+        
+        public int ProvinceId { get => provinceId; set => provinceId = value; }
 
     }
 }

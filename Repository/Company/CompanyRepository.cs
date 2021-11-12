@@ -109,10 +109,10 @@ namespace MeroBolee.Repository.City
                     {
                         UserId = u.User_Id,
                         Designation = u.Designation,
-                        First_Name = u.First_Name,
-                        Middle_Name = u.Middle_Name,
-                        Last_Name = u.Last_Name,
-                        Person_email = u.Person_email,
+                        FirstName = u.First_Name,
+                        MiddleName = u.Middle_Name,
+                        LastName = u.Last_Name,
+                        PersonEmail = u.Person_email,
                         Username = u.Username
                     };
                     companyDetailResponse.Users.Add(dto);
@@ -139,15 +139,15 @@ namespace MeroBolee.Repository.City
                 {
                     GetTenderDto dto = new GetTenderDto
                     {
-                        Tender_Id = t.Tender_Id,
-                        Tender_Code = t.Tender_Code,
-                        Tender_Title = t.Tender_Title,
+                        TenderId = t.Tender_Id,
+                        TenderCode = t.Tender_Code,
+                        TenderTitle = t.Tender_Title,
                         Category = t.CategoryEntity.Category,
-                        Category_Id = t.Category_Id,
-                        Tender_Description = t.Tender_Description,
-                        Live_Start_Date = t.Live_Start_Date,
-                        Live_End_Date = t.Live_End_Date,
-                        Tender_live_interval = t.Tender_live_interval,
+                        CategoryId = t.Category_Id,
+                        TenderDescription = t.Tender_Description,
+                        LiveStartDate = t.Live_Start_Date,
+                        LiveEndDate = t.Live_End_Date,
+                        TenderLiveInterval = t.Tender_live_interval,
                         Publish_Date = t.Date_created
                     };
                     companyDetailResponse.Tenders.Add(dto);

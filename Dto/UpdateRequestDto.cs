@@ -7,10 +7,10 @@ namespace MeroBolee.Dto
 {
     public class UpdateRequestDto
     {
-        private int status_Id;
+        private int statusId;
         private string remark;
 
-        public int Status_Id { get => status_Id; set => status_Id = value; }
+        public int StatusId { get => statusId; set => statusId = value; }
         public string Remark { get => remark; set => remark = value; }
     }
 }

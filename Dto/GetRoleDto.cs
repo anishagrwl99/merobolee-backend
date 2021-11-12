@@ -7,7 +7,7 @@ namespace MeroBolee.Dto
 {
     public class GetRoleDto
     {
-        public int Role_Id { get; set; }
+        public int RoleId { get; set; }
         public string Role { get; set;}
         
     }

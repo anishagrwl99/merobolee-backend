@@ -51,9 +51,9 @@ namespace MeroBolee.EntityMapper
             }
             return new UserEntity
             {
-                First_Name = userDto.First_Name,
-                Middle_Name = userDto.Middle_Name,
-                Last_Name = userDto.Last_Name,
+                First_Name = userDto.FirstName,
+                Middle_Name = userDto.MiddleName,
+                Last_Name = userDto.LastName,
                 Designation = userDto.Designation,
                 Username = userDto.Username,
                 Password = userDto.Password
@@ -74,15 +74,15 @@ namespace MeroBolee.EntityMapper
 
             return new UserEntity
             {
-                First_Name = userDto.First_Name,
-                Middle_Name = userDto.Middle_Name,
-                Last_Name = userDto.Last_Name,
+                First_Name = userDto.FirstName,
+                Middle_Name = userDto.MiddleName,
+                Last_Name = userDto.LastName,
                 Designation = userDto.Designation,
-                Person_email = userDto.Person_email,
+                Person_email = userDto.PersonEmail,
                 Username = userDto.Username,
                 Password = userDto.Password,
-                Role_Id = userDto.Role_Id,
-                Status_id = userDto.Status_id
+                Role_Id = userDto.RoleId,
+                Status_id = userDto.StatusId
             };
 
         }
@@ -121,19 +121,19 @@ namespace MeroBolee.EntityMapper
             }
 
 
-            getUser.User_Id = userEntity.User_Id;
-            getUser.Company_Code = userEntity.User_Code;
-            getUser.First_Name = userEntity.First_Name;
-            getUser.Middle_Name = userEntity.Middle_Name;
-            getUser.Last_Name = userEntity.Last_Name;
+            getUser.UserId = userEntity.User_Id;
+            getUser.CompanyCode = userEntity.User_Code;
+            getUser.FirstName = userEntity.First_Name;
+            getUser.MiddleName = userEntity.Middle_Name;
+            getUser.LastName = userEntity.Last_Name;
             getUser.Designation = userEntity.Designation;
-            getUser.Person_email = userEntity.Person_email;
+            getUser.PersonEmail = userEntity.Person_email;
             getUser.Username = userEntity.Username;
             getUser.Password = userEntity.Password;
-            getUser.Role_Id = userEntity.Role_Id;
-            getUser.Status_id = userEntity.Status_id;
-            getUser.Activate_Date = userEntity.Activate_Date;
-            getUser.Expried_Date = userEntity.Expried_Date;
+            getUser.RoleId = userEntity.Role_Id;
+            getUser.StatusId = userEntity.Status_id;
+            getUser.ActivateDate = userEntity.Activate_Date;
+            getUser.ExpriedDate = userEntity.Expried_Date;
             return getUser;
 
         }

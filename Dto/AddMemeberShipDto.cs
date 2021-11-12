@@ -7,18 +7,19 @@ namespace MeroBolee.Dto
 {
     public class AddMemeberShipDto
     {
-        private string membership_Title;
+        private string membershipTitle;
         private int duration;
-        private string duration_Type;
-        private float membership_fee;
+        private string durationType;
+        private float membershipfee;
         private float discount;
-        private int status_Id;
+        private int statusId;
 
-        public string Membership_Title { get => membership_Title; set => membership_Title = value; }
+
+        public string MembershipTitle { get => membershipTitle; set => membershipTitle = value; }
         public int Duration { get => duration; set => duration = value; }
-        public string Duration_Type { get => duration_Type; set => duration_Type = value; }
-        public float Membership_fee { get => membership_fee; set => membership_fee = value; }
+        public string DurationType { get => durationType; set => durationType = value; }
+        public float Membershipfee { get => membershipfee; set => membershipfee = value; }
         public float Discount { get => discount; set => discount = value; }
-        public int Status_Id { get => status_Id; set => status_Id = value; }
+        public int StatusId { get => statusId; set => statusId = value; }
     }
 }

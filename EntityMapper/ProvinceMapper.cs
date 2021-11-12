@@ -18,7 +18,7 @@ namespace MeroBolee.EntityMapper
             return new ProvinceEntity
             {
                 Province = addProvinceDto.Province,
-                Country_Id= addProvinceDto.Country_id
+                Country_Id= addProvinceDto.CountryId
 
             };
         
@@ -37,7 +37,7 @@ namespace MeroBolee.EntityMapper
 
                     Id = provinceEntity.Province_Id,
                     Province = provinceEntity.Province,
-                    Country_id =null,
+                    CountryId =null,
                     Country =null
                 };
             }
@@ -45,7 +45,7 @@ namespace MeroBolee.EntityMapper
             {
                 Id= provinceEntity.Province_Id,
                 Province= provinceEntity.Province,
-                Country_id= provinceEntity.Country_Id,
+                CountryId= provinceEntity.Country_Id,
                 Country= provinceEntity.Country.Country_Name
 
             };
@@ -66,7 +66,7 @@ namespace MeroBolee.EntityMapper
                   {
                       Id = province.Province_Id,
                       Province = province.Province,
-                      Country_id = province.Country_Id,
+                      CountryId = province.Country_Id,
                       Country = province.Country.Country_Name
                   } 
                 );

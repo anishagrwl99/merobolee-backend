@@ -8,9 +8,9 @@ namespace MeroBolee.Dto
     public class AddVDCDto
     {
         private string vdc;
-        private int? district_Id;
+        private int? districtId;
 
         public string Vdc { get => vdc; set => vdc = value; }
-        public int? District_Id { get => district_Id; set => district_Id = value; }
+        public int? DistrictId { get => districtId; set => districtId = value; }
     }
 }

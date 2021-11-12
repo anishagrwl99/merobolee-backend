@@ -8,15 +8,19 @@ namespace MeroBolee.Dto
     public class GetProvinceDto
     {
         private int id;
+        private string province;
+        private int? country_id;
+        private string country;
+
         public int Id { get => id; set => id = value; }
 
-        private string province;
+        
         public string Province { get => province; set => province = value; }
 
-        private int? country_id;
-        public int? Country_id { get => country_id; set => country_id = value; }
+        
+        public int? CountryId { get => country_id; set => country_id = value; }
 
-        private string country;
+        
         public string Country { get => country; set => country = value; }
 
     }

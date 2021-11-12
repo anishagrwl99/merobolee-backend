@@ -9,33 +9,33 @@ namespace MeroBolee.Dto
 {
     public class GetBiddingRequestDto
     {
-        private long bid_id;
-        private Guid request_code;
-        private long user_id;
+        private long bidid;
+        private Guid requestcode;
+        private long userid;
         private string username;
-        private long tender_Id;
+        private long tenderId;
         private BiddingRequestTender tenderEntity;
-        private int admin_Status_Id;
+        private int adminStatusId;
         private AdminStatusEntity adminStatusEntity;
-        private DateTime request_Send_Date;
+        private DateTime requestSendDate;
         private string remark;
         private ICollection<BidderRequestDocEntity> bidderRequestDocs;
 
 
         public long BidId
         {
-            get { return bid_id; }
-            set { bid_id = value; }
+            get { return bidid; }
+            set { bidid = value; }
         }
 
-        public Guid Request_code { get => request_code; set => request_code = value; }
-        public long User_id { get => user_id; set => user_id = value; }
+        public Guid RequestCode { get => requestcode; set => requestcode = value; }
+        public long UserId { get => userid; set => userid = value; }
         public string Username { get => username; set => username = value; }
-        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
+        public long TenderId { get => tenderId; set => tenderId = value; }
         public BiddingRequestTender Tender { get => tenderEntity; set => tenderEntity = value; }
-        public int Admin_Status_Id { get => admin_Status_Id; set => admin_Status_Id = value; }
+        public int AdminStatusId { get => adminStatusId; set => adminStatusId = value; }
         public AdminStatusEntity AdminStatus { get => adminStatusEntity; set => adminStatusEntity = value; }
-        public DateTime Request_Send_Date { get => request_Send_Date; set => request_Send_Date = value; }
+        public DateTime RequestSendDate { get => requestSendDate; set => requestSendDate = value; }
         public string Remark { get => remark; set => remark = value; }
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
     }

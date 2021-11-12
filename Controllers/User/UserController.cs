@@ -94,7 +94,7 @@ namespace MeroBolee.Controllers.User
                 if (ModelState.IsValid)
                 {
 
-                    if ((int.TryParse(addUser.Company_Contact1, out _) == true) && (ulong.TryParse(addUser.Person_contact1, out _) == true))
+                    if ((int.TryParse(addUser.CompanyContact, out _) == true) && (ulong.TryParse(addUser.PersonContact, out _) == true))
                     {
                         return Ok(new Responses<GetUserDto>( await userService.SignUp(addUser), "200", "Record is successfully added"));
                     }

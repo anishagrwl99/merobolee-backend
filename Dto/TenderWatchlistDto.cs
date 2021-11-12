@@ -8,42 +8,35 @@ namespace MeroBolee.Dto
 {
     public class TenderWatchlistDto
     {
-        private long tender_Id;
-        private string tender_Code;
-        private string tender_Title;
-        private int category_Id;
+        private long tenderId;
+        private string tenderCode;
+        private string tenderTitle;
+        private int categoryId;
         private WatchCategoryDto category;
-        private string tender_Description;
-        private DateTime last_Request_Date;
-        private string source_Fund;
-        private string IFB_RFP_EOI;
-        private DateTime project_Start_Date;
-        private DateTime live_Start_Date;
-        private DateTime live_End_Date;
-        private int tender_Duration;
-        private string duration_Type;
-        private DateTime? publish_Date;
+        private string tenderDescription;
+        private DateTime liveStartDate;
+        private DateTime liveEndDate;
+        private int tenderDuration;
+        private string durationType;
+        private DateTime? publishDate;
     //    private TimeSpan publish_Time;
-        private int status_id;
+        private int statusid;
         private AdminStatusEntity status;
 
-        public long Tender_Id { get => tender_Id; set => tender_Id = value; }
-        public string Tender_Code { get => tender_Code; set => tender_Code = value; }
-        public string Tender_Title { get => tender_Title; set => tender_Title = value; }
-        public int Category_Id { get => category_Id; set => category_Id = value; }
+        public long TenderId { get => tenderId; set => tenderId = value; }
+        public string TenderCode { get => tenderCode; set => tenderCode = value; }
+        public string TenderTitle { get => tenderTitle; set => tenderTitle = value; }
+        public int CategoryId { get => categoryId; set => categoryId = value; }
         public WatchCategoryDto Category { get => category; set => category = value; }
-        public string Tender_Description { get => tender_Description; set => tender_Description = value; }
-        public DateTime Last_Request_Date { get => last_Request_Date; set => last_Request_Date = value; }
-        public string Source_Fund { get => source_Fund; set => source_Fund = value; }
-        public string IFB_RFP_EOI1 { get => IFB_RFP_EOI; set => IFB_RFP_EOI = value; }
-        public DateTime Project_Start_Date { get => project_Start_Date; set => project_Start_Date = value; }
-        public DateTime Live_Start_Date { get => live_Start_Date; set => live_Start_Date = value; }
-        public DateTime Live_End_Date { get => live_End_Date; set => live_End_Date = value; }
-        public int Tender_Duration { get => tender_Duration; set => tender_Duration = value; }
-        public string Duration_Type { get => duration_Type; set => duration_Type = value; }
-        public DateTime? Publish_Date { get => publish_Date; set => publish_Date = value; }
+        public string TenderDescription { get => tenderDescription; set => tenderDescription = value; }
+       
+        public DateTime LiveStartDate { get => liveStartDate; set => liveStartDate = value; }
+        public DateTime LiveEndDate { get => liveEndDate; set => liveEndDate = value; }
+        public int TenderDuration { get => tenderDuration; set => tenderDuration = value; }
+        public string DurationType { get => durationType; set => durationType = value; }
+        public DateTime? PublishDate { get => publishDate; set => publishDate = value; }
      //   public TimeSpan Publish_Time { get => publish_Time; set => publish_Time = value; }
-        public int Status_id { get => status_id; set => status_id = value; }
+        public int StatusId { get => statusid; set => statusid = value; }
         public AdminStatusEntity Status { get => status; set => status = value; }
     }
 }
