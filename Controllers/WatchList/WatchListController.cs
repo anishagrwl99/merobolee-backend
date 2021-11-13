@@ -87,7 +87,7 @@ namespace MeroBolee.Controllers.WatchList
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-                string url = Url.Action("GetAll", null, new { supplierId = userId }, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAll", null, new { userId = userId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<TenderWatchListCard> watchList = watchListService.GetAllWatchList(userId, companyId);
