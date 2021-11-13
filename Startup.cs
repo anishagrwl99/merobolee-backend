@@ -215,8 +215,6 @@ namespace MeroBolee
             services.AddScoped<IProvinceService, ProvinceService>();
             services.AddScoped<IDistrictRepository, DistrictRepository>();
             services.AddScoped<IDistrictService, DistrictService>();
-            services.AddScoped<ICityRepository, CityRepository>();
-            services.AddScoped<ICityService, CityService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusRepository, StatusRepository>();
