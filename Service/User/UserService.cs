@@ -2,7 +2,7 @@
 using MeroBolee.EntityMapper;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using MeroBolee.Repository.User;
+using MeroBolee.Repository;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.User
+namespace MeroBolee.Service
 {
     public class UserService : UserMapper, IUserService
     {

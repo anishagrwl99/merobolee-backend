@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using MeroBolee.Service.Status;
+using MeroBolee.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

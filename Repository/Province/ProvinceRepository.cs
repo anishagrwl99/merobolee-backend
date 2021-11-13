@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.Province
+namespace MeroBolee.Repository
 {
     public class ProvinceRepository: RepositoryBase<ProvinceEntity>, IProvinceRepository
     {

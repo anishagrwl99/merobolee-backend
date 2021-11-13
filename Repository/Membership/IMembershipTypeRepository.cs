@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.Membership
+namespace MeroBolee.Repository
 {
    public interface IMembershipTypeRepository: IRepositoryBase<MembershipTypeEntity>
     {

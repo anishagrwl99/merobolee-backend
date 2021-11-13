@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MeroBolee.Service;
 
-namespace MeroBolee.Repository.BidderRequest
+namespace MeroBolee.Repository
 {
     public class BidderRequestRepository : RepositoryBase<BidderRequestEntity>, IBidderRequestRepository
     {

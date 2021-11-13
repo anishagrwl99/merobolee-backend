@@ -1,7 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
 using MeroBolee.Model;
-using MeroBolee.Repository.BidderRequest;
+using MeroBolee.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.BidderReuest
+namespace MeroBolee.Service
 {
     public class BiddingRequestService : BiddingRequestMapper, IBiddingRequestService
     {

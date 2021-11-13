@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.FAQ
+namespace MeroBolee.Repository
 {
     /// <summary>
     /// interface for FAQ

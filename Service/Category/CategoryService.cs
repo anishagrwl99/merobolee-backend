@@ -1,12 +1,12 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
-using MeroBolee.Repository.Category;
+using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Category
+namespace MeroBolee.Service
 {
     public class CategoryService:CategoryMapper,ICategoryService
     {

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.SMTPMail
+namespace MeroBolee.Service
 {
     /// <summary>
     /// Email service

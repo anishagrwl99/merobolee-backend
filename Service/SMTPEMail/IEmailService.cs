@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.SMTPMail
+namespace MeroBolee.Service
 {
     /// <summary>
     /// Email service interface

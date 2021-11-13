@@ -1,13 +1,13 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Model;
-using MeroBolee.Repository.BidderRequest;
+using MeroBolee.Repository;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.BidderReuest
+namespace MeroBolee.Service
 {
     public interface IBiddingRequestService
     {

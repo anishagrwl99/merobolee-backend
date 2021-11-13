@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
-using MeroBolee.Repository.Role;
+using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;

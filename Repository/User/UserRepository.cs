@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.User
+namespace MeroBolee.Repository
 {
     public class UserRepository : RepositoryBase<UserEntity>, IUserRepository
     {

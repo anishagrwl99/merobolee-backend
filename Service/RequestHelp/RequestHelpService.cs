@@ -1,12 +1,12 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
-using MeroBolee.Repository.RequestHelp;
+using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.RequestHelp
+namespace MeroBolee.Service
 {
     public class RequestHelpService: RequestHelpMapper, IRequestHelpService
     {

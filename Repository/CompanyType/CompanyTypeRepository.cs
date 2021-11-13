@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.CompanyType
+namespace MeroBolee.Repository
 {
     public class CompanyTypeRepository : RepositoryBase<CompanyTypeLookupEntity>, ICompanyTypeRepository
     {

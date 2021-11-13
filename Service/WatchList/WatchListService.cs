@@ -1,13 +1,13 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
 using MeroBolee.Model;
-using MeroBolee.Repository.WatchLIst;
+using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.WatchList
+namespace MeroBolee.Service
 {
     public class WatchListService :WatchListMapper,IWatchListService
     {

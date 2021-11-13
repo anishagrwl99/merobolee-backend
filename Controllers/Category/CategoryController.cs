@@ -1,6 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Service.Category;
+using MeroBolee.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

@@ -1,12 +1,12 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
-using MeroBolee.Repository.Country;
+using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Country
+namespace MeroBolee.Service
 {
     public class CountryService:CountryMapper ,ICountryService
     {

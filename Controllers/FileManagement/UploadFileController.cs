@@ -1,5 +1,5 @@
 ﻿using MeroBolee.Infrastructure;
-using MeroBolee.Service.User;
+using MeroBolee.Service;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

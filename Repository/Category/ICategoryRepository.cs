@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.Category
+namespace MeroBolee.Repository
 {
     public interface ICategoryRepository: IRepositoryBase<CategoryEntity>
     {

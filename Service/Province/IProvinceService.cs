@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Service.Province
+namespace MeroBolee.Service
 {
     public interface IProvinceService
     {

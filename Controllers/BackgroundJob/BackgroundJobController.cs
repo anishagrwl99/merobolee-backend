@@ -1,8 +1,7 @@
 ﻿using Hangfire;
 using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Service.BidderReuest;
-using MeroBolee.Service.City;
+using MeroBolee.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

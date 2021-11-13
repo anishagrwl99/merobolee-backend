@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.WatchLIst
+namespace MeroBolee.Repository
 {
     public class WatchListRepository: RepositoryBase<WatchListEntity>,IWatchListRepository
     {

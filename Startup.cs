@@ -1,36 +1,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Middleware;
 using MeroBolee.Repository;
-using MeroBolee.Repository.BidderRequest;
-using MeroBolee.Repository.Category;
-using MeroBolee.Repository.City;
-using MeroBolee.Repository.CompanyType;
-using MeroBolee.Repository.Country;
-using MeroBolee.Repository.FAQ;
-using MeroBolee.Repository.FavouriteCategory;
-using MeroBolee.Repository.Membership;
-using MeroBolee.Repository.Province;
-using MeroBolee.Repository.RequestHelp;
-using MeroBolee.Repository.Role;
-using MeroBolee.Repository.Status;
-using MeroBolee.Repository.Tender;
-using MeroBolee.Repository.User;
-using MeroBolee.Repository.WatchLIst;
 using MeroBolee.Service;
-using MeroBolee.Service.BidderReuest;
-using MeroBolee.Service.Category;
-using MeroBolee.Service.City;
-using MeroBolee.Service.CompanyType;
-using MeroBolee.Service.Country;
-using MeroBolee.Service.FAQ;
-using MeroBolee.Service.FavouriteCategory;
-using MeroBolee.Service.Membership;
-using MeroBolee.Service.Province;
-using MeroBolee.Service.RequestHelp;
-using MeroBolee.Service.Status;
-using MeroBolee.Service.Tender;
-using MeroBolee.Service.User;
-using MeroBolee.Service.WatchList;
 using MeroBolee.Settings;
 using MeroBolee.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -55,7 +26,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
-using MeroBolee.Service.SMTPMail;
 
 namespace MeroBolee
 {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MeroBolee.Repository.Role
+namespace MeroBolee.Repository
 {
     public class RoleRepository : RepositoryBase<RoleEntity>, IRoleRepository
     {
