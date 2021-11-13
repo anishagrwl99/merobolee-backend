@@ -67,6 +67,11 @@ namespace MeroBolee.Dto
 
     }
 
+    public class TenderWatchListCard: TenderCard
+    {
+        public int WatchListId { get; set; }
+    }
+
     public class BidInviterTenderListing
     {
         public List<TenderCard> PendingTenders { get; set; }

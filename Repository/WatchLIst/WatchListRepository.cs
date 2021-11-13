@@ -29,7 +29,7 @@ namespace MeroBolee.Repository.WatchLIst
             }
         }
 
-        public IEnumerable<TenderCard> GetAllWatchList(long userId, long companyId)
+        public IEnumerable<TenderWatchListCard> GetAllWatchList(long userId, long companyId)
         {
             try
             {
@@ -38,14 +38,16 @@ namespace MeroBolee.Repository.WatchLIst
                         join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
                         join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.Status_Id
                         where w.CompanyId == companyId
-                        select new TenderCard
+                        select new TenderWatchListCard
                         {
+                            WatchListId = w.Id,
                             TenderId = t.Tender_Id,
                             TenderCode = t.Tender_Code,
                             TenderTitle = t.Tender_Title,
                             CategoryId = c.Category_Id,
                             CategoryName = c.Category,
                             LiveStartDate = t.Live_Start_Date,
+                            StatusId = s.Status_Id,
                             Status = s.Status
                         }
 
@@ -73,6 +75,19 @@ namespace MeroBolee.Repository.WatchLIst
             catch (Exception)
             {
                 throw new Exception();
+            }
+        }
+
+        public bool IsTenderAddedToWatchList(long tenderId, long companyId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.WatchListEntities.Where(x => x.CompanyId == companyId && x.TenderId == tenderId).Count() > 0 ;
+            }
+            catch 
+            {
+
+                throw;
             }
         }
     }

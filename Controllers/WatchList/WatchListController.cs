@@ -36,10 +36,21 @@ namespace MeroBolee.Controllers.WatchList
             {
                 if (ModelState.IsValid)
                 {
-                    watchListService.AddWatchList(watchListEntity);
-                    response.statusCode = "200";
-                    response.Message = "Sucessfully added in watchlist";
-                    return  StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                    AddWatchList wl =  watchListService.AddWatchList(watchListEntity);
+                    if (wl != null)
+                    {
+                        response.statusCode = "200";
+                        response.Message = "Sucessfully added in watchlist";
+                        response.Data = wl; 
+                        return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    else
+                    {
+                        response.statusCode = "208";
+                        response.Message = "Tender already added into watchlist";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status208AlreadyReported, new ErrorResponse<ResponseMsg>(response));
+                    }
                 }
                 else
                 {
@@ -79,11 +90,11 @@ namespace MeroBolee.Controllers.WatchList
                 string url = Url.Action("GetAll", null, new { supplierId = userId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> watchList = watchListService.GetAllWatchList(userId, companyId);
+                IEnumerable<TenderWatchListCard> watchList = watchListService.GetAllWatchList(userId, companyId);
                 int totalCount = watchList.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<TenderCard>>(watchList, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<TenderWatchListCard>>(watchList, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(watchList, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -99,7 +110,7 @@ namespace MeroBolee.Controllers.WatchList
         /// <summary>
         /// To remove bid from watchlist by watchlist'sprimary key
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="watchlistId"></param>
         /// <returns></returns>
         [HttpDelete("Tender/RemoveFromWatchList")]
         public IActionResult Delete([FromQuery] int watchlistId)
@@ -128,12 +139,12 @@ namespace MeroBolee.Controllers.WatchList
             }
         }
 
-        private PagedResponse<TenderCard> ResultAfterPagination(IEnumerable<TenderCard> watchListDtos, PaginationQuery pagination, int totalCount)
+        private PagedResponse<TenderWatchListCard> ResultAfterPagination(IEnumerable<TenderWatchListCard> watchListDtos, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
-                return new PagedResponse<TenderCard>(watchListDtos, totalCount);
+                return new PagedResponse<TenderWatchListCard>(watchListDtos, totalCount);
             }
 
             var get = watchListDtos.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();

@@ -11,7 +11,9 @@ namespace MeroBolee.Repository.WatchLIst
     public interface IWatchListRepository : IRepositoryBase<WatchListEntity>
     {
         void AddWatchList(WatchListEntity watchList);
-        IEnumerable<TenderCard> GetAllWatchList(long userId, long companyId);
+        IEnumerable<TenderWatchListCard> GetAllWatchList(long userId, long companyId);
         void RemoveWatchList(int id);
+
+        bool IsTenderAddedToWatchList(long tenderId, long companyId);
     }
 }
