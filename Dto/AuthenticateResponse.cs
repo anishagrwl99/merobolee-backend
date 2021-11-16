@@ -25,10 +25,11 @@ namespace MeroBolee.Dto
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string ProfilePicture { get; set; }
         public DateTime Created { get; set; }
         public DateTime TokenExpiryTime { get; set; }
         public string JwtToken { get; set; }
-
+       
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
     }

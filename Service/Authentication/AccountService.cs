@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
 using MeroBolee.Settings;
@@ -8,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -28,8 +30,9 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="model"></param>
         /// <param name="companyRegisteredAs"></param>
+        /// <param name="defaultPicture"></param>
         /// <returns></returns>
-        AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs);
+        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string defaultPicture);
 
     }
 
@@ -39,6 +42,7 @@ namespace MeroBolee.Service
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository accountRepository;
+        private readonly IUploadFile uploadFile;
         private readonly JWTSettings jwtsetting;
         private readonly ICryptoService cryptoService;
 
@@ -48,10 +52,12 @@ namespace MeroBolee.Service
         /// <param name="cryptoService"></param>
         /// <param name="accountRepository"></param>
         /// <param name="jwtSettings"></param>
-        public AccountService(ICryptoService cryptoService, IAccountRepository accountRepository, IOptions<JWTSettings> jwtSettings)
+        /// <param name="uploadFile"></param>
+        public AccountService(ICryptoService cryptoService, IAccountRepository accountRepository, IOptions<JWTSettings> jwtSettings, IUploadFile uploadFile)
         {
             this.cryptoService = cryptoService;
             this.accountRepository = accountRepository;
+            this.uploadFile = uploadFile;
             jwtsetting = jwtSettings.Value;
         }
 
@@ -60,8 +66,9 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="model"></param>
         /// <param name="companyRegisteredAs"></param>
+        /// <param name="defaultPicture"></param>
         /// <returns></returns>
-        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest model, string companyRegisteredAs)
+        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string defaultPicture)
         {
             try
             {
@@ -70,6 +77,18 @@ namespace MeroBolee.Service
 
                 if (account != null)
                 {
+                    if(!string.IsNullOrEmpty(account.ProfilePicture))
+                    {
+                        bool fileExists = await uploadFile.FileExists(account.ProfilePicture);
+                        if(!fileExists)
+                        {
+                            account.ProfilePicture = defaultPicture;
+                        }
+                    }
+                    else
+                    {
+                        account.ProfilePicture = defaultPicture;
+                    }
                     DateTime expiryTime;
                     // authentication successful so generate jwt and refresh tokens
                     var jwtToken = generateToken(account, out expiryTime);// generateJwtToken(account);
@@ -93,7 +112,6 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-
 
         private string generateToken(AuthenticateResponse acc, out DateTime tokenExpiresAt)
         {

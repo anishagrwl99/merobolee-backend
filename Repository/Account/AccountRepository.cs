@@ -21,7 +21,7 @@ namespace MeroBolee.Repository
         /// <param name="request"></param>
         /// <param name="registeredAs"></param>
         /// <returns></returns>
-        AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs);
+        AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, CompanyTypeEnum registeredAs);
     }
 
 
@@ -48,7 +48,7 @@ namespace MeroBolee.Repository
         /// <param name="request"></param>
         /// <param name="registeredAs"></param>
         /// <returns></returns>
-        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, string registeredAs)
+        public AuthenticateResponse AuthenticateAsync(AuthenticateRequest request, CompanyTypeEnum registeredAs)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace MeroBolee.Repository
                            join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
                            join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
                            join r in meroBoleeDbContexts.RoleEntities on u.Role_Id equals r.Role_Id
-                           where u.Person_email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs)
+                           where u.Person_email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs.ToString())
                            select new AuthenticateResponse
                            {
                                Id = u.User_Id,
@@ -68,7 +68,7 @@ namespace MeroBolee.Repository
                                Email = u.Person_email,
                                Role = r.Role_Name,
                                UserStatusId = u.Status_id == null ? 0 : u.Status_id.Value,
-
+                               ProfilePicture = u.ProfilePicture,
                                CompanyId = c.CompanyId,
                                CompanyName = c.Name,
                                CompanyEmail = c.CompanyEmail,

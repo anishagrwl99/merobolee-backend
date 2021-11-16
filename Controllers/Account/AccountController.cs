@@ -1,8 +1,10 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using MeroBolee.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +19,16 @@ namespace MeroBolee.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService accountService;
-
+        private readonly AppDefaults defaultOptions;
+        private string _defaultPic;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IOptions<AppDefaults> defaultOptions)
         {
             this.accountService = accountService;
+            this.defaultOptions = defaultOptions.Value;
         }
 
         /// <summary>
@@ -33,13 +37,14 @@ namespace MeroBolee.Controllers
         /// <returns></returns>
         /// 
         [HttpPost("Authenticate/Bidder")]
-        public IActionResult AuthenticateSupplier([FromBody] AuthenticateRequest model)
+        public async Task<IActionResult> AuthenticateSupplier([FromBody] AuthenticateRequest model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AuthenticateResponse response =  accountService.AuthenticateAsync(model, "Bidder");
+                    _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, _defaultPic);
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
@@ -69,13 +74,14 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Authenticate/BidInviter")]
-        public IActionResult AuthenticateBidInviter([FromBody] AuthenticateRequest model)
+        public async Task<IActionResult> AuthenticateBidInviter([FromBody] AuthenticateRequest model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AuthenticateResponse response = accountService.AuthenticateAsync(model, "BidInviter");
+                    _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.BidInviter, _defaultPic);
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
