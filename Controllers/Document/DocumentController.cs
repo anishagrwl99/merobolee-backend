@@ -14,7 +14,7 @@ namespace MeroBolee.Controllers
     /// <summary>
     /// Document endpoint controller
     /// </summary>
-    public class DocumentController : Controller
+    public class DocumentController : BaseController
     {
         private readonly ICompanyDocumentService documentService;
         private readonly IDocumentTypeService docTypeService;
