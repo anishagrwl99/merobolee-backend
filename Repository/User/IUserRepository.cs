@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
 {
-   public interface IUserRepository : IRepositoryBase<UserEntity>
+    public interface IUserRepository : IRepositoryBase<UserEntity>
     {
-       Task<UserEntity> AddUser(UserEntity user);
+        Task<UserEntity> AddUser(UserEntity user);
         IEnumerable<UserEntity> GetAllUser(string search);
         UserEntity GetUserDetail(long id);
-       Task<UserEntity> UpdateUser(int id, UserEntity user);
-       
+        Task<UserEntity> UpdateUser(int id, UserEntity user);
+        Task<UserProfileDto> GetUserProfile(long userId, long companyId);
+        Task<bool> UpdateProfilePicture(long userId, string picLocation);
+        Task<bool> ChangeUserPassword(ChangePasswordDto dto);
+
+
     }
 }

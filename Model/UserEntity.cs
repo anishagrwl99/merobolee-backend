@@ -83,6 +83,11 @@ namespace MeroBolee.Model
         public int? Status_id { get => status_id; set => status_id = value; }
 
 
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string ProfilePicture { get; set; }
+
+
         [NotMapped]
         public string Company_Name { get; set; }
 

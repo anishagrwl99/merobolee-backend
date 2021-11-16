@@ -32,7 +32,7 @@ namespace MeroBolee.Service
                 return UserEntityToDto(await userRepository.AddUser(user));
             }
             catch (Exception ex)
-            {    
+            {
 
                 throw ex;
 
@@ -55,7 +55,7 @@ namespace MeroBolee.Service
             return UserEntityToDto(await userRepository.AddUser(user));
         }
 
-        public  async Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto)
+        public async Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto)
         {
             UserEntity user = UserDtoEntity(userDto);
             return UserEntityToDto(await userRepository.UpdateUser(id, user));
@@ -64,9 +64,68 @@ namespace MeroBolee.Service
         public async Task<GetUserDto> UpdateUserByUser(int id, SignUpDto userDto)
         {
             UserEntity user = SignUpDtoEntity(userDto);
-            return UserEntityToDto( await userRepository.UpdateUser(id, user));
+            return UserEntityToDto(await userRepository.UpdateUser(id, user));
         }
 
-       
+        public Task<UserProfileDto> GetUserProfile(long userId, long companyId)
+        {
+            try
+            {
+                return userRepository.GetUserProfile(userId, companyId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto)
+        {
+            try
+            {
+                string picPath = await uploadImage.Upload(dto.ProfilePicture, "ProfilePicture");
+                if (!string.IsNullOrEmpty(picPath))
+                {
+                    bool isChanged = await userRepository.UpdateProfilePicture(dto.UserId, picPath);
+                    return isChanged ? 
+                        new ProfilePictureResponseDto { UserId = dto.UserId, CompanyId = dto.CompanyId, ProfilePicture = picPath } 
+                        : null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> ChangeUserPassword(ChangePasswordDto dto)
+        {
+            try
+            {
+                if (string.Equals(dto.Password, dto.ConfirmationPassword, StringComparison.Ordinal))
+                {
+                    dto.Password = cryptoService.Encrypt(dto.Password);
+                    dto.ConfirmationPassword = dto.Password;
+                    bool isChanged = await userRepository.ChangeUserPassword(dto);
+                    return isChanged;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }

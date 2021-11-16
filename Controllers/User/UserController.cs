@@ -324,27 +324,100 @@ namespace MeroBolee.Controllers.User
                     }
                 }
             }
-            catch (SqlException)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
-            catch (ArgumentNullException)
+        }
+
+        [HttpGet("/User/Profile")]
+        public async Task<IActionResult> UserProfile([FromQuery] long userId, [FromQuery] long companyId)
+        {
+            try
             {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                UserProfileDto profile = await userService.GetUserProfile(userId, companyId);
+                if (profile == null)
+                {
+                    response.statusCode = "404";
+                    response.Message = "Record not Found";
+                    return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                }
+                return Ok(new Responses<UserProfileDto>(profile, "200", "Record found"));
 
             }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
         }
+
+        [HttpPatch("/User/ChangeProfilePicture")]
+        public async Task<IActionResult> UpdateProfilePicture([FromBody] ProfilePictureDto model)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    ProfilePictureResponseDto res =  await userService.UpdateProfilePicture(model);
+                    if (res == null)
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Couldn't update profile picture";
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<ProfilePictureResponseDto>(res, "200", "Profile picture changed"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPatch("/User/ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    bool res = await userService.ChangeUserPassword(model);
+                    if (res == false)
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Couldn't update password";
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<ProfilePictureResponseDto>(null, "200", "User password changed"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
 
         private PagedResponse<GetUserDto> ResultAfterPagination(IEnumerable<GetUserDto> getUsers, PaginationQuery pagination, int totalCount)
         {

@@ -16,17 +16,17 @@ namespace MeroBolee.Repository
     {
         private readonly IUnitOfWork unitOfWork;
         private IUploadFile uploadImage;
-        public UserRepository(IDbFactory dbFactory, IUploadFile uploadFileService, IUnitOfWork unitOfWork): base(dbFactory)
+        public UserRepository(IDbFactory dbFactory, IUploadFile uploadFileService, IUnitOfWork unitOfWork) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
             uploadImage = uploadFileService;
         }
         public async Task<UserEntity> AddUser(UserEntity user)
         {
-            
+
             try
             {
-            
+
                 UserEntity users = meroBoleeDbContexts.UserEntities.Where(m => m.Username.ToLower() == user.Username.ToLower()).FirstOrDefault(); //|| m.Email == user.Email.ToLower()).FirstOrDefault();
                 if (users != null)
                 {
@@ -115,9 +115,9 @@ namespace MeroBolee.Repository
                 || (m.First_Name.ToLower().Contains(search.ToLower()))
                 || (m.Middle_Name.ToLower().Contains(search.ToLower()))
                 || (m.Last_Name.ToLower().Contains(search.ToLower()))
-                || (m.Designation.ToLower().Contains(search.ToLower()))                
+                || (m.Designation.ToLower().Contains(search.ToLower()))
                 || (m.Person_email.ToLower().Contains(search.ToLower()))
-                || (m.Username.ToLower().Contains(search.ToLower()))                
+                || (m.Username.ToLower().Contains(search.ToLower()))
                 || (m.UserStatus.Status.ToLower().Contains(search.ToLower()))
                 || (m.Activate_Date.ToString().ToLower().Contains(search.ToLower()))
                 || (m.Expried_Date.ToString().ToLower().Contains(search.ToLower()))
@@ -169,7 +169,7 @@ namespace MeroBolee.Repository
                 throw new Exception();
             }
         }
-        
+
         public async Task<UserEntity> UpdateUser(int id, UserEntity userdto)
         {
             try
@@ -185,13 +185,13 @@ namespace MeroBolee.Repository
                 {
                     throw new UnauthorizedAccessException();
                 }
-               
+
                 else
-                {                    
+                {
                     user.First_Name = userdto.First_Name;
                     user.Middle_Name = userdto.Middle_Name;
                     user.Last_Name = userdto.Last_Name;
-                    user.Designation = userdto.Designation;                    
+                    user.Designation = userdto.Designation;
 
                     //  user.User_experience = userdto.User_experience;
                     user.Username = userdto.Username;
@@ -227,16 +227,113 @@ namespace MeroBolee.Repository
                                 .Select(x => x.Company_Name)
                                 .DefaultIfEmpty("")
                                 .FirstOrDefault();
-                
+
                 return userCompany;
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
             }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
+            }
+        }
+
+        public async Task<UserProfileDto> GetUserProfile(long userId, long companyId)
+        {
+            try
+            {
+                return await (from u in meroBoleeDbContexts.UserEntities
+                              join s in meroBoleeDbContexts.UserStatusEntities on u.Status_id equals s.Status_Id
+                              where u.User_Id == userId
+                              select new UserProfileDto
+                              {
+                                  Id = u.User_Id,
+                                  Designation = u.Designation,
+                                  Email = u.Person_email,
+                                  FirstName = u.First_Name,
+                                  LastName = u.Last_Name,
+                                  MiddleName = u.Middle_Name,
+                                  ProfilePicture = "",
+                                  Status = s.Status,
+                                  UserCompanies = (from uc in meroBoleeDbContexts.UserCompanies
+                                                   join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
+                                                   join c1 in meroBoleeDbContexts.CountryEntities on c.CountryId equals c1.Country_Id
+                                                   join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
+                                                   join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                                   where uc.UserId == userId
+                                                   select new CompanyDto()
+                                                   {
+                                                       Id = c.CompanyId,
+                                                       Address1 = c.Address1,
+                                                       Address2 = c.Address2,
+                                                       Address3 = c.Address3,
+                                                       City = c.City,
+                                                       Code = c.ReferenceCode,
+                                                       Name = c.Name,
+                                                       Country = c1.Country_Name,
+                                                       Email = c.CompanyEmail,
+                                                       Phone1 = c.Phone1,
+                                                       Phone2 = c.Phone2,
+                                                       Province = p.Province,
+                                                       RegisteredDate = c.Date_created,
+                                                       Status = s.Status,
+                                                       Website = c.CompanyWebsite,
+                                                       Zip = c.Zip
+                                                   }
+                                                   ).ToList()
+                              }
+
+                    ).FirstOrDefaultAsync();
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateProfilePicture(long userId, string picLocation)
+        {
+            try
+            {
+                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == userId).FirstOrDefaultAsync();
+                if(u != null)
+                {
+                    u.ProfilePicture = picLocation;
+                    meroBoleeDbContexts.UserEntities.Update(u);
+                    await unitOfWork.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> ChangeUserPassword(ChangePasswordDto dto)
+        {
+            try
+            {
+                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == dto.UserId).FirstOrDefaultAsync();
+                if (u != null)
+                {
+                    u.Password = dto.Password;
+                    meroBoleeDbContexts.UserEntities.Update(u);
+                    await unitOfWork.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
