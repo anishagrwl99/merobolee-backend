@@ -75,6 +75,7 @@ namespace MeroBolee
             services.Configure<SMTPServerInfo>(Configuration.GetSection("UserMailSetting"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
+            services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
             //Enabling Cross Origin Requests from merobolee ui 
