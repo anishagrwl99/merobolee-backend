@@ -17,7 +17,7 @@ namespace MeroBolee.Service
         Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto);
         Task<GetUserDto> UpdateUserByUser(int id, SignUpDto signUpDto);
 
-        Task<UserProfileDto> GetUserProfile(long userId, long companyId);
+        Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic);
         Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto, string baseUrl);
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
 

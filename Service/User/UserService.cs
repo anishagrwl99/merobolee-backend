@@ -67,11 +67,24 @@ namespace MeroBolee.Service
             return UserEntityToDto(await userRepository.UpdateUser(id, user));
         }
 
-        public Task<UserProfileDto> GetUserProfile(long userId, long companyId)
+        public async Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic)
         {
             try
             {
-                return userRepository.GetUserProfile(userId, companyId);
+                UserProfileDto profile = await userRepository.GetUserProfile(userId, companyId);
+                if(!string.IsNullOrEmpty(profile.ProfilePicture))
+                {
+                    bool fileExists = await uploadImage.FileExists(profile.ProfilePicture);
+                    if(fileExists != false)
+                    {
+                        profile.ProfilePicture = defaultPic;
+                    }
+                }
+                else
+                {
+                    profile.ProfilePicture = defaultPic;
+                }
+                return profile;
             }
             catch (Exception)
             {

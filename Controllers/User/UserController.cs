@@ -1,10 +1,12 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using MeroBolee.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +14,18 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.User
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserService userService;
+        private readonly AppDefaults defaultOption;
         private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IOptions<AppDefaults> defaultOption)
         {
             this.userService = userService;
+            this.defaultOption = defaultOption.Value;
         }
         /// <summary>
         /// To add user by Admin  and status is userStatus
@@ -338,7 +342,9 @@ namespace MeroBolee.Controllers.User
         {
             try
             {
-                UserProfileDto profile = await userService.GetUserProfile(userId, companyId);
+                string _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOption.DefaultProfilePicture}";
+
+                UserProfileDto profile = await userService.GetUserProfile(userId, companyId, _defaultPic);
                 if (profile == null)
                 {
                     response.statusCode = "404";
@@ -357,7 +363,7 @@ namespace MeroBolee.Controllers.User
         }
 
         [HttpPatch("/User/ChangeProfilePicture")]
-        public async Task<IActionResult> UpdateProfilePicture([FromQuery] ProfilePictureDto model)
+        public async Task<IActionResult> UpdateProfilePicture([FromBody] ProfilePictureDto model)
         {
             try
             {
