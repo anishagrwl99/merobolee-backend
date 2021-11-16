@@ -31,10 +31,9 @@ namespace MeroBolee.Service
             {
                 return UserEntityToDto(await userRepository.AddUser(user));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw ex;
+                throw;
 
             }
         }

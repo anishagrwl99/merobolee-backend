@@ -55,28 +55,12 @@ namespace MeroBolee.Repository
                     return user;
                 }
             }
-            catch (ArgumentNullException)
-            {
-                meroBoleeDbContexts.UserEntities.Remove(user);
-                unitOfWork.SaveChange();
-                DeleteFile(user.Company_Name);
-                throw new ArgumentNullException();
-            }
-            catch (DbUpdateException)
-            {
-                meroBoleeDbContexts.UserEntities.Remove(user);
-                unitOfWork.SaveChange();
-                DeleteFile(user.Company_Name);
-
-                throw new DbUpdateException();
-            }
-
             catch (Exception)
             {
                 meroBoleeDbContexts.UserEntities.Remove(user);
                 unitOfWork.SaveChange();
                 DeleteFile(user.Company_Name);
-                throw new Exception();
+                throw;
             }
         }
 
@@ -123,17 +107,9 @@ namespace MeroBolee.Repository
                 || (m.Expried_Date.ToString().ToLower().Contains(search.ToLower()))
                 ).ToList();
             }
-            catch (InvalidOperationException)
-            {
-                throw new InvalidOperationException();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
@@ -160,13 +136,9 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.UserExperienceDocEntities.ToList();
                 return user;
             }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 
@@ -206,14 +178,9 @@ namespace MeroBolee.Repository
                 }
 
             }
-
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
             catch (Exception)
             {
-                throw new Exception();
+                throw;
             }
         }
 

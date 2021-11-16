@@ -58,31 +58,11 @@ namespace MeroBolee.Controllers.User
                 }
 
             }
-            catch (UnauthorizedAccessException)
-            {
-                response.statusCode = "400";
-                response.Message = "Username or Email already exists";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-
-            catch (DbUpdateException)
-            {
-                response.statusCode = "500";
-                response.Message = "Internal Server Error";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
                 response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -116,23 +96,11 @@ namespace MeroBolee.Controllers.User
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (UnauthorizedAccessException)
-            {
-                response.statusCode = "400";
-                response.Message = "Username or Email already exists";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -159,23 +127,11 @@ namespace MeroBolee.Controllers.User
                 }
                 return Ok(ResultAfterPagination(user, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
@@ -207,24 +163,11 @@ namespace MeroBolee.Controllers.User
                     return Ok(new Responses<GetUserDto>(getUser, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
@@ -267,25 +210,12 @@ namespace MeroBolee.Controllers.User
                     }
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
 
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
