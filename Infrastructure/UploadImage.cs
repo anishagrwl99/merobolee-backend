@@ -12,6 +12,8 @@ namespace MeroBolee.Infrastructure
     {
         Task<string> Upload(IFormFile file, string folderName);
         Task<bool> DeleteFile(string filePath);
+        Task<bool> FileExists(string filePath);
+
     }
     public class UploadImage  : IUploadFile
     {
@@ -74,17 +76,21 @@ namespace MeroBolee.Infrastructure
                 }
             });
         }
-        //public async Task<IFormFile> Download(string filePath)
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw; 
-        //    }
-
-        //}
+       
+        public Task<bool> FileExists(string filePath)
+        {
+            return Task.Run(() =>
+            {
+                string fullPath = Path.Combine(_baseFolderFullPath, filePath);
+                if(File.Exists(fullPath))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            });
+        }
     }
 }
