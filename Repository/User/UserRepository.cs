@@ -289,21 +289,22 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<bool> UpdateProfilePicture(long userId, string picLocation)
+        public async Task<Tuple<bool, string>> UpdateProfilePicture(long userId, string picLocation)
         {
             try
             {
                 UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == userId).FirstOrDefaultAsync();
                 if(u != null)
                 {
+                    string oldPic = u.ProfilePicture;
                     u.ProfilePicture = picLocation;
                     meroBoleeDbContexts.UserEntities.Update(u);
                     await unitOfWork.SaveChangesAsync();
-                    return true;
+                    return Tuple.Create(true, oldPic);
                 }
                 else
                 {
-                    return false;
+                    return Tuple.Create(false, "");
                 }
             }
             catch (Exception)

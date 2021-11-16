@@ -16,7 +16,7 @@ namespace MeroBolee.Repository
         UserEntity GetUserDetail(long id);
         Task<UserEntity> UpdateUser(int id, UserEntity user);
         Task<UserProfileDto> GetUserProfile(long userId, long companyId);
-        Task<bool> UpdateProfilePicture(long userId, string picLocation);
+        Task<Tuple<bool, string>> UpdateProfilePicture(long userId, string picLocation);
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
 
 

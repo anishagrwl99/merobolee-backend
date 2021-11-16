@@ -357,19 +357,21 @@ namespace MeroBolee.Controllers.User
         }
 
         [HttpPatch("/User/ChangeProfilePicture")]
-        public async Task<IActionResult> UpdateProfilePicture([FromBody] ProfilePictureDto model)
+        public async Task<IActionResult> UpdateProfilePicture([FromQuery] ProfilePictureDto model)
         {
             try
             {
                 if(ModelState.IsValid)
                 {
-                    ProfilePictureResponseDto res =  await userService.UpdateProfilePicture(model);
+                    string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    ProfilePictureResponseDto res =  await userService.UpdateProfilePicture(model, baseUrl);
                     if (res == null)
                     {
                         response.statusCode = "400";
                         response.Message = "Couldn't update profile picture";
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
+                   
                     return Ok(new Responses<ProfilePictureResponseDto>(res, "200", "Profile picture changed"));
                 }
                 else
@@ -407,6 +409,7 @@ namespace MeroBolee.Controllers.User
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }

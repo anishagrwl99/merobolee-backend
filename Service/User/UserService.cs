@@ -80,17 +80,32 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto)
+        public async Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto, string baseUrl)
         {
             try
             {
                 string picPath = await uploadImage.Upload(dto.ProfilePicture, "ProfilePicture");
                 if (!string.IsNullOrEmpty(picPath))
                 {
-                    bool isChanged = await userRepository.UpdateProfilePicture(dto.UserId, picPath);
-                    return isChanged ? 
-                        new ProfilePictureResponseDto { UserId = dto.UserId, CompanyId = dto.CompanyId, ProfilePicture = picPath } 
-                        : null;
+                    Tuple<bool, string> res = await userRepository.UpdateProfilePicture(dto.UserId, picPath);
+                    if (res.Item1)
+                    {
+                        //delete previous profile;
+                        if(!string.IsNullOrEmpty(res.Item2))
+                        {
+                            await uploadImage.DeleteFile(res.Item2);
+                        }
+                        return new ProfilePictureResponseDto
+                        {
+                            UserId = dto.UserId,
+                            CompanyId = dto.CompanyId,
+                            ProfilePicture = baseUrl + picPath.Replace("\\", "/")
+                        };
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
