@@ -63,7 +63,7 @@ namespace MeroBolee.Service
             return TenderEntityListToDto(tenderRepository.GetTenderByAuctioneer(userId, search));
         }
 
-        public GetTenderDto GetTenderDetail(int id)
+        public GetTenderDto GetTenderDetail(long id)
         {
             return TenderEntityToDto(tenderRepository.GetTenderDetail(id));
         }

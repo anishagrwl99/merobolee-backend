@@ -17,7 +17,7 @@ namespace MeroBolee.Model
 
         [Column("id")]
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
+        //[JsonIgnore]
         public long Id { get => id; set => id = value; }
 
         [Column("tender_id")]

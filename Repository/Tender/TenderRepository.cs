@@ -443,9 +443,9 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == ent.CreatedBy).ToList();
                 return ent;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception();
+                throw;
             }
         }
 

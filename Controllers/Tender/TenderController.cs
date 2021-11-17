@@ -400,7 +400,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Tender/TenderDetail")]
-        public IActionResult GetById([FromQuery] int tenderId)
+        public IActionResult GetById([FromQuery] long tenderId)
         {
             try
             {
