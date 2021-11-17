@@ -233,6 +233,8 @@ namespace MeroBolee
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
 
+            //Support
+            services.AddScoped<ISupportService, SupportService>();
 
 
             //Hangfire configuration
