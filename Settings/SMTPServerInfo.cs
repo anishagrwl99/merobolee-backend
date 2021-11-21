@@ -14,12 +14,7 @@ namespace MeroBolee.Settings
         /// <summary>
         /// Email server login user
         /// </summary>
-        public string From { get; set; }
-
-        /// <summary>
-        /// Display Name
-        /// </summary>
-        public string DisplayName { get; set; }
+        public string FromEmail { get; set; }
 
 
         /// <summary>
@@ -30,7 +25,7 @@ namespace MeroBolee.Settings
         /// <summary>
         /// SMTP Server HOST url (IP Address)
         /// </summary>
-        public string Host { get; set; }
+        public string Server { get; set; }
 
         /// <summary>
         /// SMTP Server port number

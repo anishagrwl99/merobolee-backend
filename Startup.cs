@@ -71,8 +71,7 @@ namespace MeroBolee
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
-            services.Configure<SMTPServerInfo>(Configuration.GetSection("UserMailSetting"));
+            services.Configure<SMTPServerInfo>(Configuration.GetSection("EmailConfig"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));

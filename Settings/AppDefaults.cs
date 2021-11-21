@@ -8,5 +8,6 @@ namespace MeroBolee.Settings
     public class AppDefaults
     {
         public string DefaultProfilePicture { get; set; }
+        public string CustomerSupportEmail { get; set; }
     }
 }

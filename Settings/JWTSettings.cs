@@ -18,7 +18,6 @@ namespace MeroBolee.Settings
 
         public string Issuer { get; set; }
 
-        public MailSettings MailSettings { get; set; }
     }
 
 }

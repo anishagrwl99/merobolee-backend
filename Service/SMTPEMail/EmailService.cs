@@ -2,6 +2,7 @@
 using MeroBolee.Model;
 using MeroBolee.Settings;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
@@ -25,48 +26,105 @@ namespace MeroBolee.Service
         /// Default constructor
         /// </summary>
         /// <param name="smtpSettings"></param>
-        /// <param name="mailRepository"></param>
         public SMTPEmailService(IOptions<SMTPServerInfo> smtpSettings)
         {
             smtpServer = smtpSettings.Value;
             smtp = new MailKit.Net.Smtp.SmtpClient();
+
         }
 
         /// <summary>
         /// Compose email 
         /// </summary>
-        /// <param name="mailRequest">Email composition details</param>
+        /// <param name="Tos">Email composition details</param>
+        /// <param name="subject">Email composition details</param>
+        /// <param name="message">Email composition details</param>
         /// <returns></returns>
-        public MimeMessage ComposeEmail(EmailInfo mailRequest)
+        public MimeMessage ComposeEmail(List<string> Tos, string subject, string message)
         {
             try
             {
                 MimeMessage email = new();
-                email.Sender = MailboxAddress.Parse(smtpServer.From);
-                foreach (string toEmail in mailRequest.ToEmail)
+                email.Sender = MailboxAddress.Parse(smtpServer.FromEmail);
+                foreach (string toEmail in Tos)
                 {
                     email.Bcc.Add(MailboxAddress.Parse(toEmail));
                 }
 
-                email.Subject = mailRequest.Subject;
+                email.Subject = subject;
                 var builder = new BodyBuilder();
-                if (mailRequest.Attachments != null)
-                {
-                    byte[] fileBytes;
-                    foreach (var file in mailRequest.Attachments)
-                    {
-                        if (file.Length > 0)
-                        {
-                            using (var ms = new MemoryStream())
-                            {
-                                file.CopyTo(ms);
-                                fileBytes = ms.ToArray();
-                            }
-                            builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
-                        }
-                    }
-                }
-                builder.HtmlBody = mailRequest.Body;
+                //if (mailRequest.Attachments != null)
+                //{
+                //    byte[] fileBytes;
+                //    foreach (var file in mailRequest.Attachments)
+                //    {
+                //        if (file.Length > 0)
+                //        {
+                //            using (var ms = new MemoryStream())
+                //            {
+                //                file.CopyTo(ms);
+                //                fileBytes = ms.ToArray();
+                //            }
+                //            builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
+                //        }
+                //    }
+                //}
+                builder.HtmlBody = message;
+                email.Body = builder.ToMessageBody();
+
+                return email;
+                //PostMail(new MailEntity
+                //{
+                //    FromEmail = userMailSetting.From,
+                //    ToEmail = mailRequest.ToEmail,
+                //    Subject = mailRequest.Subject,
+                //    Body = mailRequest.Body
+                //}, mailRequest.Attachments);
+                //}
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Compose email 
+        /// </summary>
+        /// <param name="to">Email composition details</param>
+        /// <param name="subject">Email composition details</param>
+        /// <param name="message">Email composition details</param>
+        /// <returns></returns>
+        public MimeMessage ComposeEmail(string to, string subject, string message)
+        {
+            try
+            {
+                MimeMessage email = new();
+                email.Sender = MailboxAddress.Parse(smtpServer.FromEmail);
+                email.Bcc.Add(MailboxAddress.Parse(to));
+
+                email.Subject = subject;
+                var builder = new BodyBuilder();
+                //if (mailRequest.Attachments != null)
+                //{
+                //    byte[] fileBytes;
+                //    foreach (var file in mailRequest.Attachments)
+                //    {
+                //        if (file.Length > 0)
+                //        {
+                //            using (var ms = new MemoryStream())
+                //            {
+                //                file.CopyTo(ms);
+                //                fileBytes = ms.ToArray();
+                //            }
+                //            builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
+                //        }
+                //    }
+                //}
+                builder.HtmlBody = message;
                 email.Body = builder.ToMessageBody();
 
                 return email;
@@ -88,6 +146,35 @@ namespace MeroBolee.Service
 
 
         /// <summary>
+        /// Add attachment
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="fileFullPath"></param>
+        public void AddAttachments(BodyBuilder builder, string[] fileFullPath)
+        {
+            foreach (var file in fileFullPath)
+            {
+                FileInfo f = new FileInfo(file);
+                
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (FileStream source = File.Open(file, FileMode.Open))
+                    {
+                        source.CopyTo(ms);
+                        byte[] filebytes = ms.ToArray();
+                        string contentType = GetFileContentType(f.FullName);
+                        builder.Attachments.Add(f.Name, filebytes, ContentType.Parse(contentType));
+                    }
+                }
+
+            }
+
+        }
+
+
+
+
+        /// <summary>
         /// Send composed email
         /// </summary>
         /// <param name="emailContent">A composed email</param>
@@ -98,12 +185,12 @@ namespace MeroBolee.Service
             {
                 if (emailContent != null && emailContent.Bcc.Count > 0)
                 {
-                    SecureSocketOptions opt = smtpServer.EnableSSL ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.Auto;
+                    SecureSocketOptions opt = smtpServer.EnableSSL ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.None;
 
-                    await smtp.ConnectAsync(smtpServer.Host, smtpServer.Port, opt);
+                    smtp.Connect(smtpServer.Server, smtpServer.Port, opt);
                     if (smtp.IsConnected)
                     {
-                        await smtp.AuthenticateAsync(Encoding.UTF8, smtpServer.From, smtpServer.Password);
+                        await smtp.AuthenticateAsync(Encoding.UTF8, smtpServer.FromEmail, smtpServer.Password);
                         if (smtp.IsAuthenticated)
                         {
                             await smtp.SendAsync(emailContent);
@@ -111,12 +198,12 @@ namespace MeroBolee.Service
                         }
                         else
                         {
-                            throw new Exception($"Could not authenticate user {smtpServer.From} at {smtpServer.Host} : {smtpServer.Port}");
+                            throw new Exception($"Could not authenticate user {smtpServer.FromEmail} at {smtpServer.Server} : {smtpServer.Port}");
                         }
                     }
                     else
                     {
-                        throw new Exception($"Could not connect to {smtpServer.Host} : {smtpServer.Port}");
+                        throw new Exception($"Could not connect to {smtpServer.Server} : {smtpServer.Port}");
                     }
                 }
                 else
@@ -124,7 +211,7 @@ namespace MeroBolee.Service
                     throw new Exception($"You need to compose email properly before sending.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -133,11 +220,26 @@ namespace MeroBolee.Service
                 //TODO: Dispose Email Attachments as they are no longer required after sending
                 //foreach (var item in emailContent.Attachments)
                 //{
-                    
+
                 //}
-                await smtp.DisconnectAsync(true);
+                if (smtp.IsConnected)
+                {
+                    await smtp.DisconnectAsync(true);
+                }
                 smtp.Dispose();//no longer required
             }
+        }
+
+
+        public string GetFileContentType(string fileName)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            if (!provider.TryGetContentType(fileName, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
         }
     }
 }

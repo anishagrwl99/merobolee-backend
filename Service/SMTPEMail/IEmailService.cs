@@ -17,9 +17,20 @@ namespace MeroBolee.Service
         /// <summary>
         /// Compose email
         /// </summary>
-        /// <param name="mailRequest"></param>
+        /// <param name="Tos"></param>
+        /// <param name="subject"></param>
+        /// <param name="message"></param>
         /// <returns></returns>
-        MimeMessage ComposeEmail(EmailInfo mailRequest);
+        MimeMessage ComposeEmail(List<string> Tos, string subject, string message);
+
+        /// <summary>
+        /// Compose email
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="subject"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        MimeMessage ComposeEmail(string to, string subject, string message);
 
 
         /// <summary>
