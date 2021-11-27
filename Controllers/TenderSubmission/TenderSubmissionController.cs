@@ -44,7 +44,7 @@ namespace MeroBolee.Controllers
         /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MeroboleeForm")]
-        public async Task<IActionResult> CreateSubmission([FromBody] TenderSubmissionRequestDto tenderSubmission)
+        public async Task<IActionResult> CreateSubmission([FromForm] TenderSubmissionRequestDto tenderSubmission)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/ExternalDocument")]
-        public async Task<IActionResult> CreateDocumentSubmission([FromBody] TenderSubmissionExternalDocumentRequestDto model)
+        public async Task<IActionResult> CreateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentRequestDto model)
 
         {
             try

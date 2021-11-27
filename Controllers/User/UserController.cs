@@ -166,7 +166,7 @@ namespace MeroBolee.Controllers.User
         }
 
         [HttpPost("/User/ChangeProfilePicture")]
-        public async Task<IActionResult> UpdateProfilePicture([FromBody] ProfilePictureDto model)
+        public async Task<IActionResult> UpdateProfilePicture([FromForm] ProfilePictureDto model)
         {
             try
             {

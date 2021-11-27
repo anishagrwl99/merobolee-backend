@@ -43,8 +43,9 @@ namespace MeroBolee.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOptions.DefaultProfilePicture}";
-                    AuthenticateResponse response =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, _defaultPic);
+                    string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, basePath, _defaultPic);
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
@@ -80,8 +81,9 @@ namespace MeroBolee.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOptions.DefaultProfilePicture}";
-                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.BidInviter, _defaultPic);
+                    string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.BidInviter, basePath, _defaultPic);
                     if (response != null)
                     {
                         //setTokenCookie(response.RefreshToken);
