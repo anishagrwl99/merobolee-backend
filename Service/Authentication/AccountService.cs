@@ -30,9 +30,10 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="model"></param>
         /// <param name="companyRegisteredAs"></param>
+        /// <param name="basePath"></param>
         /// <param name="defaultPicture"></param>
         /// <returns></returns>
-        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string defaultPicture);
+        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string basePath, string defaultPicture);
 
     }
 
@@ -66,9 +67,10 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="model"></param>
         /// <param name="companyRegisteredAs"></param>
+        /// <param name="basePath"></param>
         /// <param name="defaultPicture"></param>
         /// <returns></returns>
-        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string defaultPicture)
+        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, CompanyTypeEnum companyRegisteredAs, string basePath, string defaultPicture)
         {
             try
             {
@@ -83,6 +85,10 @@ namespace MeroBolee.Service
                         if(!fileExists)
                         {
                             account.ProfilePicture = defaultPicture;
+                        }
+                        else
+                        {
+                            account.ProfilePicture = $"{basePath}{account.ProfilePicture.Replace("\\", "/")}";
                         }
                     }
                     else
