@@ -13,7 +13,7 @@ namespace MeroBolee.Repository
         public CompanyDocumentEntity AddDocument(CompanyDocumentEntity obj);
         public CompanyDocumentEntity ChangeStatus(int userId, long documentId, int statusId, string remarks);
         public List<CompanyDocumentEntity> GetAllDocument(int companyId);
-        public string GetCompanyFolder(int companyId);
+        public string GetCompanyFolder(long companyId);
     }
 
 
@@ -83,7 +83,7 @@ namespace MeroBolee.Repository
             }
         }
 
-        public string GetCompanyFolder(int companyId)
+        public string GetCompanyFolder(long companyId)
         {
             try
             {

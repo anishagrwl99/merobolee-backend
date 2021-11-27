@@ -138,7 +138,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Document/Upload")]
-        public async Task<IActionResult> Upload([FromQuery] DocumentDto model)
+        public async Task<IActionResult> Upload([FromBody] DocumentDto model)
         {
             try
             {

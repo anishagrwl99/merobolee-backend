@@ -43,9 +43,11 @@ namespace MeroBolee.Service
             return UserEntityListToDto(userRepository.GetAllUser(search));
         }
 
-        public GetUserDto GetUserDetail(long id)
+        public async Task<UserDetailDto> GetUserDetail(long id, string baseUrl, string defaultPic)
         {
-            return UserEntityToDto(userRepository.GetUserDetail(id));
+            Tuple<UserEntity, List<CompanyEntity>> info = await userRepository.GetUserDetail(id);
+            info.Item1.ProfilePicture = await GetUserProfilePicture(info.Item1.ProfilePicture, baseUrl, defaultPic);
+            return UserDetailDto(info.Item1, info.Item2);
         }
 
         public async Task<GetUserDto> SignUp(SignUpDto userDto)
@@ -54,35 +56,59 @@ namespace MeroBolee.Service
             return UserEntityToDto(await userRepository.AddUser(user));
         }
 
-        public async Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto)
+        public async Task<GetUserDto> UpdateUserByAdmin(UpdateUserDto dto)
         {
-            UserEntity user = UserDtoEntity(userDto);
-            return UserEntityToDto(await userRepository.UpdateUser(id, user));
+            UserEntity user = await userRepository.GetUserInfoDetail(dto.Id);
+            if(user != null)
+            {
+                user.First_Name = dto.FirstName;
+                user.Middle_Name = dto.MiddleName;
+                user.Last_Name = dto.LastName;
+                user.Designation = dto.Designation;
+                user.Username = dto.UserName;
+                user.Date_modified = DateTime.Now;
+            }
+            return UserEntityToDto(await userRepository.UpdateUser(user));
         }
 
-        public async Task<GetUserDto> UpdateUserByUser(int id, SignUpDto userDto)
+        public async Task<GetUserDto> UpdateUserByUser( UpdateUserDto dto)
         {
-            UserEntity user = SignUpDtoEntity(userDto);
-            return UserEntityToDto(await userRepository.UpdateUser(id, user));
+            UserEntity user = await userRepository.GetUserInfoDetail(dto.Id);
+            if (user != null)
+            {
+                user.First_Name = dto.FirstName;
+                user.Middle_Name = dto.MiddleName;
+                user.Last_Name = dto.LastName;
+                user.Designation = dto.Designation;
+                user.Username = dto.UserName;
+                user.Date_modified = DateTime.Now;
+            }
+            return UserEntityToDto(await userRepository.UpdateUser(user));
+
         }
 
-        public async Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic)
+        public async Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic, string baseUrl)
         {
             try
             {
                 UserProfileDto profile = await userRepository.GetUserProfile(userId, companyId);
-                if(!string.IsNullOrEmpty(profile.ProfilePicture))
-                {
-                    bool fileExists = await uploadImage.FileExists(profile.ProfilePicture);
-                    if(fileExists != false)
-                    {
-                        profile.ProfilePicture = defaultPic;
-                    }
-                }
-                else
-                {
-                    profile.ProfilePicture = defaultPic;
-                }
+                profile.ProfilePicture =  await GetUserProfilePicture(profile.ProfilePicture, baseUrl, defaultPic);
+                //if(!string.IsNullOrEmpty(profile.ProfilePicture))
+                //{
+                //    bool fileExists = await uploadImage.FileExists(profile.ProfilePicture);
+                //    if(!fileExists)
+                //    {
+                //        profile.ProfilePicture = defaultPic;
+                //    }
+                //    else
+                //    {
+                //        profile.ProfilePicture = $"{baseUrl}{profile.ProfilePicture.Replace("\\", "/")}";
+                //    }
+                //}
+                //else
+                //{
+                //    profile.ProfilePicture = defaultPic;
+                //}
                 return profile;
             }
             catch (Exception)
@@ -100,10 +126,11 @@ namespace MeroBolee.Service
                 if (!string.IsNullOrEmpty(picPath))
                 {
                     Tuple<bool, string> res = await userRepository.UpdateProfilePicture(dto.UserId, picPath);
+                    
                     if (res.Item1)
                     {
                         //delete previous profile;
-                        if(!string.IsNullOrEmpty(res.Item2))
+                        if (!string.IsNullOrEmpty(res.Item2))
                         {
                             await uploadImage.DeleteFile(res.Item2);
                         }
@@ -151,6 +178,26 @@ namespace MeroBolee.Service
             {
 
                 throw;
+            }
+        }
+
+        private async Task<string> GetUserProfilePicture(string profilePic, string basePath, string defaultPic)
+        {
+            if (!string.IsNullOrEmpty(profilePic))
+            {
+                bool fileExists = await uploadImage.FileExists(profilePic);
+                if (!fileExists)
+                {
+                    return defaultPic;
+                }
+                else
+                {
+                    return $"{basePath}{profilePic.Replace("\\", "/")}";
+                }
+            }
+            else
+            {
+                return defaultPic;
             }
         }
 

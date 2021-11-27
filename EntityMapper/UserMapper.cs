@@ -138,6 +138,46 @@ namespace MeroBolee.EntityMapper
 
         }
 
+
+        public UserDetailDto UserDetailDto(UserEntity user, List<CompanyEntity> companies)
+        {
+            UserDetailDto userDetailDto = new UserDetailDto
+            {
+                Designation = user.Designation,
+                FirstName = user.First_Name,
+                Id = user.User_Id,
+                LastName = user.Last_Name,
+                MiddleName = user.Middle_Name,
+                ProfilePicture = user.ProfilePicture,
+                UserName = user.Username,
+                RegistrationDate = user.Date_created,
+                ActivationDate = user.Activate_Date
+            };
+
+            userDetailDto.Companies = (from c in companies
+                                       select new CompanyDto
+                                       {
+                                           Address1 = c.Address1,
+                                           Address2 = c.Address2,
+                                           Address3 = c.Address3,
+                                           City = c.City,
+                                           Code = c.ReferenceCode,
+                                           Country = c.Country.Country_Name,
+                                           Email = c.CompanyEmail,
+                                           Id = c.CompanyId,
+                                           Name = c.Name,
+                                           Phone1 = c.Phone1,
+                                           Phone2 = c.Phone2,
+                                           Province = c.Province.Province,
+                                           RegisteredDate = c.Date_created,
+                                           Status = c.CompanyStatus.Status,
+                                           Website = c.CompanyWebsite,
+                                           Zip = c.Zip
+                                       }).ToList();
+
+            return userDetailDto;
+        }
+
         /// <summary>
         /// user entity to dto
         /// </summary>

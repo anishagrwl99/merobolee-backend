@@ -12,12 +12,12 @@ namespace MeroBolee.Service
         Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/ );
         Task<GetUserDto> SignUp(SignUpDto signUpDto);
         IEnumerable<GetUserDto> GetUser(string search);
-        GetUserDto GetUserDetail(long id);
+        Task<UserDetailDto> GetUserDetail(long id, string baseUrl, string defaultPic);
 
-        Task<GetUserDto> UpdateUserByAdmin(int id, AddUserDto userDto);
-        Task<GetUserDto> UpdateUserByUser(int id, SignUpDto signUpDto);
+        Task<GetUserDto> UpdateUserByAdmin(UpdateUserDto userDto);
+        Task<GetUserDto> UpdateUserByUser(UpdateUserDto signUpDto);
 
-        Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic);
+        Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic, string baseUrl);
         Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto, string baseUrl);
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
 

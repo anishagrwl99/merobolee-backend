@@ -6,6 +6,27 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+
+    public class UserDetailDto : UpdateUserDto
+    {
+        public List<CompanyDto> Companies { get; set; }
+
+        public string ProfilePicture { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public DateTime? ActivationDate { get; set; }
+
+        
+    }
+
+    public class UpdateUserDto
+    {
+        public long Id { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string Designation { get; set; }
+    }
     public class AddUserDto
     {
 

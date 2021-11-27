@@ -27,83 +27,7 @@ namespace MeroBolee.Controllers.User
             this.userService = userService;
             this.defaultOption = defaultOption.Value;
         }
-        /// <summary>
-        /// To add user by Admin  and status is userStatus
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("User")]
-        public async Task<IActionResult> Add(AddUserDto addUser/*,[FromForm]IFormFile front_Citizenship=null, [FromBody] IFormFile back_Citizenship=null, [FromBody] IFormFile tax_Clearance=null , [FromBody] IFormFile PAN_Registration=null, [FromBody] IFormFile company_Registration=null, [FromBody] IFormFile experienced_Doc=null, [FromBody] IFormFile bank_Credit_letter=null*/)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    return Ok(new Responses<GetUserDto>(await userService.AddUser(addUser/*,front_Citizenship,back_Citizenship,tax_Clearance,PAN_Registration, company_Registration,experienced_Doc,bank_Credit_letter*/), "200", "Record is successfully added"));
-                    //if (((long.TryParse(addUser.Company_Contact1, out _) == true) && (long.TryParse(addUser.Person_contact1, out _) == true)) || (long.TryParse(addUser.Company_Contact2, out _) == true) || (long.TryParse(addUser.Person_contact2, out _) == true))
-                    //{
-
-                    //}
-                    //else
-                    //{
-                    //    response.statusCode = "400";
-                    //    response.Message = "Contact Number must be numeric";
-                    //    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    //}
-                }
-                else
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
-        /// <summary>
-        /// To signup user and status is userStatus
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("SignUpUser")]
-        public async Task<IActionResult> SignUp(SignUpDto addUser)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-
-                    if ((int.TryParse(addUser.CompanyContact, out _) == true) && (ulong.TryParse(addUser.PersonContact, out _) == true))
-                    {
-                        return Ok(new Responses<GetUserDto>( await userService.SignUp(addUser), "200", "Record is successfully added"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Contact Number must be numeric";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-                else
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
+        
 
         /// <summary>
         /// To display all user by Admin
@@ -135,13 +59,15 @@ namespace MeroBolee.Controllers.User
             }
 
         }
+        
+        
         /// <summary>
         /// To get individual user detail
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("UserDetail")]
-        public IActionResult GetById([FromQuery] int id)
+        public async Task<IActionResult> GetById([FromQuery] long id)
         {
             try
             {
@@ -153,66 +79,21 @@ namespace MeroBolee.Controllers.User
                 }
                 else
                 {
-                    GetUserDto getUser = userService.GetUserDetail(id);
+                    string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    string _defaultPic = $"{baseUrl}{defaultOption.DefaultProfilePicture}";
+
+                    UserDetailDto getUser = await userService.GetUserDetail(id, baseUrl, _defaultPic);
                     if (getUser == null)
                     {
                         response.statusCode = "404";
                         response.Message = "Record not found";
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
-                    return Ok(new Responses<GetUserDto>(getUser, "200", "Record found"));
+                    return Ok(new Responses<UserDetailDto>(getUser, "200", "Record found"));
                 }
             }
             catch (Exception e)
             {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
-        /// <summary>
-        /// To update user info by Admin and status is userStatus
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addUser"></param>
-        /// <returns></returns>
-        [HttpPut("User")]
-        public async Task<IActionResult> Update([FromQuery] int id,[FromQuery] AddUserDto addUser)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetUserDto getUser = await userService.UpdateUserByAdmin(id, addUser);
-                        if (getUser == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not Found";
-                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetUserDto>(getUser, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
                 response.statusCode = "500";
                 response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
@@ -223,40 +104,31 @@ namespace MeroBolee.Controllers.User
         /// <summary>
         /// To update user info by User
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addUser"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateByUser([FromQuery] int id, [FromBody] SignUpDto addUser)
+        public async Task<IActionResult> UpdateByUser([FromBody] UpdateUserDto user)
         {
             try
             {
-                if (id == 0)
+                if (ModelState.IsValid)
+                {
+                    GetUserDto getUser = await userService.UpdateUserByUser(user);
+                    if (getUser == null)
+                    {
+                        response.statusCode = "404";
+                        response.Message = "Record not Found";
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<GetUserDto>(getUser, "200", "Record is successfully updated"));
+                }
+                else
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetUserDto getUser =await userService.UpdateUserByUser(id, addUser);
-                        if (getUser == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not Found";
-                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetUserDto>(getUser, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
+
             }
             catch (Exception e)
             {
@@ -272,9 +144,10 @@ namespace MeroBolee.Controllers.User
         {
             try
             {
-                string _defaultPic = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/{defaultOption.DefaultProfilePicture}";
+                string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                string _defaultPic = $"{baseUrl}{defaultOption.DefaultProfilePicture}";
 
-                UserProfileDto profile = await userService.GetUserProfile(userId, companyId, _defaultPic);
+                UserProfileDto profile = await userService.GetUserProfile(userId, companyId, _defaultPic, baseUrl);
                 if (profile == null)
                 {
                     response.statusCode = "404";
@@ -292,22 +165,22 @@ namespace MeroBolee.Controllers.User
             }
         }
 
-        [HttpPatch("/User/ChangeProfilePicture")]
+        [HttpPost("/User/ChangeProfilePicture")]
         public async Task<IActionResult> UpdateProfilePicture([FromBody] ProfilePictureDto model)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
-                    ProfilePictureResponseDto res =  await userService.UpdateProfilePicture(model, baseUrl);
+                    ProfilePictureResponseDto res = await userService.UpdateProfilePicture(model, baseUrl);
                     if (res == null)
                     {
                         response.statusCode = "400";
                         response.Message = "Couldn't update profile picture";
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
-                   
+
                     return Ok(new Responses<ProfilePictureResponseDto>(res, "200", "Profile picture changed"));
                 }
                 else
@@ -325,7 +198,7 @@ namespace MeroBolee.Controllers.User
             }
         }
 
-        [HttpPatch("/User/ChangePassword")]
+        [HttpPost("/User/ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {
             try
@@ -372,6 +245,6 @@ namespace MeroBolee.Controllers.User
 
         }
 
-          
-}
+
+    }
 }

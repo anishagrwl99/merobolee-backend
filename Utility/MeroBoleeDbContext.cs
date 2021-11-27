@@ -13,7 +13,13 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
-
+        public DbSet<TenderSubmissionDocuments> Documents { get; set; }
+        public DbSet<TenderSubmissionStatus> TenderSubmissionStatuses { get; set; }
+        public DbSet<TenderSubmission> TenderSubmissions { get; set; }
+        public DbSet<TenderSubmissionEligibilityCriteria> SubmissionEligibilityCriterias { get; set; }
+        public DbSet<TenderSubmissionPriceSchedule> SubmissionPriceSchedules { get; set; }
+        public DbSet<TenderSubmissionProductSpec> SubmissionProductSpecs { get; set; }
+        public DbSet<TenderSubmissionPurchaseCriteria> submissionPurchaseCriterias { get; set; }
         public DbSet<CompanyStatusEntity> CompanyStatusEntities { get; set; }
         public DbSet<TenderWinnerEntity> TenderWinnerEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
@@ -433,6 +439,15 @@ namespace MeroBolee.Utility
                 new UserCompany { Id = 2, UserId = 2, CompanyId = 2 },
                 new UserCompany { Id = 3, UserId = 3, CompanyId = 3 }
                 );
+
+            builder.Entity<TenderSubmissionStatus>().HasData(
+                new TenderSubmissionStatus { Id = 1, Status = "Pending Payment" },
+                new TenderSubmissionStatus { Id = 2, Status = "Pending" },
+                new TenderSubmissionStatus { Id = 3, Status = "Processing" },
+                new TenderSubmissionStatus { Id = 4, Status = "Tender Created" },
+                new TenderSubmissionStatus { Id = 5, Status = "Cancelled" }
+                );
+
         }
 
     }

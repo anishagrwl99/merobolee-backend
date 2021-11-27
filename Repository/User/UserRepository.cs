@@ -113,27 +113,78 @@ namespace MeroBolee.Repository
             }
         }
 
-        public UserEntity GetUserDetail(long id)
+        public async Task<Tuple<UserEntity, List<CompanyEntity>>> GetUserDetail(long id)
         {
             try
             {
-                UserEntity user = meroBoleeDbContexts.UserEntities.Find(id);
+                UserEntity user = await meroBoleeDbContexts.UserEntities
+                                    .Include(x => x.UserStatus)
+                                    .Include(x => x.Role)
+                                    .Where(x => x.User_Id == id)
+                                    .FirstOrDefaultAsync();
+
+                List<CompanyEntity> companies = await (from uc in meroBoleeDbContexts.UserCompanies
+                                                 join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
+                                                 join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
+                                                 join ct in meroBoleeDbContexts.CountryEntities on c.CountryId equals ct.Country_Id
+                                                 join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                                 where uc.UserId == id
+                                                 select new CompanyEntity
+                                                 {
+                                                     Address1 = c.Address1,
+                                                     Address2 = c.Address2,
+                                                     Address3 = c.Address3,
+                                                     City = c.City,
+                                                     ReferenceCode = c.ReferenceCode,
+                                                     Country = ct,
+                                                     CompanyEmail = c.CompanyEmail,
+                                                     CompanyId = c.CompanyId,
+                                                     Name = c.Name,
+                                                     Phone1 = c.Phone1,
+                                                     Phone2 = c.Phone2,
+                                                     Province = p,
+                                                     Date_created = c.Date_created,
+                                                     CompanyStatus = s,
+                                                     CompanyWebsite = c.CompanyWebsite,
+                                                     Zip = c.Zip
+
+                                                 }
+
+                                                 ).ToListAsync();
+                return Tuple.Create(user, companies);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<UserEntity> GetUserInfoDetail(long id)
+        {
+            try
+            {
+                UserEntity user = await meroBoleeDbContexts.UserEntities
+                                    .Include(x => x.UserStatus)
+                                    .Include(x => x.Role)
+                                    .Where(x => x.User_Id == id)
+                                    .FirstOrDefaultAsync();
                 if (user == null)
                 {
-                    return user = null;
+                    return null;
                 }
-                meroBoleeDbContexts.UserStatusEntities.ToList();
-                meroBoleeDbContexts.CountryEntities.ToList();
-                meroBoleeDbContexts.ProvinceEntities.ToList();
-                meroBoleeDbContexts.DistrictEntities.ToList();
-                meroBoleeDbContexts.CityEntities.ToList();
-                meroBoleeDbContexts.RoleEntities.ToList();
-                meroBoleeDbContexts.MembershipTypeEntities.ToList();
-                meroBoleeDbContexts.MunicipalityEntities.ToList();
-                meroBoleeDbContexts.VDCEntities.ToList();
-                meroBoleeDbContexts.CompanyTypeLookupEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                meroBoleeDbContexts.UserExperienceDocEntities.ToList();
+                //meroBoleeDbContexts.UserStatusEntities.ToList();
+                //meroBoleeDbContexts.CountryEntities.ToList();
+                //meroBoleeDbContexts.ProvinceEntities.ToList();
+                //meroBoleeDbContexts.DistrictEntities.ToList();
+                //meroBoleeDbContexts.CityEntities.ToList();
+                //meroBoleeDbContexts.RoleEntities.ToList();
+                //meroBoleeDbContexts.MembershipTypeEntities.ToList();
+                //meroBoleeDbContexts.MunicipalityEntities.ToList();
+                //meroBoleeDbContexts.VDCEntities.ToList();
+                //meroBoleeDbContexts.CompanyTypeLookupEntities.ToList();
+                //meroBoleeDbContexts.CategoryEntities.ToList();
+                //meroBoleeDbContexts.UserExperienceDocEntities.ToList();
                 return user;
             }
             catch (Exception)
@@ -142,40 +193,13 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<UserEntity> UpdateUser(int id, UserEntity userdto)
+        public async Task<UserEntity> UpdateUser(UserEntity user)
         {
             try
             {
-                UserEntity user = GetUserDetail(id);
-                DeleteFile(user.Company_Name);
-                int salt = 6;
-                string hashPasswod = BCrypt.Net.BCrypt.HashPassword(userdto.Password, salt);
-                userdto.Password = hashPasswod;
-
-                UserEntity users = meroBoleeDbContexts.UserEntities.Where(m => (m.Username == userdto.Username.ToLower()/*|| m.Email == user.Email.ToLower()*/ && m.User_Id != user.User_Id)).FirstOrDefault();
-                if (users != null)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                else
-                {
-                    user.First_Name = userdto.First_Name;
-                    user.Middle_Name = userdto.Middle_Name;
-                    user.Last_Name = userdto.Last_Name;
-                    user.Designation = userdto.Designation;
-
-                    //  user.User_experience = userdto.User_experience;
-                    user.Username = userdto.Username;
-                    user.Password = userdto.Password;
-                    user.Role_Id = userdto.Role_Id;
-                    user.Activate_Date = userdto.Activate_Date;
-                    user.Date_modified = user.Date_modified;
-                    //user.Modified_time_stamp= user.Modified_time_stamp;
-                    await unitOfWork.SaveChangesAsync();
-                    meroBoleeDbContexts.RoleEntities.ToList();
-                    return user;
-                }
+                meroBoleeDbContexts.UserEntities.Update(user);
+                await unitOfWork.SaveChangesAsync();
+                return user;
 
             }
             catch (Exception)
@@ -185,7 +209,7 @@ namespace MeroBolee.Repository
         }
 
 
-        public string GetUserCompany(int id)
+        public string GetUserCompany(long id)
         {
             try
             {
@@ -218,7 +242,7 @@ namespace MeroBolee.Repository
                                   FirstName = u.First_Name,
                                   LastName = u.Last_Name,
                                   MiddleName = u.Middle_Name,
-                                  ProfilePicture = "",
+                                  ProfilePicture = u.ProfilePicture,
                                   Status = s.Status,
                                   UserCompanies = (from uc in meroBoleeDbContexts.UserCompanies
                                                    join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
