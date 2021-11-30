@@ -13,7 +13,9 @@ namespace MeroBolee.Service
     public interface ITenderSubmissionService
     {
         Task<TenderSubmission> CreateTenderSubmissionByForm(TenderSubmissionRequestDto obj);
+        Task<TenderSubmission> UpdateTenderSubmissionByForm(TenderSubmissionUpdateRequestDto obj);
         Task<TenderSubmission> CreateTenderSubmissionByDocument(TenderSubmissionExternalDocumentRequestDto obj);
+        Task<TenderSubmission> UpdateTenderSubmissionByDocument(TenderSubmissionExternalDocumentUpdateRequestDto obj);
         Task<TenderSubmission> MakePayment(TenderSubmissionPaymentRequestDto obj);
         Task<List<TenderSubmissionCard>> BidInviterTenderSubmission(long companyId, long userId);
         Task<List<TenderSubmissionCard>> AdminTenderSubmission();
@@ -24,7 +26,7 @@ namespace MeroBolee.Service
     public class TenderSubmissionService : TenderSubmissionMapper, ITenderSubmissionService
     {
         private readonly ITenderSubmissionRepository submissionRepository;
-        private IUploadFile uploadImage;
+        private IUploadFile docService;
         private readonly ICompanyDocumentRepository docRepo;
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace MeroBolee.Service
         public TenderSubmissionService(ITenderSubmissionRepository submissionRepository, IUploadFile uploadFileService, ICompanyDocumentRepository docRepo)
         {
             this.submissionRepository = submissionRepository;
-            this.uploadImage = uploadFileService;
+            this.docService = uploadFileService;
             this.docRepo = docRepo;
         }
 
@@ -49,11 +51,36 @@ namespace MeroBolee.Service
                 {
                     string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                     ts.PriceScheduleDocName = obj.PriceScheduleDoc.FileName;
-                    ts.PriceScheduleDocPath = await uploadImage.Upload(obj.PriceScheduleDoc, docPath);
+                    ts.PriceScheduleDocPath = await docService.Upload(obj.PriceScheduleDoc, docPath);
                 }
                
                 ts = submissionRepository.Add(ts);
                 return ts;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<TenderSubmission> UpdateTenderSubmissionByForm(TenderSubmissionUpdateRequestDto obj)
+        {
+            try
+            {
+                TenderSubmission submission = await submissionRepository.GetDetailById(obj.SubmissionId);
+                await DeleteTenderSubmissionDocuments(submission.TenderSubmissionDocuments);
+                submission.TenderSubmissionDocuments.Clear();
+                ToEntity(ref submission, obj);
+                if (obj.PriceScheduleDoc != null)
+                {
+                    string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
+                    await docService.DeleteFile(submission.PriceScheduleDocPath);
+                    submission.PriceScheduleDocName = obj.PriceScheduleDoc.FileName;
+                    submission.PriceScheduleDocPath = await docService.Upload(obj.PriceScheduleDoc, docPath);
+                }
+
+                submission = await submissionRepository.Update(submission);
+                return submission;
             }
             catch (Exception)
             {
@@ -73,7 +100,7 @@ namespace MeroBolee.Service
                     string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                     foreach (var item in obj.Documents)
                     {
-                        string uploadPath = await uploadImage.Upload(item, docPath);
+                        string uploadPath = await docService.Upload(item, docPath);
                         docs.Add(new TenderSubmissionDocumentResponseDto
                         {
                             DocumentName = item.Name,
@@ -92,6 +119,59 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<TenderSubmission> UpdateTenderSubmissionByDocument(TenderSubmissionExternalDocumentUpdateRequestDto obj)
+        {
+            try
+            {
+                TenderSubmission submission = await submissionRepository.GetDetailById(obj.SubmissionId);
+                await DeleteTenderSubmissionDocuments(submission.TenderSubmissionDocuments);
+                
+                List<TenderSubmissionDocumentResponseDto> docs = new List<TenderSubmissionDocumentResponseDto>();
+
+                if (obj.Documents != null && obj.Documents.Count > 0)
+                {
+                    string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
+                    foreach (var item in obj.Documents)
+                    {
+                        string uploadPath = await docService.Upload(item, docPath);
+                        docs.Add(new TenderSubmissionDocumentResponseDto
+                        {
+                            DocumentName = item.Name,
+                            DocumentPath = uploadPath
+                        });
+                    }
+                }
+                submission.CreatedBy = obj.CreatedBy;
+                submission.PaymentProvider = obj.PaymentProvider;
+                submission.PaymentReferenceCode = obj.PaymentReferenceCode;
+                submission.Amount = obj.Amount;
+                submission.Title = obj.Title;
+                submission.PriceScheduleDocName = null;
+                submission.PriceScheduleDocPath = null;
+                submission.Date_modified = DateTime.Now;
+                submission.SubmissionId = obj.SubmissionId;
+                submission.TenderSubmissionDocuments = (from d in docs
+                                                        select new TenderSubmissionDocuments
+                                                              {
+                                                                  SubmissionId = obj.SubmissionId,
+                                                                  DocumentName = d.DocumentName,
+                                                                  DocumentPath = d.DocumentPath
+                                                              }).ToList();
+
+                submission.ProductSpecifications.Clear();
+                submission.PurchaseCriterias.Clear();
+                submission.PriceSchedules.Clear();
+                submission.EligibilityCriterias.Clear();
+
+                submission = await submissionRepository.Update(submission);
+                return submission;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public async Task<TenderSubmission> MakePayment(TenderSubmissionPaymentRequestDto obj)
         {
@@ -222,7 +302,7 @@ namespace MeroBolee.Service
         {
             if (!string.IsNullOrEmpty(user.ProfilePicture))
             {
-                bool fileExists = await uploadImage.FileExists(user.ProfilePicture);
+                bool fileExists = await docService.FileExists(user.ProfilePicture);
                 if (!fileExists)
                 {
                     return defaultPic;
@@ -235,6 +315,15 @@ namespace MeroBolee.Service
             else
             {
                 return defaultPic;
+            }
+        }
+
+        private async Task DeleteTenderSubmissionDocuments(IEnumerable<TenderSubmissionDocuments> documents)
+        {
+            foreach (var item in documents)
+            {
+                string docPath = item.DocumentPath;
+                await docService.DeleteFile(docPath);
             }
         }
 

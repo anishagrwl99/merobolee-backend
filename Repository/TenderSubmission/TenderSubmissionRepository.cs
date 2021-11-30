@@ -87,6 +87,7 @@ namespace MeroBolee.Repository
                         return meroBoleeDbContexts.TenderSubmissions
                         .Where(x => x.SubmissionId == submissionId)
                         .Include(x => x.TenderSubmissionStatus)
+                        .Include(x => x.TenderSubmissionDocuments)
                         .Include(x => x.ProductSpecifications)
                         .Include(x => x.PurchaseCriterias)
                         .Include(x => x.PriceSchedules)
@@ -142,6 +143,7 @@ namespace MeroBolee.Repository
                         return meroBoleeDbContexts.TenderSubmissions
                         .Where(x => x.SubmissionId == submissionId && x.CompanyId == companyId)
                         .Include(x => x.TenderSubmissionStatus)
+                        .Include(x => x.TenderSubmissionDocuments)
                         .Include(x => x.ProductSpecifications)
                         .Include(x => x.PurchaseCriterias)
                         .Include(x => x.PriceSchedules)

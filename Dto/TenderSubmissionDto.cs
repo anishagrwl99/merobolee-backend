@@ -73,6 +73,41 @@ namespace MeroBolee.Dto
         public virtual ICollection<TenderSubmissionEligibilityCriteriaDto> EligibilityCriterias { get; set; }
     }
 
+    public class TenderSubmissionUpdateRequestDto
+    {
+        [Required(ErrorMessage = "Submission id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid submission id")]
+        public long SubmissionId { get; set; }
+
+        [Required(ErrorMessage = "User id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
+        public long CreatedBy { get; set; }
+
+
+        [Required(ErrorMessage = "Company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
+        public long CompanyId { get; set; }
+
+        [Required(ErrorMessage = "Listing title is required")]
+        [MaxLength(500, ErrorMessage = "Listing title can be {1} character long")]
+        public string Title { get; set; }
+
+        public string PaymentProvider { get; set; }
+
+        public string PaymentReferenceCode { get; set; }
+        public decimal Amount { get; set; }
+
+
+        public IFormFile PriceScheduleDoc { get; set; }
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept terms and condition")]
+        public bool AcceptTermsAndConditions { get; set; }
+
+        public virtual ICollection<TenderSubmissionProductSpecResponseDto> ProductSpecifications { get; set; }
+        public virtual ICollection<TenderSubmissionPurchaseCriteriaResponseDto> PurchaseCriterias { get; set; }
+        public virtual ICollection<TenderSubmissionPriceScheduleResponseDto> PriceSchedules { get; set; }
+        public virtual ICollection<TenderSubmissionEligibilityCriteriaResponseDto> EligibilityCriterias { get; set; }
+    }
     public class TenderSubmissionExternalDocumentRequestDto
     {
 
@@ -99,6 +134,12 @@ namespace MeroBolee.Dto
         public bool AcceptTermsAndConditions { get; set; }
 
         public virtual ICollection<IFormFile> Documents { get; set; }
+    }
+
+
+    public class TenderSubmissionExternalDocumentUpdateRequestDto : TenderSubmissionExternalDocumentRequestDto
+    {
+        public long SubmissionId { get; set; }
     }
 
     public class TenderResponseSubmissionDto

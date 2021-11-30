@@ -29,12 +29,12 @@ namespace MeroBolee.Controllers
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
         private readonly AppDefaults defaultOption;
+        
 
-
-        public TenderSubmissionController(ITenderSubmissionService submissionService, IOptions<AppDefaults> defaultOption)
+        public TenderSubmissionController(ITenderSubmissionService submissionService, IOptions<AppDefaults> defaultOpt)
         {
             this.submissionService = submissionService;
-            this.defaultOption = defaultOption.Value;
+            this.defaultOption = defaultOpt.Value;
         }
 
 
@@ -54,6 +54,47 @@ namespace MeroBolee.Controllers
                     if (res != null)
                     {
                         return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully added"));
+                    }
+                    else
+                    {
+                        return Problem(detail: "Couldn't create submission", statusCode: 400, title: "Error");
+                    }
+
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = $"Invalid data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+
+        /// <summary>
+        /// Update Tender submission for tender creation using merobolee default form
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("BidInviter/TenderSubmission/MeroboleeForm/Update")]
+        public async Task<IActionResult> UpdateSubmission([FromForm] TenderSubmissionUpdateRequestDto model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByForm(model);
+                    if (res != null)
+                    {
+                        return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully updated"));
                     }
                     else
                     {
@@ -118,6 +159,45 @@ namespace MeroBolee.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Update a tender submission by submitting prepared documents
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("BidInviter/TenderSubmission/ExternalDocument/Update")]
+        public async Task<IActionResult> UpdateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentUpdateRequestDto model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByDocument(model);
+                    if (res != null)
+                    {
+                        return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        return Problem(detail: "Couldn't create submission", statusCode: 400, title: "Error");
+                    }
+
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = $"Invalid data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
         /// <summary>
         /// Make a payment so that submission can be processed futher by admin
@@ -221,10 +301,10 @@ namespace MeroBolee.Controllers
                 }
                 else
                 {
-                    string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
-                    string _defaultPic = $"{baseUrl}{defaultOption.DefaultProfilePicture}";
+                    //string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                     _defaultPic = $"{_baseUrl}{defaultOption.DefaultProfilePicture}";
 
-                    TenderResponseSubmissionDto res = await submissionService.TenderSubmissionDetail(tenderSubmissionId, companyId, userId, baseUrl, _defaultPic);
+                    TenderResponseSubmissionDto res = await submissionService.TenderSubmissionDetail(tenderSubmissionId, companyId, userId, _baseUrl, _defaultPic);
                     if (res == null)
                     {
                         response.statusCode = "404";
@@ -343,10 +423,10 @@ namespace MeroBolee.Controllers
                 }
                 else
                 {
-                    string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
-                    string _defaultPic = $"{baseUrl}{defaultOption.DefaultProfilePicture}";
+                    //string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                     _defaultPic = $"{_baseUrl}{defaultOption.DefaultProfilePicture}";
 
-                    TenderResponseSubmissionDto res = await submissionService.TenderSubmissionDetail(tenderSubmissionId, baseUrl, _defaultPic);
+                    TenderResponseSubmissionDto res = await submissionService.TenderSubmissionDetail(tenderSubmissionId, _baseUrl, _defaultPic);
                     if (res == null)
                     {
                         response.statusCode = "404";

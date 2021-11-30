@@ -10,6 +10,7 @@ namespace MeroBolee.EntityMapper
     public class TenderSubmissionMapper
     {
 
+
         public TenderSubmission ToEntity(TenderSubmissionRequestDto dto)
         {
             if (dto == null) return null;
@@ -89,6 +90,94 @@ namespace MeroBolee.EntityMapper
                                                               DocumentPath = d.DocumentPath
                                                           }).ToList();
             return tenderSubmission;
+        }
+
+        public void ToEntity(ref TenderSubmission ent, TenderSubmissionUpdateRequestDto dto)
+        {
+            ent.CreatedBy = dto.CreatedBy;
+            ent.PaymentProvider = dto.PaymentProvider;
+            ent.PaymentReferenceCode = dto.PaymentReferenceCode;
+            ent.Amount = dto.Amount;
+            ent.Title = dto.Title;
+            ent.Date_modified = DateTime.Now;
+
+            foreach (var ps in dto.ProductSpecifications)
+            {
+                TenderSubmissionProductSpec spec = ent.ProductSpecifications.Where(x => x.SpecificationId == ps.Id).FirstOrDefault();
+                if(spec != null)
+                {
+                    spec.SpecificationName = ps.SpecificationName;
+                    spec.SpecificationValue = ps.SpecificationValue;
+                }
+                else
+                {
+                    ent.ProductSpecifications.Add(new TenderSubmissionProductSpec
+                    {
+                        SpecificationName = ps.SpecificationName,
+                        SpecificationValue = ps.SpecificationValue
+                    }) ;
+                }
+            }
+
+            foreach (var c in dto.PurchaseCriterias)
+            {
+                TenderSubmissionPurchaseCriteria cri = ent.PurchaseCriterias.Where(x => x.PurchaseCriteriaId == c.Id).FirstOrDefault();
+                if (cri != null)
+                {
+                    cri.SN = c.SN;
+                    cri.CriteriaName = c.CriteriaName;
+                    cri.Remarks = c.Remarks;
+                }
+                else
+                {
+                    ent.PurchaseCriterias.Add(new TenderSubmissionPurchaseCriteria
+                    {
+                        SN = c.SN,
+                        CriteriaName = c.CriteriaName,
+                        Remarks = c.Remarks
+                    });
+                }
+            }
+
+            foreach (var ps in dto.PriceSchedules)
+            {
+                TenderSubmissionPriceSchedule priceSchedule = ent.PriceSchedules.Where(x => x.PriceScheduleId == ps.Id).FirstOrDefault();
+                if (priceSchedule != null)
+                {
+                    priceSchedule.ScheduleName = ps.ScheduleName;
+                    priceSchedule.ScheduleValue = ps.ScheduleValue;
+                }
+                else
+                {
+                    ent.PriceSchedules.Add(new TenderSubmissionPriceSchedule
+                    {
+                        ScheduleName = ps.ScheduleName,
+                        ScheduleValue = ps.ScheduleValue
+                    });
+                }
+            }
+
+            foreach (var ec in dto.EligibilityCriterias)
+            {
+                TenderSubmissionEligibilityCriteria cri = ent.EligibilityCriterias
+                                            .Where(x => x.EligibilityCriteriaId == ec.Id).FirstOrDefault();
+                if (cri != null)
+                {
+                    cri.SN = ec.SN;
+                    cri.CriteriaName = ec.CriteriaName;
+                    cri.Remarks = ec.Remarks;
+                }
+                else
+                {
+                    ent.EligibilityCriterias.Add(new TenderSubmissionEligibilityCriteria
+                    {
+                       SN = ec.SN,
+                       CriteriaName = ec.CriteriaName,
+                       Remarks = ec.Remarks
+                    });
+                }
+            }
+
         }
 
         public TenderResponseSubmissionDto ToDto(TenderSubmission ent, string basePath)
