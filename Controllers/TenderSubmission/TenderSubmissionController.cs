@@ -20,7 +20,9 @@ using Microsoft.Extensions.Options;
 
 namespace MeroBolee.Controllers
 {
-
+    /// <summary>
+    /// Tender submission endpoints for bid inviter
+    /// </summary>
     public class TenderSubmissionController : BaseController
     {
         private readonly ITenderSubmissionService submissionService;
@@ -31,6 +33,11 @@ namespace MeroBolee.Controllers
         private readonly AppDefaults defaultOption;
         
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="submissionService"></param>
+        /// <param name="defaultOpt"></param>
         public TenderSubmissionController(ITenderSubmissionService submissionService, IOptions<AppDefaults> defaultOpt)
         {
             this.submissionService = submissionService;
@@ -309,7 +316,7 @@ namespace MeroBolee.Controllers
                     {
                         response.statusCode = "404";
                         response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
                     return Ok(new Responses<TenderResponseSubmissionDto>(res, "200", "Record found"));
                 }
@@ -431,7 +438,7 @@ namespace MeroBolee.Controllers
                     {
                         response.statusCode = "404";
                         response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
                     return Ok(new Responses<TenderResponseSubmissionDto>(res, "200", "Record found"));
                 }
