@@ -105,14 +105,56 @@ namespace MeroBolee.Controllers
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
-        private void setTokenCookie(string token)
+
+        /// <summary>
+        /// Authenticate super admin user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("Authenticate/Admin")]
+        public async Task<IActionResult> AuthenticateAdmin([FromBody] AuthenticateRequest model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.SuperAdmin, basePath, _defaultPic);
+                    if (response != null)
+                    {
+                        setTokenCookie(response);
+                        return Ok(response);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ResponseMsg response = new ResponseMsg
+                {
+                    statusCode = StatusCodes.Status400BadRequest.ToString(),
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+        }
+
+
+        private void setTokenCookie(AuthenticateResponse token)
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                HttpOnly = false,
+                Expires = token.TokenExpiryTime,
+                Path = "/",
+                Secure = true,
+                IsEssential = true
+                
             };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
+            Response.Cookies.Append("RequestToken", token.JwtToken, cookieOptions);
         }
 
     }
