@@ -108,7 +108,7 @@ namespace MeroBolee.Dto
         public bool IsLowestBidReceived { get; set; }
         public DateTime LowestBidRecievedTime { get; set; }
 
-        
+        public AuctionLog Log { get; set; }
     }
 
 }

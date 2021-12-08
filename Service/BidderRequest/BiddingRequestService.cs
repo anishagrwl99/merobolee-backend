@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Service
@@ -66,6 +67,22 @@ namespace MeroBolee.Service
                         decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
                         LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                         response.MaterialQuotation = materialDto.MaterialQuotation;
+
+                        AuctionLog log = new AuctionLog
+                        {
+                            Amount = currentQuotation, 
+                            LogDate =DateTime.Now,
+                            Position = response.Position,
+                            TenderId = materialDto.TenderId,
+                            UserId = materialDto.SupplierId                            
+                        };
+                        new Thread(() =>
+                        {
+                            Thread.CurrentThread.IsBackground = true;
+                            /* run your code here */
+                            bidderRequestRepository.WriteAutionLogEntry(log);
+                        }).Start();
+                        response.Log = log;
                         return response;
                     }
                     else

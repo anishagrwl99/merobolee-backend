@@ -80,4 +80,30 @@ namespace MeroBolee.Dto
         public List<AddUserReponseDto> Users { get; set; }
         public List<GetTenderDto> Tenders { get; set; }
     }
+
+    public class ChangeCompanyStatusDto
+    {
+     
+        [Required(ErrorMessage = "Company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
+        public long CompanyId { get; set; }
+
+
+        [Required(ErrorMessage = "User id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
+        public long UserId { get; set; }
+
+
+        [Required(ErrorMessage = "Status id is required")]
+        [Range(1, byte.MaxValue, ErrorMessage = "Invalid status id")]
+        public int StatusId { get; set; }
+    }
+
+    public class ChangeCompanyStatusResponseDto
+    {
+        public long CompanyId { get; set; }
+        public string Status { get; set; }
+    }
+    
+
 }

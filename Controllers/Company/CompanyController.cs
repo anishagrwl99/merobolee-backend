@@ -384,6 +384,45 @@ namespace MeroBolee.Controllers.City
         }
 
 
+
+        /// <summary>
+        /// Change the status of a supplier and bid inviter registered company
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("Company/Admin/ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus([FromBody] ChangeCompanyStatusDto dto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    ChangeCompanyStatusResponseDto response = await companyService.ChangeCompanyStatus(dto);
+                    if (response != null)
+                    {
+                        return Ok(new Responses<ChangeCompanyStatusResponseDto>(response, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new Responses<AddUserReponseDto>(null, "500", "Could not change company status"));
+                    }
+
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
         private PagedResponse<AddCompanyResponseDto> ResultAfterPagination(IEnumerable<AddCompanyResponseDto> companies, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

@@ -13,6 +13,7 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
+        public DbSet<AuctionLog> AuctionLogs { get; set; }
         public DbSet<TenderSubmissionDocuments> Documents { get; set; }
         public DbSet<TenderSubmissionStatus> TenderSubmissionStatuses { get; set; }
         public DbSet<TenderSubmission> TenderSubmissions { get; set; }

@@ -288,5 +288,19 @@ namespace MeroBolee.Repository
                 .Where(x => x.Tender_Id == tenderId)
                 .FirstOrDefault();
         }
+
+        public void WriteAutionLogEntry(AuctionLog log)
+        {
+            try
+            {
+                meroBoleeDbContexts.AuctionLogs.Add(log);
+                unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -18,6 +18,14 @@ namespace MeroBolee.Service
 
         AddCompanyResponseDto UpdateCompany(long id, AddCompanyDto company, CompanyTypeEnum RegisteredAs);
 
+
+        /// <summary>
+        /// Change status of a company by an admin
+        /// </summary>
+        /// <param name="dto">A request payload</param>
+        /// <returns></returns>
+        Task<ChangeCompanyStatusResponseDto> ChangeCompanyStatus(ChangeCompanyStatusDto dto);
+
     }
 
     public class CompanyService : CompanyMapper, ICompanyService
@@ -110,6 +118,34 @@ namespace MeroBolee.Service
         public AddCompanyResponseDto UpdateCompany(long id, AddCompanyDto company, CompanyTypeEnum RegisteredAs)
         {
             throw new NotImplementedException();
+        }
+
+
+
+        /// <summary>
+        /// Change status of a company
+        /// </summary>
+        /// <param name="dto">Request payload</param>
+        /// <returns></returns>
+        public async  Task<ChangeCompanyStatusResponseDto> ChangeCompanyStatus(ChangeCompanyStatusDto dto)
+        {
+            try
+            {
+                CompanyEntity ent = await CompanyRepository.GetCompany(dto.CompanyId);
+                ent.Date_modified = DateTime.Now;
+                ent.CompanyStatusId = dto.StatusId;
+                ent = await CompanyRepository.ChangeCompanyStatus(ent);
+                return new ChangeCompanyStatusResponseDto
+                {
+                    CompanyId = dto.CompanyId,
+                    Status = ent.CompanyStatus.Status
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

@@ -31,5 +31,8 @@ namespace MeroBolee.Repository
         Task<bool> AddHistory(List<BiddingHistoryEntity> records);
         TenderEntity GetTenderDetail(long tenderId);
 
+        void WriteAutionLogEntry(AuctionLog log);
+
+
     }
 }

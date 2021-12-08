@@ -14,9 +14,12 @@ namespace MeroBolee.Repository
         CompanyEntity AddCompany(CompanyEntity companyEntity, long userId);
         UserEntity AddUser(long companyId, UserEntity user);
         IEnumerable<CompanyEntity> GetCompany(string search);
+        Task<CompanyEntity> GetCompany(long companyId);
         CompanyDetailResponse GetCompanyDetail(long id, CompanyTypeEnum companyType);
 
         CompanyEntity UpdateCompany(long id, CompanyEntity cityEntity);
+
+        Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent);
 
     }
 
@@ -174,6 +177,19 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+        
+        public async Task<CompanyEntity> GetCompany(long companyId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == companyId).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public CompanyEntity UpdateCompany(long id, CompanyEntity obj)
         {
@@ -204,5 +220,21 @@ namespace MeroBolee.Repository
 
         }
 
+
+        public async Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent)
+        {
+            try
+            {
+                meroBoleeDbContexts.CompanyEntities.Update(ent);
+                await unitOfWork.SaveChangesAsync();
+                ent.CompanyStatus = await meroBoleeDbContexts.CompanyStatusEntities.Where(x => x.Id == ent.CompanyStatusId).FirstOrDefaultAsync();
+                return ent;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
