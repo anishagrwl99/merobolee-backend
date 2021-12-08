@@ -64,7 +64,7 @@ namespace MeroBolee.Service
                     {
 
                         AddQuotationToCache(entities, materialDto.TenderId, materialDto.SupplierId);
-                        decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
+                        decimal currentQuotation = Math.Round(materialDto.MaterialQuotation.Sum(x => x.Quotation), 2);
                         LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                         response.MaterialQuotation = materialDto.MaterialQuotation;
 
@@ -74,14 +74,12 @@ namespace MeroBolee.Service
                             LogDate =DateTime.Now,
                             Position = response.Position,
                             TenderId = materialDto.TenderId,
-                            UserId = materialDto.SupplierId                            
+                            UserId = materialDto.SupplierId,
+                            CompanyId = materialDto.CompanyId,
+                            BiddingId = materialDto.BiddingId
                         };
-                        new Thread(() =>
-                        {
-                            Thread.CurrentThread.IsBackground = true;
-                            /* run your code here */
-                            bidderRequestRepository.WriteAutionLogEntry(log);
-                        }).Start();
+                      
+                        bidderRequestRepository.WriteAutionLogEntry(log);
                         response.Log = log;
                         return response;
                     }
@@ -106,7 +104,7 @@ namespace MeroBolee.Service
                     LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                     response.IsBidSuccess = false;
                     response.MaterialQuotation = materialDto.MaterialQuotation;
-                    response.Message = "You have already quotated less than current quotation";
+                    response.Message = "You have already quotated less than or same as current quotation";
                     return response;
                 }
             }
@@ -360,6 +358,7 @@ namespace MeroBolee.Service
             bool isValid = false;
             foreach (var item in dto.MaterialQuotation)
             {
+                item.Quotation = Math.Round(item.Quotation, 2);
                 string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
                 memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
                 if (minimumQuotation <= 0) //no bid found for this material

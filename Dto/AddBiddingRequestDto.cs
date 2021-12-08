@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -65,23 +66,38 @@ namespace MeroBolee.Dto
     /// </summary>
     public class TenderMaterialBiddingDto
     {
-        /// <summary>
-        /// Bidding id
-        /// </summary>
+        [Required(ErrorMessage = "Bidding number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid bidding number")]
         public long BiddingId { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        [Required(ErrorMessage = "Tender number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tendeer number")]
         public long TenderId { get; set; }
+
+
+        [Required(ErrorMessage = "User number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user number")]
         public long SupplierId { get; set; }
+
+        [Required(ErrorMessage = "Company number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company number")]
+        public long CompanyId { get; set; }
+
+
         public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
         public DateTime BiddingDate { get; set; }
     }
 
     public class TenderMaterialQuotationDto
     {
+
+        [Required(ErrorMessage = "Tender material number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender matrial number")]
         public long MaterialId { get; set; }
+
+
+        [Required(ErrorMessage = "Quotation amount is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid quotation amount")]
         public decimal Quotation { get; set; }
 
 
