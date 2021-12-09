@@ -128,5 +128,19 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
+        {
+            try
+            {
+                List<AuctionLog> logs = await tenderRepository.GetTenderAuctionLog(companyId, tenderId);
+                return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

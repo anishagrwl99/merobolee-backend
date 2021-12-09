@@ -45,5 +45,13 @@ namespace MeroBolee.Repository
         /// <param name="ent"></param>
         /// <returns></returns>
         TenderEntity ApproveTenderByBidInviter(TenderEntity ent);
+
+        /// <summary>
+        /// Get all logs associated with a tender auction for a company
+        /// </summary>
+        /// <param name="companyId">Supplier company Id</param>
+        /// <param name="tenderId">A tender Id</param>
+        /// <returns></returns>
+        Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
     }
 }

@@ -207,7 +207,11 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
-
+        /// <summary>
+        /// Approve a tender to show in marketplace
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost("Tender/BidInviter/Approve")]
         public IActionResult ApproveTender([FromBody] TenderApproveDto dto)
         {
@@ -363,6 +367,51 @@ namespace MeroBolee.Controllers.Tender
 
         }
 
+
+
+        /// <summary>
+        /// Get a auction log associated with a tender auction
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Bidder/AuctionLog")]
+        public async Task<IActionResult> GetAuctionLog([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLog", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await tenderService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+
         /// <summary>
         /// To display only upcoming tender by bidder
         /// </summary>
@@ -429,6 +478,21 @@ namespace MeroBolee.Controllers.Tender
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
+        }
+
+
+        private PagedResponse<AuctionLog> ResultAfterPagination(IEnumerable<AuctionLog> logs, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<AuctionLog>(logs, totalCount);
+            }
+
+            var get = logs.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
         }
 
 

@@ -51,5 +51,14 @@ namespace MeroBolee.Service
         /// <param name="dto"></param>
         /// <returns></returns>
         TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto);
+
+
+        /// <summary>
+        /// Get all logs associated with a tender auction for a company
+        /// </summary>
+        /// <param name="companyId">Supplier company Id</param>
+        /// <param name="tenderId">A tender number</param>
+        /// <returns></returns>
+        Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
     }
 }
