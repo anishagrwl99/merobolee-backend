@@ -167,6 +167,9 @@ namespace MeroBolee.Dto
 
     public class TenderSubmissionProductSpecDto
     {
+        [Required(ErrorMessage = "Row number is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid row number")]
+        public int RowNo { get; set; }
 
         [Required(ErrorMessage = "Specification name is required")]
         [MaxLength(100, ErrorMessage = "Specification name can be {1} character long")]
@@ -198,7 +201,9 @@ namespace MeroBolee.Dto
 
     public class TenderSubmissionPriceScheduleDto
     {
-
+        [Required(ErrorMessage = "Row no is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid row no")]
+        public int RowNo { get; set; }
         [Required(ErrorMessage = "Price schedule name is required")]
         [MaxLength(100, ErrorMessage = "Price schedule name can be {1} character long")]
         public string ScheduleName { get; set; }

@@ -110,6 +110,9 @@ namespace MeroBolee.Model
         [MaxLength(2000)]
         public string SpecificationValue { get; set; }
 
+        [Required]
+        public int RowNo { get; set; }
+
         [ForeignKey("TenderSubmission")]
         public long TenderSubmissionId { get; set; }
 
@@ -160,6 +163,9 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(1500)]
         public string ScheduleValue { get; set; }
+
+        [Required]
+        public int RowNo { get; set; }
 
         [ForeignKey("TenderSubmission")]
         public long TenderSubmissionId { get; set; }
