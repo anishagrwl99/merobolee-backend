@@ -100,6 +100,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.Company.CompanyStatus)
                         .Include(x => x.Company.Country)
                         .Include(x => x.Company.Province)
+                        .Include(x => x.AdditionalDocuments)
                         .FirstOrDefault();
                     }
                     else

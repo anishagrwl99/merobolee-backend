@@ -371,7 +371,7 @@ namespace MeroBolee.Repository
         /// <summary>
         /// get tender by auctioneer
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <param name="search"></param>
         /// <returns></returns>
         public IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search)
@@ -417,7 +417,7 @@ namespace MeroBolee.Repository
         /// <summary>
         /// get tender detail
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tenderId"></param>
         /// <returns></returns>
         public TenderEntity GetTenderDetail(long tenderId)
         {

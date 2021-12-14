@@ -67,6 +67,7 @@ namespace MeroBolee.Model
         public virtual ICollection<TenderSubmissionPriceSchedule> PriceSchedules { get; set; }
         public virtual ICollection<TenderSubmissionEligibilityCriteria> EligibilityCriterias { get; set; }
         public virtual ICollection<TenderSubmissionDocuments> TenderSubmissionDocuments { get; set; }
+        public virtual ICollection<TenderSubmissionAdditionalDocument> AdditionalDocuments { get; set; }
     }
 
     [Table("mb_TenderSubmisssionDocument")]
@@ -199,5 +200,33 @@ namespace MeroBolee.Model
 
         [JsonIgnore]
         public virtual TenderSubmission TenderSubmission { get; set; }
+    }
+
+
+    [Table("mb_TenderSubmissionAdditionalDocument")]
+    public class TenderSubmissionAdditionalDocument
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        [ForeignKey("TenderSubmission")]
+        public long TenderSubmissionId { get; set; }
+
+
+
+        [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
+        public string DocTitle { get; set; }
+
+
+
+        [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1000)]
+        public string DocPath { get; set; }
+
+        public virtual TenderSubmission Submission { get; set; }
+
     }
 }

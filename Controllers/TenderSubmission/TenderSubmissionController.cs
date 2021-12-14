@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MeroBolee.Settings;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MeroBolee.Controllers
 {
@@ -51,6 +53,7 @@ namespace MeroBolee.Controllers
         /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MeroboleeForm")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateSubmission([FromForm] TenderSubmissionRequestDto tenderSubmission)
         {
             try
@@ -92,6 +95,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MeroboleeForm/Update")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateSubmission([FromForm] TenderSubmissionUpdateRequestDto model)
         {
             try
@@ -132,6 +136,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/ExternalDocument")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentRequestDto model)
 
         {
@@ -173,6 +178,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/ExternalDocument/Update")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentUpdateRequestDto model)
         {
             try

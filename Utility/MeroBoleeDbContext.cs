@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
-    {
+    {        
         public DbSet<AuctionLog> AuctionLogs { get; set; }
         public DbSet<TenderSubmissionDocuments> Documents { get; set; }
         public DbSet<TenderSubmissionStatus> TenderSubmissionStatuses { get; set; }
@@ -20,7 +20,8 @@ namespace MeroBolee.Utility
         public DbSet<TenderSubmissionEligibilityCriteria> SubmissionEligibilityCriterias { get; set; }
         public DbSet<TenderSubmissionPriceSchedule> SubmissionPriceSchedules { get; set; }
         public DbSet<TenderSubmissionProductSpec> SubmissionProductSpecs { get; set; }
-        public DbSet<TenderSubmissionPurchaseCriteria> submissionPurchaseCriterias { get; set; }
+        public DbSet<TenderSubmissionPurchaseCriteria> SubmissionPurchaseCriterias { get; set; }
+        public DbSet<TenderSubmissionAdditionalDocument> TenderSubmissionAdditionalDocuments { get; set; }
         public DbSet<CompanyStatusEntity> CompanyStatusEntities { get; set; }
         public DbSet<TenderWinnerEntity> TenderWinnerEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }

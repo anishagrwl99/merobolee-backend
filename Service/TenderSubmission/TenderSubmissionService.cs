@@ -47,13 +47,30 @@ namespace MeroBolee.Service
             try
             {
                 TenderSubmission ts = ToEntity(obj);
+                string companyFolder = docRepo.GetCompanyFolder(obj.CompanyId);
+                string docPath = companyFolder + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                 if (obj.PriceScheduleDoc != null)
                 {
-                    string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
+
                     ts.PriceScheduleDocName = obj.PriceScheduleDoc.FileName;
                     ts.PriceScheduleDocPath = await docService.Upload(obj.PriceScheduleDoc, docPath);
                 }
-               
+
+                if (obj.AdditionalDocuments != null && obj.AdditionalDocuments.Count > 0)
+                {
+                    ts.AdditionalDocuments = new List<TenderSubmissionAdditionalDocument>();
+                    foreach (var item in obj.AdditionalDocuments)
+                    {
+                        TenderSubmissionAdditionalDocument doc = new TenderSubmissionAdditionalDocument
+                        {
+                            TenderSubmissionId = ts.SubmissionId,
+                            DocTitle = item.DocTitle,
+                            DocPath = await docService.Upload(item.Document, docPath)
+                        };
+                        ts.AdditionalDocuments.Add(doc);
+                    }
+                }
+
                 ts = submissionRepository.Add(ts);
                 return ts;
             }
@@ -71,12 +88,38 @@ namespace MeroBolee.Service
                 await DeleteTenderSubmissionDocuments(submission.TenderSubmissionDocuments);
                 submission.TenderSubmissionDocuments.Clear();
                 ToEntity(ref submission, obj);
+                string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                 if (obj.PriceScheduleDoc != null)
                 {
-                    string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                     await docService.DeleteFile(submission.PriceScheduleDocPath);
                     submission.PriceScheduleDocName = obj.PriceScheduleDoc.FileName;
                     submission.PriceScheduleDocPath = await docService.Upload(obj.PriceScheduleDoc, docPath);
+                }
+
+                if (obj.AdditionalDocuments != null && obj.AdditionalDocuments.Count > 0)
+                {
+                    submission.AdditionalDocuments = new List<TenderSubmissionAdditionalDocument>();
+                    foreach (var item in obj.AdditionalDocuments)
+                    {
+                        if(item.Id > 0 )
+                        {
+                            TenderSubmissionAdditionalDocument doc = submission
+                                                                    .AdditionalDocuments
+                                                                    .Where(x => x.Id == item.Id)
+                                                                    .FirstOrDefault();
+                            doc.DocTitle = item.DocTitle;
+                            await docService.DeleteFile(doc.DocPath);
+                            doc.DocPath = await docService.Upload(item.Document, docPath);
+                        }
+                        else
+                        {
+                            submission.AdditionalDocuments.Add(new TenderSubmissionAdditionalDocument
+                            {
+                                DocTitle = item.DocTitle,
+                                DocPath = await docService.Upload(item.Document, docPath)
+                            });
+                        }
+                    }
                 }
 
                 submission = await submissionRepository.Update(submission);
@@ -125,7 +168,7 @@ namespace MeroBolee.Service
             {
                 TenderSubmission submission = await submissionRepository.GetDetailById(obj.SubmissionId);
                 await DeleteTenderSubmissionDocuments(submission.TenderSubmissionDocuments);
-                
+
                 List<TenderSubmissionDocumentResponseDto> docs = new List<TenderSubmissionDocumentResponseDto>();
 
                 if (obj.Documents != null && obj.Documents.Count > 0)
@@ -152,11 +195,11 @@ namespace MeroBolee.Service
                 submission.SubmissionId = obj.SubmissionId;
                 submission.TenderSubmissionDocuments = (from d in docs
                                                         select new TenderSubmissionDocuments
-                                                              {
-                                                                  SubmissionId = obj.SubmissionId,
-                                                                  DocumentName = d.DocumentName,
-                                                                  DocumentPath = d.DocumentPath
-                                                              }).ToList();
+                                                        {
+                                                            SubmissionId = obj.SubmissionId,
+                                                            DocumentName = d.DocumentName,
+                                                            DocumentPath = d.DocumentPath
+                                                        }).ToList();
 
                 submission.ProductSpecifications.Clear();
                 submission.PurchaseCriterias.Clear();

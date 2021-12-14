@@ -1,8 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MeroBolee.Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
@@ -71,6 +78,7 @@ namespace MeroBolee.Dto
         public virtual ICollection<TenderSubmissionPurchaseCriteriaDto> PurchaseCriterias { get; set; }
         public virtual ICollection<TenderSubmissionPriceScheduleDto> PriceSchedules { get; set; }
         public virtual ICollection<TenderSubmissionEligibilityCriteriaDto> EligibilityCriterias { get; set; }
+        public virtual ICollection<TenderSubmissionAdditionalDocDto> AdditionalDocuments { get; set; }
     }
 
     public class TenderSubmissionUpdateRequestDto
@@ -107,6 +115,7 @@ namespace MeroBolee.Dto
         public virtual ICollection<TenderSubmissionPurchaseCriteriaResponseDto> PurchaseCriterias { get; set; }
         public virtual ICollection<TenderSubmissionPriceScheduleResponseDto> PriceSchedules { get; set; }
         public virtual ICollection<TenderSubmissionEligibilityCriteriaResponseDto> EligibilityCriterias { get; set; }
+        public virtual ICollection<TenderSubmissionAdditionalDocumentResponseDto> AdditionalDocuments { get; set; }
     }
     public class TenderSubmissionExternalDocumentRequestDto
     {
@@ -229,6 +238,16 @@ namespace MeroBolee.Dto
 
     }
 
+    public class TenderSubmissionAdditionalDocDto
+    {
+        [Required(ErrorMessage = "Document name is required")]
+        public string DocTitle { get; set; }
+
+        [Required(ErrorMessage = "Document is required")]
+        public IFormFile Document { get; set; }
+
+    }
+
     public class TenderSubmissionDocumentResponseDto
     {
         public long SubmissionId { get; set; }
@@ -252,6 +271,11 @@ namespace MeroBolee.Dto
     }
 
     public class TenderSubmissionEligibilityCriteriaResponseDto : TenderSubmissionEligibilityCriteriaDto
+    {
+        public long Id { get; set; }
+    }
+
+    public class TenderSubmissionAdditionalDocumentResponseDto: TenderSubmissionAdditionalDocDto
     {
         public long Id { get; set; }
     }
