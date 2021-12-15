@@ -18,7 +18,6 @@ using System.Linq;
 using MeroBolee.Settings;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace MeroBolee.Controllers
 {
