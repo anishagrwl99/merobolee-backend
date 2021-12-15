@@ -30,6 +30,12 @@ namespace MeroBolee.Model
 
         public string Name { get; set; }
 
+
+        [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(50)]
+        public string PANNumber { get; set; }
+
         [ForeignKey("Country")]
         public int CountryId { get; set; }
 

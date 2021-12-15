@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
-    {        
+    {
         public DbSet<AuctionLog> AuctionLogs { get; set; }
         public DbSet<TenderSubmissionDocuments> Documents { get; set; }
         public DbSet<TenderSubmissionStatus> TenderSubmissionStatuses { get; set; }
@@ -211,6 +211,9 @@ namespace MeroBolee.Utility
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+
+            SetupUniqueConstraint(modelBuilder);
             SeedStatusData(modelBuilder);
             SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
@@ -362,6 +365,7 @@ namespace MeroBolee.Utility
                     {
                         CompanyId = 1,
                         Name = "Merobolee",
+                        PANNumber = "123",
                         CountryId = 1,
                         ProvinceId = 3,
                         Address1 = "Address1",
@@ -379,6 +383,7 @@ namespace MeroBolee.Utility
                     {
                         CompanyId = 2,
                         Name = "Bid Inviter Company",
+                        PANNumber = "1234",
                         CountryId = 1,
                         ProvinceId = 3,
                         Address1 = "Address1",
@@ -396,6 +401,7 @@ namespace MeroBolee.Utility
                     {
                         CompanyId = 3,
                         Name = "Supplier Company",
+                        PANNumber = "12345",
                         CountryId = 1,
                         ProvinceId = 3,
                         Address1 = "Address1",
@@ -467,5 +473,12 @@ namespace MeroBolee.Utility
 
         }
 
+        private void SetupUniqueConstraint(ModelBuilder builder)
+        {
+            builder.Entity<CompanyEntity>(entity =>
+            {
+                entity.HasIndex(e => e.PANNumber).IsUnique();
+            });
+        }
     }
 }

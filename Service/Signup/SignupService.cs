@@ -71,13 +71,9 @@ namespace MeroBolee.Service
                 }
 
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                return new ResponseMsg
-                {
-                    statusCode = "500",
-                    Message = ex.Message
-                };
+                throw;
             }
 
             return new ResponseMsg

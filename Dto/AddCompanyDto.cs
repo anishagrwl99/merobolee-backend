@@ -13,6 +13,10 @@ namespace MeroBolee.Dto
         [MaxLength(200, ErrorMessage = "Company name can be {1} character long")]
         public string CompanyName { get; set; }
 
+        [Required(ErrorMessage = "PAN Number is requird")]
+        [MaxLength(50, ErrorMessage = "PAN Number can be {1} character long")]
+        public string PANNumber { get; set; }
+
         [Required(ErrorMessage = "Country name is required")]
         [Range(minimum: 1, maximum: Int32.MaxValue, ErrorMessage = "Invalid country name provided")]
         public int CountryId { get; set; }
@@ -72,6 +76,8 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Company id is required.")]
         [Range(minimum:1, maximum: long.MaxValue, ErrorMessage = "Company id is outside of range. Acceptable range is {1} to {2}")]
         public long CompanyId { get; set; }
+
+        public string ReferenceCode { get; set; }
     }
 
     public class CompanyDetailResponse: AddCompanyResponseDto

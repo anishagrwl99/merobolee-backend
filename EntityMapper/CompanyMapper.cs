@@ -19,6 +19,7 @@ namespace MeroBolee.EntityMapper
             return new CompanyEntity
             {
                Name = obj.Name,
+               PANNumber = obj.PANNumber,
                CountryId = obj.CountryId,
                CompanyStatusId = 1,//Registered
                ProvinceId = obj.ProvinceId,
@@ -42,6 +43,7 @@ namespace MeroBolee.EntityMapper
             return new CompanyEntity
             {
                 Name = dto.CompanyName,
+                PANNumber = dto.PANNumber,
                 CountryId = dto.CountryId,
                 CompanyStatusId = 1, //Registered
                 ProvinceId = dto.ProvinceId,
@@ -69,6 +71,8 @@ namespace MeroBolee.EntityMapper
             {
                 CompanyId = entity.CompanyId,
                 CompanyName = entity.Name,
+                PANNumber = entity.PANNumber,
+                ReferenceCode = entity.ReferenceCode,
                 CountryId = entity.CountryId,
                 ProvinceId = entity.ProvinceId,
                 Address1 = entity.Address1,

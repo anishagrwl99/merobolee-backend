@@ -10,11 +10,20 @@ namespace MeroBolee.Dto
     {
         //public int CompanyId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Company name is required")]
+
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "PAN Number is required")]
+        public string PANNumber { get; set; }
+
+        [Required(ErrorMessage = "Country name is required")]
         public int CountryId { get; set; }
+
+        [Required(ErrorMessage = "Province name is required")]
         public int ProvinceId { get; set; }
+
+        [Required(ErrorMessage = "City name is required")]
         public string City { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
@@ -22,22 +31,26 @@ namespace MeroBolee.Dto
 
         public string Zip { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; }
 
-        [EmailAddress]
-        [Required]
+        [EmailAddress(ErrorMessage = "Valid email address is required")]
+        [Required(ErrorMessage = "Email address is required")]
         public string Email { get; set; }
 
-        [Compare("ConfirmPassword")]
-        [Required]
+        [Compare("ConfirmPassword", ErrorMessage = "Password and confirmation password should match")]
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
 
-        [Compare("Password")]
-        [Required]
+        [Compare("Password", ErrorMessage = "Password and confirmation password should match")]
+        [Required(ErrorMessage = "Confirmation password is required")]
         public string ConfirmPassword { get; set; }
+
+        [Range(typeof(bool), "true", "true")]
         public bool AgreeTermsAndCondition { get; set; }
     }
 }

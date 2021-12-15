@@ -47,7 +47,7 @@ namespace MeroBolee.Controllers.Signup
                 ResponseMsg msg = new()
                 {
                     statusCode = "500",
-                    Message = ex.Message
+                    Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message)
                 };
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(msg));
@@ -74,7 +74,7 @@ namespace MeroBolee.Controllers.Signup
                 ResponseMsg msg = new()
                 {
                     statusCode = "500",
-                    Message = ex.Message
+                    Message = ex.Message + (ex.InnerException == null? "" : ex.InnerException.Message)
                 };
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(msg));
