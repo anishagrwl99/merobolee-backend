@@ -105,8 +105,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
                     LiveBidResponse res = biddingRequestService.LiveBid(bidRequest);
-                    //return Ok(new Responses<LiveBidResponse>(await biddingRequestService.LiveBid(bidRequest), "200", "Record is successfully added"));
-
+                    
                     if (res.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));

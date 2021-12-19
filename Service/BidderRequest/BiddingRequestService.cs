@@ -81,6 +81,7 @@ namespace MeroBolee.Service
                       
                         bidderRequestRepository.WriteAutionLogEntry(log);
                         response.Log = log;
+                        response.CurrentQuotation = currentQuotation;
                         return response;
                     }
                     else
@@ -92,7 +93,7 @@ namespace MeroBolee.Service
                             LowestBidRecievedTime = materialDto.BiddingDate,
                             MaterialQuotation = materialDto.MaterialQuotation,
                             Position = "NA",
-
+                            CurrentQuotation = 0,
                             Message = "Tender bidding has expired"
                         };
                     }
@@ -103,6 +104,7 @@ namespace MeroBolee.Service
                     decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
                     LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                     response.IsBidSuccess = false;
+                    response.CurrentQuotation = currentQuotation;
                     response.MaterialQuotation = materialDto.MaterialQuotation;
                     response.Message = "You have already quotated less than or same as current quotation";
                     return response;
@@ -425,7 +427,7 @@ namespace MeroBolee.Service
                     LiveBidResponse resp = new LiveBidResponse
                     {
                         IsBidSuccess = true,
-                        Position = ind <= 5 ? $"L{ind}" : "L6",
+                        Position = $"L{ind}", // ind <= 5 ? $"L{ind}" : "L6",
                         MaterialQuotation = new List<TenderMaterialQuotationDto>
                         {
                             new TenderMaterialQuotationDto
