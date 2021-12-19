@@ -143,10 +143,10 @@ namespace MeroBolee.Service
                     string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                     foreach (var item in obj.Documents)
                     {
-                        string uploadPath = await docService.Upload(item, docPath);
+                        string uploadPath = await docService.Upload(item.Document, docPath);
                         docs.Add(new TenderSubmissionDocumentResponseDto
                         {
-                            DocumentName = item.Name,
+                            DocumentName = item.DocTitle,
                             DocumentPath = uploadPath
                         });
                     }
@@ -176,10 +176,10 @@ namespace MeroBolee.Service
                     string docPath = docRepo.GetCompanyFolder(obj.CompanyId) + $"\\TenderSubmission\\{DateTime.Now.Ticks}";
                     foreach (var item in obj.Documents)
                     {
-                        string uploadPath = await docService.Upload(item, docPath);
+                        string uploadPath = await docService.Upload(item.Document, docPath);
                         docs.Add(new TenderSubmissionDocumentResponseDto
                         {
-                            DocumentName = item.Name,
+                            DocumentName = item.DocTitle,
                             DocumentPath = uploadPath
                         });
                     }

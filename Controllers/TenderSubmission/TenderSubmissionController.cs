@@ -32,7 +32,7 @@ namespace MeroBolee.Controllers
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
         private readonly AppDefaults defaultOption;
-        
+        //private string _baseUrl, _defaultPic;
 
         /// <summary>
         /// Default constructor
@@ -59,7 +59,7 @@ namespace MeroBolee.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    TenderSubmission res = await submissionService.CreateTenderSubmissionByForm(tenderSubmission);
+                    TenderSubmission res =  await submissionService.CreateTenderSubmissionByForm(tenderSubmission);
                     if (res != null)
                     {
                         return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully added"));

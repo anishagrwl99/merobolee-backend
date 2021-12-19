@@ -146,16 +146,12 @@ namespace MeroBolee.EntityMapper
                     TenderTitle = tenderEntity.Tender_Title,
                     CategoryId = tenderEntity.Category_Id,
                     Category = tenderEntity.CategoryEntity.Category,
-                    TenderDescription = tenderEntity.Tender_Description,
                     TenderLiveInterval = tenderEntity.Tender_live_interval,
                     LiveStartDate = tenderEntity.Live_Start_Date,
                     LiveEndDate = tenderEntity.Live_End_Date,
-                    ProjectDuration = tenderEntity.Tender_Duration,
-                    DurationType = tenderEntity.Duration_Type,
                     PublishDate = tenderEntity.Date_created,
                     TenderMaterials = tenderEntity.TenderMaterialEntities,
                     TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
-
                 };
             }
 

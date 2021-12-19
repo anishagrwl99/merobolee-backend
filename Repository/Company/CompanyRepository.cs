@@ -147,7 +147,6 @@ namespace MeroBolee.Repository
                         TenderTitle = t.Tender_Title,
                         Category = t.CategoryEntity.Category,
                         CategoryId = t.Category_Id,
-                        TenderDescription = t.Tender_Description,
                         LiveStartDate = t.Live_Start_Date,
                         LiveEndDate = t.Live_End_Date,
                         TenderLiveInterval = t.Tender_live_interval,

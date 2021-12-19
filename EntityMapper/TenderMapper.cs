@@ -38,7 +38,7 @@ namespace MeroBolee.EntityMapper
                     return startDateTime.AddMinutes(tenderDuration);
             }
         }
-        public TenderEntity TenderDtoEntity(AddTenderDto tenderDto)
+        public TenderEntity TenderDtoEntity(AddTenderRequestDto tenderDto)
         {
             if (tenderDto == null)
             {
@@ -49,14 +49,16 @@ namespace MeroBolee.EntityMapper
                 CompanyId = tenderDto.CompanyId,
                 Tender_Title = tenderDto.TenderTitle,
                 Category_Id = tenderDto.CategoryId,
-                Tender_Description = tenderDto.TenderDescription,
-                Tender_live_interval = tenderDto.Tenderliveinterval,
                 Live_Start_Date = tenderDto.LiveStartDate,
-                Live_End_Date = GetTenderEndDate(tenderDto.LiveStartDate, tenderDto.TenderDuration, tenderDto.DurationType),
-                Tender_Duration = tenderDto.TenderDuration,
-                Duration_Type = tenderDto.DurationType,
-                Tender_Status_Id = tenderDto.TenderStatusId,
+                Live_End_Date = tenderDto.LiveEndDate,
+                Tender_Status_Id = 1,
                 CreatedBy = tenderDto.CreatedBy,
+                PerformanceRequest = tenderDto.PerformanceRequest,
+                AdditionalRequest = tenderDto.AdditionalRequest,
+                EligibilityCriteria = tenderDto.EligibilityCriteria,
+                Location = tenderDto.Location,
+                QualityRequest = tenderDto.QualityRequest,
+                Price = tenderDto.Price,
                 TenderTermsConditionEntities = new TenderTermsConditionEntity
                 {
                     TermCondition = tenderDto.TermsAndCondition
@@ -65,26 +67,76 @@ namespace MeroBolee.EntityMapper
                 Date_modified = DateTime.Now
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
-            foreach (var item in tenderDto.TenderMaterial)
+            foreach (var item in tenderDto.TenderMaterials)
             {
                 TenderMaterialEntity obj = new TenderMaterialEntity
                 {
                     Materials = item.Name,
                     Quantity = item.Quantity
                 };
-                obj.MaterialFeatures = new List<MaterialFeatureEntity>();
-                foreach (var feature in item.Features)
-                {
-                    MaterialFeatureEntity f = new MaterialFeatureEntity
-                    {
-                        FeatureName = feature.FeatureName,
-                        FeatureValue = feature.FeatureValue
-                    };
-                    obj.MaterialFeatures.Add(f);
-                }
                 entity.TenderMaterialEntities.Add(obj);
             }
+            entity.TenderCards = new List<TenderCardEntity>();
+            foreach (var item in tenderDto.TenderCards)
+            {
+                entity.TenderCards.Add(new TenderCardEntity
+                {
+                    Label = item.Label,
+                    Value = item.Value
+                });
+            }
             return entity;
+        }
+
+        public void UpdateTenderEntity(ref TenderEntity entity, UpdateTenderRequestDto dto)
+        {
+            entity.Tender_Title = dto.TenderTitle;
+            entity.Category_Id = dto.CategoryId;
+            entity.PerformanceRequest = dto.PerformanceRequest;
+            entity.Live_Start_Date = dto.LiveStartDate;
+            entity.Live_End_Date = dto.LiveEndDate;
+            entity.QualityRequest = dto.QualityRequest;
+            entity.CompanyId = dto.CompanyId;
+            entity.Date_modified = DateTime.Now;
+            entity.AdditionalRequest = dto.AdditionalRequest;
+            entity.EligibilityCriteria = dto.EligibilityCriteria;
+            entity.Location = dto.Location;
+            entity.Price = dto.Price;
+            foreach (var item in dto.TenderMaterials)
+            {
+                var itm = entity.TenderMaterialEntities.Where(x => x.Id == item.Id).FirstOrDefault();
+                if(itm == null)
+                {
+                    entity.TenderMaterialEntities.Add(new TenderMaterialEntity
+                    {
+                        Materials = item.Name,
+                        Quantity = item.Quantity
+                    });
+                }
+                else
+                {
+                    itm.Materials = item.Name;
+                    itm.Quantity = item.Quantity;
+                }
+            }
+
+            foreach (var item in dto.TenderCards)
+            {
+                var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
+                if(itm != null)
+                {
+                    entity.TenderCards.Add(new TenderCardEntity
+                    {
+                        Label = itm.Label,
+                        Value = itm.Value
+                    });
+                }
+                else
+                {
+                    itm.Label = item.Label;
+                    itm.Value = itm.Value;
+                }
+            }
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity)
         {
@@ -99,14 +151,11 @@ namespace MeroBolee.EntityMapper
             getTender.TenderTitle = tenderEntity.Tender_Title;
             getTender.CategoryId = tenderEntity.Category_Id;
             getTender.Category = tenderEntity.CategoryEntity.Category;
-            getTender.TenderDescription = tenderEntity.Tender_Description;
             getTender.TenderLiveInterval = tenderEntity.Tender_live_interval;
             getTender.LiveStartDate = tenderEntity.Live_Start_Date;
             getTender.LiveEndDate = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-            getTender.ProjectDuration = tenderEntity.Tender_Duration;
-            getTender.DurationType = tenderEntity.Duration_Type;
             getTender.TenderStatusId = tenderEntity.Tender_Status_Id;
-            getTender.AuctionStatus = tenderEntity.AuctionStatusEntity.Status;
+            getTender.TenderStatus = tenderEntity.TenderStatusEntity.Status;
             getTender.CancelRemark = tenderEntity.Cancel_remark;
             getTender.PostedBy = tenderEntity.CreatedBy;
             getTender.User = tenderEntity.CreatedByUser;

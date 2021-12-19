@@ -15,7 +15,7 @@ namespace MeroBolee.Repository
         IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(long id);
-        TenderEntity UpdateTender(long id, TenderEntity tenderEntity);
+        Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
 
         /// <summary>
         /// Upcoming tenders within 7 days
@@ -53,5 +53,6 @@ namespace MeroBolee.Repository
         /// <param name="tenderId">A tender Id</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
+        Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
     }
 }

@@ -48,8 +48,6 @@ namespace MeroBolee.EntityMapper
                 TenderId = tender.Tender_Id,
                 TenderCode = tender.Tender_Code,
                 TenderTitle = tender.Tender_Title,
-                TenderDescription = tender.Tender_Description,
-                TenderDuration = tender.Tender_Duration,
                 LiveStartDate = tender.Live_Start_Date,
                 LiveEndDate = tender.Live_End_Date,
                 PublishDate = tender.Date_created,

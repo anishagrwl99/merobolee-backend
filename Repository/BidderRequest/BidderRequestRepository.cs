@@ -296,7 +296,7 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.AuctionLogs.Add(log);
                 unitOfWork.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

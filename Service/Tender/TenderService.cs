@@ -20,7 +20,7 @@ namespace MeroBolee.Service
             this.referenceCodeService = referenceCodeService;
         }
 
-        public GetTenderDto AddTender(AddTenderDto tenderDto)
+        public GetTenderDto AddTender(AddTenderRequestDto tenderDto)
         {
             TenderEntity entity = TenderDtoEntity(tenderDto);
             entity.Tender_Code = referenceCodeService.GenerateCode(ReferenceEnum.Tender).Result;
@@ -73,9 +73,11 @@ namespace MeroBolee.Service
             return tenderRepository.UpcomingTender(search);
         }
 
-        public GetTenderDto UpdateTender(int id, AddTenderDto tenderDto)
+        public async Task<GetTenderDto> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
-            return TenderEntityToDto(tenderRepository.UpdateTender(id, TenderDtoEntity(tenderDto)));
+            TenderEntity entity = tenderRepository.GetTenderDetail(tenderDto.TenderId);
+            UpdateTenderEntity(ref entity, tenderDto);
+            return TenderEntityToDto(await tenderRepository.UpdateTender(entity));
         }
 
         /// <summary>

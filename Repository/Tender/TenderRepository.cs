@@ -42,7 +42,7 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.TenderEntities.Add(tenderEntity);
                 unitOfWork.SaveChange();
 
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
+                meroBoleeDbContexts.TenderStatus.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
                 meroBoleeDbContexts.AdminStatusEntities.ToList();
                 meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
@@ -78,16 +78,12 @@ namespace MeroBolee.Repository
                 {
                     var tender = meroBoleeDbContexts.TenderEntities.Where(m => (m.Category_Id == item.Category_id) && ((search == null)
                     || (m.Tender_Code.ToString().Contains(search))
-                    || (m.Tender_Description.ToLower().Contains(search.ToLower()))
-                    || (m.Tender_Duration.ToString().Contains(search.ToLower()))
                     || (m.Tender_Title.ToLower().Contains(search.ToLower()))
                     || (m.Tender_live_interval.ToString().Contains(search.ToLower()))
                     || (m.Live_Start_Date.ToString().Contains(search.ToLower()))
                     || (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                    || (m.Duration_Type.ToLower().Contains(search.ToLower()))
-                    || (m.Tender_Duration.ToString().Contains(search.ToLower()))
                     //  || (m.Tender_fee.ToString().Contains(search.ToLower()))
-                    || (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                    || (m.TenderStatusEntity.Status.ToLower().Contains(search.ToLower()))
                     //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
                     )).ToList();
                     foreach (var items in tender)
@@ -190,7 +186,7 @@ namespace MeroBolee.Repository
             {
                 return meroBoleeDbContexts.TenderEntities
                         .Include(x => x.CreatedByUser)
-                        .Include(x => x.AuctionStatusEntity)
+                        .Include(x => x.TenderStatusEntity)
                         .Include(x => x.TenderMaterialEntities)
                         .Include(x => x.TenderTermsConditionEntities)
                         .Include(x => x.CategoryEntity)
@@ -343,7 +339,7 @@ namespace MeroBolee.Repository
 
             return meroBoleeDbContexts.TenderEntities
                     .Include(x => x.CreatedByUser)
-                    .Include(x => x.AuctionStatusEntity)
+                    .Include(x => x.TenderStatusEntity)
                     .Include(x => x.TenderMaterialEntities)
                     .Include(x => x.TenderTermsConditionEntities)
                     .Include(x => x.CategoryEntity)
@@ -389,16 +385,12 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.CategoryEntities.ToList();
                 return meroBoleeDbContexts.TenderEntities.Where(m => (m.CreatedBy == userId) && ((search == null)
                 || (m.Tender_Code.ToString().Contains(search))
-                || (m.Tender_Description.ToLower().Contains(search.ToLower()))
-                || (m.Tender_Duration.ToString().Contains(search.ToLower()))
                 || (m.Tender_Title.ToLower().Contains(search.ToLower()))
                 || (m.Tender_live_interval.ToString().Contains(search.ToLower()))
                 || (m.Live_Start_Date.ToString().Contains(search.ToLower()))
                 || (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                || (m.Duration_Type.ToLower().Contains(search.ToLower()))
-                || (m.Tender_Duration.ToString().Contains(search.ToLower()))
                 //  || (m.Tender_fee.ToString().Contains(search.ToLower()))
-                || (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
+                || (m.TenderStatusEntity.Status.ToLower().Contains(search.ToLower()))
 
                 //  || (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
                 )).ToList();
@@ -439,11 +431,19 @@ namespace MeroBolee.Repository
                 //    .ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
 
-                TenderEntity ent = meroBoleeDbContexts.TenderEntities.Where(m => m.Tender_Id == tenderId).FirstOrDefault();
-                meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == ent.CreatedBy).ToList();
+                TenderEntity ent = meroBoleeDbContexts.TenderEntities
+                    .Where(m => m.Tender_Id == tenderId)
+                    .Include(x => x.TenderCards)
+                    .FirstOrDefault();
+
+                meroBoleeDbContexts
+                    .UserEntities
+                    .Where(x => x.User_Id == ent.CreatedBy)
+                    .ToList();
                 return ent;
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -517,40 +517,23 @@ namespace MeroBolee.Repository
         /// <summary>
         /// update tender
         /// </summary>
-        /// <param name="tenderId"></param>
         /// <param name="tenderEntity"></param>
         /// <returns></returns>
-        public TenderEntity UpdateTender(long tenderId, TenderEntity tenderEntity)
+        public async Task<TenderEntity> UpdateTender(TenderEntity tenderEntity)
         {
             try
             {
-                TenderEntity tender = GetTenderDetail(tenderId);
-                tender.Tender_Title = tenderEntity.Tender_Title;
-                tender.Category_Id = tenderEntity.Category_Id;
-                tender.Tender_Description = tenderEntity.Tender_Description;
-                tender.Tender_live_interval = tenderEntity.Tender_live_interval;
-                tender.Live_Start_Date = tenderEntity.Live_Start_Date;
-                tender.Live_End_Date = tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-                tender.Tender_Duration = tenderEntity.Tender_Duration;
-                tender.Duration_Type = tenderEntity.Duration_Type;
-                tender.Tender_Status_Id = tenderEntity.Tender_Status_Id;
-                tender.Cancel_remark = tenderEntity.Cancel_remark;
-                //  tender.IFB_RFP_EOI1 = tenderEntity.IFB_RFP_EOI1;
-                tender.TenderMaterialEntities = tenderEntity.TenderMaterialEntities;
-                tender.TenderTermsConditionEntities = tenderEntity.TenderTermsConditionEntities;
+                meroBoleeDbContexts.TenderEntities.Update(tenderEntity);
+                await unitOfWork.SaveChangesAsync();
 
-
-                unitOfWork.SaveChange();
-
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
+                meroBoleeDbContexts.TenderStatus.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
                 meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
                 meroBoleeDbContexts.TenderMaterialEntities.ToList();
                 meroBoleeDbContexts.MaterialFeatureEntities.ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
                 meroBoleeDbContexts.UserEntities.ToList();
-                return tender;
+                return tenderEntity;
             }
             catch (Exception)
             {
@@ -623,7 +606,7 @@ namespace MeroBolee.Repository
                 unitOfWork.SaveChange();
                 return ent;
             }
-            catch 
+            catch
             {
                 throw;
             }
@@ -640,6 +623,20 @@ namespace MeroBolee.Repository
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task SetTenderStatusToFeedback(TenderEntity tenderEntity)
+        {
+            try
+            {
+                meroBoleeDbContexts.TenderEntities.Update(tenderEntity);
+                await meroBoleeDbContexts.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

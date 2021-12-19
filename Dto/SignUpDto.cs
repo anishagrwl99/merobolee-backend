@@ -93,7 +93,6 @@ namespace MeroBolee.Dto
         private string lastName;
         private string designation;
         private string personcontact1;
-        private string personcontact2;
         private string personemail;
         private string username;
         private string password;

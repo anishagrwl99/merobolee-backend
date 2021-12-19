@@ -44,7 +44,7 @@ namespace MeroBolee.Dto
         public UserEntity User { get => userEntity; set => userEntity = value; }
 
         public int TenderStatusId { get => tenderStatusId; set => tenderStatusId = value; }
-        public string AuctionStatus { get => auctionStatus; set => auctionStatus = value; }
+        public string TenderStatus { get => auctionStatus; set => auctionStatus = value; }
         public ICollection<TenderMaterialEntity> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
         public TenderTermsConditionEntity TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
         public string CancelRemark { get => cancelRemark; set => cancelRemark = value; }

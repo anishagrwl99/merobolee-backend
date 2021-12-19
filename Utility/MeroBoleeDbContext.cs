@@ -13,6 +13,8 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
+        public DbSet<TenderCardFeedbackEntity> TenderCardFeedbacks { get; set; }
+        public DbSet<TenderStatusEntity> TenderStatus { get; set; }
         public DbSet<AuctionLog> AuctionLogs { get; set; }
         public DbSet<TenderSubmissionDocuments> Documents { get; set; }
         public DbSet<TenderSubmissionStatus> TenderSubmissionStatuses { get; set; }
@@ -211,7 +213,10 @@ namespace MeroBolee.Utility
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-
+            modelBuilder.Entity<TenderCardFeedbackEntity>()
+                .HasOne(e => e.Tender)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             SetupUniqueConstraint(modelBuilder);
             SeedStatusData(modelBuilder);
@@ -240,6 +245,14 @@ namespace MeroBolee.Utility
                 new AuctionStatusEntity() { Status_Id = 2, Status = "Approved" },
                 new AuctionStatusEntity() { Status_Id = 3, Status = "Closed" }
                 );
+
+            builder.Entity<TenderStatusEntity>().HasData(
+                new TenderStatusEntity() { StatusId = 1, Status = "Pending Approval" },
+                new TenderStatusEntity() { StatusId = 2, Status = "Change Requested" },
+                new TenderStatusEntity() { StatusId = 3, Status = "Approved" },
+                new TenderStatusEntity() { StatusId = 4, Status = "Cancelled" }
+                );
+
 
             builder.Entity<PublishStatus>().HasData(
                 new PublishStatus() { Status_id = 1, Status = "Active" },

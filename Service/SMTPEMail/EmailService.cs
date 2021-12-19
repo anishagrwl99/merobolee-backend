@@ -211,7 +211,7 @@ namespace MeroBolee.Service
                     throw new Exception($"You need to compose email properly before sending.");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

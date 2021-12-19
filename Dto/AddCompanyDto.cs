@@ -82,7 +82,6 @@ namespace MeroBolee.Dto
 
     public class CompanyDetailResponse: AddCompanyResponseDto
     {
-        public string ReferenceCode { get; set; }
         public List<AddUserReponseDto> Users { get; set; }
         public List<GetTenderDto> Tenders { get; set; }
     }

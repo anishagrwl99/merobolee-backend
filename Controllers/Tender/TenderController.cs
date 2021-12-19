@@ -27,12 +27,12 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To add tender tender_status_id belong to AuctionStatus
+        /// To create a tender by admin
         /// </summary>
         /// <param name="tender"></param>
         /// <returns></returns>
-        [HttpPost("Tender")]
-        public IActionResult Add([FromBody] AddTenderDto tender)
+        [HttpPost("Tender/Admin/Create")]
+        public IActionResult Add([FromBody] AddTenderRequestDto tender)
         {
             try
             {
@@ -69,36 +69,27 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="id"></param>
         /// <param name="tender"></param>
         /// <returns></returns>
-        [HttpPut("Tender")]
-        public IActionResult Update([FromQuery] int id, [FromBody] AddTenderDto tender)
+        [HttpPut("Tender/Admin/Update")]
+        public async Task<IActionResult> Update([FromBody] UpdateTenderRequestDto tender)
         {
             try
             {
-                if (id == 0)
+                if (ModelState.IsValid)
+                {
+                    GetTenderDto tenders = await tenderService.UpdateTender(tender);
+                    if (tenders == null)
+                    {
+                        response.statusCode = "404";
+                        response.Message = "Record not Found";
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<GetTenderDto>(tenders, "200", "Record is successfully updated"));
+                }
+                else
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetTenderDto tenders = tenderService.UpdateTender(id, tender);
-                        if (tenders == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not Found";
-                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetTenderDto>(tenders, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
                 }
             }
             catch (Exception e)
@@ -120,7 +111,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/InviteBid")]
-        public IActionResult GetBidInviterTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search="")
+        public IActionResult GetBidInviterTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
             {
@@ -153,11 +144,11 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/History")]
-        public IActionResult GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search="")
+        public IActionResult GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
             {
-                string url = Url.Action("GetBidInviterTenderHistory", null, new { companyId = companyId , search = search }, Request.Scheme); //get url for current request
+                string url = Url.Action("GetBidInviterTenderHistory", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<TenderCard> tenders = tenderService.GetBidIniviterTenderHistory(companyId, search);
@@ -183,7 +174,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
-        public IActionResult GetBidInviterTenderListing( [FromQuery] long companyId, [FromQuery] string search = "")
+        public IActionResult GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
             {
@@ -191,7 +182,7 @@ namespace MeroBolee.Controllers.Tender
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 BidInviterTenderListing tenders = tenderService.GetBidInviterTenderListing(companyId, search);
-                int totalCount = tenders.ActiveTenders.Count()  + tenders.PendingTenders.Count();
+                int totalCount = tenders.ActiveTenders.Count() + tenders.PendingTenders.Count();
                 if (totalCount == 0)
                 {
                     return NotFound(new Responses<BidInviterTenderListing>(tenders, "404", "Record not found"));
@@ -250,7 +241,7 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                string url = Url.Action("Marketplace", null, new { search=search}, Request.Scheme); //get url for current request
+                string url = Url.Action("Marketplace", null, new { search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<TenderCard> tenders = tenderService.GetMarketplaceTender(search);
@@ -307,7 +298,7 @@ namespace MeroBolee.Controllers.Tender
         /// To display tender list of bidder's interest by bidder id
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Bidder/InterestTender")]
@@ -423,7 +414,7 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                string url = Url.Action("GetUpCommingTender", null, new {search = search }, Request.Scheme); //get url for current request
+                string url = Url.Action("GetUpCommingTender", null, new { search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<TenderCard> tenders = tenderService.UpcomingTender(search);

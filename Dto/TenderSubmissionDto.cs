@@ -70,6 +70,7 @@ namespace MeroBolee.Dto
 
 
         public IFormFile PriceScheduleDoc { get; set; }
+        public string PriceScheduleDocTitle { get; set; }
 
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept terms and condition")]
         public bool AcceptTermsAndConditions { get; set; }
@@ -142,8 +143,9 @@ namespace MeroBolee.Dto
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept terms and condition")]
         public bool AcceptTermsAndConditions { get; set; }
 
-        public virtual ICollection<IFormFile> Documents { get; set; }
+        public virtual ICollection<TenderSubmissionAdditionalDocDto> Documents { get; set; }
     }
+
 
 
     public class TenderSubmissionExternalDocumentUpdateRequestDto : TenderSubmissionExternalDocumentRequestDto
