@@ -13,6 +13,7 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
+        public DbSet<TenderExtraDocumentEntity> TenderExtraDocuments { get; set; }
         public DbSet<TenderCardFeedbackEntity> TenderCardFeedbacks { get; set; }
         public DbSet<TenderStatusEntity> TenderStatus { get; set; }
         public DbSet<AuctionLog> AuctionLogs { get; set; }
@@ -214,6 +215,11 @@ namespace MeroBolee.Utility
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TenderCardFeedbackEntity>()
+                .HasOne(e => e.Tender)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TenderExtraDocumentEntity>()
                 .HasOne(e => e.Tender)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);

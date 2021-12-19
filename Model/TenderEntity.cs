@@ -95,6 +95,10 @@ namespace MeroBolee.Model
         public string AdditionalRequest { get; set; }
         public decimal Price { get; set; }
 
+        public string TenderDetailDocTitle { get; set; }
+        public string TenderDetailDocPath { get; set; }
+        public string TermsAndConditionDocPath { get; set; }
+
         [JsonIgnore]
         public virtual CompanyEntity Company { get; set; }
         public virtual TenderStatusEntity TenderStatusEntity { get => tenderStatusEntity; set => tenderStatusEntity = value; }
@@ -106,8 +110,15 @@ namespace MeroBolee.Model
         public virtual UserEntity ApprovedByUser { get => userEntity; set => userEntity = value; }
         public virtual CategoryEntity CategoryEntity { get => categoryEntity; set => categoryEntity = value; }
 
+        [JsonIgnore]
         public virtual ICollection<TenderCardEntity> TenderCards { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<TenderCardFeedbackEntity> Feedbacks { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<TenderExtraDocumentEntity> ExtraDocuments { get; set; }
+
     }
 
 
@@ -159,6 +170,46 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(1500)]
         public string Feeback { get; set; }
+
+        [JsonIgnore]
+        public virtual TenderEntity Tender { get; set; }
+
+        [JsonIgnore]
+        public virtual CompanyEntity Company { get; set; }
+
+        [JsonIgnore]
+        public virtual UserEntity User { get; set; }
+    }
+
+
+    [Table("mb_Tender_ExtraDocuments")]
+    public class TenderExtraDocumentEntity
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        [ForeignKey("Tender")]
+        [Required]
+        public long TenderId { get; set; }
+
+        [ForeignKey("Company")]
+        [Required]
+        public long CompanyId { get; set; }
+
+        [ForeignKey("User")]
+        [Required]
+        public long UserId { get; set; }
+
+        [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string DocTitle { get; set; }
+
+        [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1500)]
+        public string DocPath { get; set; }
+
 
         [JsonIgnore]
         public virtual TenderEntity Tender { get; set; }
