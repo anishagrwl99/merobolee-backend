@@ -415,31 +415,35 @@ namespace MeroBolee.Repository
         {
             try
             {
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
-                meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).ToList();
-                meroBoleeDbContexts
-                    .TenderMaterialEntities
-                    .Include(x => x.MaterialFeatures)
-                    .Where(x => x.TenderId == tenderId).ToList();
+               // meroBoleeDbContexts.AuctionStatusEntities.ToList();
+                //meroBoleeDbContexts.PaymentStatusEntities.ToList();
+               // meroBoleeDbContexts.AdminStatusEntities.ToList();
+                //meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).ToList();
+                //meroBoleeDbContexts
+                //    .TenderMaterialEntities
+                //    .Include(x => x.MaterialFeatures)
+                //    .Where(x => x.TenderId == tenderId).ToList();
 
                 //long[] materialIds = material.Select(x => x.Id).ToArray();
 
                 //meroBoleeDbContexts.MaterialFeatureEntities
                 //    .Where(x=>x.Material_id.ToString().Contains(string.Join(",", materialIds)))
                 //    .ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
+               // meroBoleeDbContexts.CategoryEntities.ToList();
 
                 TenderEntity ent = meroBoleeDbContexts.TenderEntities
                     .Where(m => m.Tender_Id == tenderId)
+                    .Include(x=> x.TenderMaterialEntities)
                     .Include(x => x.TenderCards)
+                    .Include(x => x.ExtraDocuments)
+                    .Include(x=> x.CategoryEntity)
+                    .Include(x=> x.CreatedByUser)
                     .FirstOrDefault();
 
-                meroBoleeDbContexts
-                    .UserEntities
-                    .Where(x => x.User_Id == ent.CreatedBy)
-                    .ToList();
+                //meroBoleeDbContexts
+                //    .UserEntities
+                //    .Where(x => x.User_Id == ent.CreatedBy)
+                //    .ToList();
                 return ent;
 
             }

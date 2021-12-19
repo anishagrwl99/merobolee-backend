@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
 using System;
@@ -9,22 +10,64 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
-    public class TenderService: TenderMapper,ITenderService
+    public class TenderService: TenderMapper, ITenderService
     {
         private readonly ITenderRepository tenderRepository;
         private readonly IReferenceCodeService referenceCodeService;
+        private readonly IUploadFile uploadFileService;
+        private readonly ICompanyDocumentRepository docRepo;
 
-        public TenderService(ITenderRepository tenderRepository, IReferenceCodeService referenceCodeService)
+        public TenderService(ITenderRepository tenderRepository, 
+                                IReferenceCodeService referenceCodeService, 
+                                IUploadFile uploadFileService, 
+                                ICompanyDocumentRepository docRepo)
         {
             this.tenderRepository = tenderRepository;
             this.referenceCodeService = referenceCodeService;
+            this.uploadFileService = uploadFileService;
+            this.docRepo = docRepo;
         }
 
-        public GetTenderDto AddTender(AddTenderRequestDto tenderDto)
+        public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
         {
             TenderEntity entity = TenderDtoEntity(tenderDto);
+            
             entity.Tender_Code = referenceCodeService.GenerateCode(ReferenceEnum.Tender).Result;
-            return TenderEntityToDto(tenderRepository.AddTender(entity));
+            entity = tenderRepository.AddTender(entity);
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+            string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
+
+            if (tenderDto.TenderDetailDoc != null)
+            {
+                entity.TenderDetailDocPath = await uploadFileService.Upload(tenderDto.TenderDetailDoc, docPath);
+            }
+
+            if (tenderDto.TenderTermsAndConditionDoc != null)
+            {
+                entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
+            }
+
+            entity.ExtraDocuments = new List<TenderExtraDocumentEntity>();
+            
+            foreach (var item in tenderDto.ExtraDocuments)
+            {
+                if (item.Document != null)
+                {
+                    TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                    {
+                        CompanyId = tenderDto.CompanyId,
+                        UserId = tenderDto.CreatedBy,
+                        TenderId = entity.Tender_Id,
+                        DocTitle = item.DocTitle,
+                        DocPath = await uploadFileService.Upload(item.Document, docPath)
+                    };
+                    entity.ExtraDocuments.Add(obj);
+                }
+                }
+
+                await tenderRepository.UpdateTender(entity);
+
+            return entity;
         }
 
         public IEnumerable<GetTenderDto> FavouriteTender(int userId, string search)
@@ -73,11 +116,55 @@ namespace MeroBolee.Service
             return tenderRepository.UpcomingTender(search);
         }
 
-        public async Task<GetTenderDto> UpdateTender(UpdateTenderRequestDto tenderDto)
+        public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
             TenderEntity entity = tenderRepository.GetTenderDetail(tenderDto.TenderId);
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+            string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
+
+            if(tenderDto.TenderDetailDoc != null)
+            {
+                await uploadFileService.DeleteFile(entity.TenderDetailDocPath);
+                entity.TenderDetailDocPath = await uploadFileService.Upload(tenderDto.TenderDetailDoc, docPath);
+                entity.TenderDetailDocTitle = tenderDto.TenderDocTitle;
+            }
+
+            if(tenderDto.TenderTermsAndConditionDoc != null)
+            {
+                await uploadFileService.DeleteFile(entity.TermsAndConditionDocPath);
+                entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
+            }
+
+            
+            foreach (var item in tenderDto.ExtraDocuments)
+            {
+                var itm = entity.ExtraDocuments.Where(x => x.Id == item.Id).FirstOrDefault();
+                if (itm == null && item.Document != null)
+                {
+                    TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                    {
+                        CompanyId = tenderDto.CompanyId,
+                        UserId = tenderDto.CreatedBy,
+                        TenderId = entity.Tender_Id,
+                        DocTitle = item.DocTitle,
+                        DocPath = await uploadFileService.Upload(item.Document, docPath)
+                    };
+                    entity.ExtraDocuments.Add(obj);
+                }
+                else 
+                {
+                    if(item.Document != null)
+                    {
+                        await uploadFileService.DeleteFile(itm.DocPath);
+                        itm.DocPath = await uploadFileService.Upload(item.Document, docPath);
+                    }                   
+                    itm.DocTitle = item.DocTitle;                   
+                }
+            }
+            
             UpdateTenderEntity(ref entity, tenderDto);
-            return TenderEntityToDto(await tenderRepository.UpdateTender(entity));
+            await tenderRepository.UpdateTender(entity);
+            return entity;
         }
 
         /// <summary>

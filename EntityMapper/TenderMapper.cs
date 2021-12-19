@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
@@ -59,10 +60,8 @@ namespace MeroBolee.EntityMapper
                 Location = tenderDto.Location,
                 QualityRequest = tenderDto.QualityRequest,
                 Price = tenderDto.Price,
-                TenderTermsConditionEntities = new TenderTermsConditionEntity
-                {
-                    TermCondition = tenderDto.TermsAndCondition
-                },
+                TenderDetailDocTitle = tenderDto.TenderDocTitle,
+                RegistrationTill = tenderDto.RegistrationTill,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -85,6 +84,7 @@ namespace MeroBolee.EntityMapper
                     Value = item.Value
                 });
             }
+
             return entity;
         }
 
@@ -93,6 +93,7 @@ namespace MeroBolee.EntityMapper
             entity.Tender_Title = dto.TenderTitle;
             entity.Category_Id = dto.CategoryId;
             entity.PerformanceRequest = dto.PerformanceRequest;
+            entity.RegistrationTill = dto.RegistrationTill;
             entity.Live_Start_Date = dto.LiveStartDate;
             entity.Live_End_Date = dto.LiveEndDate;
             entity.QualityRequest = dto.QualityRequest;
@@ -102,6 +103,7 @@ namespace MeroBolee.EntityMapper
             entity.EligibilityCriteria = dto.EligibilityCriteria;
             entity.Location = dto.Location;
             entity.Price = dto.Price;
+            
             foreach (var item in dto.TenderMaterials)
             {
                 var itm = entity.TenderMaterialEntities.Where(x => x.Id == item.Id).FirstOrDefault();
@@ -137,6 +139,7 @@ namespace MeroBolee.EntityMapper
                     itm.Value = itm.Value;
                 }
             }
+            
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity)
         {

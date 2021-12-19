@@ -32,7 +32,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tender"></param>
         /// <returns></returns>
         [HttpPost("Tender/Admin/Create")]
-        public IActionResult Add([FromBody] AddTenderRequestDto tender)
+        public async Task<IActionResult> Add([FromForm] AddTenderRequestDto tender)
         {
             try
             {
@@ -44,7 +44,8 @@ namespace MeroBolee.Controllers.Tender
                         response.Message = "Start Date must be future date";
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
-                    return Ok(new Responses<GetTenderDto>(tenderService.AddTender(tender), "200", "Record is successfully added"));
+                    var res = await tenderService.AddTender(tender);
+                    return Ok(new Responses<long>(res.Tender_Id, "200", "Record is successfully added"));
                 }
                 else
                 {
@@ -64,26 +65,25 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To update tender detail
+        /// To update tender 
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="tender"></param>
         /// <returns></returns>
-        [HttpPut("Tender/Admin/Update")]
-        public async Task<IActionResult> Update([FromBody] UpdateTenderRequestDto tender)
+        [HttpPost("Tender/Admin/Update")]
+        public async Task<IActionResult> UpdateTender([FromForm] UpdateTenderRequestDto tender)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    GetTenderDto tenders = await tenderService.UpdateTender(tender);
-                    if (tenders == null)
+                    TenderEntity resp = await tenderService.UpdateTender(tender);
+                    if (resp == null)
                     {
                         response.statusCode = "404";
                         response.Message = "Record not Found";
                         return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
-                    return Ok(new Responses<GetTenderDto>(tenders, "200", "Record is successfully updated"));
+                    return Ok(new Responses<long>(resp.Tender_Id, "200", "Record is successfully updated"));
                 }
                 else
                 {

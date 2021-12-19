@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
-    public class AddTenderRequestDto
+    public class TenderRequestBaseDto
+
     {
         [Required(ErrorMessage = "Company name is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
@@ -31,7 +33,7 @@ namespace MeroBolee.Dto
 
         [Required(ErrorMessage = "Tender live end date is required")]
         public DateTime LiveEndDate { get; set; }
-      
+
         [Required(ErrorMessage = "Tender created by is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user")]
         public long CreatedBy { get; set; }
@@ -47,14 +49,27 @@ namespace MeroBolee.Dto
         public decimal Price { get; set; }
 
         public string TenderDocTitle { get; set; }
-        public string TenderDetailDoc { get; set; }
+        public IFormFile TenderDetailDoc { get; set; }
+        public IFormFile TenderTermsAndConditionDoc { get; set; }
 
-        public string TermsAndCondition { get; set; }
+
+
+    }
+    public class AddTenderRequestDto : TenderRequestBaseDto
+    {
         public ICollection<TenderMaterialRequestDto> TenderMaterials { get; set; }
         public ICollection<TenderCardRequestDto> TenderCards { get; set; }
+        public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
+
     }
 
-
+    public class UpdateTenderRequestDto : TenderRequestBaseDto
+    {
+        public long TenderId { get; set; }
+        public ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
+        public ICollection<UpdateTenderCardRequestDto> TenderCards { get; set; }
+        public ICollection<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
+    }
     public class TenderMaterialRequestDto
     {
         [Required(ErrorMessage = "Tender material name is required")]
@@ -79,14 +94,13 @@ namespace MeroBolee.Dto
         public string Value { get; set; }
     }
 
-
-    public class UpdateTenderRequestDto: AddTenderRequestDto
+    public class TenderExtraDocDto
     {
-        public long TenderId { get; set; }
-        public new ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
-        public new ICollection<UpdateTenderCardRequestDto> TenderCards { get; set; }
-
+        public string DocTitle { get; set; }
+        public IFormFile Document { get; set; }
     }
+
+    
 
     public class UpdateMaterialRequestDto: TenderMaterialRequestDto
     {
@@ -95,6 +109,11 @@ namespace MeroBolee.Dto
 
     public class UpdateTenderCardRequestDto : TenderCardRequestDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
+    }
+
+    public class UpdateTenderExtraDocRequestDto: TenderExtraDocDto
+    {
+        public long Id { get; set; }
     }
 }
