@@ -171,6 +171,7 @@ namespace MeroBolee.Dto
         public virtual ICollection<TenderSubmissionPriceScheduleResponseDto> PriceSchedules { get; set; }
         public virtual ICollection<TenderSubmissionEligibilityCriteriaResponseDto> EligibilityCriterias { get; set; }
         public virtual ICollection<TenderSubmissionDocumentResponseDto> Documents { get; set; }
+        public virtual ICollection<TenderSubmissionAdditionalDocumentResponseDto> AdditionalDocuments { get; set; }
         public virtual CompanyDto Company { get; set; }
         public virtual UserProfileDto SubmissionCreatedBy { get; set; }
         public virtual UserProfileDto SubmissionUpdatedBy { get; set; }
@@ -280,5 +281,6 @@ namespace MeroBolee.Dto
     public class TenderSubmissionAdditionalDocumentResponseDto: TenderSubmissionAdditionalDocDto
     {
         public long Id { get; set; }
+        public new string Document { get; set; }
     }
 }

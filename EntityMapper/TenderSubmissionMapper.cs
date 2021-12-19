@@ -106,7 +106,7 @@ namespace MeroBolee.EntityMapper
             foreach (var ps in dto.ProductSpecifications)
             {
                 TenderSubmissionProductSpec spec = ent.ProductSpecifications.Where(x => x.SpecificationId == ps.Id).FirstOrDefault();
-                if(spec != null)
+                if (spec != null)
                 {
                     spec.SpecificationName = ps.SpecificationName;
                     spec.SpecificationValue = ps.SpecificationValue;
@@ -119,7 +119,7 @@ namespace MeroBolee.EntityMapper
                         SpecificationName = ps.SpecificationName,
                         SpecificationValue = ps.SpecificationValue,
                         RowNo = ps.RowNo
-                    }) ;
+                    });
                 }
             }
 
@@ -177,9 +177,9 @@ namespace MeroBolee.EntityMapper
                 {
                     ent.EligibilityCriterias.Add(new TenderSubmissionEligibilityCriteria
                     {
-                       SN = ec.SN,
-                       CriteriaName = ec.CriteriaName,
-                       Remarks = ec.Remarks
+                        SN = ec.SN,
+                        CriteriaName = ec.CriteriaName,
+                        Remarks = ec.Remarks
                     });
                 }
             }
@@ -214,7 +214,7 @@ namespace MeroBolee.EntityMapper
                                                   SpecificationValue = ps.SpecificationValue,
                                                   RowNo = ps.RowNo
                                               })
-                                              .OrderBy(x=> x.RowNo)
+                                              .OrderBy(x => x.RowNo)
                                               .ToList();
 
                 resp.PurchaseCriterias = (from pc in ent.PurchaseCriterias
@@ -225,7 +225,7 @@ namespace MeroBolee.EntityMapper
                                               CriteriaName = pc.CriteriaName,
                                               Remarks = pc.Remarks
                                           })
-                                          .OrderBy(x=> x.SN)
+                                          .OrderBy(x => x.SN)
                                           .ToList();
 
                 resp.PriceSchedules = (from ps in ent.PriceSchedules
@@ -236,7 +236,7 @@ namespace MeroBolee.EntityMapper
                                            ScheduleValue = ps.ScheduleValue,
                                            RowNo = ps.RowNo
                                        })
-                                       .OrderBy(x=> x.RowNo)
+                                       .OrderBy(x => x.RowNo)
                                        .ToList();
 
                 resp.EligibilityCriterias = (from es in ent.EligibilityCriterias
@@ -247,8 +247,18 @@ namespace MeroBolee.EntityMapper
                                                  CriteriaName = es.CriteriaName,
                                                  Remarks = es.Remarks
                                              })
-                                             .OrderBy(x=> x.SN)
+                                             .OrderBy(x => x.SN)
                                              .ToList();
+
+                resp.AdditionalDocuments = (from ad in ent.AdditionalDocuments
+                                            select new TenderSubmissionAdditionalDocumentResponseDto
+                                            {
+                                                Id = ad.Id,
+                                                DocTitle = ad.DocTitle,
+                                                Document = $"{basePath}{ad.DocPath.Replace("\\", "/")}",
+                                            })
+                                            .OrderBy(x=>x.Id)
+                                            .ToList();
 
 
 
