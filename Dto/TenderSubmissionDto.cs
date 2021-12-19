@@ -281,6 +281,6 @@ namespace MeroBolee.Dto
     public class TenderSubmissionAdditionalDocumentResponseDto: TenderSubmissionAdditionalDocDto
     {
         public long Id { get; set; }
-        public new string Document { get; set; }
+        public  string DocumentPath { get; set; }
     }
 }

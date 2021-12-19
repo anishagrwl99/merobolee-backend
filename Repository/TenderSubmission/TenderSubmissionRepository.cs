@@ -149,6 +149,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.PurchaseCriterias)
                         .Include(x => x.PriceSchedules)
                         .Include(x => x.EligibilityCriterias)
+                        .Include(x => x.AdditionalDocuments)
                         .Include(x => x.CreatedByUser)
                         .Include(x => x.CreatedByUser.UserStatus)
                         .Include(x => x.UpdatedByUser)

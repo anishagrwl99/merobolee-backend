@@ -255,7 +255,7 @@ namespace MeroBolee.EntityMapper
                                             {
                                                 Id = ad.Id,
                                                 DocTitle = ad.DocTitle,
-                                                Document = $"{basePath}{ad.DocPath.Replace("\\", "/")}",
+                                                DocumentPath = $"{basePath}{ad.DocPath.Replace("\\", "/")}",
                                             })
                                             .OrderBy(x=>x.Id)
                                             .ToList();
