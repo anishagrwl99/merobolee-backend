@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Tender
 {
-    public class TenderCardFeedbackController : BaseController
+    public class TenderListingFeedbackController : BaseController
     {
         private readonly ITenderCardFeedbackService feedbackService;
         private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
-        public TenderCardFeedbackController(ITenderCardFeedbackService feedbackService)
+        public TenderListingFeedbackController(ITenderCardFeedbackService feedbackService)
         {
             this.feedbackService = feedbackService;
         }
@@ -31,7 +31,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="feedback"></param>
         /// <returns></returns>
-        [HttpPost("TenderCard/Feedback/Create")]
+        [HttpPost("TenderListing/Feedback/Send")]
         public async Task<IActionResult> SendFeedback([FromBody] TenderCardFeedbackDto feedback)
         {
             try
@@ -64,7 +64,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="companyId"></param>
         /// <param name="tenderId"></param>
         /// <returns></returns>
-        [HttpGet("TenderCard/Feedback/List")]
+        [HttpGet("TenderListing/Feedback/List")]
         public async Task<IActionResult> GetTenderFeedbaks([FromQuery] long companyId, [FromQuery] long tenderId)
         {
             try

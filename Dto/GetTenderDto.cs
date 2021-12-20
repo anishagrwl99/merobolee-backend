@@ -60,11 +60,21 @@ namespace MeroBolee.Dto
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public DateTime LiveStartDate { get; set; }
+        public DateTime LiveEndDate { get; set; }
+        public DateTime RegistrationTill { get; set; }
         public string Status { get; set; }
+
+        public List<TenderCardInfo> CardInfo { get; set; }
 
         [JsonIgnore]
         public int StatusId { get; set; }
 
+    }
+
+    public class TenderCardInfo
+    {
+        public string Label { get; set; }
+        public string Value { get; set; }
     }
 
     public class TenderWatchListCard: TenderCard

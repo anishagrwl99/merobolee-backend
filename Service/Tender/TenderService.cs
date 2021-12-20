@@ -95,8 +95,8 @@ namespace MeroBolee.Service
             IEnumerable<TenderCard> tenders =  tenderRepository.GetBidIniviterTenderListing(companyId, search);
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
-                PendingTenders = tenders.Where(x => x.StatusId == 1).ToList(),
-                ActiveTenders = tenders.Where(x=>x.StatusId == 2).ToList()               
+                PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
+                ActiveTenders = tenders.Where(x=>x.StatusId == 3 && x.LiveEndDate < DateTime.Now).ToList()               
             };
             return listing;
         }
