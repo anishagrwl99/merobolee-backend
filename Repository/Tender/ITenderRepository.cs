@@ -12,7 +12,6 @@ namespace MeroBolee.Repository
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
         IEnumerable<TenderCard> GetMarketplaceTender(string search);
-        IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         TenderEntity GetTenderDetail(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
@@ -25,7 +24,6 @@ namespace MeroBolee.Repository
         IEnumerable<TenderCard> UpcomingTender(string search);
         IEnumerable<TenderEntity> FavouriteTender(long userId, string search);
 
-        IEnumerable<TenderEntity> GetMyTender(long companyId ,string search, CompanyTypeEnum companyType);
         IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId ,string search);
         IEnumerable<TenderCard> GetBidIniviterTenderListing(long companyId ,string search);
         IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId ,string search);
@@ -46,13 +44,7 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         TenderEntity ApproveTenderByBidInviter(TenderEntity ent);
 
-        /// <summary>
-        /// Get all logs associated with a tender auction for a company
-        /// </summary>
-        /// <param name="companyId">Supplier company Id</param>
-        /// <param name="tenderId">A tender Id</param>
-        /// <returns></returns>
-        Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
+        
         Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
     }
 }

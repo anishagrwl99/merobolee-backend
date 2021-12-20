@@ -80,10 +80,6 @@ namespace MeroBolee.Service
             return tenderRepository.GetMarketplaceTender(search);
         }
 
-        public IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType)
-        {
-            return TenderEntityListToDto(tenderRepository.GetMyTender(companyId, search, companyType));
-        }
 
         public IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search)
         {
@@ -101,10 +97,6 @@ namespace MeroBolee.Service
             return listing;
         }
 
-        public IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search)
-        {
-            return TenderEntityListToDto(tenderRepository.GetTenderByAuctioneer(userId, search));
-        }
 
         public GetTenderDto GetTenderDetail(long id)
         {
@@ -218,18 +210,5 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
-        {
-            try
-            {
-                List<AuctionLog> logs = await tenderRepository.GetTenderAuctionLog(companyId, tenderId);
-                return logs;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
     }
 }

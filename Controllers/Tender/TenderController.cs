@@ -102,40 +102,6 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
-
-        /// <summary>
-        /// Get a tender created for a bid inviter company
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="companyId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/BidInviter/InviteBid")]
-        public IActionResult GetBidInviterTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
-        {
-            try
-            {
-                string url = Url.Action("GetBidInviterTenders", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetMyTenders(companyId, search, CompanyTypeEnum.BidInviter);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
-
-
         /// <summary>
         /// Get a tender history of a bid inviter company
         /// </summary>
@@ -262,38 +228,6 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
-
-        /// <summary>
-        /// Get a tender on which bidding is done by a bidder (supplier) company
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="companyId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/Bidder/MyTenders")]
-        public IActionResult GetBidderTenders([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
-        {
-            try
-            {
-                string url = Url.Action("GetBidInviterTenders", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetMyTenders(companyId, search, CompanyTypeEnum.Bidder);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
         /// <summary>
         /// To display tender list of bidder's interest by bidder id
         /// </summary>
@@ -325,82 +259,6 @@ namespace MeroBolee.Controllers.Tender
             }
 
         }
-
-        /// <summary>
-        /// To display all tender list posted by auctioneer by auctioneer id
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="userId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/Bidder/TenderByAuctioneer")]
-        public IActionResult GetTenderByAuctioneer([FromQuery] PaginationQuery pagination, int userId, [FromQuery] string search = null)
-        {
-            try
-            {
-                string url = Url.Action("GetTenderByAuctioneer", null, new { userId = userId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.GetTenderByAuctioneer(userId, search);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-
-        }
-
-
-
-        /// <summary>
-        /// Get a auction log associated with a tender auction
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/Bidder/AuctionLog")]
-        public async Task<IActionResult> GetAuctionLog([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
-        {
-            try
-            {
-
-                if (ModelState.IsValid)
-                {
-                    string url = Url.Action("GetAuctionLog", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
-                    this.uriService = new UriService(url);
-                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    List<AuctionLog> logs = await tenderService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
-                    int totalCount = logs.Count();
-                    if (totalCount == 0)
-                    {
-                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
-                    }
-                    return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
-                }
-                else
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid request data";
-                    response.Data = ModelState;
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
 
 
         /// <summary>
@@ -472,20 +330,7 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
-        private PagedResponse<AuctionLog> ResultAfterPagination(IEnumerable<AuctionLog> logs, PaginationQuery pagination, int totalCount)
-        {
-            var paginationFilteration = this.pagination.PaginationMap(pagination);
-            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
-            {
-                return new PagedResponse<AuctionLog>(logs, totalCount);
-            }
-
-            var get = logs.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
-            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
-            return paginationResponse;
-
-        }
-
+       
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

@@ -11,13 +11,11 @@ namespace MeroBolee.Service
     {
         Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto);
         IEnumerable<TenderCard> GetMarketplaceTender(string search);
-        IEnumerable<GetTenderDto> GetTenderByAuctioneer(int userId, string search);
         GetTenderDto GetTenderDetail(long id);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
         IEnumerable<TenderCard> UpcomingTender(string search);
         IEnumerable<GetTenderDto> FavouriteTender(int userId, string search);
 
-        IEnumerable<GetTenderDto> GetMyTenders(long companyId, string search, CompanyTypeEnum companyType);
         IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search);
         BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search);
 
@@ -53,12 +51,5 @@ namespace MeroBolee.Service
         TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto);
 
 
-        /// <summary>
-        /// Get all logs associated with a tender auction for a company
-        /// </summary>
-        /// <param name="companyId">Supplier company Id</param>
-        /// <param name="tenderId">A tender number</param>
-        /// <returns></returns>
-        Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
     }
 }

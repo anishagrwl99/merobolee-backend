@@ -243,6 +243,8 @@ namespace MeroBolee
             services.AddScoped<ITenderCardFeedbackRepository, TenderCardFeedbackRepository>();
             services.AddScoped<ITenderCardFeedbackService, TenderCardFeedbackService>();
 
+            //File writing service
+            services.AddScoped<IMemoryStreamService, MemoryStreamService>();
             //Hangfire configuration
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration

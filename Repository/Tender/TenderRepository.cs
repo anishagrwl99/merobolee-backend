@@ -183,65 +183,6 @@ namespace MeroBolee.Repository
 
 
         /// <summary>
-        /// bid inviter tender
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="search"></param>
-        /// <param name="companyType"></param>
-        /// <returns></returns>
-        public IEnumerable<TenderEntity> GetMyTender(long companyId, string search, CompanyTypeEnum companyType)
-        {
-            if (companyType == CompanyTypeEnum.BidInviter)
-            {
-                return meroBoleeDbContexts.TenderEntities
-                        .Include(x => x.CreatedByUser)
-                        .Include(x => x.TenderStatusEntity)
-                        .Include(x => x.TenderMaterialEntities)
-                        .Include(x => x.TenderTermsConditionEntities)
-                        .Include(x => x.CategoryEntity)
-                        .Where(m => m.CompanyId == companyId
-                        //&& (m.Live_Start_Date>= DateTime.Now)
-                        && ((search == null)
-                    //|| (m.Tender_Code.ToString().Contains(search))
-                    //|| (m.Tender_Description.ToLower().Contains(search.ToLower()))
-                    //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
-                    || (m.Tender_Title.ToLower().Contains(search.ToLower()))
-                    //|| (m.Tender_live_interval.ToString().Contains(search.ToLower()))
-                    //|| (m.Live_Start_Date.ToString().Contains(search.ToLower()))
-                    //|| (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                    //|| (m.Duration_Type.ToLower().Contains(search.ToLower()))
-                    //|| (m.Tender_Duration.ToString().Contains(search.ToLower()))
-                    //|| (m.Tender_fee.ToString().Contains(search.ToLower()))
-                    //|| (m.AdminStatusEntity.Status.ToLower().Contains(search.ToLower()))
-                    //|| (m.AuctionStatusEntity.Status.ToLower().Contains(search.ToLower()))
-                    //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
-                    )).ToList();
-            }
-            else
-            {
-                List<TenderEntity> tenders = (from req in meroBoleeDbContexts.BidderRequestEntities
-                                              join ten in meroBoleeDbContexts.TenderEntities on req.Tender_Id equals ten.Tender_Id
-                                              where (req.CompanyId == companyId
-                                                      && ((search == null)
-                                                       || (ten.Tender_Title.ToLower().Contains(search.ToLower()))
-                                                 ))
-                                              select ten
-                         ).ToList<TenderEntity>();
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
-                meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
-                meroBoleeDbContexts.TenderMaterialEntities.ToList();
-                meroBoleeDbContexts.MaterialFeatureEntities.ToList();
-
-                meroBoleeDbContexts.UserEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                return tenders;
-            }
-        }
-
-
-        /// <summary>
         /// bid inivter tender history
         /// </summary>
         /// <param name="companyId"></param>
@@ -379,44 +320,6 @@ namespace MeroBolee.Repository
                 //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
                 )).ToList();
 
-        }
-
-
-        /// <summary>
-        /// get tender by auctioneer
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        public IEnumerable<TenderEntity> GetTenderByAuctioneer(long userId, string search)
-        {
-            try
-            {
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
-                meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
-                meroBoleeDbContexts.TenderMaterialEntities.ToList();
-                meroBoleeDbContexts.MaterialFeatureEntities.ToList();
-
-                meroBoleeDbContexts.UserEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                return meroBoleeDbContexts.TenderEntities.Where(m => (m.CreatedBy == userId) && ((search == null)
-                || (m.Tender_Code.ToString().Contains(search))
-                || (m.Tender_Title.ToLower().Contains(search.ToLower()))
-                || (m.Tender_live_interval.ToString().Contains(search.ToLower()))
-                || (m.Live_Start_Date.ToString().Contains(search.ToLower()))
-                || (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                //  || (m.Tender_fee.ToString().Contains(search.ToLower()))
-                || (m.TenderStatusEntity.Status.ToLower().Contains(search.ToLower()))
-
-                //  || (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
-                )).ToList();
-            }
-            catch (Exception)
-            {
-                throw new Exception();
-            }
         }
 
         //public IEnumerable<TenderEntity> GetTenderByBidder()
@@ -645,19 +548,6 @@ namespace MeroBolee.Repository
         }
 
 
-        public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.AuctionLogs
-                    .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
-                    .ToListAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
         public async Task SetTenderStatusToFeedback(TenderEntity tenderEntity)
         {

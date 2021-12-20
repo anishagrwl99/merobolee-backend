@@ -15,13 +15,15 @@ namespace MeroBolee.Controllers.BiddingRequest
     public class BiddingRequestController : BaseController
     {
         private readonly IBiddingRequestService biddingRequestService;
+        private readonly IMemoryStreamService streamService;
         private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
 
-        public BiddingRequestController(IBiddingRequestService biddingRequestService)
+        public BiddingRequestController(IBiddingRequestService biddingRequestService, IMemoryStreamService streamService)
         {
             this.biddingRequestService = biddingRequestService;
+            this.streamService = streamService;
         }
 
 
@@ -46,7 +48,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     {
                         return Ok(new Responses<GetBiddingRequestDto>(dto, "200", "Record is successfully added"));
                     }
-                    
+
                 }
                 else
                 {
@@ -73,7 +75,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="supplierId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Position")]
-        public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination , [FromQuery] int tenderId, [FromQuery] int supplierId)
+        public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination, [FromQuery] int tenderId, [FromQuery] int supplierId)
         {
             string url = Url.Action("GetBiddingPosition", null, null, Request.Scheme); //get url for current request
             this.uriService = new UriService(url);
@@ -89,9 +91,9 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
-        
-        
-        
+
+
+
         /// <summary>
         /// Submit a bid during live auction time 
         /// </summary>
@@ -105,14 +107,14 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
                     LiveBidResponse res = biddingRequestService.LiveBid(bidRequest);
-                    
+
                     if (res.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
                     }
                     else
                     {
-                        return StatusCode(400 , new Responses<LiveBidResponse>(res, "400", res.Message));
+                        return StatusCode(400, new Responses<LiveBidResponse>(res, "400", res.Message));
                     }
                 }
                 else
@@ -145,7 +147,7 @@ namespace MeroBolee.Controllers.BiddingRequest
             try
             {
                 ResetBidDto response = await biddingRequestService.CheckBiddingTime(tenderId);
-                if(response != null)
+                if (response != null)
                 {
                     return Ok(response);
                 }
@@ -153,7 +155,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     return NotFound(new Responses<ResetBidDto>(response, "404", "Tender record not found"));
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -162,7 +164,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
-           
+
             //return ResetBidDto;
         }
 
@@ -173,13 +175,13 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <returns></returns>
         [HttpPost("Bidding/AutoBid")]
-        public  IActionResult AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
+        public IActionResult AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    LiveBidResponse response =  biddingRequestService.AutoBid(autoBidDto);
+                    LiveBidResponse response = biddingRequestService.AutoBid(autoBidDto);
                     if (response.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(response, "200", response.Message));
@@ -310,7 +312,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="id"></param>
         /// <param name="updateRequest"></param>
         /// <returns></returns>
-        [HttpPut("Bidding/Update")]
+        [HttpPut("Bidding/Admin/Registration/ApproveOrDisapprove")]
         public IActionResult Update([FromQuery] int id, [FromBody] UpdateRequestDto updateRequest)
         {
             try
@@ -349,6 +351,189 @@ namespace MeroBolee.Controllers.BiddingRequest
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
             }
+        }
+
+        /// <summary>
+        /// Get a auction logs associated with a tender auction from all bidders
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/BidInviter/AuctionLog")]
+        public async Task<IActionResult> GetAuctionLogForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLogForBidInviter", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get a auction logs in a file associated with a tender auction from all bidders
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/BidInviter/AuctionLog/Download")]
+        public async Task<IActionResult> GetAuctionLogForBidInviterInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLogForBidInviter", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    byte[] fileContent = streamService.ToArray(logs);
+                    return File(fileContent, "text/csv", $"AuctionLog_{logs.FirstOrDefault().TenderId}.csv");
+                    //return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        /// <summary>
+        /// Get a auction logs associated with a tender auction submitted by a specific bidder
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Bidder/AuctionLog")]
+        public async Task<IActionResult> GetAuctionLog([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLog", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get a auction logs in a file associated with a tender auction submitted by a specific bidder
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Bidder/AuctionLog/Download")]
+        public async Task<IActionResult> GetAuctionLogInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLog", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    byte[] fileContent = streamService.ToArray(logs);
+                    return File(fileContent, "text/csv", $"AuctionLog_{logs.FirstOrDefault().TenderId}.csv");
+                    //return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        private PagedResponse<AuctionLog> ResultAfterPagination(IEnumerable<AuctionLog> logs, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<AuctionLog>(logs, totalCount);
+            }
+
+            var get = logs.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
         }
 
         private PagedResponse<GetBiddingRequestDto> ResultAfterPagination(IEnumerable<GetBiddingRequestDto> getBiddingRequest, PaginationQuery pagination, int totalCount)

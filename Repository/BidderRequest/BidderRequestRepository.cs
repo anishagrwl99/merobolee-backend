@@ -302,5 +302,35 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.AuctionLogs
+                    .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
+                    .Include(x=> x.Company)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.AuctionLogs
+                    .Where(x => x.TenderId == tenderId)
+                    .Include(x => x.Company)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -303,6 +303,35 @@ namespace MeroBolee.Service
             });
         }
 
+
+        public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
+        {
+            try
+            {
+                List<AuctionLog> logs = await bidderRequestRepository.GetTenderAuctionLog(companyId, tenderId);
+                return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
+        {
+            try
+            {
+                List<AuctionLog> logs = await bidderRequestRepository.GetTenderAuctionLogForBidInviter(tenderId);
+                return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
         private LiveBidResponse GetPositionFromCache(long tenderId, long supplierId, decimal quotation)
         {
             string key = $"Tender_Bidding_{tenderId}";

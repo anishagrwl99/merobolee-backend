@@ -33,6 +33,20 @@ namespace MeroBolee.Repository
 
         void WriteAutionLogEntry(AuctionLog log);
 
+        /// <summary>
+        /// Get all logs associated with a tender auction for a company
+        /// </summary>
+        /// <param name="companyId">Supplier company Id</param>
+        /// <param name="tenderId">A tender Id</param>
+        /// <returns></returns>
+        Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
 
+
+        /// <summary>
+        /// Get all logs associated with a tender auction for a company
+        /// </summary>
+        /// <param name="tenderId">A tender Id</param>
+        /// <returns></returns>
+        Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId);
     }
 }
