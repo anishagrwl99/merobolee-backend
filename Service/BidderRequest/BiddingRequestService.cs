@@ -117,7 +117,7 @@ namespace MeroBolee.Service
             }
 
         }
-        public LiveBidResponse AutoBid(TenderMaterialBiddingDto bidDto)
+        public LiveBidResponse AutoBid(TenderAutoBidDto bidDto)
         {
             string key = $"Tender_Bidding_{bidDto.TenderId}";
             List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
@@ -140,7 +140,7 @@ namespace MeroBolee.Service
                             BiddingRequestId = bidDto.BiddingId,
                             TenderId = bidDto.TenderId,
                             MaterialId = q.MaterialId,
-                            Quotation = DescreaseQuotationByOnePercent(ent.Quotation)
+                            Quotation = DescreaseQuotationByPercent(bidDto.Percentage, ent.Quotation)
                         });
                     }
                 }
@@ -526,11 +526,11 @@ namespace MeroBolee.Service
         }
 
 
-        private string DescreaseQuotationByOnePercent(string prevQuotation)
+        private string DescreaseQuotationByPercent(decimal percentage, string prevQuotation)
         {
-            decimal d = cryptoService.Decrypt<decimal>(prevQuotation);
-            d = d - (0.01M * d); //decrease quotation by 1%
-            return cryptoService.Encrypt(d.ToString());
+            decimal quotation = cryptoService.Decrypt<decimal>(prevQuotation);
+            quotation = quotation - (percentage * quotation)/100; //decrease quotation by x%
+            return cryptoService.Encrypt(quotation.ToString());
         }
 
     }

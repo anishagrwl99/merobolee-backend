@@ -29,7 +29,7 @@ namespace MeroBolee.Service
         Task MoveBidToHistory();
 
         Task<ResetBidDto> CheckBiddingTime(long tenderId);
-        LiveBidResponse AutoBid(TenderMaterialBiddingDto bidDto);
+        LiveBidResponse AutoBid(TenderAutoBidDto bidDto);
 
         /// <summary>
         /// Get all logs associated with a tender auction for a company

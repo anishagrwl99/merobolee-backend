@@ -88,6 +88,13 @@ namespace MeroBolee.Dto
         public DateTime BiddingDate { get; set; }
     }
 
+    public class TenderAutoBidDto : TenderMaterialBiddingDto
+    {
+        [Required(ErrorMessage = "Percentage to deduct is required")]
+        [Range(0, 100.00, ErrorMessage = "Invalid percentage for calculation")]
+        public decimal Percentage { get; set; }
+    }
+
     public class TenderMaterialQuotationDto
     {
 

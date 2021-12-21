@@ -171,11 +171,11 @@ namespace MeroBolee.Controllers.BiddingRequest
 
 
         /// <summary>
-        /// Automatically bid to a tender with a price less than 1% of previous price
+        /// Automatically bid to a tender with a price less than x% of previous price
         /// </summary>
         /// <returns></returns>
         [HttpPost("Bidding/AutoBid")]
-        public IActionResult AutoBid([FromBody] TenderMaterialBiddingDto autoBidDto)
+        public IActionResult AutoBid([FromBody] TenderAutoBidDto autoBidDto)
         {
             try
             {
