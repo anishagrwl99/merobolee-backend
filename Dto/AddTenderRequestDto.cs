@@ -48,6 +48,8 @@ namespace MeroBolee.Dto
         [Range(0, double.MaxValue, ErrorMessage = "Invalid price")]
         public decimal Price { get; set; }
 
+        [Range(0, double.MaxValue, ErrorMessage = "Invalid max quotation")]
+        public decimal MaxQuotation { get; set; }
         public string TenderDocTitle { get; set; }
         public IFormFile TenderDetailDoc { get; set; }
         public IFormFile TenderTermsAndConditionDoc { get; set; }

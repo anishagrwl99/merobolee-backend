@@ -13,7 +13,7 @@ namespace MeroBolee.EntityMapper
 
         private DateTime GetTenderEndDate(DateTime startDateTime, int tenderDuration, string durationUnit)
         {
-            switch(durationUnit.ToLowerInvariant())
+            switch (durationUnit.ToLowerInvariant())
             {
                 case "minute":
                 case "minutes":
@@ -45,7 +45,7 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            TenderEntity entity =  new TenderEntity
+            TenderEntity entity = new TenderEntity
             {
                 CompanyId = tenderDto.CompanyId,
                 Tender_Title = tenderDto.TenderTitle,
@@ -60,6 +60,7 @@ namespace MeroBolee.EntityMapper
                 Location = tenderDto.Location,
                 QualityRequest = tenderDto.QualityRequest,
                 Price = tenderDto.Price,
+                MaxQuotation = tenderDto.MaxQuotation,
                 TenderDetailDocTitle = tenderDto.TenderDocTitle,
                 RegistrationTill = tenderDto.RegistrationTill,
                 Date_created = DateTime.Now,
@@ -103,11 +104,12 @@ namespace MeroBolee.EntityMapper
             entity.EligibilityCriteria = dto.EligibilityCriteria;
             entity.Location = dto.Location;
             entity.Price = dto.Price;
-            
+            entity.MaxQuotation = dto.MaxQuotation;
+
             foreach (var item in dto.TenderMaterials)
             {
                 var itm = entity.TenderMaterialEntities.Where(x => x.Id == item.Id).FirstOrDefault();
-                if(itm == null)
+                if (itm == null)
                 {
                     entity.TenderMaterialEntities.Add(new TenderMaterialEntity
                     {
@@ -125,7 +127,7 @@ namespace MeroBolee.EntityMapper
             foreach (var item in dto.TenderCards)
             {
                 var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
-                if(itm != null)
+                if (itm != null)
                 {
                     entity.TenderCards.Add(new TenderCardEntity
                     {
@@ -139,9 +141,9 @@ namespace MeroBolee.EntityMapper
                     itm.Value = itm.Value;
                 }
             }
-            
+
         }
-        public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity)
+        public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl)
         {
             if (tenderEntity == null)
             {
@@ -153,39 +155,51 @@ namespace MeroBolee.EntityMapper
             getTender.TenderCode = tenderEntity.Tender_Code;
             getTender.TenderTitle = tenderEntity.Tender_Title;
             getTender.CategoryId = tenderEntity.Category_Id;
-            getTender.Category = tenderEntity.CategoryEntity.Category;
+            getTender.CategoryName = tenderEntity.CategoryEntity.Category;
             getTender.TenderLiveInterval = tenderEntity.Tender_live_interval;
             getTender.LiveStartDate = tenderEntity.Live_Start_Date;
             getTender.LiveEndDate = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-            getTender.TenderStatusId = tenderEntity.Tender_Status_Id;
-            getTender.TenderStatus = tenderEntity.TenderStatusEntity.Status;
-            getTender.CancelRemark = tenderEntity.Cancel_remark;
-            getTender.PostedBy = tenderEntity.CreatedBy;
-            getTender.User = tenderEntity.CreatedByUser;
-            getTender.Publish_Date = tenderEntity.Date_created;
-            getTender.TenderMaterial = tenderEntity.TenderMaterialEntities;
-            getTender.TenderTermsCondition = tenderEntity.TenderTermsConditionEntities;
+            getTender.StatusId = tenderEntity.Tender_Status_Id;
+            getTender.Status = tenderEntity.TenderStatusEntity.Status;
+            getTender.CancelRemarks = tenderEntity.Cancel_remark;
+            getTender.Location = tenderEntity.Location;
+            getTender.QualityRequest = tenderEntity.QualityRequest;
+            getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
+            getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
+            getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
+            getTender.Price = tenderEntity.Price;
+            getTender.MaxQuotation = tenderEntity.MaxQuotation;
+            getTender.TenderDetailDocPath = tenderEntity.TenderDetailDocPath;
+            getTender.TenderDetailDocTitle = $"{baseUrl}{tenderEntity.TenderDetailDocTitle.Replace("\\", "/")}";
+            getTender.TermsAndConditionDocPath = $"{baseUrl}{tenderEntity.TermsAndConditionDocPath.Replace("\\", "/")}";
+            getTender.CreatedDate = tenderEntity.Date_created;
+            getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                                         select new TenderMaterialResponseDto
+                                         {
+                                             Id = me.Id,
+                                             MaterialName = me.Materials,
+                                             Quantity = me.Quantity
+                                         }).ToList();
+
+            getTender.CardInfo = (from tc in tenderEntity.TenderCards
+                                  select new TenderCardInfo
+                                  {
+                                      Id = tc.Id,
+                                      Label = tc.Label,
+                                      Value = tc.Value
+                                  }).ToList();
+
+            getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
+                                        select new TenderExtraDocumentResponseDto
+                                        {
+                                            Id = txd.Id,
+                                            DocTitle = txd.DocTitle,
+                                            DocPath = $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
+                                        }).ToList();
+
             return getTender;
 
         }
 
-        public IEnumerable<GetTenderDto> TenderEntityListToDto(IEnumerable<TenderEntity> tenderEntities)
-        {
-
-            List<GetTenderDto> getTenders = new List<GetTenderDto>();
-            if (tenderEntities == null)
-            {
-                return getTenders = null;
-            }
-
-            foreach (TenderEntity tenderEntity in tenderEntities)
-            {
-                getTenders.Add
-                (
-                    TenderEntityToDto(tenderEntity)
-                );
-            }
-            return getTenders;
-        }
     }
 }

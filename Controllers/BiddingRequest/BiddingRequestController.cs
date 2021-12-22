@@ -359,7 +359,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="pagination"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("Tender/BidInviter/AuctionLog")]
+        [HttpGet("Bidding/BidInviter/AuctionLog")]
         public async Task<IActionResult> GetAuctionLogForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -400,7 +400,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="pagination"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("Tender/BidInviter/AuctionLog/Download")]
+        [HttpGet("Bidding/BidInviter/AuctionLog/Download")]
         public async Task<IActionResult> GetAuctionLogForBidInviterInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -443,7 +443,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="pagination"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("Tender/Bidder/AuctionLog")]
+        [HttpGet("Bidding/Bidder/AuctionLog")]
         public async Task<IActionResult> GetAuctionLog([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -484,7 +484,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="pagination"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("Tender/Bidder/AuctionLog/Download")]
+        [HttpGet("Bidding/Bidder/AuctionLog/Download")]
         public async Task<IActionResult> GetAuctionLogInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try

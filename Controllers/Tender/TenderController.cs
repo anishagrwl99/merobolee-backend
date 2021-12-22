@@ -229,39 +229,6 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To display tender list of bidder's interest by bidder id
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="userId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        [HttpGet("Tender/Bidder/InterestTender")]
-        public IActionResult GetInterestTender([FromQuery] PaginationQuery pagination, int userId, [FromQuery] string search = null)
-        {
-            try
-            {
-                string url = Url.Action("GetInterestTender", null, new { userId = userId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetTenderDto> tenders = tenderService.FavouriteTender(userId, search);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetTenderDto>>(tenders, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-
-        }
-
-
-        /// <summary>
         /// To display only upcoming tender by bidder
         /// </summary>
         /// <param name="pagination"></param>
@@ -310,7 +277,7 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    GetTenderDto tenderEntity = tenderService.GetTenderDetail(tenderId);
+                    GetTenderDto tenderEntity = tenderService.GetTenderDetail(tenderId, _baseUrl);
                     if (tenderEntity == null)
                     {
                         response.statusCode = "404";

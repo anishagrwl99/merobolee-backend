@@ -7,48 +7,25 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
-    public class GetTenderDto
+    public class GetTenderDto : TenderCard
     {
-        private long tenderId;
-        private string tenderCode;
-        private string tenderTitle;
-        private int categoryId;
-        private string category;
-        private string tenderDescription;
-        private int tenderliveinterval;
-        private DateTime liveStartDate;
-        private DateTime liveEndDate;
-        private int projectDuration;
-        private string durationType;
-        private long postedBy;
-        private UserEntity userEntity;
-        private int tenderStatusId;
-        private string auctionStatus;
-        private string cancelRemark;
-        private DateTime? publishDate;
-        private ICollection<TenderMaterialEntity> tenderMaterialEntities;
-        private TenderTermsConditionEntity tenderTermsConditionEntities;
+        public int MyProperty { get; set; }
+        public string Location { get; set; }
+        public string QualityRequest { get; set; }
+        public string PerformanceRequest { get; set; }
+        public string EligibilityCriteria { get; set; }
+        public string AdditionalRequest { get; set; }
+        public decimal Price { get; set; }
+        public decimal MaxQuotation { get; set; }
+        public string TenderDetailDocTitle { get; set; }
+        public string TenderDetailDocPath { get; set; }
+        public string TermsAndConditionDocPath { get; set; }
+        public int TenderLiveInterval { get; set; }
+        public string CancelRemarks { get; set; }
+        public DateTime CreatedDate { get; set; }
 
-        public long TenderId { get => tenderId; set => tenderId = value; }
-        public string TenderCode { get => tenderCode; set => tenderCode = value; }
-        public string TenderTitle { get => tenderTitle; set => tenderTitle = value; }
-        public int CategoryId { get => categoryId; set => categoryId = value; }
-        public string Category { get => category; set => category = value; }
-        public string TenderDescription { get => tenderDescription; set => tenderDescription = value; }
-        public int TenderLiveInterval { get => tenderliveinterval; set => tenderliveinterval = value; }
-        public DateTime LiveStartDate { get => liveStartDate; set => liveStartDate = value; }
-        public DateTime LiveEndDate { get => liveEndDate; set => liveEndDate = value; }
-        public int ProjectDuration { get => projectDuration; set => projectDuration = value; }
-        public string DurationType { get => durationType; set => durationType = value; }
-        public long PostedBy { get => postedBy; set => postedBy = value; }
-        public UserEntity User { get => userEntity; set => userEntity = value; }
-
-        public int TenderStatusId { get => tenderStatusId; set => tenderStatusId = value; }
-        public string TenderStatus { get => auctionStatus; set => auctionStatus = value; }
-        public ICollection<TenderMaterialEntity> TenderMaterial { get => tenderMaterialEntities; set => tenderMaterialEntities = value; }
-        public TenderTermsConditionEntity TenderTermsCondition { get => tenderTermsConditionEntities; set => tenderTermsConditionEntities = value; }
-        public string CancelRemark { get => cancelRemark; set => cancelRemark = value; }
-        public DateTime? Publish_Date { get => publishDate; set => publishDate = value; }
+        public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
+        public List<TenderMaterialResponseDto> TenderMaterials { get; set; }
     }
 
 
@@ -63,6 +40,7 @@ namespace MeroBolee.Dto
         public DateTime LiveEndDate { get; set; }
         public DateTime RegistrationTill { get; set; }
         public string Status { get; set; }
+        
 
         public List<TenderCardInfo> CardInfo { get; set; }
 
@@ -73,8 +51,23 @@ namespace MeroBolee.Dto
 
     public class TenderCardInfo
     {
+        public long Id { get; set; }
         public string Label { get; set; }
         public string Value { get; set; }
+    }
+
+    public class TenderExtraDocumentResponseDto
+    {
+        public long Id { get; set; }
+        public string DocTitle { get; set; }
+        public string DocPath { get; set; }
+    }
+
+    public class TenderMaterialResponseDto
+    {
+        public long Id { get; set; }
+        public string MaterialName { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class TenderWatchListCard: TenderCard

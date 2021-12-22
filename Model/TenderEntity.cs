@@ -94,6 +94,7 @@ namespace MeroBolee.Model
         public string EligibilityCriteria { get; set; }
         public string AdditionalRequest { get; set; }
         public decimal Price { get; set; }
+        public decimal MaxQuotation { get; set; }
 
         public string TenderDetailDocTitle { get; set; }
         public string TenderDetailDocPath { get; set; }

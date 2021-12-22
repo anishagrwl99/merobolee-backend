@@ -145,12 +145,12 @@ namespace MeroBolee.Repository
                         TenderId = t.Tender_Id,
                         TenderCode = t.Tender_Code,
                         TenderTitle = t.Tender_Title,
-                        Category = t.CategoryEntity.Category,
+                        CategoryName = t.CategoryEntity.Category,
                         CategoryId = t.Category_Id,
                         LiveStartDate = t.Live_Start_Date,
                         LiveEndDate = t.Live_End_Date,
                         TenderLiveInterval = t.Tender_live_interval,
-                        Publish_Date = t.Date_created
+                        CreatedDate = t.Date_created
                     };
                     companyDetailResponse.Tenders.Add(dto);
                 }

@@ -22,7 +22,6 @@ namespace MeroBolee.Repository
         /// <param name="search"></param>
         /// <returns></returns>
         IEnumerable<TenderCard> UpcomingTender(string search);
-        IEnumerable<TenderEntity> FavouriteTender(long userId, string search);
 
         IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId ,string search);
         IEnumerable<TenderCard> GetBidIniviterTenderListing(long companyId ,string search);

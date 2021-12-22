@@ -63,54 +63,6 @@ namespace MeroBolee.Repository
 
 
         /// <summary>
-        /// Favourite tender
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        public IEnumerable<TenderEntity> FavouriteTender(long userId, string search)
-        {
-            try
-            {
-                List<TenderEntity> tenderlist = new();
-                var favourite = meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.User_id == userId).ToList();
-                foreach (var item in favourite)
-                {
-                    var tender = meroBoleeDbContexts.TenderEntities.Where(m => (m.Category_Id == item.Category_id) && ((search == null)
-                    || (m.Tender_Code.ToString().Contains(search))
-                    || (m.Tender_Title.ToLower().Contains(search.ToLower()))
-                    || (m.Tender_live_interval.ToString().Contains(search.ToLower()))
-                    || (m.Live_Start_Date.ToString().Contains(search.ToLower()))
-                    || (m.Live_End_Date.ToString().Contains(search.ToLower()))
-                    //  || (m.Tender_fee.ToString().Contains(search.ToLower()))
-                    || (m.TenderStatusEntity.Status.ToLower().Contains(search.ToLower()))
-                    //|| (m.PaymentStatusEntity.Payment_status.ToLower().Contains(search.ToLower()))
-                    )).ToList();
-                    foreach (var items in tender)
-                    {
-                        tenderlist.Add(items);
-                    }
-                }
-
-                meroBoleeDbContexts.AuctionStatusEntities.ToList();
-                meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
-                meroBoleeDbContexts.TenderMaterialEntities.ToList();
-                meroBoleeDbContexts.MaterialFeatureEntities.ToList();
-
-                meroBoleeDbContexts.UserEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                return tenderlist;
-            }
-            catch (Exception)
-            {
-                throw new Exception();
-            }
-        }
-
-
-        /// <summary>
         /// Marketplace tender
         /// </summary>
         /// <param name="search"></param>
@@ -138,6 +90,7 @@ namespace MeroBolee.Repository
                                         where tc.TenderId == t.Tender_Id
                                         select new TenderCardInfo
                                         {
+                                            Id = tc.Id,
                                             Label = tc.Label,
                                             Value = tc.Value
                                         }).ToList()
@@ -213,6 +166,7 @@ namespace MeroBolee.Repository
                                         where tc.TenderId == t.Tender_Id
                                         select new TenderCardInfo
                                         {
+                                            Id = tc.Id,
                                             Label = tc.Label,
                                             Value = tc.Value
                                         }).ToList()
@@ -260,6 +214,7 @@ namespace MeroBolee.Repository
                                         where tc.TenderId == t.Tender_Id
                                         select new TenderCardInfo
                                         {
+                                            Id = tc.Id,
                                             Label = tc.Label,
                                             Value = tc.Value
                                         }).ToList()
@@ -407,6 +362,7 @@ namespace MeroBolee.Repository
                                         where tc.TenderId == t.Tender_Id
                                         select new TenderCardInfo
                                         {
+                                            Id = tc.Id,
                                             Label = tc.Label,
                                             Value = tc.Value
                                         }).ToList()

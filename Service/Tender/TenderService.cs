@@ -70,11 +70,6 @@ namespace MeroBolee.Service
             return entity;
         }
 
-        public IEnumerable<GetTenderDto> FavouriteTender(int userId, string search)
-        {
-            return TenderEntityListToDto(tenderRepository.FavouriteTender(userId, search));
-        }
-
         public IEnumerable<TenderCard> GetMarketplaceTender(string search)
         {
             return tenderRepository.GetMarketplaceTender(search);
@@ -98,9 +93,9 @@ namespace MeroBolee.Service
         }
 
 
-        public GetTenderDto GetTenderDetail(long id)
+        public GetTenderDto GetTenderDetail(long tenderId, string baseUrl)
         {
-            return TenderEntityToDto(tenderRepository.GetTenderDetail(id));
+            return TenderEntityToDto(tenderRepository.GetTenderDetail(tenderId), baseUrl);
         }
 
         public IEnumerable<TenderCard> UpcomingTender(string search)
