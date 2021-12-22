@@ -314,6 +314,7 @@ namespace MeroBolee.Repository
                     .Include(x => x.ExtraDocuments)
                     .Include(x=> x.CategoryEntity)
                     .Include(x=> x.CreatedByUser)
+                    .Include(x=> x.TenderStatusEntity)
                     .FirstOrDefault();
 
                 //meroBoleeDbContexts

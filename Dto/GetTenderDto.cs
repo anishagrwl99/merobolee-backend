@@ -9,7 +9,6 @@ namespace MeroBolee.Dto
 {
     public class GetTenderDto : TenderCard
     {
-        public int MyProperty { get; set; }
         public string Location { get; set; }
         public string QualityRequest { get; set; }
         public string PerformanceRequest { get; set; }

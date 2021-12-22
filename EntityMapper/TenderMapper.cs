@@ -169,8 +169,8 @@ namespace MeroBolee.EntityMapper
             getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
             getTender.Price = tenderEntity.Price;
             getTender.MaxQuotation = tenderEntity.MaxQuotation;
-            getTender.TenderDetailDocPath = tenderEntity.TenderDetailDocPath;
-            getTender.TenderDetailDocTitle = $"{baseUrl}{tenderEntity.TenderDetailDocTitle.Replace("\\", "/")}";
+            getTender.TenderDetailDocTitle = tenderEntity.TenderDetailDocTitle;
+            getTender.TenderDetailDocPath = $"{baseUrl}{tenderEntity.TenderDetailDocPath.Replace("\\", "/")}";
             getTender.TermsAndConditionDocPath = $"{baseUrl}{tenderEntity.TermsAndConditionDocPath.Replace("\\", "/")}";
             getTender.CreatedDate = tenderEntity.Date_created;
             getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
