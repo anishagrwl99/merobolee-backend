@@ -19,12 +19,17 @@ namespace MeroBolee.Service
         private IBidderRequestRepository bidderRequestRepository;
         private IMemoryCache memoryCache;
         private ICryptoService cryptoService;
+        private readonly ITenderService tenderService;
 
-        public BiddingRequestService(IBidderRequestRepository bidderRequestRepository, IMemoryCache cache, ICryptoService cryptoService)
+        public BiddingRequestService(IBidderRequestRepository bidderRequestRepository,
+                                        IMemoryCache cache,
+                                        ICryptoService cryptoService,
+                                        ITenderService tenderService)
         {
             this.bidderRequestRepository = bidderRequestRepository;
             memoryCache = cache;
             this.cryptoService = cryptoService;
+            this.tenderService = tenderService;
         }
         public async Task<GetBiddingRequestDto> SendRequest(AddBiddingRequestDto bidderRequest)
         {
@@ -45,11 +50,12 @@ namespace MeroBolee.Service
             //// return bids;
             //return null;
         }
-        public LiveBidResponse LiveBid(TenderMaterialBiddingDto materialDto)
+        public async Task<LiveBidResponse> LiveBid(TenderMaterialBiddingDto materialDto)
         {
             try
             {
-                bool isQuotationValid = IsQuotationValid(materialDto);
+                string errorMessage = "";
+                bool isQuotationValid = await IsQuotationValid(materialDto, out errorMessage);
                 if (isQuotationValid)
                 {
                     string batch = $"Tender_Batch_{materialDto.SupplierId}_{materialDto.TenderId}";
@@ -70,15 +76,15 @@ namespace MeroBolee.Service
 
                         AuctionLog log = new AuctionLog
                         {
-                            Amount = currentQuotation, 
-                            LogDate =DateTime.Now,
+                            Amount = currentQuotation,
+                            LogDate = DateTime.Now,
                             Position = response.Position,
                             TenderId = materialDto.TenderId,
                             UserId = materialDto.SupplierId,
                             CompanyId = materialDto.CompanyId,
                             BiddingId = materialDto.BiddingId
                         };
-                      
+
                         bidderRequestRepository.WriteAutionLogEntry(log);
                         response.Log = log;
                         response.CurrentQuotation = currentQuotation;
@@ -106,7 +112,7 @@ namespace MeroBolee.Service
                     response.IsBidSuccess = false;
                     response.CurrentQuotation = currentQuotation;
                     response.MaterialQuotation = materialDto.MaterialQuotation;
-                    response.Message = "You have already quotated less than or same as current quotation";
+                    response.Message = errorMessage;
                     return response;
                 }
             }
@@ -180,7 +186,7 @@ namespace MeroBolee.Service
                 ResetBidDto dto = null;
                 memoryCache.TryGetValue<ResetBidDto>(timeKey, out dto);
 
-                if(dto!= null && dto.IsTenderExpired)
+                if (dto != null && dto.IsTenderExpired)
                 {
                     return dto;
                 }
@@ -197,14 +203,14 @@ namespace MeroBolee.Service
 
                     if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false && dto.RemainingSecond < 1)
                     {
-                        dto.RemainingMinute = (int)dto.Interval;                       
+                        dto.RemainingMinute = (int)dto.Interval;
                         dto.MinQuotationRecivedAt = DateTime.Now;
                         dto.FullIntervalCountWithoutReceivingBid++;
 
-                        if(dto.RemainingSecond < 0) //if request is not receive and second moves to negative
+                        if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
                         {
                             int sec = Math.Abs(dto.RemainingSecond);
-                            dto.RemainingMinute = (int)((dto.Interval * 60  - (int)(sec / 60))/60) - 1;
+                            dto.RemainingMinute = (int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1;
                             dto.RemainingSecond = 60 - (int)(sec % 60);
                         }
                         else
@@ -230,7 +236,7 @@ namespace MeroBolee.Service
                             FullIntervalCountWithoutReceivingBid = 0,
                             TenderLiveEndDate = e.Live_End_Date
                         };
-                        
+
                     }
                 }
 
@@ -243,7 +249,7 @@ namespace MeroBolee.Service
                 {
                     dto.IsTenderExpired = true;
                     dto.RemainingMinute = 0;
-                    dto.RemainingSecond = 0;                   
+                    dto.RemainingSecond = 0;
                 }
                 memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
                 return dto;
@@ -383,51 +389,71 @@ namespace MeroBolee.Service
             }
         }
 
-        private bool IsQuotationValid(TenderMaterialBiddingDto dto)
+        private Task<bool> IsQuotationValid(TenderMaterialBiddingDto dto, out string errorMsg)
         {
             decimal minimumQuotation = 0;
             bool isValid = false;
-            foreach (var item in dto.MaterialQuotation)
-            {
-                item.Quotation = Math.Round(item.Quotation, 2);
-                string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
-                memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
-                if (minimumQuotation <= 0) //no bid found for this material
-                {
-                    memoryCache.Set<decimal>(key, item.Quotation);
-                    isValid = true;
-                    item.IsPrevCacheAvailable = false;
-                }
-                else if (item.Quotation < minimumQuotation)
-                {
-                    memoryCache.Set<decimal>(key, item.Quotation);
-                    isValid = true;
-                    item.IsPrevCacheAvailable = true;
-                    item.PreviousQuotation = minimumQuotation;
-                }
-                else if (minimumQuotation > 0)
-                {
-                    item.IsPrevCacheAvailable = true;
-                    item.PreviousQuotation = minimumQuotation;
-                }
-            }
-
-            if (!isValid)
+            errorMsg = "You have already quotated less than or same as current quotation";
+            Tuple<decimal, DateTime, DateTime> tenderInfo = tenderService.GetMaxQuotationAllowed(dto.TenderId);
+            decimal currentQuotation = dto.MaterialQuotation.Sum(x => x.Quotation);
+            if (tenderInfo.Item1 != 0 && currentQuotation < tenderInfo.Item1)
             {
                 foreach (var item in dto.MaterialQuotation)
                 {
+                    item.Quotation = Math.Round(item.Quotation, 2);
                     string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
-                    if (item.IsPrevCacheAvailable)
+                    memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
+                    if (minimumQuotation <= 0) //no bid found for this material
                     {
-                        memoryCache.Set<decimal>(key, item.PreviousQuotation);
+                        memoryCache.Set<decimal>(key, item.Quotation);
+                        isValid = true;
+                        item.IsPrevCacheAvailable = false;
                     }
-                    else
+                    else if (item.Quotation < minimumQuotation)
                     {
-                        memoryCache.Remove(key);
+                        memoryCache.Set<decimal>(key, item.Quotation);
+                        isValid = true;
+                        item.IsPrevCacheAvailable = true;
+                        item.PreviousQuotation = minimumQuotation;
+                    }
+                    else if (minimumQuotation > 0)
+                    {
+                        item.IsPrevCacheAvailable = true;
+                        item.PreviousQuotation = minimumQuotation;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    foreach (var item in dto.MaterialQuotation)
+                    {
+                        string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
+                        if (item.IsPrevCacheAvailable)
+                        {
+                            memoryCache.Set<decimal>(key, item.PreviousQuotation);
+                        }
+                        else
+                        {
+                            memoryCache.Remove(key);
+                        }
                     }
                 }
             }
-            return isValid;
+            else if (tenderInfo.Item1 == 0)
+            {
+                #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(() =>
+                {
+                    UpdateTenderMaxQuotation(dto.TenderId, tenderInfo.Item2, tenderInfo.Item3);
+                });
+                #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+            else
+            {
+                isValid = false;
+                errorMsg = "You have quotated more than allwed quotation";
+            }
+            return Task.FromResult<bool>(isValid);
         }
 
         private LiveBidResponse GetSupplierBiddingPosition(List<LiveBiddingEntity> livebids, long supplierId, decimal currentQuotation)
@@ -529,9 +555,35 @@ namespace MeroBolee.Service
         private string DescreaseQuotationByPercent(decimal percentage, string prevQuotation)
         {
             decimal quotation = cryptoService.Decrypt<decimal>(prevQuotation);
-            quotation = quotation - (percentage * quotation)/100; //decrease quotation by x%
+            quotation = quotation - (percentage * quotation) / 100; //decrease quotation by x%
             return cryptoService.Encrypt(quotation.ToString());
         }
 
+
+        private async Task<decimal> GetMaxQuotation(long tenderId)
+        {
+            List<LiveBiddingEntity> liveBids = await bidderRequestRepository.TenderLiveBids(tenderId);
+            foreach (var item in liveBids)
+            {
+                item.Quotation = cryptoService.Decrypt<string>(item.Quotation);
+            }
+
+            decimal maxQtn = liveBids.GroupBy(x => new { x.BatchNo, x.Quotation }).Max(x => x.Sum(y => Convert.ToDecimal(x.Key.Quotation)));
+            return maxQtn;
+        }
+
+        private void UpdateTenderMaxQuotation(long tenderId, DateTime startTime, DateTime endTime)
+        {
+            TimeSpan timeSpan = endTime.Subtract(startTime);
+            DateTime midDate = startTime.AddSeconds(timeSpan.TotalSeconds / 2);
+            if (midDate <= DateTime.Now)
+            {
+                decimal maxQtn = GetMaxQuotation(tenderId).Result;
+                memoryCache.Set($"TenderInfo_{tenderId}", Tuple.Create(maxQtn, startTime, endTime));
+                //update tender max quotation
+                tenderService.UpdateTenderMaxQuotation(maxQtn, tenderId);
+
+            }
+        }
     }
 }

@@ -148,7 +148,7 @@ namespace MeroBolee.Repository
                 return (from t in meroBoleeDbContexts.TenderEntities
                         join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
                         join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
-                        where t.CompanyId == companyId && t.Tender_Status_Id == 3 && t.Live_End_Date < DateTime.Now 
+                        where t.CompanyId == companyId && t.Tender_Status_Id == 3 && t.Live_End_Date < DateTime.Now
                                     && (search == null || t.Tender_Title.Contains(search))
                         select new TenderCard
                         {
@@ -291,9 +291,9 @@ namespace MeroBolee.Repository
         {
             try
             {
-               // meroBoleeDbContexts.AuctionStatusEntities.ToList();
+                // meroBoleeDbContexts.AuctionStatusEntities.ToList();
                 //meroBoleeDbContexts.PaymentStatusEntities.ToList();
-               // meroBoleeDbContexts.AdminStatusEntities.ToList();
+                // meroBoleeDbContexts.AdminStatusEntities.ToList();
                 //meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).ToList();
                 //meroBoleeDbContexts
                 //    .TenderMaterialEntities
@@ -305,16 +305,16 @@ namespace MeroBolee.Repository
                 //meroBoleeDbContexts.MaterialFeatureEntities
                 //    .Where(x=>x.Material_id.ToString().Contains(string.Join(",", materialIds)))
                 //    .ToList();
-               // meroBoleeDbContexts.CategoryEntities.ToList();
+                // meroBoleeDbContexts.CategoryEntities.ToList();
 
                 TenderEntity ent = meroBoleeDbContexts.TenderEntities
                     .Where(m => m.Tender_Id == tenderId)
-                    .Include(x=> x.TenderMaterialEntities)
+                    .Include(x => x.TenderMaterialEntities)
                     .Include(x => x.TenderCards)
                     .Include(x => x.ExtraDocuments)
-                    .Include(x=> x.CategoryEntity)
-                    .Include(x=> x.CreatedByUser)
-                    .Include(x=> x.TenderStatusEntity)
+                    .Include(x => x.CategoryEntity)
+                    .Include(x => x.CreatedByUser)
+                    .Include(x => x.TenderStatusEntity)
                     .FirstOrDefault();
 
                 //meroBoleeDbContexts
@@ -331,6 +331,18 @@ namespace MeroBolee.Repository
         }
 
 
+        public TenderEntity GetTenderEntityOnly(long tenderId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.TenderEntities.Where(x => x.Tender_Id == tenderId).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
 
         /// <summary>
@@ -512,6 +524,24 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.TenderEntities.Update(tenderEntity);
                 await meroBoleeDbContexts.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Tuple<decimal, DateTime, DateTime> GetMaxQuotationAllowed(long tenderId)
+        {
+            try
+            {
+                var tuple = (from te in meroBoleeDbContexts.TenderEntities
+                             where te.Tender_Id == tenderId
+                             select Tuple.Create(te.MaxQuotation, te.Live_Start_Date, te.Live_End_Date)
+                                                           ).FirstOrDefault();
+
+                return tuple;
             }
             catch (Exception)
             {

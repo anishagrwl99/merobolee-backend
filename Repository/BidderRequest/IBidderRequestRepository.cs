@@ -15,7 +15,7 @@ namespace MeroBolee.Repository
 
         List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity);
         List<LiveBiddingEntity> AutoBid(List<LiveBiddingEntity> bidEntity);
-        Task<List<LiveBiddingEntity>> TenderLiveBids(int tenderId);
+        Task<List<LiveBiddingEntity>> TenderLiveBids(long tenderId);
 
        BidderRequestEntity ShowRequest(int requestId);
 

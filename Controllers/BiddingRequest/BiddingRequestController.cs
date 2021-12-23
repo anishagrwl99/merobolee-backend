@@ -100,13 +100,13 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="bidRequest"></param>
         /// <returns></returns>
         [HttpPost("Bidding/LiveBid")]
-        public IActionResult LiveBid([FromBody] TenderMaterialBiddingDto bidRequest)
+        public async Task<IActionResult> LiveBid([FromBody] TenderMaterialBiddingDto bidRequest)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    LiveBidResponse res = biddingRequestService.LiveBid(bidRequest);
+                    LiveBidResponse res = await biddingRequestService.LiveBid(bidRequest);
 
                     if (res.IsBidSuccess)
                     {

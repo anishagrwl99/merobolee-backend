@@ -45,5 +45,10 @@ namespace MeroBolee.Repository
 
         
         Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
+
+        Tuple<decimal, DateTime, DateTime>  GetMaxQuotationAllowed(long tenderId);
+        TenderEntity GetTenderEntityOnly(long tenderId);
+
+
     }
 }

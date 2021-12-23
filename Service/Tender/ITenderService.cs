@@ -49,6 +49,8 @@ namespace MeroBolee.Service
         /// <returns></returns>
         TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto);
 
+        Tuple<decimal, DateTime, DateTime> GetMaxQuotationAllowed(long tenderId);
 
+        Task UpdateTenderMaxQuotation(decimal maxQuotation, long tenderId);
     }
 }

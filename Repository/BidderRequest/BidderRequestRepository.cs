@@ -144,7 +144,7 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
-        public async Task<List<LiveBiddingEntity>> TenderLiveBids(int tenderId)
+        public async Task<List<LiveBiddingEntity>> TenderLiveBids(long tenderId)
         {
             try
             {
@@ -164,14 +164,14 @@ namespace MeroBolee.Repository
                  * 
                  * */
 
-                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
-                    .GroupBy(o => new { o.UserId, o.TenderId, o.MaterialId })
+                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities                    
                     .Select(g => new LiveBiddingEntity
                     {
-                        UserId = g.Key.UserId,
-                        TenderId = g.Key.TenderId,
-                        MaterialId = g.Key.MaterialId,
-                        Quotation = g.Min(o => o.Quotation)
+                        UserId = g.UserId,
+                        TenderId = g.TenderId,
+                        MaterialId = g.MaterialId,
+                        Quotation = g.Quotation,
+                        BatchNo = g.BatchNo
                     }).ToListAsync();
                 return bids;
 

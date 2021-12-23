@@ -3,6 +3,7 @@ using MeroBolee.EntityMapper;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,22 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
-    public class TenderService: TenderMapper, ITenderService
+    public class TenderService : TenderMapper, ITenderService
     {
         private readonly ITenderRepository tenderRepository;
+        private readonly IMemoryCache cache;
         private readonly IReferenceCodeService referenceCodeService;
         private readonly IUploadFile uploadFileService;
         private readonly ICompanyDocumentRepository docRepo;
 
-        public TenderService(ITenderRepository tenderRepository, 
-                                IReferenceCodeService referenceCodeService, 
-                                IUploadFile uploadFileService, 
+        public TenderService(ITenderRepository tenderRepository,
+                                IMemoryCache cache,
+                                IReferenceCodeService referenceCodeService,
+                                IUploadFile uploadFileService,
                                 ICompanyDocumentRepository docRepo)
         {
             this.tenderRepository = tenderRepository;
+            this.cache = cache;
             this.referenceCodeService = referenceCodeService;
             this.uploadFileService = uploadFileService;
             this.docRepo = docRepo;
@@ -31,7 +35,7 @@ namespace MeroBolee.Service
         public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
         {
             TenderEntity entity = TenderDtoEntity(tenderDto);
-            
+
             entity.Tender_Code = referenceCodeService.GenerateCode(ReferenceEnum.Tender).Result;
             entity = tenderRepository.AddTender(entity);
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
@@ -48,7 +52,7 @@ namespace MeroBolee.Service
             }
 
             entity.ExtraDocuments = new List<TenderExtraDocumentEntity>();
-            
+
             foreach (var item in tenderDto.ExtraDocuments)
             {
                 if (item.Document != null)
@@ -63,9 +67,9 @@ namespace MeroBolee.Service
                     };
                     entity.ExtraDocuments.Add(obj);
                 }
-                }
+            }
 
-                await tenderRepository.UpdateTender(entity);
+            await tenderRepository.UpdateTender(entity);
 
             return entity;
         }
@@ -83,11 +87,11 @@ namespace MeroBolee.Service
 
         public BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search)
         {
-            IEnumerable<TenderCard> tenders =  tenderRepository.GetBidIniviterTenderListing(companyId, search);
+            IEnumerable<TenderCard> tenders = tenderRepository.GetBidIniviterTenderListing(companyId, search);
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
                 PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
-                ActiveTenders = tenders.Where(x=>x.StatusId == 3 && x.LiveEndDate < DateTime.Now).ToList()               
+                ActiveTenders = tenders.Where(x => x.StatusId == 3 && x.LiveEndDate < DateTime.Now).ToList()
             };
             return listing;
         }
@@ -109,20 +113,20 @@ namespace MeroBolee.Service
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
             string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
 
-            if(tenderDto.TenderDetailDoc != null)
+            if (tenderDto.TenderDetailDoc != null)
             {
                 await uploadFileService.DeleteFile(entity.TenderDetailDocPath);
                 entity.TenderDetailDocPath = await uploadFileService.Upload(tenderDto.TenderDetailDoc, docPath);
                 entity.TenderDetailDocTitle = tenderDto.TenderDocTitle;
             }
 
-            if(tenderDto.TenderTermsAndConditionDoc != null)
+            if (tenderDto.TenderTermsAndConditionDoc != null)
             {
                 await uploadFileService.DeleteFile(entity.TermsAndConditionDocPath);
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
 
-            
+
             foreach (var item in tenderDto.ExtraDocuments)
             {
                 var itm = entity.ExtraDocuments.Where(x => x.Id == item.Id).FirstOrDefault();
@@ -138,17 +142,17 @@ namespace MeroBolee.Service
                     };
                     entity.ExtraDocuments.Add(obj);
                 }
-                else 
+                else
                 {
-                    if(item.Document != null)
+                    if (item.Document != null)
                     {
                         await uploadFileService.DeleteFile(itm.DocPath);
                         itm.DocPath = await uploadFileService.Upload(item.Document, docPath);
-                    }                   
-                    itm.DocTitle = item.DocTitle;                   
+                    }
+                    itm.DocTitle = item.DocTitle;
                 }
             }
-            
+
             UpdateTenderEntity(ref entity, tenderDto);
             await tenderRepository.UpdateTender(entity);
             return entity;
@@ -178,7 +182,7 @@ namespace MeroBolee.Service
                 {
                     tenderRepository.EndTenderAuction(tenderId);
                 });
-              
+
             }
             catch (Exception)
             {
@@ -199,6 +203,43 @@ namespace MeroBolee.Service
                 return dto;
             }
             catch
+            {
+
+                throw;
+            }
+        }
+
+        public Tuple<decimal, DateTime, DateTime> GetMaxQuotationAllowed(long tenderId)
+        {
+            try
+            {
+                string key = $"TenderInfo_{tenderId}";
+                Tuple<decimal, DateTime, DateTime> tuple;
+                cache.TryGetValue<Tuple<decimal, DateTime, DateTime>>(key, out tuple);
+
+                if(tuple == null)
+                {
+                    tuple = tenderRepository.GetMaxQuotationAllowed(tenderId);
+                    cache.Set(key, tuple);
+                }
+                return tuple;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task UpdateTenderMaxQuotation(decimal maxQuotation, long tenderId)
+        {
+            try
+            {
+                TenderEntity t = tenderRepository.GetTenderEntityOnly(tenderId);
+                t.MaxQuotation = maxQuotation;
+                await tenderRepository.UpdateTender(t);
+            }
+            catch (Exception)
             {
 
                 throw;
