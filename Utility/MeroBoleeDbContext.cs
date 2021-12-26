@@ -119,6 +119,11 @@ namespace MeroBolee.Utility
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<BidRequestEntity>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<WatchListEntity>()
                .HasOne(e => e.UserEntity)
                .WithMany()
@@ -216,6 +221,11 @@ namespace MeroBolee.Utility
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<AuctionLog>()
+                .HasOne(e => e.BidRequest)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<TenderCardFeedbackEntity>()
                 .HasOne(e => e.Tender)
                 .WithMany()
@@ -250,8 +260,9 @@ namespace MeroBolee.Utility
 
             builder.Entity<BidRequestStatusEntity>().HasData(
                 new BidRequestStatusEntity() { StatusId = 1, Status = "Pending Approval" },
-                new BidRequestStatusEntity() { StatusId = 2, Status = "Approved" },
-                new BidRequestStatusEntity() { StatusId = 3, Status = "Closed" }
+                new BidRequestStatusEntity() { StatusId = 2, Status = "Approve" },
+                new BidRequestStatusEntity() { StatusId = 3, Status = "Require More Document" },
+                new BidRequestStatusEntity() { StatusId = 4, Status = "Reject" }
                 );
 
             builder.Entity<TenderStatusEntity>().HasData(

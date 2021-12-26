@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("mb_bid_request")]
+    [Table("mb_bidder_request")]
     public class BidRequestEntity: BaseEntity
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
