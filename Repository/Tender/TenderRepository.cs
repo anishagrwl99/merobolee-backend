@@ -44,7 +44,6 @@ namespace MeroBolee.Repository
 
                 meroBoleeDbContexts.TenderStatus.ToList();
                 meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.AdminStatusEntities.ToList();
                 meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
                 meroBoleeDbContexts.TenderMaterialEntities.ToList();
                 meroBoleeDbContexts.MaterialFeatureEntities.ToList();
@@ -356,7 +355,7 @@ namespace MeroBolee.Repository
             {
                 return (from t in meroBoleeDbContexts.TenderEntities
                         join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.StatusId
+                        join s in meroBoleeDbContexts.BidRequestStatusEntities on t.Tender_Status_Id equals s.StatusId
                         where t.Tender_Status_Id == 3 && (search == null || t.Tender_Title.Contains(search))
                             && (t.Live_Start_Date >= DateTime.Now && t.Live_Start_Date <= DateTime.Now.AddDays(7))
                         select new TenderCard

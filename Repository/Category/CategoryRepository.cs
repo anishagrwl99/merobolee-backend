@@ -21,7 +21,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.CategoryEntities.Add(categoryEntity);
                 unitOfWork.SaveChange();
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return categoryEntity;
             }
             catch (ArgumentNullException)
@@ -58,7 +58,7 @@ namespace MeroBolee.Repository
                 {
                     return Category = null;
                 }
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return Category;
             }
             catch (ArgumentNullException)
@@ -75,7 +75,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return meroBoleeDbContexts.CategoryEntities.Where(m => (search == null)
                 || (m.Category.ToLower().Contains(search.ToLower()))
                 ).ToList();

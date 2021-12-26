@@ -179,11 +179,7 @@ namespace MeroBolee
             services.AddScoped<IProvinceService, ProvinceService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IStatusRepository, StatusRepository>();
-            services.AddScoped<IAdminStatusRepository, AdminStatusRepository>();
-            services.AddScoped<IAuctionStatusRepository, AuctionStatusRepository>();
-            services.AddScoped<IUserStatusRepository, UserStatusRepository>();
-            services.AddScoped<IStatusService, StatusService>();
+            
             services.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
             services.AddScoped<ICompanyTypeService, CompanyTypeService>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -194,18 +190,19 @@ namespace MeroBolee
             services.AddScoped<IFavouriteCategoryService, FavouriteCategoryService>();
             services.AddScoped<ITenderRepository, TenderRepository>();
             services.AddScoped<ITenderService, TenderService>();
-            services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
             services.AddScoped<IWatchListRepository, WatchListRepository>();
             services.AddScoped<IWatchListService, WatchListService>();
             services.AddScoped<IBiddingRequestService, BiddingRequestService>();
             services.AddScoped<IBidderRequestRepository, BidderRequestRepository>();
-            services.AddScoped<IRequestStatusRepository, RequestStatusRepository>();
             services.AddScoped<IFAQRepository, FAQRepository>();
             services.AddScoped<IFAQService, FAQService>();
             services.AddScoped<IRequestHelpRepository, RequestHelpRepository>();
             services.AddScoped<IRequestHelpService, RequestHelpService>();
             services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
+            //status
+            services.AddScoped<IStatusService, StatusService>();
+            services.AddScoped<IStatusRepository, StatusRepository>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();

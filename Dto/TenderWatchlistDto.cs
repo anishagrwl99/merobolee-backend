@@ -21,7 +21,6 @@ namespace MeroBolee.Dto
         private DateTime? publishDate;
     //    private TimeSpan publish_Time;
         private int statusid;
-        private AdminStatusEntity status;
 
         public long TenderId { get => tenderId; set => tenderId = value; }
         public string TenderCode { get => tenderCode; set => tenderCode = value; }
@@ -37,6 +36,5 @@ namespace MeroBolee.Dto
         public DateTime? PublishDate { get => publishDate; set => publishDate = value; }
      //   public TimeSpan Publish_Time { get => publish_Time; set => publish_Time = value; }
         public int StatusId { get => statusid; set => statusid = value; }
-        public AdminStatusEntity Status { get => status; set => status = value; }
     }
 }

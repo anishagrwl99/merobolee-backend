@@ -17,11 +17,28 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers
 {
+
+    /// <summary>
+    /// Authorize controller
+    /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme/*, Roles = "Bid Inviter, Bidder"*/)]
-    public class BaseController : Controller
+    public class AuthorizeController : Controller
+    {
+
+    }
+
+    /// <summary>
+    /// Base controller
+    /// </summary>   
+    public class BaseController : AuthorizeController
     {
         internal string _baseUrl, _defaultPic;
 
+
+        /// <summary>
+        /// Condition to check before executing action in each controller
+        /// </summary>
+        /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             _baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";

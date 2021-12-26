@@ -7,52 +7,155 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
+    /// <summary>
+    /// status service interface
+    /// </summary>
+    public interface IStatusService
+    {
+
+        /// <summary>
+        /// get company status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<CompanyStatusEntity>> GetCompanyStatuses();
+
+
+        /// <summary>
+        /// get common status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<CommonStatus>> GetCommonStatuses();
+
+
+        /// <summary>
+        /// get bid registration status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<BidRequestStatusEntity>> GetBidRequestStatuses();
+
+        /// <summary>
+        /// Get user status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<UserStatusEntity>> GetUserStatuses();
+
+        /// <summary>
+        /// get payment status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<PaymentStatusEntity>> GetPaymentStatuses();
+
+        /// <summary>
+        /// get request help status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<RequestHelpStatus>> GetRequestHelpStatuses();
+
+        /// <summary>
+        /// Get tender status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<TenderStatusEntity>> GetTenderStatuses();
+
+        /// <summary>
+        /// get a tender submission status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<TenderSubmissionStatus>> GetTenderSubmissionStatuses();
+    }
+
+
+    /// <summary>
+    /// status service impl
+    /// </summary>
     public class StatusService : IStatusService
     {
         private readonly IStatusRepository statusRepository;
-        private readonly IAdminStatusRepository adminStatusRepository;
-        private readonly IAuctionStatusRepository auctionStatusRepository;
-        private readonly IUserStatusRepository userStatusRepository;
-        private readonly IPaymentStatusRepository paymentStatusRepository;
-        private readonly IRequestStatusRepository requestStatusRepository;
-        public StatusService(IStatusRepository statusRepository, IAdminStatusRepository adminStatusRepository, IAuctionStatusRepository auctionStatusRepository, IUserStatusRepository userStatusRepository, IPaymentStatusRepository paymentStatusRepository, IRequestStatusRepository requestStatusRepository)
+
+
+        /// <summary>
+        /// Default const
+        /// </summary>
+        /// <param name="statusRepository"></param>
+        public StatusService(IStatusRepository statusRepository)
         {
             this.statusRepository = statusRepository;
-            this.adminStatusRepository = adminStatusRepository;
-            this.auctionStatusRepository = auctionStatusRepository;
-            this.userStatusRepository = userStatusRepository;
-            this.paymentStatusRepository = paymentStatusRepository;
-            this.requestStatusRepository = requestStatusRepository;
         }
 
-        public IEnumerable<AdminStatusEntity> GetAdminStatuses()
+        /// <summary>
+        /// Get bid request status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<BidRequestStatusEntity>> GetBidRequestStatuses()
         {
-            return adminStatusRepository.GetAdminStatuses();
+            return await statusRepository.GetBidRequestStatuses();
         }
 
-        public IEnumerable<BidRequestStatusEntity> GetAuctionStatuses()
+
+        /// <summary>
+        /// get payment status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<PaymentStatusEntity>> GetPaymentStatuses()
         {
-            return auctionStatusRepository.GetAuctionStatuses();
+            return await statusRepository.GetPaymentStatus();
         }
 
-        public IEnumerable<PaymentStatusEntity> GetPaymentStatuses()
+
+        /// <summary>
+        /// get common status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<CommonStatus>> GetCommonStatuses()
         {
-            return paymentStatusRepository.GetPaymentStatusEntities();
+            return await statusRepository.GetCommonStatuses();
         }
 
-        public IEnumerable<PublishStatus> GetPublishStatuses()
+        /// <summary>
+        /// get help request status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<RequestHelpStatus>> GetRequestHelpStatuses()
         {
-            return statusRepository.GetPublishStatuses();
+            return await statusRepository.GetRequestHelpStatus();
         }
 
-        public IEnumerable<RequestHelpStatus> GetRequestHelpStatuses()
+
+        /// <summary>
+        /// get user status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<UserStatusEntity>> GetUserStatuses()
         {
-            return requestStatusRepository.GetRequestHelpStatus();
+            return await statusRepository.GetUserStatuses();
         }
 
-        public IEnumerable<UserStatusEntity> GetUserStatuses()
+
+        /// <summary>
+        /// get company status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<CompanyStatusEntity>> GetCompanyStatuses()
         {
-            return userStatusRepository.GetUserStatuses();
+            return await statusRepository.GetCompanyStatus();
+        }
+
+        /// <summary>
+        /// get tender status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<TenderStatusEntity>> GetTenderStatuses()
+        {
+            return await statusRepository.GetTenderStatuses();
+        }
+
+        /// <summary>
+        /// Get a tender submission status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<TenderSubmissionStatus>> GetTenderSubmissionStatuses()
+        {
+            return await statusRepository.GetTenderSubmissionStatuses();
         }
     }
 }

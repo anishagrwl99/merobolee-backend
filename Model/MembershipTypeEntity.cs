@@ -17,7 +17,7 @@ namespace MeroBolee.Model
         private float membership_fee;
         private float discount;
         private int status_Id;
-        private PublishStatus status;
+        private CommonStatus status;
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("membership_id")]
         public int Membership_Id { get => membership_Id; set => membership_Id = value; }
@@ -34,6 +34,6 @@ namespace MeroBolee.Model
         [Column("status")]
         [ForeignKey("Status")]
         public int Status_Id { get => status_Id; set => status_Id = value; }
-        public PublishStatus Status { get => status; set => status = value; }
+        public CommonStatus Status { get => status; set => status = value; }
     }
 }

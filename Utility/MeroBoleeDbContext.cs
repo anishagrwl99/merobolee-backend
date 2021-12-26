@@ -47,9 +47,8 @@ namespace MeroBolee.Utility
         public DbSet<CityEntity> CityEntities { get; set; }
         public DbSet<CategoryEntity> CategoryEntities { get; set; }
 
-        public DbSet<PublishStatus> StatusEntities { get; set; }
-        public DbSet<BidRequestStatusEntity> AuctionStatusEntities { get; set; }
-        public DbSet<AdminStatusEntity> AdminStatusEntities { get; set; }
+        public DbSet<CommonStatus> CommonStatusEntities { get; set; }
+        public DbSet<BidRequestStatusEntity> BidRequestStatusEntities { get; set; }
         public DbSet<UserStatusEntity> UserStatusEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<UserExperienceDocEntity> UserExperienceDocEntities { get; set; }
@@ -252,12 +251,6 @@ namespace MeroBolee.Utility
 
         private void SeedStatusData(ModelBuilder builder)
         {
-            builder.Entity<AdminStatusEntity>().HasData(
-                new AdminStatusEntity() { Status_Id = 1, Status = "Active" },
-                new AdminStatusEntity() { Status_Id = 2, Status = "Inactive" },
-                new AdminStatusEntity() { Status_Id = 3, Status = "Approved" }
-                );
-
             builder.Entity<BidRequestStatusEntity>().HasData(
                 new BidRequestStatusEntity() { StatusId = 1, Status = "Pending Approval" },
                 new BidRequestStatusEntity() { StatusId = 2, Status = "Approve" },
@@ -273,9 +266,9 @@ namespace MeroBolee.Utility
                 );
 
 
-            builder.Entity<PublishStatus>().HasData(
-                new PublishStatus() { Status_id = 1, Status = "Active" },
-                new PublishStatus() { Status_id = 2, Status = "Inactive" }
+            builder.Entity<CommonStatus>().HasData(
+                new CommonStatus() { Status_id = 1, Status = "Active" },
+                new CommonStatus() { Status_id = 2, Status = "Inactive" }
                 );
 
             builder.Entity<PaymentStatusEntity>().HasData(

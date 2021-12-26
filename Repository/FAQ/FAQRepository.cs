@@ -53,7 +53,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return meroBoleeDbContexts.FAQEntities.ToList();
             }
             catch (Exception)
@@ -76,7 +76,7 @@ namespace MeroBolee.Repository
                 {
                     return fAQ = null;
                 }
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return fAQ;
             }
             catch (Exception)
@@ -98,7 +98,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.FAQEntities.Add(FAQ);
                 unitOfWork.SaveChange();
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return FAQ;
             }
             catch (Exception)

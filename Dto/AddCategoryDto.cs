@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static MeroBolee.Model.PublishStatus;
+using static MeroBolee.Model.CommonStatus;
 
 namespace MeroBolee.Dto
 {

@@ -7,22 +7,16 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("lk_admin_status")]
-    public class AdminStatusEntity
+    [Table("lk_common_status")]
+    public class CommonStatus
     {
-        private int status_Id;
+        private int status_id;
         private string status;
 
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity) ]
         [Column("status_id")]
-        public int Status_Id { get => status_Id; set => status_Id = value; }
-
-        [Column("admin_status")]
+        public int Status_id { get => status_id; set => status_id = value; }
+        [Column ("status")] 
         public string Status { get => status; set => status = value; }
-
-        public virtual ICollection<CompanyDocumentEntity> CompanyDocuments { get; set; }
-
     }
-
- 
 }

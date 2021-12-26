@@ -21,7 +21,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.MembershipTypeEntities.Add(membershipType);
                 unitOfWork.SaveChange();
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return membershipType;
             }
             catch (ArgumentNullException)
@@ -51,7 +51,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return meroBoleeDbContexts.MembershipTypeEntities.Where(m => (search == null)
                 || (m.Membership_Title.ToLower().Contains(search.ToLower()))
                 || (m.Membership_fee.ToString().Contains(search.ToLower()))
@@ -84,7 +84,7 @@ namespace MeroBolee.Repository
                 {
                     return membershipType = null;
                 }
-                meroBoleeDbContexts.StatusEntities.ToList();
+                meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return membershipType;
             }
             catch (ArgumentNullException)

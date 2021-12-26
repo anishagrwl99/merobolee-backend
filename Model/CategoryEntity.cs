@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using static MeroBolee.Model.PublishStatus;
+using static MeroBolee.Model.CommonStatus;
 
 namespace MeroBolee.Model
 {
@@ -14,7 +14,7 @@ namespace MeroBolee.Model
         private int category_Id;
         private string category;
         private int status_Id;
-        private PublishStatus status;
+        private CommonStatus status;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("category_id")]
@@ -27,7 +27,7 @@ namespace MeroBolee.Model
         [Column("status_id")]
         public int Status_Id { get => status_Id; set => status_Id = value; }
 
-        public PublishStatus Status { get=>status; set=>status=value; }
+        public CommonStatus Status { get=>status; set=>status=value; }
       
         //[Column("status")]
         //public int status_Id { get => (int) this.status; set => this.status = (PublishStatus)value; }
