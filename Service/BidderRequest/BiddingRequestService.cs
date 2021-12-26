@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
 using Microsoft.AspNetCore.Http;
@@ -16,26 +17,125 @@ namespace MeroBolee.Service
     public class BiddingRequestService : BiddingRequestMapper, IBiddingRequestService
     {
         private readonly object _locker = new object();
-        private IBidderRequestRepository bidderRequestRepository;
+        private IBidderRequestRepository bidRequestRepository;
         private IMemoryCache memoryCache;
         private ICryptoService cryptoService;
         private readonly ITenderService tenderService;
+        private readonly IUploadFile fileService;
+        private readonly ICompanyDocumentRepository companyDocumentRepository;
 
-        public BiddingRequestService(IBidderRequestRepository bidderRequestRepository,
+        public BiddingRequestService(IBidderRequestRepository bidRequestRepository,
                                         IMemoryCache cache,
                                         ICryptoService cryptoService,
-                                        ITenderService tenderService)
+                                        ITenderService tenderService,
+                                        IUploadFile fileService,
+                                        ICompanyDocumentRepository companyDocumentRepository)
         {
-            this.bidderRequestRepository = bidderRequestRepository;
+            this.bidRequestRepository = bidRequestRepository;
             memoryCache = cache;
             this.cryptoService = cryptoService;
             this.tenderService = tenderService;
+            this.fileService = fileService;
+            this.companyDocumentRepository = companyDocumentRepository;
         }
-        public async Task<GetBiddingRequestDto> SendRequest(AddBiddingRequestDto bidderRequest)
+
+        /// <summary>
+        /// Register for tender bidding
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<long> RegisterInTenderBidding(RegisterForTenderDto dto)
         {
             try
             {
-                return EnterBiddingRoomToEntity(await bidderRequestRepository.SendRequest(BidderRequestDtoRequest(bidderRequest), bidderRequest.BidderRequestDocs));
+                BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(dto.TenderId, dto.CompanyId);
+                if (entity == null)
+                {
+                    string companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
+                    BidRequestEntity bidRequest = ToEntity(dto, companyFolder, fileService);
+                    bidRequest = await bidRequestRepository.RegisterForBidding(bidRequest);
+                    return bidRequest.Id;
+                }
+                else
+                {
+                    return -1; 
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Update tender registration
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<long> UpdateRegistration(UpdateRegistrationForTenderDto dto)
+        {
+            try
+            {
+                BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(dto.BidId);
+                if (entity != null)
+                {
+                    string companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
+                    string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
+                    foreach (var item in dto.Documents)
+                    {
+                        var itm = entity.BidderRequestDocs.Where(x => x.Id == item.Id).FirstOrDefault();
+                        if (itm != null)
+                        {
+                            await fileService.DeleteFile(itm.DocPath);
+                            itm.DocTitle = item.DocTitle;
+                            itm.DocPath = await fileService.Upload(item.Document, folder);
+                        }
+                        else
+                        {
+                            entity.BidderRequestDocs.Add(new BidderRequestDocEntity
+                            {
+                                DocPath = await fileService.Upload(item.Document, folder),
+                                DocTitle = item.DocTitle
+                            });
+                        }
+                    }
+
+                    entity = await bidRequestRepository.UpdateBidRequest(entity);
+                    return entity.Id;
+                }
+                else
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Check necessary conditions before entering a live bidding room
+        /// </summary>
+        /// <param name="bidRequest"></param>
+        /// <returns></returns>
+        public async Task<EnterLiveBiddingRoomResponseDto> EnterLiveBiddingRoom(AddBiddingRequestDto bidRequest)
+        {
+            try
+            {
+                BidRequestEntity entity = await bidRequestRepository.EnterLiveBiddingRoom(bidRequest.TenderId, bidRequest.CompanyId);
+
+                return new EnterLiveBiddingRoomResponseDto
+                {
+                    BidId = entity.BidRequestStatusId == 2? entity.Id : -1,
+                    CompanyId = entity.CompanyId,
+                    TenderId = entity.TenderId,
+                    BidRequestStatus = entity.BidRequestStatus.Status
+                };
             }
             catch
             {
@@ -45,7 +145,7 @@ namespace MeroBolee.Service
 
         public async Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId)
         {
-            List<LiveBiddingEntity> bids = await bidderRequestRepository.TenderLiveBids(tenderId);
+            List<LiveBiddingEntity> bids = await bidRequestRepository.TenderLiveBids(tenderId);
             return GetSupplierBiddingPosition(bids, supplierId, decimal.MinValue);
             //// return bids;
             //return null;
@@ -64,7 +164,7 @@ namespace MeroBolee.Service
 
                     List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService, batchNo);
                     //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
-                    entities = bidderRequestRepository.LiveBid(entities);
+                    entities = bidRequestRepository.LiveBid(entities);
 
                     if (entities != null) //if tender is not expired 
                     {
@@ -85,7 +185,7 @@ namespace MeroBolee.Service
                             BiddingId = materialDto.BiddingId
                         };
 
-                        bidderRequestRepository.WriteAutionLogEntry(log);
+                        bidRequestRepository.WriteAutionLogEntry(log);
                         response.Log = log;
                         response.CurrentQuotation = currentQuotation;
                         return response;
@@ -151,7 +251,7 @@ namespace MeroBolee.Service
                     }
                 }
 
-                var entities = bidderRequestRepository.AutoBid(autoBidEntities);
+                var entities = bidRequestRepository.AutoBid(autoBidEntities);
                 AddQuotationToCache(entities, bidDto.TenderId, bidDto.SupplierId);
                 decimal currentQuotation = entities.Sum(x => cryptoService.Decrypt<decimal>(x.Quotation));
                 LiveBidResponse response = GetPositionFromCache(bidDto.TenderId, bidDto.SupplierId, currentQuotation);
@@ -222,7 +322,7 @@ namespace MeroBolee.Service
                 }
                 else
                 {
-                    TenderEntity e = bidderRequestRepository.GetTenderDetail(tenderId);
+                    TenderEntity e = bidRequestRepository.GetTenderDetail(tenderId);
                     if (e != null)
                     {
                         dto = new ResetBidDto
@@ -256,31 +356,55 @@ namespace MeroBolee.Service
             });
         }
 
-        public GetBiddingRequestDto ShowRequest(int requestId)
+        /// <summary>
+        /// Return bid detail response
+        /// </summary>
+        /// <param name="bidId"></param>
+        /// <param name="companyId"></param>
+        /// <param name="tenderId"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        public async Task<BidDetailDto> BidDetail(long bidId, long companyId, long tenderId, string baseUrl)
         {
-            return BidderRequestToEntity(bidderRequestRepository.ShowRequest(requestId));
+            BidRequestEntity entity =  await bidRequestRepository.BidDetail(bidId, companyId, tenderId);
+            return ToDetailDto(entity, baseUrl);
         }
 
-        public IEnumerable<GetBiddingRequestDto> ShowAllRequest()
+        public async Task<IEnumerable<BidCardDto>> ShowAllRegistration(long tenderId)
         {
-            return BidderRequestToDto(bidderRequestRepository.ShowAllRequest());
+            IEnumerable<BidRequestEntity> requests = await bidRequestRepository.ShowAllRegistration(tenderId);
+            return BidderRequestToDto(requests);
         }
 
-        public IEnumerable<GetBiddingRequestDto> AllRequestByBidder(int bidderId)
+        public async Task<IEnumerable<BidCardDto>> SupplierBidHistory(long supplierCompanyId)
         {
-            return BidderRequestToDto(bidderRequestRepository.AllRequestByBidder(bidderId));
+            IEnumerable<BidRequestEntity> requests = await bidRequestRepository.SupplierBidHistory(supplierCompanyId);
+            return BidderRequestToDto(requests);
         }
 
-        public GetBiddingRequestDto UpdateRequest(int id, UpdateRequestDto updateRequest)
+        public async Task<BidCardDto> ApproveOrDisapprove(BidUpdateRequestDto updateRequest)
         {
-            return BidderRequestToEntity(bidderRequestRepository.UpdateRequest(id, updateRequest));
+            try
+            {
+                BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(updateRequest.BidId);
+                entity.BidRequestStatusId = updateRequest.StatusId;
+                entity.Remark = updateRequest.Remark;
+                entity.Date_modified = DateTime.Now;
+                entity = await bidRequestRepository.UpdateBidRequest(entity);
+                return BidEntityToCard(entity);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task MoveBidToHistory()
         {
             return Task.Run(async () =>
             {
-                List<LiveBiddingEntity> list = await bidderRequestRepository.GetExpiredBids();
+                List<LiveBiddingEntity> list = await bidRequestRepository.GetExpiredBids();
                 List<BiddingHistoryEntity> historyEntities = new List<BiddingHistoryEntity>();
                 foreach (LiveBiddingEntity item in list)
                 {
@@ -299,12 +423,12 @@ namespace MeroBolee.Service
 
                 }
                 //Save History
-                bool isHistoryCreated = await bidderRequestRepository.AddHistory(historyEntities);
+                bool isHistoryCreated = await bidRequestRepository.AddHistory(historyEntities);
 
                 //delete item from live bid
                 if (isHistoryCreated)
                 {
-                    await bidderRequestRepository.DeleteLiveBids(list);
+                    await bidRequestRepository.DeleteLiveBids(list);
                 }
             });
         }
@@ -314,7 +438,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                List<AuctionLog> logs = await bidderRequestRepository.GetTenderAuctionLog(companyId, tenderId);
+                List<AuctionLog> logs = await bidRequestRepository.GetTenderAuctionLog(companyId, tenderId);
                 return logs;
             }
             catch (Exception)
@@ -327,7 +451,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                List<AuctionLog> logs = await bidderRequestRepository.GetTenderAuctionLogForBidInviter(tenderId);
+                List<AuctionLog> logs = await bidRequestRepository.GetTenderAuctionLogForBidInviter(tenderId);
                 return logs;
             }
             catch (Exception)
@@ -562,7 +686,7 @@ namespace MeroBolee.Service
 
         private async Task<decimal> GetMaxQuotation(long tenderId)
         {
-            List<LiveBiddingEntity> liveBids = await bidderRequestRepository.TenderLiveBids(tenderId);
+            List<LiveBiddingEntity> liveBids = await bidRequestRepository.TenderLiveBids(tenderId);
             foreach (var item in liveBids)
             {
                 item.Quotation = cryptoService.Decrypt<string>(item.Quotation);

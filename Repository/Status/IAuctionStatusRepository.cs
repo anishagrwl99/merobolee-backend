@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
 {
-    public interface IAuctionStatusRepository : IRepositoryBase<AuctionStatusEntity>
+    public interface IAuctionStatusRepository : IRepositoryBase<BidRequestStatusEntity>
     {
-        IEnumerable<AuctionStatusEntity> GetAuctionStatuses();
+        IEnumerable<BidRequestStatusEntity> GetAuctionStatuses();
     }
 }

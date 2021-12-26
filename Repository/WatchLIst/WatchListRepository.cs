@@ -36,7 +36,7 @@ namespace MeroBolee.Repository
                 return (from w in meroBoleeDbContexts.WatchListEntities
                         join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Tender_Id
                         join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.Status_Id
+                        join s in meroBoleeDbContexts.AuctionStatusEntities on t.Tender_Status_Id equals s.StatusId
                         where w.CompanyId == companyId
                         select new TenderWatchListCard
                         {
@@ -47,7 +47,7 @@ namespace MeroBolee.Repository
                             CategoryId = c.Category_Id,
                             CategoryName = c.Category,
                             LiveStartDate = t.Live_Start_Date,
-                            StatusId = s.Status_Id,
+                            StatusId = s.StatusId,
                             Status = s.Status
                         }
 

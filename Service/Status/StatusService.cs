@@ -30,7 +30,7 @@ namespace MeroBolee.Service
             return adminStatusRepository.GetAdminStatuses();
         }
 
-        public IEnumerable<AuctionStatusEntity> GetAuctionStatuses()
+        public IEnumerable<BidRequestStatusEntity> GetAuctionStatuses()
         {
             return auctionStatusRepository.GetAuctionStatuses();
         }

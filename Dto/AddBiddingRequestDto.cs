@@ -9,6 +9,52 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+
+    public class TenderRegistrationDto
+    {
+        [Required(ErrorMessage = "User id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
+        public long UserId { get; set; }
+
+        [Required(ErrorMessage = "company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
+        public long CompanyId { get; set; }
+
+        [Required(ErrorMessage = "Tender id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
+        public long TenderId { get; set; }
+
+        
+    }
+
+    public class RegisterForTenderDto : TenderRegistrationDto
+    {
+        
+
+        [Required(ErrorMessage = "Payment reference code is required")]
+        public string PaymentReferenceCode { get; set; }
+
+        [Required(ErrorMessage = "Payment provider is required")]
+        [MaxLength(50, ErrorMessage = "Payment provider name can be {1} character long")]
+        public string PaymentProvider { get; set; }
+
+        [Required(ErrorMessage = "Payment amount is required")]
+        [Range(1, (double)int.MaxValue, ErrorMessage = "Invalid payment amount")]
+        public decimal PaymentAmount { get; set; }
+
+        public DateTime RegistrationTime { get; set; }
+
+
+        public List<TenderSubmissionAdditionalDocDto> Documents { get; set; }
+    }
+
+
+    public class UpdateRegistrationForTenderDto: TenderRegistrationDto
+    {
+        public long BidId { get; set; }
+        public List<TenderSubmissionAdditionalDocumentResponseDto> Documents { get; set; }
+    }
+
     /// <summary>
     /// Bidding request dto
     /// </summary>

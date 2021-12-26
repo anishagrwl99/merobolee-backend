@@ -40,7 +40,9 @@ namespace MeroBolee.Model
         public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }
 
        
-        public virtual BidderRequestEntity BidderRequestEntity { get; set; }
+        public virtual BidRequestEntity BidderRequestEntity { get; set; }
+
+        
 
     }
 
@@ -77,7 +79,7 @@ namespace MeroBolee.Model
         public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }
 
 
-        public virtual BidderRequestEntity BidderRequestEntity { get; set; }
+        public virtual BidRequestEntity BidderRequestEntity { get; set; }
 
     }
 }

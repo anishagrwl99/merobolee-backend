@@ -133,8 +133,8 @@ namespace MeroBolee.Repository
                 }
                 else if(companyType == CompanyTypeEnum.Bidder)
                 {
-                    tenders = (from b in meroBoleeDbContexts.BidderRequestEntities
-                                 join t in meroBoleeDbContexts.TenderEntities on b.Tender_Id equals t.Tender_Id
+                    tenders = (from b in meroBoleeDbContexts.BidRequestEntities
+                                 join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Tender_Id
                                  where b.CompanyId == id
                                  select t).ToList<TenderEntity>();
                 }

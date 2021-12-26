@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
 using System;
@@ -10,7 +11,47 @@ namespace MeroBolee.EntityMapper
 {
     public class BiddingRequestMapper
     {
+        /// <summary>
+        /// Convert dto to entity
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="companyFolder"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public BidRequestEntity ToEntity(RegisterForTenderDto dto, string companyFolder, IUploadFile file)
+        {
+            BidRequestEntity entity = new BidRequestEntity
+            {
+                BidRequestStatusId = 1, //Pending approval
+                UserId = dto.UserId,
+                TenderId = dto.TenderId,
+                CompanyId = dto.CompanyId,
+                PaymentProvider = dto.PaymentProvider,
+                PaymentReferenceCode = dto.PaymentReferenceCode,
+                Amount = dto.PaymentAmount,
+                Remark = null
+            };
+            entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
+            string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
+            foreach (var item in dto.Documents)
+            {
+                entity.BidderRequestDocs.Add(new BidderRequestDocEntity
+                {
+                    DocPath =  file.Upload(item.Document, folder).Result,
+                    DocTitle = item.DocTitle
+                }) ;
+            }
+            return entity;
+        }
 
+
+        /// <summary>
+        /// Convert dto to list of entities
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="cryptoService"></param>
+        /// <param name="batchNo"></param>
+        /// <returns></returns>
         public List<LiveBiddingEntity> MaterialBiddingDtoToLiveBiddingEntity(TenderMaterialBiddingDto dto, ICryptoService cryptoService, long batchNo)
         {
             if (dto == null)
@@ -34,130 +75,45 @@ namespace MeroBolee.EntityMapper
             return entities;
             
         }
-        public TenderMaterialBiddingDto LiveBiddingEntityToMaterialBiddingDto(LiveBiddingEntity e)
-        {
-            if (e == null)
-            {
-                return null;
-            }
-            return new TenderMaterialBiddingDto
-            {
-                BiddingId = e.BiddingRequestId,
-                SupplierId = e.UserId,
-                TenderId = e.TenderId,
-                MaterialQuotation = new List<TenderMaterialQuotationDto>
-                {
-                    new TenderMaterialQuotationDto
-                    {
-                        MaterialId = e.MaterialId,
-                        Quotation = Convert.ToDecimal(e.Quotation),
-                    }
-                },
 
-                BiddingDate = e.BidDate
-            };
-        }
 
-        public BidderRequestEntity BidderRequestDtoRequest(AddBiddingRequestDto addBiddingRequest)
+        /// <summary>
+        /// Convert bidrequestentity to bid card dto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public BidCardDto BidEntityToCard(BidRequestEntity entity)
         {
-            if (addBiddingRequest == null)
+            if (entity == null)
             {
                 return null;
             }
             else
             {
-                return new BidderRequestEntity
+                return new BidCardDto
                 {
-                    User_id = addBiddingRequest.UserId,
-                    Tender_Id = addBiddingRequest.TenderId,
-                    CompanyId = addBiddingRequest.CompanyId,
-                    Admin_Status_Id = 1,
-                    Request_Send_Date = addBiddingRequest.BiddingTime,
-                    Request_code = Guid.NewGuid(),
-                    Date_created = addBiddingRequest.BiddingTime,
-                    Date_modified = addBiddingRequest.BiddingTime
+                    BidId = entity.Id,
+                    TenderId = entity.Tender.Tender_Id,
+                    Amount = entity.Amount,
+                    BidDate = entity.Date_created,
+                    BidStatus = entity.BidRequestStatus.Status,
+                    PaymentProvider = entity.PaymentProvider,
+                    TenderCategory = entity.Tender.CategoryEntity.Category,
+                    TenderLiveDate = entity.Tender.Live_End_Date,
+                    TenderTitle = entity.Tender.Tender_Title,
+                    TenderCode = entity.Tender.Tender_Code
                 };
             }
 
         }
 
-        public GetBiddingRequestDto EnterBiddingRoomToEntity(BidderRequestEntity bidderRequestEntity)
-        {
-            if (bidderRequestEntity == null)
-            {
-                return null;
-            }
-            else
-            {
-                return new GetBiddingRequestDto
-                {
-                    BidId = bidderRequestEntity.Request_Id,
-                    RequestCode = bidderRequestEntity.Request_code,
-                    UserId = bidderRequestEntity.User_id,
-                    Username = bidderRequestEntity.UserEntity.Username,
-                    AdminStatusId = bidderRequestEntity.Admin_Status_Id,
-                    //AdminStatus = bidderRequestEntity.AdminStatusEntity,
-                    RequestSendDate = bidderRequestEntity.Request_Send_Date,
-                    Remark = bidderRequestEntity.Remark,
-                    TenderId = bidderRequestEntity.Tender_Id
-                    //BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
-                    //Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
-                };
-            }
-        }
 
-        public GetBiddingRequestDto BidderRequestToEntity(BidderRequestEntity bidderRequestEntity)
-        {
-            if (bidderRequestEntity == null)
-            {
-                return null;
-            }
-            else
-            {
-                return new GetBiddingRequestDto
-                {
-                    BidId = bidderRequestEntity.Request_Id,
-                    RequestCode = bidderRequestEntity.Request_code,
-                    UserId = bidderRequestEntity.User_id,
-                    Username = bidderRequestEntity.UserEntity.Username,
-                    AdminStatusId = bidderRequestEntity.Admin_Status_Id,
-                    //AdminStatus = bidderRequestEntity.AdminStatusEntity,
-                    RequestSendDate = bidderRequestEntity.Request_Send_Date,
-                    Remark = bidderRequestEntity.Remark,
-                    TenderId = bidderRequestEntity.Tender_Id,
-                    BidderRequestDocs = bidderRequestEntity.BidderRequestDocs,
-                    Tender = TenderEntityToDto(bidderRequestEntity.TenderEntity)
-                };
-            }
-
-        }
-
-        public BiddingRequestTender TenderEntityToDto(TenderEntity tenderEntity)
-        {
-            if (tenderEntity == null)
-            {
-                return null;
-            }
-            else
-            {
-                return new BiddingRequestTender
-                {
-                    TenderCode = tenderEntity.Tender_Code,
-                    TenderTitle = tenderEntity.Tender_Title,
-                    CategoryId = tenderEntity.Category_Id,
-                    Category = tenderEntity.CategoryEntity.Category,
-                    TenderLiveInterval = tenderEntity.Tender_live_interval,
-                    LiveStartDate = tenderEntity.Live_Start_Date,
-                    LiveEndDate = tenderEntity.Live_End_Date,
-                    PublishDate = tenderEntity.Date_created,
-                    TenderMaterials = tenderEntity.TenderMaterialEntities,
-                    TenderTermsCondition = tenderEntity.TenderTermsConditionEntities
-                };
-            }
-
-        }
-
-        public IEnumerable<GetBiddingRequestDto> BidderRequestToDto(IEnumerable<BidderRequestEntity> bidderRequests)
+        /// <summary>
+        /// Return list of bid card dto from list of bid request entity
+        /// </summary>
+        /// <param name="bidderRequests"></param>
+        /// <returns></returns>
+        public IEnumerable<BidCardDto> BidderRequestToDto(IEnumerable<BidRequestEntity> bidderRequests)
         {
             if (bidderRequests == null)
             {
@@ -166,15 +122,61 @@ namespace MeroBolee.EntityMapper
 
             else
             {
-                List<GetBiddingRequestDto> getBiddings = new List<GetBiddingRequestDto>();
-                foreach (BidderRequestEntity requestEntity in bidderRequests)
+                List<BidCardDto> getBiddings = new List<BidCardDto>();
+                foreach (BidRequestEntity requestEntity in bidderRequests)
                 {
-                    getBiddings.Add(BidderRequestToEntity(requestEntity));
+                    getBiddings.Add(BidEntityToCard(requestEntity));
                 };
                 return getBiddings;
 
             }
 
+        }
+
+
+
+        /// <summary>
+        /// Convert entity to detail dto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="basePath"></param>
+        /// <returns></returns>
+        public BidDetailDto ToDetailDto(BidRequestEntity entity, string basePath)
+        {
+            if (entity == null) return null;
+
+            BidDetailDto dto = new BidDetailDto
+            {
+                Id = entity.Id,
+                RegisterDate = entity.Date_created,
+                Remarks = entity.Remark,
+                TenderId = entity.TenderId,
+                Status = entity.BidRequestStatus.Status,
+                Amount = entity.Amount,
+                PaymentProvider = entity.PaymentProvider,
+                PaymentReferenceCode = entity.PaymentReferenceCode
+            };
+
+            dto.Documents = (from d in entity.BidderRequestDocs
+                             select new DocResponseDto
+                             {
+                                 Id = d.Id,
+                                 DocTitle = d.DocTitle,
+                                 DocPath = $"{basePath}{d.DocPath.Replace("\\","/")}"
+                             }).ToList();
+
+            dto.BidHistories = (from h in entity.BiddingHistories
+                                select new BidHistory
+                                {
+                                    BatchNo = h.BatchNo,
+                                    BidId = h.BiddingRequestId,
+                                    BidTime = h.BidDate,
+                                    Material = h.TenderMaterialEntity.Materials,
+                                    Quotation = h.Quotation,
+                                    TenderId = h.TenderId
+                                }).ToList();
+
+            return dto;
         }
     }
 }

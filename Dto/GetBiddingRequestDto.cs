@@ -7,39 +7,53 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
-    public class GetBiddingRequestDto
+    public class EnterLiveBiddingRoomResponseDto
     {
-        private long bidid;
-        private Guid requestcode;
-        private long userid;
-        private string username;
-        private long tenderId;
-        private BiddingRequestTender tenderEntity;
-        private int adminStatusId;
-        private AdminStatusEntity adminStatusEntity;
-        private DateTime requestSendDate;
-        private string remark;
-        private ICollection<BidderRequestDocEntity> bidderRequestDocs;
+        public long BidId { get; set; }
+        public long CompanyId { get; set; }
+        public long TenderId { get; set; }
+        public string BidRequestStatus { get; set; }
 
-
-        public long BidId
-        {
-            get { return bidid; }
-            set { bidid = value; }
-        }
-
-        public Guid RequestCode { get => requestcode; set => requestcode = value; }
-        public long UserId { get => userid; set => userid = value; }
-        public string Username { get => username; set => username = value; }
-        public long TenderId { get => tenderId; set => tenderId = value; }
-        public BiddingRequestTender Tender { get => tenderEntity; set => tenderEntity = value; }
-        public int AdminStatusId { get => adminStatusId; set => adminStatusId = value; }
-        public AdminStatusEntity AdminStatus { get => adminStatusEntity; set => adminStatusEntity = value; }
-        public DateTime RequestSendDate { get => requestSendDate; set => requestSendDate = value; }
-        public string Remark { get => remark; set => remark = value; }
-        public ICollection<BidderRequestDocEntity> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
     }
 
+    public class BidCardDto
+    {
+        public long BidId { get; set; }
+        public long TenderId { get; set; }
+        public string TenderTitle { get; set; }
+        public string TenderCategory { get; set; }
+        public DateTime BidDate { get; set; }
+        public string BidStatus { get; set; }
+        public string PaymentProvider { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime TenderLiveDate { get; set; }
+        public string TenderCode { get; set; }
+    }
+
+    public class BidDetailDto
+    {
+        public long Id { get; set; }
+        public long TenderId { get; set; }
+        public string Status { get; set; }
+        public string Remarks { get; set; }
+        public string PaymentProvider { get; set; }
+        public string PaymentReferenceCode { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime RegisterDate { get; set; }
+
+        public List<DocResponseDto> Documents { get; set; }
+        public List<BidHistory> BidHistories { get; set; }
+    }
+
+    public class BidHistory
+    {
+        public long TenderId { get; set; }
+        public long BidId { get; set; }
+        public string Material { get; set; }
+        public decimal Quotation { get; set; }
+        public DateTime BidTime { get; set; }
+        public long BatchNo { get; set; }
+    }
 
     public class ResetBidDto
     {

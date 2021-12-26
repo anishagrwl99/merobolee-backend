@@ -11,24 +11,26 @@ namespace MeroBolee.Model
     [Table("mb_bidder_request_doc")]
     public class BidderRequestDocEntity
     {
-        private long doc_id;
-        private long request_id;
-        private BidderRequestEntity bidderRequest;
-        private string doc_location;
+        
 
         [JsonIgnore]
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        public long Doc_id { get => doc_id; set => doc_id = value; }
+        public long Id { get; set; }
 
-        [Column("bidder_request_doc")]
-        public string Document{ get => doc_location; set => doc_location = value; }
 
-        [Column("request_id")]
+        [Required]
+        [MaxLength(200)]
+        [Column(TypeName = "VARCHAR")]
+        public string DocTitle { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1500)]
+        public string DocPath{ get; set; }
+
         [ForeignKey("BidderRequest")]
-        public long Request_id { get => request_id; set => request_id = value; }
+        public long BidRequestId { get; set; }
 
         [JsonIgnore]
-        public BidderRequestEntity BidderRequest { get => bidderRequest; set => bidderRequest = value; }
+        public virtual BidRequestEntity BidderRequest { get; set; }
     }
 }

@@ -11,83 +11,141 @@ using MeroBolee.Service;
 
 namespace MeroBolee.Repository
 {
-    public class BidderRequestRepository : RepositoryBase<BidderRequestEntity>, IBidderRequestRepository
+    public class BidderRequestRepository : RepositoryBase<BidRequestEntity>, IBidderRequestRepository
     {
         private readonly IUnitOfWork unitOfWork;
         private IUploadFile uploadImage;
 
+
+        /// <summary>
+        /// Default const
+        /// </summary>
+        /// <param name="unitOfWork"></param>
+        /// <param name="uploadFileService"></param>
+        /// <param name="dbFactory"></param>
         public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
             uploadImage = uploadFileService;
         }
 
-        public IEnumerable<BidderRequestEntity> AllRequestByBidder(int bidderId)
-        {
-            meroBoleeDbContexts.BidderRequestDocEntities.ToList();
-            meroBoleeDbContexts.TenderEntities.ToList();
-            meroBoleeDbContexts.AdminStatusEntities.ToList();
-            meroBoleeDbContexts.UserEntities.ToList();
-            meroBoleeDbContexts.CategoryEntities.ToList();
-            return meroBoleeDbContexts.BidderRequestEntities.Where(m => m.User_id == bidderId).ToList();
-        }
 
-        public async Task<BidderRequestEntity> SendRequest(BidderRequestEntity bidderRequestEntity, ICollection<IFormFile> requestDoc)
+        /// <summary>
+        /// Return a bid request entity
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> GetBidRequestEntityOnly(long tenderId, long companyId)
         {
             try
             {
-                BidderRequestEntity ent = meroBoleeDbContexts.BidderRequestEntities
-                                            .Include(x => x.UserEntity)
-                                            .Include(x => x.AdminStatusEntity)
-                                            .Where(x => x.Request_Id == bidderRequestEntity.Request_Id)
-                                            .FirstOrDefault();
-                TenderEntity tender = meroBoleeDbContexts
-                                           .TenderEntities
-                                           .Include(x => x.CategoryEntity)
-                                           .Include(x => x.TenderMaterialEntities)
-                                           .Include(x => x.TenderTermsConditionEntities)
-                                           .Where(m => m.Tender_Id == bidderRequestEntity.Tender_Id)
-                                           .FirstOrDefault();
+                return await meroBoleeDbContexts.BidRequestEntities
+                    .Include(x=> x.BidderRequestDocs)
+                    .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
 
-                if (ent == null)
-                {
-                    if (tender != null)
-                    {
-                        if (bidderRequestEntity.Request_Send_Date >= tender.Live_End_Date)
-                        {
-                            return null;
-                        }
-                        meroBoleeDbContexts.BidderRequestEntities.Add(bidderRequestEntity);
-                        unitOfWork.SaveChange();
-                        //meroBoleeDbContexts.UserEntities.ToList();
-                        if (bidderRequestEntity.BidderRequestDocs == null)
-                        {
-                            bidderRequestEntity.BidderRequestDocs = null;
+                throw;
+            }
+        }
 
-                        }
-                        else
-                        {
-                            foreach (var doc in requestDoc)
-                            {
-                                meroBoleeDbContexts.BidderRequestDocEntities.Add(new BidderRequestDocEntity
-                                {
-                                    Request_id = bidderRequestEntity.Request_Id,
-                                    Document = await uploadImage.Upload(doc, bidderRequestEntity.UserEntity.Username)
-                                }
-                                );
-                                unitOfWork.SaveChange();
-                            }
-                        }
-                        bidderRequestEntity.UserEntity = meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == bidderRequestEntity.User_id).FirstOrDefault();
-                        bidderRequestEntity.AdminStatusEntity = meroBoleeDbContexts.AdminStatusEntities.Where(x => x.Status_Id == bidderRequestEntity.Admin_Status_Id).FirstOrDefault();
-                        bidderRequestEntity.TenderEntity = tender;
-                        return bidderRequestEntity;
-                    }
-                    return null;
-                }
-                ent.TenderEntity = tender;
-                return ent;
+        /// <summary>
+        /// Get a bid request entity
+        /// </summary>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> GetBidRequestEntityOnly(long bidId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities
+                    .Include(x => x.BidderRequestDocs)
+                    .Where(x =>  x.Id == bidId)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Update bid request entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> UpdateBidRequest(BidRequestEntity entity)
+        {
+            try
+            {
+                meroBoleeDbContexts.BidRequestEntities.Update(entity);
+                await unitOfWork.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List all expired tenders on which a supplier has registered for
+        /// </summary>
+        /// <param name="supplierCompanyId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId)
+        {
+            return await meroBoleeDbContexts.BidRequestEntities
+                .Include(x => x.Tender)
+                .Include(x => x.Tender.CategoryEntity)
+                .Include(x => x.BidRequestStatus)
+                .Where(x => x.CompanyId == supplierCompanyId && x.Tender.Live_End_Date < DateTime.Now)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Register into tender for bidding
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> RegisterForBidding(BidRequestEntity entity)
+        {
+            try
+            {
+                meroBoleeDbContexts.BidRequestEntities.Add(entity);
+                await unitOfWork.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Return a bid request for business validation
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> EnterLiveBiddingRoom(long tenderId, long companyId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities
+                    .Where(x => x.TenderId == tenderId && x.CompanyId == companyId)
+                    .Include(x => x.Tender)
+                    .Include(x => x.BidRequestStatus)
+                    .Include(x => x.BidderRequestDocs)
+                    .FirstOrDefaultAsync();
             }
             catch (Exception)
             {
@@ -164,7 +222,7 @@ namespace MeroBolee.Repository
                  * 
                  * */
 
-                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities                    
+                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
                     .Select(g => new LiveBiddingEntity
                     {
                         UserId = g.UserId,
@@ -182,41 +240,53 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
-        public IEnumerable<BidderRequestEntity> ShowAllRequest()
-        {
-            meroBoleeDbContexts.BidderRequestDocEntities.ToList();
-            meroBoleeDbContexts.TenderEntities.ToList();
-            meroBoleeDbContexts.AdminStatusEntities.ToList();
-            meroBoleeDbContexts.UserEntities.ToList();
-            meroBoleeDbContexts.CategoryEntities.ToList();
-            return meroBoleeDbContexts.BidderRequestEntities.ToList();
-        }
 
-        public BidderRequestEntity ShowRequest(int requestId)
-        {
-            meroBoleeDbContexts.BidderRequestDocEntities.ToList();
-            meroBoleeDbContexts.TenderEntities.ToList();
-            meroBoleeDbContexts.AdminStatusEntities.ToList();
-            meroBoleeDbContexts.UserEntities.ToList();
-            meroBoleeDbContexts.CategoryEntities.ToList();
-            return meroBoleeDbContexts.BidderRequestEntities.Where(m => m.Request_Id == requestId).FirstOrDefault();
-        }
-
-        public BidderRequestEntity UpdateRequest(int id, UpdateRequestDto updateRequest)
+        public async Task<IEnumerable<BidRequestEntity>> ShowAllRegistration(long tenderId)
         {
             try
             {
-                BidderRequestEntity bidderRequest = meroBoleeDbContexts.BidderRequestEntities.Where(m => m.User_id == id).First();
-                bidderRequest.Admin_Status_Id = updateRequest.StatusId;
-                bidderRequest.Remark = updateRequest.Remark;
-                bidderRequest.Date_modified = DateTime.Now;
-                return bidderRequest;
+                return await meroBoleeDbContexts.BidRequestEntities
+                           .Include(x => x.Tender)
+                           .Include(x => x.Tender.CategoryEntity)
+                           .Include(x => x.BidRequestStatus)
+                           .Where(x => x.TenderId == tenderId)
+                           .ToListAsync();
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
+
+
+        /// <summary>
+        /// Return bid detail
+        /// </summary>
+        /// <param name="bidId"></param>
+        /// <param name="companyId"></param>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        public async Task<BidRequestEntity> BidDetail(long bidId, long companyId, long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities
+                        .Include(x => x.BidRequestStatus)
+                        .Include(x => x.BidderRequestDocs)
+                        .Include(x => x.BiddingHistories)
+                        .Include(x => x.Tender)
+                        .Include(x => x.Tender.TenderMaterialEntities)
+                        .Where(x => x.Id == bidId && x.CompanyId == companyId && x.TenderId == tenderId)
+                        .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public Task<List<LiveBiddingEntity>> GetExpiredBids()
         {
 
@@ -309,7 +379,7 @@ namespace MeroBolee.Repository
             {
                 return await meroBoleeDbContexts.AuctionLogs
                     .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
-                    .Include(x=> x.Company)
+                    .Include(x => x.Company)
                     .ToListAsync();
             }
             catch (Exception)

@@ -1,4 +1,5 @@
-﻿using MeroBolee.Controllers;
+﻿using MeroBolee.Attribute;
+using MeroBolee.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.OpenApi.Any;
@@ -247,6 +248,7 @@ namespace MeroBolee.Dto
         public string DocTitle { get; set; }
 
         [Required(ErrorMessage = "Document is required")]
+        [AllowExtensions(ErrorMessage = "Invalid file")]
         public IFormFile Document { get; set; }
 
     }
@@ -282,5 +284,13 @@ namespace MeroBolee.Dto
     {
         public long Id { get; set; }
         public  string DocumentPath { get; set; }
+    }
+
+
+    public class DocResponseDto
+    {
+        public long Id { get; set; }
+        public string DocTitle { get; set; }
+        public string DocPath { get; set; }
     }
 }

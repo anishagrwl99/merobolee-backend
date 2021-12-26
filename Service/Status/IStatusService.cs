@@ -10,7 +10,7 @@ namespace MeroBolee.Service
     {
         IEnumerable<PublishStatus> GetPublishStatuses();
         IEnumerable<AdminStatusEntity> GetAdminStatuses();
-        IEnumerable<AuctionStatusEntity> GetAuctionStatuses();
+        IEnumerable<BidRequestStatusEntity> GetAuctionStatuses();
         IEnumerable<UserStatusEntity> GetUserStatuses();
 
         IEnumerable<PaymentStatusEntity> GetPaymentStatuses();

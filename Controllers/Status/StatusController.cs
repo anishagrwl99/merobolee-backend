@@ -67,13 +67,13 @@ namespace MeroBolee.Controllers.Status
         {
             try
             {
-                IEnumerable<AuctionStatusEntity> auctionStatuses = statusService.GetAuctionStatuses();
+                IEnumerable<BidRequestStatusEntity> auctionStatuses = statusService.GetAuctionStatuses();
                 if (auctionStatuses.Count() == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<AuctionStatusEntity>>(auctionStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<BidRequestStatusEntity>>(auctionStatuses, "404", "Record not found")); // To pass result in object along with pagination info
 
                 }
-                return Ok(new Responses<IEnumerable<AuctionStatusEntity>>(auctionStatuses,"200", "Record found")); // To pass result in object along with pagination info
+                return Ok(new Responses<IEnumerable<BidRequestStatusEntity>>(auctionStatuses,"200", "Record found")); // To pass result in object along with pagination info
             }
             catch (SqlException)
             {

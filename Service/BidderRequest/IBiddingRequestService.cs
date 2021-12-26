@@ -11,17 +11,41 @@ namespace MeroBolee.Service
 {
     public interface IBiddingRequestService
     {
-        Task<GetBiddingRequestDto> SendRequest(AddBiddingRequestDto bidderRequest);
+        /// <summary>
+        /// Register for tender bidding
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<long> RegisterInTenderBidding(RegisterForTenderDto dto);
 
+        /// <summary>
+        /// Update a tender registration
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<long> UpdateRegistration(UpdateRegistrationForTenderDto dto);
+
+        /// <summary>
+        /// Check for necessary criteria before entering live bidding room
+        /// </summary>
+        /// <param name="bidderRequest"></param>
+        /// <returns></returns>
+        Task<EnterLiveBiddingRoomResponseDto> EnterLiveBiddingRoom(AddBiddingRequestDto bidderRequest);
+
+        /// <summary>
+        /// Live bid a tender
+        /// </summary>
+        /// <param name="materialDto"></param>
+        /// <returns></returns>
         Task<LiveBidResponse> LiveBid(TenderMaterialBiddingDto materialDto);
 
-        GetBiddingRequestDto ShowRequest(int requestId);
+        Task<BidDetailDto> BidDetail(long bidId, long companyId, long tenderId, string baseUrl);
 
-        IEnumerable<GetBiddingRequestDto> ShowAllRequest();
+        Task<IEnumerable<BidCardDto>> ShowAllRegistration(long tenderId);
 
-        IEnumerable<GetBiddingRequestDto> AllRequestByBidder(int bidderId);
+        Task<IEnumerable<BidCardDto>> SupplierBidHistory(long supplierCompanyId);
 
-        GetBiddingRequestDto UpdateRequest(int id, UpdateRequestDto updateRequest);
+        Task<BidCardDto> ApproveOrDisapprove(BidUpdateRequestDto updateRequest);
 
         Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId);
 

@@ -9,21 +9,77 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
 {
-    public interface IBidderRequestRepository : IRepositoryBase<BidderRequestEntity>
+    public interface IBidderRequestRepository : IRepositoryBase<BidRequestEntity>
     {
-        Task<BidderRequestEntity> SendRequest(BidderRequestEntity bidderRequestEntity, ICollection<IFormFile> requestDoc);
+        /// <summary>
+        /// Update a bid request entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task<BidRequestEntity> UpdateBidRequest(BidRequestEntity entity);
 
+        /// <summary>
+        /// Get a bid request only for checking if it exists or not
+        /// </summary>
+        /// <param name="bidId"></param>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        Task<BidRequestEntity> GetBidRequestEntityOnly(long tenderId, long companyId);
+
+
+        /// <summary>
+        /// Get a bid request only
+        /// </summary>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        Task<BidRequestEntity> GetBidRequestEntityOnly(long bidId);
+
+        /// <summary>
+        /// Register for bidding
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task<BidRequestEntity> RegisterForBidding(BidRequestEntity entity);
+
+
+        /// <summary>
+        /// Check necessary conditions before entering live bidding room
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        Task<BidRequestEntity> EnterLiveBiddingRoom(long tenderId, long companyId);
+
+
+        /// <summary>
+        /// Live bid in a tender
+        /// </summary>
+        /// <param name="bidEntity"></param>
+        /// <returns></returns>
         List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity);
+
+        /// <summary>
+        /// Auto bid
+        /// </summary>
+        /// <param name="bidEntity"></param>
+        /// <returns></returns>
         List<LiveBiddingEntity> AutoBid(List<LiveBiddingEntity> bidEntity);
+
+
+        /// <summary>
+        /// Get all bids done in a tender
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
         Task<List<LiveBiddingEntity>> TenderLiveBids(long tenderId);
 
-       BidderRequestEntity ShowRequest(int requestId);
+        Task<BidRequestEntity> BidDetail(long bidId, long companyId, long tenderId);
 
-        IEnumerable<BidderRequestEntity> ShowAllRequest();
+        Task<IEnumerable<BidRequestEntity>> ShowAllRegistration(long tenderId);
 
-        IEnumerable<BidderRequestEntity> AllRequestByBidder(int bidderId);
+        Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId);
 
-        BidderRequestEntity UpdateRequest(int id, UpdateRequestDto updateRequest);
 
         Task<List<LiveBiddingEntity>> GetExpiredBids();
 

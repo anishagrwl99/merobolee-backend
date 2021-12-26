@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("lk_auction_status")]
-    public class AuctionStatusEntity
+    [Table("lk_bidrequest_status")]
+    public class BidRequestStatusEntity
     {
-        private int status_Id;
-        private string status;
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity) ]
-        [Column("status_id")]
-        public int Status_Id { get => status_Id; set => status_Id = value; }
+        public int StatusId { get; set; }
         
         
-        [Column("auction_status", TypeName = "VARCHAR")]
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(50)]
-        public string Status { get => status; set => status = value; }
+        public string Status { get; set; }
     }
 
 

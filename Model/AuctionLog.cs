@@ -59,6 +59,6 @@ namespace MeroBolee.Model
         [JsonIgnore]
         public virtual CompanyEntity Company { get; set; }
 
-        public virtual BidderRequestEntity BidRequest { get; set; }
+        public virtual BidRequestEntity BidRequest { get; set; }
     }
 }

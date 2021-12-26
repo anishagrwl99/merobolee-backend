@@ -48,7 +48,7 @@ namespace MeroBolee.Utility
         public DbSet<CategoryEntity> CategoryEntities { get; set; }
 
         public DbSet<PublishStatus> StatusEntities { get; set; }
-        public DbSet<AuctionStatusEntity> AuctionStatusEntities { get; set; }
+        public DbSet<BidRequestStatusEntity> AuctionStatusEntities { get; set; }
         public DbSet<AdminStatusEntity> AdminStatusEntities { get; set; }
         public DbSet<UserStatusEntity> UserStatusEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
@@ -66,7 +66,7 @@ namespace MeroBolee.Utility
         public DbSet<WatchListEntity> WatchListEntities { get; set; }
         public DbSet<MaterialFeatureEntity> MaterialFeatureEntities { get; set; }
 
-        public DbSet<BidderRequestEntity> BidderRequestEntities { get; set; }
+        public DbSet<BidRequestEntity> BidRequestEntities { get; set; }
         public DbSet<BidderRequestDocEntity> BidderRequestDocEntities { get; set; }
 
         public DbSet<FAQEntity> FAQEntities { get; set; }
@@ -114,8 +114,8 @@ namespace MeroBolee.Utility
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
-            modelBuilder.Entity<BidderRequestEntity>()
-                .HasOne(e => e.TenderEntity)
+            modelBuilder.Entity<BidRequestEntity>()
+                .HasOne(e => e.Tender)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -248,10 +248,10 @@ namespace MeroBolee.Utility
                 new AdminStatusEntity() { Status_Id = 3, Status = "Approved" }
                 );
 
-            builder.Entity<AuctionStatusEntity>().HasData(
-                new AuctionStatusEntity() { Status_Id = 1, Status = "Pending Approval" },
-                new AuctionStatusEntity() { Status_Id = 2, Status = "Approved" },
-                new AuctionStatusEntity() { Status_Id = 3, Status = "Closed" }
+            builder.Entity<BidRequestStatusEntity>().HasData(
+                new BidRequestStatusEntity() { StatusId = 1, Status = "Pending Approval" },
+                new BidRequestStatusEntity() { StatusId = 2, Status = "Approved" },
+                new BidRequestStatusEntity() { StatusId = 3, Status = "Closed" }
                 );
 
             builder.Entity<TenderStatusEntity>().HasData(
