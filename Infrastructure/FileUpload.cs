@@ -15,20 +15,20 @@ namespace MeroBolee.Infrastructure
         Task<bool> FileExists(string filePath);
 
     }
-    public class UploadImage  : IUploadFile
+    public class FileUpload  : IUploadFile
     {
         private readonly IWebHostEnvironment host;
         private string _baseFolder;
         private string _baseFolderFullPath;
 
-        public UploadImage(IWebHostEnvironment host)
+        public FileUpload(IWebHostEnvironment host)
         {
             this.host = host;
             _baseFolder = "Resource";
             _baseFolderFullPath = host.ContentRootPath;
         }
 
-        public async Task<string> Upload(IFormFile file,string folderName)
+        public async Task<string> Upload(IFormFile file, string folderName)
         {
            // bool isSaveSuccess = false;
             string fileName;
@@ -39,7 +39,7 @@ namespace MeroBolee.Infrastructure
                     return null;
                 }
                 var extension = Path.GetExtension(file.FileName);// "." + file.FileName.Split('.')[file.FileName.Split('.').Length-1]; // to get extension of file
-                fileName = DateTime.Now.Ticks + extension; // to change name of file for security reason
+                fileName = Path.GetRandomFileName().Split('.')[0] + extension; // to change name of file for security reason
                 var pathBuilt = Path.Combine(_baseFolderFullPath, _baseFolder + "\\" + folderName); // to create path for file
                 if (!Directory.Exists(pathBuilt))
                 {

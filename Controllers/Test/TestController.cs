@@ -1,4 +1,5 @@
-﻿using MeroBolee.Dto;
+﻿using MeroBolee.Attribute;
+using MeroBolee.Dto;
 using MeroBolee.Model;
 using MeroBolee.Service;
 using MeroBolee.Utility;
@@ -14,6 +15,15 @@ using System;
 namespace MeroBolee.Controllers.Environment
 {
 
+    public class TestFile
+    {
+        /// <summary>
+        /// A file to test
+        /// </summary>
+        [AllowExtensions(Extensions = ".docx", ErrorMessage = "File signature didn't match with its signature")]
+        public IFormFile File { get; set; }
+    }
+
     [ApiController]   
     public class TestController : ControllerBase
     {
@@ -26,6 +36,18 @@ namespace MeroBolee.Controllers.Environment
             this.cryptoService = cryptoService;
         }
 
+        [HttpPost("/FileTest")]
+        public IActionResult TestFile([FromForm] TestFile test)
+        {
+            if(ModelState.IsValid)
+            {
+                return Ok("file tested");
+            }
+            else
+            {
+                return BadRequest("bad request");
+            }
+        }
         
         [Route("GetEnvironment")]
         [HttpGet]

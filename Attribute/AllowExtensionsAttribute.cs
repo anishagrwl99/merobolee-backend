@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace MeroBolee.Attribute
         /// <summary>  
         /// Gets or sets extensions property.  
         /// </summary>  
-        public string Extensions  =  "png,jpg,jpeg,pdf,docx";
+        public string Extensions { get; set; } = ".png,.jpg,.jpeg,.pdf,.doc,.docx";
 
         #endregion
 
@@ -41,15 +42,18 @@ namespace MeroBolee.Attribute
 
             // Verification.  
             if (file != null)
-            {
-                // Initialization.  
-                var fileName = file.FileName;
-
-                // Settings.  
-                isValid = allowedExtensions.Any(y => fileName.EndsWith(y));
+            { 
+                //var fileName = file.FileName;
+                var fileExtension = Path.GetExtension(file.FileName);
+                
+                // File Extension verification  
+                isValid = allowedExtensions.Any(y => fileExtension.EndsWith(y));
+                if(isValid) //is allowed extension check if file is actually what extension says
+                {
+                    isValid = file.ValidateSignature(fileExtension);
+                }
             }
 
-            // Info  
             return isValid;
         }
 
