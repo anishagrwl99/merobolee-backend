@@ -129,4 +129,16 @@ namespace MeroBolee.Dto
         public DateTime? ActivateDate { get => activateDate; set => activateDate = value; }
         public DateTime? ExpriedDate { get => expriedDate; set => expriedDate = value; }
           }
+
+    public class UserResponseDto
+    {
+        public long Id { get; set; }
+        public string Designation { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+        public string ProfilePic { get; set; }
+    }
 }

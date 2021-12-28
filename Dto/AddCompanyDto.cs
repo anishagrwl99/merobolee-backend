@@ -6,6 +6,34 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+
+    public class CompanyCardResponseDto
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string ReferenceCode { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string Email { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class CompanyDetailResponseDto : CompanyCardResponseDto
+    {
+        public string Province { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Address3 { get; set; }
+        public string Zip { get; set; }
+        public string ContactPerson { get; set; }
+        public string Website { get; set; }
+        public string Phone1 { get; set; }
+        public string Phone2 { get; set; }
+        public string PANNumber { get; set; }
+        public DateTime RegisteredDate { get; set; }
+    }
+
+
     public class AddCompanyDto
     {
 
@@ -80,10 +108,10 @@ namespace MeroBolee.Dto
         public string ReferenceCode { get; set; }
     }
 
-    public class CompanyDetailResponse: AddCompanyResponseDto
+    public class CompanyDetailResponse: CompanyDetailResponseDto
     {
-        public List<AddUserReponseDto> Users { get; set; }
-        public List<GetTenderDto> Tenders { get; set; }
+        public List<UserResponseDto> Users { get; set; }
+        public List<TenderCard> Tenders { get; set; }
     }
 
     public class ChangeCompanyStatusDto

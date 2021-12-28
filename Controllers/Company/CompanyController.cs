@@ -2,11 +2,13 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using MeroBolee.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,18 +17,22 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.City
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Bid Inviter, Bidder")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Bid Inviter, Bidder")]
     public class CompanyController : BaseController
     {
         private readonly ICompanyService companyService;
         private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
+        private readonly AppDefaults defaultOption;
         private IUriService uriService;
 
-        public CompanyController(ICompanyService companyService)
+        public CompanyController(ICompanyService companyService, IOptions<AppDefaults> defaultOption)
         {
             this.companyService = companyService;
+            this.defaultOption = defaultOption.Value;
         }
+
+
         /// <summary>
         /// To add new company by bid inviter
         /// </summary>
@@ -288,18 +294,18 @@ namespace MeroBolee.Controllers.City
         /// <param name="search">Search text</param>
         /// <returns></returns>
         [HttpGet("Company")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> GetAllCompany([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAllCompany", null, new { search = search}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<AddCompanyResponseDto> companies = companyService.GetCompany(search);
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompany(search);
                 int totalCount = companies.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<AddCompanyResponseDto>>(companies, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<CompanyCardResponseDto>>(companies, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(companies, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -314,29 +320,32 @@ namespace MeroBolee.Controllers.City
 
 
         /// <summary>
-        /// To get individual bid inviter company detail
+        /// To get individual bid company detail
         /// </summary>
-        /// <param name="id">Company id</param>
+        /// <param name="companyId">Company Id of a company whose detail needs to fetch</param>
         /// <returns></returns>
-        [HttpGet("Company/BidInviter/Detail")]
-        public IActionResult GetBidInviterById([FromQuery] long id)
+        [HttpGet("Company/Detail")]
+        public async Task<IActionResult> GetCompanyDetail([FromQuery] long companyId)
         {
             try
             {
-                if (id == 0)
+                if (companyId > 0)
                 {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    string _defaultPic = $"{_baseUrl}{defaultOption.DefaultProfilePicture}";
+
+                    CompanyDetailResponse company = await companyService.GetCompanyDetail(companyId, _baseUrl, _defaultPic);
+                    if (company == null)
+                    {
+                        return StatusCode(StatusCodes.Status404NotFound, new Responses<CompanyDetailResponse>(company, "404", $"Record not found"));
+                    }
+                    else
+                    {
+                        return Ok(new Responses<CompanyDetailResponse>(company, "200", "Record found"));
+                    }
                 }
                 else
                 {
-                    CompanyDetailResponse company = companyService.GetCompanyDetail(id, CompanyTypeEnum.BidInviter);
-                    if (company == null)
-                    {
-                        return StatusCode(StatusCodes.Status404NotFound, new Responses<CompanyDetailResponse>(company, "404", "Record not found"));
-                    }
-                    return Ok(new Responses<CompanyDetailResponse>(company, "200", "Record found"));
+                    return StatusCode(StatusCodes.Status404NotFound, new Responses<CompanyDetailResponse>(null, "404", $"Record not found"));
                 }
             }
             catch (Exception e)
@@ -348,40 +357,7 @@ namespace MeroBolee.Controllers.City
             }
         }
 
-        /// <summary>
-        /// To get individual company detail
-        /// </summary>
-        /// <param name="id">Company id</param>
-        /// <returns></returns>
-        [HttpGet("Company/Bidder/Detail")]
-        public IActionResult GetBidderCompanyById([FromQuery] long id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    CompanyDetailResponse company = companyService.GetCompanyDetail(id, CompanyTypeEnum.Bidder);
-                    if (company == null)
-                    {
-                        return StatusCode(StatusCodes.Status404NotFound, new Responses<CompanyDetailResponse>(company, "404", "Record not found"));
-                    }
-                    return Ok(new Responses<CompanyDetailResponse>(company, "200", "Record found"));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
-            }
-        }
 
 
 
@@ -423,12 +399,12 @@ namespace MeroBolee.Controllers.City
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
-        private PagedResponse<AddCompanyResponseDto> ResultAfterPagination(IEnumerable<AddCompanyResponseDto> companies, PaginationQuery pagination, int totalCount)
+        private PagedResponse<CompanyCardResponseDto> ResultAfterPagination(IEnumerable<CompanyCardResponseDto> companies, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
-                return new PagedResponse<AddCompanyResponseDto>(companies, totalCount);
+                return new PagedResponse<CompanyCardResponseDto>(companies, totalCount);
             }
 
             var get = companies.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();

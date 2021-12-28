@@ -13,9 +13,9 @@ namespace MeroBolee.Repository
     {
         CompanyEntity AddCompany(CompanyEntity companyEntity, long userId);
         UserEntity AddUser(long companyId, UserEntity user);
-        IEnumerable<CompanyEntity> GetCompany(string search);
+        Task<List<CompanyEntity>> GetCompany(string search);
         Task<CompanyEntity> GetCompany(long companyId);
-        CompanyDetailResponse GetCompanyDetail(long id, CompanyTypeEnum companyType);
+        Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
 
         CompanyEntity UpdateCompany(long id, CompanyEntity cityEntity);
 
@@ -75,86 +75,60 @@ namespace MeroBolee.Repository
         }
 
 
-        public CompanyDetailResponse GetCompanyDetail(long id, CompanyTypeEnum companyType)
+        public async Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId)
         {
             try
             {
-                CompanyEntity company = meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == id).FirstOrDefault();
-                IQueryable<UserEntity> users = from u in meroBoleeDbContexts.UserEntities
-                                         join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
-                                         where uc.CompanyId == id
-                                         select u;
+                CompanyEntity company = await meroBoleeDbContexts.CompanyEntities
+                                    .Include(x => x.Country)
+                                    .Include(x => x.Province)
+                                    .Include(x => x.CompanyStatus)
+                                    .Where(x => x.CompanyId == companyId)
+                                    .FirstOrDefaultAsync();
 
-                CompanyDetailResponse companyDetailResponse = new CompanyDetailResponse
+                if (company != null)
                 {
-                    CompanyId = company.CompanyId,
-                    CompanyName = company.Name,
-                    CountryId = company.CountryId,
-                    ProvinceId = company.ProvinceId,
-                    City = company.City,
-                    Address1 = company.Address1,
-                    Address2 = company.Address2,
-                    Address3 = company.Address3,
-                    Zip = company.Zip,
-                    ReferenceCode = company.ReferenceCode,
-                    ContactPerson = company.ContactPerson,
-                    CompanyEmail = company.CompanyEmail,
-                    CompanyWebsite = company.CompanyWebsite,
-                    Phone1 = company.Phone1,
-                    Phone2 = company.Phone2
 
-                };
-                companyDetailResponse.Users = new List<AddUserReponseDto>();
+                    List<UserEntity> users = await (from u in meroBoleeDbContexts.UserEntities
+                                                    join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                                                    where uc.CompanyId == companyId
+                                                    select u
+                                                 )
+                                             .ToListAsync();
 
-                foreach (UserEntity u in users)
-                {
-                    AddUserReponseDto dto = new AddUserReponseDto
+                    List<TenderEntity> tenders = new List<TenderEntity>();
+                    if (string.Equals(company.RegisteredAs, "BidInviter", StringComparison.OrdinalIgnoreCase))
                     {
-                        UserId = u.User_Id,
-                        Designation = u.Designation,
-                        FirstName = u.First_Name,
-                        MiddleName = u.Middle_Name,
-                        LastName = u.Last_Name,
-                        PersonEmail = u.Person_email,
-                        Username = u.Username
-                    };
-                    companyDetailResponse.Users.Add(dto);
-                }
+                        tenders = await meroBoleeDbContexts
+                                .TenderEntities
+                                .Include(x => x.CategoryEntity)
+                                .Include(x => x.TenderStatusEntity)
+                                .Include(x => x.TenderCards)
+                                .Where(x => x.CompanyId == companyId)
+                            .ToListAsync();
 
-                companyDetailResponse.Tenders = new List<GetTenderDto>();
-                List<TenderEntity> tenders = new List<TenderEntity>();
-                if (companyType == CompanyTypeEnum.BidInviter)
-                {
-                    tenders = meroBoleeDbContexts
-                        .TenderEntities
-                        .Include(x => x.CategoryEntity)
-                        .Where(x => x.CompanyId == id).ToList();
-                   
-                }
-                else if(companyType == CompanyTypeEnum.Bidder)
-                {
-                    tenders = (from b in meroBoleeDbContexts.BidRequestEntities
-                                 join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Tender_Id
-                                 where b.CompanyId == id
-                                 select t).ToList<TenderEntity>();
-                }
-                foreach (TenderEntity t in tenders)
-                {
-                    GetTenderDto dto = new GetTenderDto
+                    }
+                    else if (string.Equals(company.RegisteredAs, "Bidder", StringComparison.OrdinalIgnoreCase))
                     {
-                        TenderId = t.Tender_Id,
-                        TenderCode = t.Tender_Code,
-                        TenderTitle = t.Tender_Title,
-                        CategoryName = t.CategoryEntity.Category,
-                        CategoryId = t.Category_Id,
-                        LiveStartDate = t.Live_Start_Date,
-                        LiveEndDate = t.Live_End_Date,
-                        TenderLiveInterval = t.Tender_live_interval,
-                        CreatedDate = t.Date_created
-                    };
-                    companyDetailResponse.Tenders.Add(dto);
+                        tenders = await (from b in meroBoleeDbContexts.BidRequestEntities
+                                         join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Tender_Id
+                                         where b.CompanyId == companyId
+                                         select t
+                                     )
+                                     .Include(t => t.CategoryEntity)
+                                     .Include(t => t.TenderStatusEntity)
+                                     .Include(t => t.TenderCards)
+                                     .ToListAsync<TenderEntity>();
+                    }
+
+                    //return companyDetailResponse; 
+
+                    return Tuple.Create(company, users, tenders);
                 }
-                return companyDetailResponse; ;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -162,14 +136,27 @@ namespace MeroBolee.Repository
             }
         }
 
-        public IEnumerable<CompanyEntity> GetCompany(string search)
+        public async Task<List<CompanyEntity>> GetCompany(string search)
         {
             try
             {
-                return meroBoleeDbContexts.CompanyEntities
-                    .Where(m => (search == null)
-                             || (m.Name.ToLower().Contains(search.ToLower()))
-                ).ToList();
+                if (string.IsNullOrEmpty(search))
+                {
+                    return await meroBoleeDbContexts.CompanyEntities
+                        .Include(x=> x.Country)
+                        .Include(x=> x.CompanyStatus)
+                        .Where(x => x.CompanyId != 1) //1 is merobolee company
+                        .ToListAsync();
+                }
+                else
+                {
+                    return await meroBoleeDbContexts.CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.CompanyStatus)
+                        .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
+                                 && x.CompanyId != 1 //1 is merobolee company
+                    ).ToListAsync();
+                }
             }
             catch (Exception)
             {

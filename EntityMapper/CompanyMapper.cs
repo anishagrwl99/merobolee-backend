@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
@@ -120,6 +121,99 @@ namespace MeroBolee.EntityMapper
                 UserId = entity.User_Id
             };
         }
-        
+
+        public CompanyDetailResponse ToDetailResponse(CompanyEntity company, List<UserEntity> users, List<TenderEntity> tenders, IUploadFile fileService, string baseUrl, string defaultPic)
+        {
+            CompanyDetailResponse companyDetailResponse = new CompanyDetailResponse
+            {
+                Id = company.CompanyId,
+                Name = company.Name,
+                Country = company.Country.Country_Name,
+                City = company.City,
+                Address1 = company.Address1,
+                Address2 = company.Address2,
+                Address3 = company.Address3,
+                Zip = company.Zip,
+                ReferenceCode = company.ReferenceCode,
+                ContactPerson = company.ContactPerson,
+                Email = company.CompanyEmail,
+                Website= company.CompanyWebsite,
+                Phone1 = company.Phone1,
+                Phone2 = company.Phone2,
+                PANNumber = company.PANNumber,
+                Province = company.Province.Province,
+                Status = company.CompanyStatus.Status,
+                RegisteredDate = company.Date_created
+            };
+
+            companyDetailResponse.Users = new List<UserResponseDto>();
+
+            foreach (UserEntity u in users)
+            {
+                UserResponseDto dto = new UserResponseDto
+                {
+                    Id = u.User_Id,
+                    Designation = u.Designation,
+                    FirstName = u.First_Name,
+                    MiddleName = u.Middle_Name,
+                    LastName = u.Last_Name,
+                    Email = u.Person_email,
+                    UserName = u.Username
+                };
+                bool dpExists =  fileService.FileExists(u.ProfilePicture).Result;
+                if(!dpExists)
+                {
+                    dto.ProfilePic = defaultPic;
+                }
+                else
+                {
+                    dto.ProfilePic = $"{baseUrl}{u.ProfilePicture.Replace("\\","/")}";
+                }
+                companyDetailResponse.Users.Add(dto);
+            }
+
+            companyDetailResponse.Tenders = new List<TenderCard>();
+            foreach (TenderEntity t in tenders)
+            {
+                TenderCard dto = new TenderCard
+                {
+                    TenderId = t.Tender_Id,
+                    TenderCode = t.Tender_Code,
+                    TenderTitle = t.Tender_Title,
+                    CategoryName = t.CategoryEntity.Category,
+                    CategoryId = t.Category_Id,
+                    LiveStartDate = t.Live_Start_Date,
+                    LiveEndDate = t.Live_End_Date,
+                    RegistrationTill = t.RegistrationTill,
+                    Status = t.TenderStatusEntity.Status,
+                    StatusId = t.Tender_Status_Id,
+                    CardInfo = (from tc in t.TenderCards
+                                select new TenderCardInfo
+                                {
+                                    Id = tc.Id,
+                                    Label = tc.Label,
+                                    Value = tc.Value
+                                }).ToList()
+                };
+                companyDetailResponse.Tenders.Add(dto);
+            }
+
+            return companyDetailResponse;
+        }
+
+        public CompanyCardResponseDto ToCard(CompanyEntity company)
+        {
+            return new CompanyCardResponseDto
+            {
+                Id = company.CompanyId,
+                Name = company.Name,
+                ReferenceCode = company.ReferenceCode,
+                City = company.City,
+                Country = company.Country.Country_Name,
+                Email = company.CompanyEmail,
+                Status = company.CompanyStatus.Status
+            };
+        }
+
     }
 }

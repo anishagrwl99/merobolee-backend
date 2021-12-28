@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
 using System;
@@ -13,8 +14,8 @@ namespace MeroBolee.Service
     {
         AddCompanyResponseDto AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs);
         AddUserReponseDto AddUser(long companyId, AddUserDto user, int role);
-        IEnumerable<AddCompanyResponseDto> GetCompany(string search);
-        CompanyDetailResponse GetCompanyDetail(long id, CompanyTypeEnum RegisteredAs);
+        Task<List<CompanyCardResponseDto>> GetCompany(string search);
+        Task<CompanyDetailResponse> GetCompanyDetail(long companyId, string baseUrl, string defaultPic);
 
         AddCompanyResponseDto UpdateCompany(long id, AddCompanyDto company, CompanyTypeEnum RegisteredAs);
 
@@ -33,12 +34,17 @@ namespace MeroBolee.Service
         private readonly ICompanyRepository CompanyRepository;
         private readonly IReferenceCodeService referenceCodeService;
         private readonly ICryptoService cryptoService;
+        private readonly IUploadFile fileService;
 
-        public CompanyService(ICompanyRepository CompanyRepository, IReferenceCodeService referenceCodeService, ICryptoService cryptoService)
+        public CompanyService(ICompanyRepository CompanyRepository, 
+                                IReferenceCodeService referenceCodeService, 
+                                ICryptoService cryptoService,
+                                IUploadFile fileService)
         {
             this.CompanyRepository = CompanyRepository;
             this.referenceCodeService = referenceCodeService;
             this.cryptoService = cryptoService;
+            this.fileService = fileService;
         }
 
         public AddCompanyResponseDto AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs)
@@ -80,15 +86,15 @@ namespace MeroBolee.Service
 
         }
 
-        public IEnumerable<AddCompanyResponseDto> GetCompany(string search)
+        public async Task<List<CompanyCardResponseDto>> GetCompany(string search)
         {
             try
             {
-                IEnumerable<CompanyEntity> companies = CompanyRepository.GetCompany(search);
-                List<AddCompanyResponseDto> reponseDtos = new List<AddCompanyResponseDto>();
+                List<CompanyEntity> companies = await CompanyRepository.GetCompany(search);
+                List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
                 foreach (CompanyEntity item in companies)
                 {
-                    AddCompanyResponseDto dto = CompanyEntityToResponseDto(item);
+                    CompanyCardResponseDto dto = ToCard(item);
                     reponseDtos.Add(dto);
                 }
                 return reponseDtos;
@@ -101,12 +107,18 @@ namespace MeroBolee.Service
 
         }
 
-        public CompanyDetailResponse GetCompanyDetail(long id, CompanyTypeEnum RegisteredAs)
+        public async Task<CompanyDetailResponse> GetCompanyDetail(long companyId, string baseUrl, string defaultPic)
         {
             try
             {
-                return CompanyRepository.GetCompanyDetail(id, RegisteredAs);
+                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await CompanyRepository .GetCompanyDetail(companyId);
+                if (resp != null)
+                {
+                    CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
 
+                    return detail;
+                }
+                return null;
             }
             catch (Exception)
             {

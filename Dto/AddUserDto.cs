@@ -60,5 +60,6 @@ namespace MeroBolee.Dto
     public class AddUserReponseDto : AddUserDto
     {
         public long UserId { get; set; }
+        public string ProfilePic { get; set; }
     }
 }
