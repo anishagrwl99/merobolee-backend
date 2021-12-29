@@ -18,7 +18,6 @@ namespace MeroBolee.Controllers
     {
         private readonly ICompanyDocumentService documentService;
         private readonly IDocumentTypeService docTypeService;
-        private readonly IDocumentStatusService statService;
         private readonly PaginationMapper pagination = new();
         private readonly ResponseMsg response = new();
         private IUriService uriService;
@@ -28,43 +27,12 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <param name="documentService"></param>
         /// <param name="docTypeService"></param>
-        /// <param name="statService"></param>
-        public DocumentController(ICompanyDocumentService documentService, IDocumentTypeService docTypeService, IDocumentStatusService statService)
+        public DocumentController(ICompanyDocumentService documentService, IDocumentTypeService docTypeService)
         {
             this.documentService = documentService;
             this.docTypeService = docTypeService;
-            this.statService = statService;
         }
 
-
-        /// <summary>
-        /// Statuses on which company document can be
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <returns></returns>
-        [HttpGet("Document/Status")]
-        public IActionResult GetDocumentStatus([FromQuery]PaginationQuery pagination)
-        {
-            try
-            {
-                string url = Url.Action("GetDocumentStatus", null, null, Request.Scheme); //get url for current request
-                uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<DocumentStatusEntity> docStatus = statService.List();
-                int totalCount = docStatus.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<DocumentStatusEntity>>(docStatus, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(docStatus, pagination, totalCount)); // To pass result in object along with paginatio
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
 
 
         /// <summary>

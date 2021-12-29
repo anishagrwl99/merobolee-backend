@@ -216,10 +216,8 @@ namespace MeroBolee
             //Document
             services.AddScoped<ICompanyDocumentRepository, CompanyDocumentRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
-            services.AddScoped<IDocumentStatusRepository, DocumentStatusRepository>();
             services.AddScoped<ICompanyDocumentService, CompanyDocumentService>();
             services.AddScoped<IDocumentTypeService, DocumentTypeService>();
-            services.AddScoped<IDocumentStatusService, DocumentStatusService>();
 
             //Company
             services.AddScoped<ICompanyRepository, CompanyRepository>();

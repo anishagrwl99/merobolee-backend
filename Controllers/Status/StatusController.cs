@@ -82,6 +82,31 @@ namespace MeroBolee.Controllers.Status
 
         }
 
+        /// <summary>
+        /// To display document status uploaded by company
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Status/Document")]
+        public async Task<IActionResult> DocumentStatus()
+        {
+            try
+            {
+                IEnumerable<DocumentStatusEntity> status = await statusService.GetDocumentStatuses();
+                if (status.Count() == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<DocumentStatusEntity>>(status, "404", "Record not Found")); // To pass result in object along with pagination info
+                }
+                return Ok(new Responses<IEnumerable<DocumentStatusEntity>>(status, "200", "Record Found")); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
 
         /// <summary>
         /// To display tender status

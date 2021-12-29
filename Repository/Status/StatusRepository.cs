@@ -27,6 +27,12 @@ namespace MeroBolee.Repository
 
 
         /// <summary>
+        /// get document status
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<DocumentStatusEntity>> GetDocumentStatuses();
+
+        /// <summary>
         /// Get company status
         /// </summary>
         /// <returns></returns>
@@ -165,6 +171,17 @@ namespace MeroBolee.Repository
         public async Task<IEnumerable<TenderSubmissionStatus>> GetTenderSubmissionStatuses()
         {
             return await meroBoleeDbContexts.TenderSubmissionStatuses.ToListAsync();
+        }
+
+
+
+        /// <summary>
+        /// get a document status
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<DocumentStatusEntity>> GetDocumentStatuses()
+        {
+            return await meroBoleeDbContexts.DocumentStatusEntities.ToListAsync();
         }
     }
 }
