@@ -19,7 +19,7 @@ namespace MeroBolee.Controllers.Signup
     public class SignupController : ControllerBase
     {
         private readonly ISignupService service;
-        private readonly ResponseMsg response = new ResponseMsg();
+        private ResponseMsg response = new ResponseMsg();
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -54,8 +54,9 @@ namespace MeroBolee.Controllers.Signup
             }
             catch (Exception ex)
             {
-                response.statusCode = "500";
-                response.Message = ex.Message;
+                response = ex.HandleException();
+                //response.statusCode = "500";
+                //response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -87,8 +88,9 @@ namespace MeroBolee.Controllers.Signup
             }
             catch (Exception ex)
             {
-                response.statusCode = "500";
-                response.Message = ex.Message;
+                //response.statusCode = "500";
+                //response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
+                response = ex.HandleException();
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
