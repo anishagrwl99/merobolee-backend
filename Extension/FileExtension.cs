@@ -11,10 +11,10 @@ namespace MeroBolee
     /// <summary>
     /// Validate file signature from file extension
     /// </summary>
-    public static class FileSignatureValidator
+    public static class FileExtension
     {
         private static readonly Dictionary<string, List<byte[]>> _fileSignature;
-        static FileSignatureValidator()
+        static FileExtension()
         {
             _fileSignature = new Dictionary<string, List<byte[]>>{
                 { ".jpg", new List<byte[]>

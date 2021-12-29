@@ -79,6 +79,10 @@ namespace MeroBolee.Model
         [ForeignKey("MembershipType")]
         public int MembershipTypeId { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(50)]
+        public string FolderName { get; set; }
+
 
         public virtual CountryEntity Country { get; set; }
 

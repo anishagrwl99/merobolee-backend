@@ -17,7 +17,7 @@ namespace MeroBolee.Repository
         Task<CompanyEntity> GetCompany(long companyId);
         Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
 
-        CompanyEntity UpdateCompany(long id, CompanyEntity cityEntity);
+        CompanyEntity UpdateCompany(CompanyEntity companyEntity);
 
         Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent);
 
@@ -177,27 +177,14 @@ namespace MeroBolee.Repository
             }
         }
 
-        public CompanyEntity UpdateCompany(long id, CompanyEntity obj)
+        public CompanyEntity UpdateCompany(CompanyEntity obj)
         {
             try
             {
-                CompanyEntity company = meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == id).FirstOrDefault();
-                if (company == null)
-                {
-                    return null;
-                }
-                company.Address1 = obj.Address1;
-                company.Address2 = obj.Address2;
-                company.Address3 = obj.Address3;
-                company.Zip = obj.Zip;
-                company.ContactPerson = obj.ContactPerson;
-                company.CompanyEmail = obj.CompanyEmail;
-                company.CompanyWebsite = obj.CompanyWebsite;
-                company.Phone1 = obj.Phone1;
-                company.Phone2 = obj.Phone2;
-                company.Date_modified = DateTime.Now;
+                meroBoleeDbContexts.CompanyEntities.Update(obj);
                 unitOfWork.SaveChange();
-                return company;
+
+                return obj;
             }
             catch (Exception)
             {

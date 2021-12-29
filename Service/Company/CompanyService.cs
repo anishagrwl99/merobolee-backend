@@ -36,8 +36,8 @@ namespace MeroBolee.Service
         private readonly ICryptoService cryptoService;
         private readonly IUploadFile fileService;
 
-        public CompanyService(ICompanyRepository CompanyRepository, 
-                                IReferenceCodeService referenceCodeService, 
+        public CompanyService(ICompanyRepository CompanyRepository,
+                                IReferenceCodeService referenceCodeService,
                                 ICryptoService cryptoService,
                                 IUploadFile fileService)
         {
@@ -52,15 +52,19 @@ namespace MeroBolee.Service
             try
             {
                 CompanyEntity ent = AddCompanyDtoToEntity(companyDto, RegisteredAs);
+                ent = CompanyRepository.AddCompany(ent, companyDto.UserId);
+
                 if (RegisteredAs == CompanyTypeEnum.Bidder)
                 {
-                    ent.ReferenceCode = referenceCodeService.GenerateCode(ReferenceEnum.Bidder).Result;
+                    ent.ReferenceCode = referenceCodeService.GenerateCode(ReferenceEnum.Bidder).Result + ent.CompanyId.ToString("D3");
                 }
                 else if (RegisteredAs == CompanyTypeEnum.BidInviter)
                 {
-                    ent.ReferenceCode = referenceCodeService.GenerateCode(ReferenceEnum.BidInviter).Result;
+                    ent.ReferenceCode = referenceCodeService.GenerateCode(ReferenceEnum.BidInviter).Result + ent.CompanyId.ToString("D3");
                 }
-                ent = CompanyRepository.AddCompany(ent, companyDto.UserId);
+                ent.FolderName = ent.CompanyId.ToString("D3") + ent.Name.GetFirstCharString();
+                CompanyRepository.UpdateCompany(ent);
+
                 return CompanyEntityToResponseDto(ent);
             }
             catch (Exception)
@@ -111,7 +115,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await CompanyRepository .GetCompanyDetail(companyId);
+                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await CompanyRepository.GetCompanyDetail(companyId);
                 if (resp != null)
                 {
                     CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
@@ -139,7 +143,7 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="dto">Request payload</param>
         /// <returns></returns>
-        public async  Task<ChangeCompanyStatusResponseDto> ChangeCompanyStatus(ChangeCompanyStatusDto dto)
+        public async Task<ChangeCompanyStatusResponseDto> ChangeCompanyStatus(ChangeCompanyStatusDto dto)
         {
             try
             {

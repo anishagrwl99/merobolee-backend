@@ -36,8 +36,6 @@ namespace MeroBolee.Service
         {
             TenderEntity entity = TenderDtoEntity(tenderDto);
 
-            entity.Tender_Code = referenceCodeService.GenerateCode(ReferenceEnum.Tender).Result;
-            entity = tenderRepository.AddTender(entity);
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
             string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
 
@@ -69,6 +67,8 @@ namespace MeroBolee.Service
                 }
             }
 
+            entity = tenderRepository.AddTender(entity);
+            entity.Tender_Code = await referenceCodeService.GenerateCode(ReferenceEnum.Tender) + entity.Tender_Id.ToString("D3");
             await tenderRepository.UpdateTender(entity);
 
             return entity;

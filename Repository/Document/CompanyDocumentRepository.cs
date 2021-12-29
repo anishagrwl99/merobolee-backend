@@ -89,7 +89,7 @@ namespace MeroBolee.Repository
             {
                 return meroBoleeDbContexts.CompanyEntities
                     .Where(x => x.CompanyId == companyId)
-                    .Select(x => x.Name)
+                    .Select(x => x.FolderName)
                     .FirstOrDefault();
                     
             }
