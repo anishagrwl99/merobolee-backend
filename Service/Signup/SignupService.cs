@@ -3,6 +3,7 @@ using MeroBolee.Infrastructure;
 using MeroBolee.EntityMapper;
 using MeroBolee.Model;
 using MeroBolee.Repository;
+using System.Threading.Tasks;
 
 namespace MeroBolee.Service
 {
@@ -18,7 +19,7 @@ namespace MeroBolee.Service
         /// <param name="data"></param>
         /// <param name="companyTypeEnum"></param>
         /// <returns></returns>
-        ResponseMsg SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum);
+        Task<CompanyEntity> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum);
     }
 
     /// <summary>
@@ -49,38 +50,37 @@ namespace MeroBolee.Service
         /// <param name="data"></param>
         /// <param name="companyTypeEnum"></param>
         /// <returns></returns>
-        public ResponseMsg SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum)
+        public async Task<CompanyEntity> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum)
         {
             try
             {
                 CompanyMapper mapper = new();
                 CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
-                companyEntity.ReferenceCode = companyTypeEnum== CompanyTypeEnum.Bidder ? 
-                        codeService.GenerateCode(ReferenceEnum.Bidder).Result : codeService.GenerateCode(ReferenceEnum.BidInviter).Result;
+               
                 UserMapper userMapper = new();
                 UserEntity user = userMapper.SupplierSignUpDToUserEntity(data, companyTypeEnum);
                 user.Password = cryptoService.Encrypt(user.Password);
-                bool result = signupRepo.SignupSupplier(companyEntity, user);
-                if(result)
+                companyEntity = await signupRepo.SignupSupplier(companyEntity, user);
+
+                if(companyTypeEnum == CompanyTypeEnum.Bidder)
                 {
-                    return new ResponseMsg
-                    {
-                        statusCode = "200",
-                        Message = "Supplier signup"
-                    };
+                    companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.Bidder) + companyEntity.CompanyId.ToString("D3");
                 }
+                else
+                {
+                    companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.BidInviter) + companyEntity.CompanyId.ToString("D3");
+                }
+
+                companyEntity.FolderName = companyEntity.CompanyId.ToString("D3") +  data.Name.GetFirstCharString();
+                companyEntity = await signupRepo.UpdateCompany(companyEntity);
+                
+                return companyEntity;
 
             }
             catch (System.Exception)
             {
                 throw;
             }
-
-            return new ResponseMsg
-            {
-                statusCode = "400",
-                Message = "Bad data supplied"
-            };
         }
 
     }

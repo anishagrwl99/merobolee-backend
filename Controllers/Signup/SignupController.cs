@@ -19,7 +19,7 @@ namespace MeroBolee.Controllers.Signup
     public class SignupController : ControllerBase
     {
         private readonly ISignupService service;
-
+        private readonly ResponseMsg response = new ResponseMsg();
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -35,22 +35,28 @@ namespace MeroBolee.Controllers.Signup
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Bidder([FromBody] UserSignUpDto data)
+        public async Task<IActionResult> Bidder([FromBody] UserSignUpDto data)
         {
             try
             {
-                var response = service.SignupCompany(data, CompanyTypeEnum.Bidder);
-                return Ok(response);
+                if (ModelState.IsValid)
+                {
+                    var res = await service.SignupCompany(data, CompanyTypeEnum.Bidder);
+                    return Ok(new Responses<long>(res.CompanyId, "200", "Signup successfully"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
             }
             catch (Exception ex)
             {
-                ResponseMsg msg = new()
-                {
-                    statusCode = "500",
-                    Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message)
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(msg));
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -62,22 +68,28 @@ namespace MeroBolee.Controllers.Signup
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult BidInviter([FromBody] UserSignUpDto data)
+        public async Task<IActionResult> BidInviter([FromBody] UserSignUpDto data)
         {
             try
             {
-                var response = service.SignupCompany(data, CompanyTypeEnum.BidInviter);
-                return Ok(response);
+                if (ModelState.IsValid)
+                {
+                    var res = await service.SignupCompany(data, CompanyTypeEnum.BidInviter);
+                    return Ok(new Responses<long>(res.CompanyId, "200", "Signup successfully"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
             }
             catch (Exception ex)
             {
-                ResponseMsg msg = new()
-                {
-                    statusCode = "500",
-                    Message = ex.Message + (ex.InnerException == null? "" : ex.InnerException.Message)
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(msg));
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

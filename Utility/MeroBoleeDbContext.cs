@@ -39,7 +39,6 @@ namespace MeroBolee.Utility
         public DbSet<DocumentTypeEntity> DocumentTypeEntities { get; set; }
         public DbSet<CompanyDocumentEntity> CompanyDocumentEntities { get; set; }
         public DbSet<LiveBiddingEntity> LiveBiddingEntities { get; set; }
-        public DbSet<CompanyEntity> SupplierCompanyEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<CountryEntity> CountryEntities { get; set; }
         public DbSet<ProvinceEntity> ProvinceEntities { get; set; }
@@ -400,9 +399,10 @@ namespace MeroBolee.Utility
                         Zip = "123",
                         CompanyEmail = "super.admin@test.com",
                         RegisteredAs = "SuperAdmin",
-                        ReferenceCode = $"MB{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        ReferenceCode = $"MB{DateTime.Now.ToString("yyMMdd")}001",
                         MembershipTypeId = 1,
-                        CompanyStatusId = 4
+                        CompanyStatusId = 4,
+                        FolderName="001M"
                     },
                     new CompanyEntity
                     {
@@ -418,9 +418,10 @@ namespace MeroBolee.Utility
                         Zip = "123",
                         CompanyEmail = "bid.inviter@test.com",
                         RegisteredAs = "BidInviter",
-                        ReferenceCode = $"BI{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        ReferenceCode = $"BI{DateTime.Now.ToString("yyMMdd")}002",
                         MembershipTypeId = 1,
-                        CompanyStatusId = 4
+                        CompanyStatusId = 4,
+                        FolderName="002BIC"
                     },
                     new CompanyEntity
                     {
@@ -436,9 +437,10 @@ namespace MeroBolee.Utility
                         Zip = "123",
                         CompanyEmail = "bid.bidder@test.com",
                         RegisteredAs = "Bidder",
-                        ReferenceCode = $"SP{DateTime.Now.ToString("MMyyddHHmmssfff")}",
+                        ReferenceCode = $"SP{DateTime.Now.ToString("yyMMdd")}003",
                         MembershipTypeId = 1,
-                        CompanyStatusId = 4
+                        CompanyStatusId = 4,
+                        FolderName="003SC"
                     }
                 );
 
@@ -503,6 +505,12 @@ namespace MeroBolee.Utility
             builder.Entity<CompanyEntity>(entity =>
             {
                 entity.HasIndex(e => e.PANNumber).IsUnique();
+                entity.HasIndex(e => e.CompanyEmail).IsUnique();
+            });
+
+            builder.Entity<UserEntity>(entity =>
+            {
+                entity.HasIndex(e => e.Person_email).IsUnique();
             });
         }
     }

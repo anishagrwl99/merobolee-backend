@@ -9,7 +9,8 @@ namespace MeroBolee.Repository
 {
     public interface ISignupRepository
     {
-        bool SignupSupplier(CompanyEntity company, UserEntity user);
+        Task<CompanyEntity> SignupSupplier(CompanyEntity company, UserEntity user);
+        Task<CompanyEntity> UpdateCompany(CompanyEntity company);
     }
 
     public class SignupRepository : RepositoryBase<CompanyEntity>, ISignupRepository
@@ -20,28 +21,43 @@ namespace MeroBolee.Repository
             this.unitOfWork = unitOfWork;
         }
 
-        public bool SignupSupplier(CompanyEntity company, UserEntity user)
+        public async Task<CompanyEntity> SignupSupplier(CompanyEntity company, UserEntity user)
         {
             try
             {
-                meroBoleeDbContexts.SupplierCompanyEntities.Add(company);
-                unitOfWork.SaveChange();
+                meroBoleeDbContexts.CompanyEntities.Add(company);
+                await unitOfWork.SaveChangesAsync();
                 meroBoleeDbContexts.UserEntities.Add(user);
-                unitOfWork.SaveChange();
+                await unitOfWork .SaveChangesAsync();
                 UserCompany userCompany = new UserCompany
                 {
                     UserId = user.User_Id,
                     CompanyId = company.CompanyId
                 };
                 meroBoleeDbContexts.UserCompanies.Add(userCompany);
-                unitOfWork.SaveChange();
-                return true;
+                await unitOfWork .SaveChangesAsync();
+                return company;
             }
             catch (Exception)
             {
                 throw;
             }
 
+        }
+
+        public async Task<CompanyEntity> UpdateCompany(CompanyEntity company)
+        {
+            try
+            {
+                meroBoleeDbContexts.CompanyEntities.Update(company);
+                await meroBoleeDbContexts.SaveChangesAsync();
+                return company;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
