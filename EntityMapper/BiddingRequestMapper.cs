@@ -37,9 +37,9 @@ namespace MeroBolee.EntityMapper
             {
                 entity.BidderRequestDocs.Add(new BidderRequestDocEntity
                 {
-                    DocPath =  file.Upload(item.Document, folder).Result,
+                    DocPath = file.Upload(item.Document, folder).Result,
                     DocTitle = item.DocTitle
-                }) ;
+                });
             }
             return entity;
         }
@@ -61,7 +61,7 @@ namespace MeroBolee.EntityMapper
             List<LiveBiddingEntity> entities = new List<LiveBiddingEntity>();
             foreach (var item in dto.MaterialQuotation)
             {
-                entities.Add(new  LiveBiddingEntity
+                entities.Add(new LiveBiddingEntity
                 {
                     BiddingRequestId = dto.BiddingId,
                     UserId = dto.SupplierId,
@@ -73,7 +73,7 @@ namespace MeroBolee.EntityMapper
                 });
             }
             return entities;
-            
+
         }
 
 
@@ -131,7 +131,14 @@ namespace MeroBolee.EntityMapper
                     TenderCategory = entity.Tender.CategoryEntity.Category,
                     TenderLiveDate = entity.Tender.Live_End_Date,
                     TenderTitle = entity.Tender.Tender_Title,
-                    TenderCode = entity.Tender.Tender_Code
+                    TenderCode = entity.Tender.Tender_Code,
+                    CardInfo = (from tc in entity.Tender.TenderCards
+                                select new TenderCardInfo
+                                {
+                                    Id = tc.Id,
+                                    Label = tc.Label,
+                                    Value = tc.Value
+                                }).ToList()
                 };
             }
 
@@ -183,7 +190,7 @@ namespace MeroBolee.EntityMapper
             }
         }
 
- 
+
         /// <summary>
         /// Convert entity to detail dto
         /// </summary>
@@ -211,7 +218,7 @@ namespace MeroBolee.EntityMapper
                              {
                                  Id = d.Id,
                                  DocTitle = d.DocTitle,
-                                 DocPath = $"{basePath}{d.DocPath.Replace("\\","/")}"
+                                 DocPath = $"{basePath}{d.DocPath.Replace("\\", "/")}"
                              }).ToList();
 
             dto.BidHistories = (from h in entity.BiddingHistories

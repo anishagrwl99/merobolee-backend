@@ -105,6 +105,7 @@ namespace MeroBolee.Repository
             {
                 return await meroBoleeDbContexts.BidRequestEntities
                         .Include(x => x.Tender)
+                        .Include(x => x.Tender.TenderCards)
                         .Include(x => x.Tender.CategoryEntity)
                         .Include(x => x.BidRequestStatus)
                         .Where(x => x.CompanyId == supplierCompanyId && x.Tender.Live_End_Date < DateTime.Now)
