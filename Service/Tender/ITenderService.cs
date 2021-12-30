@@ -10,13 +10,15 @@ namespace MeroBolee.Service
     public interface ITenderService
     {
         Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto);
-        IEnumerable<TenderCard> GetMarketplaceTender(string search);
-        GetTenderDto GetTenderDetail(long tenderId, string basePath);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath);
+        Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
+        Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
-        IEnumerable<TenderCard> UpcomingTender(string search);
+        Task<IEnumerable<TenderCard>> UpcomingTender(string search);
 
-        IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search);
-        BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
+        Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId, string search);
 
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto);
+        Task<TenderApproveDto> ApproveTenderByBidInviter(TenderApproveDto dto);
 
         Tuple<decimal, DateTime, DateTime> GetMaxQuotationAllowed(long tenderId);
 

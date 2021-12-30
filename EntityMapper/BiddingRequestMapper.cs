@@ -107,6 +107,35 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        /// <summary>
+        /// Convert bidrequestentity to bid history card dto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public BidHistoryCardDto BidEntityToHistoryCard(BidRequestEntity entity)
+        {
+            if (entity == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new BidHistoryCardDto
+                {
+                    BidId = entity.Id,
+                    TenderId = entity.Tender.Tender_Id,
+                    Amount = entity.Amount,
+                    BidDate = entity.Date_created,
+                    BidStatus = entity.BidRequestStatus.Status,
+                    PaymentProvider = entity.PaymentProvider,
+                    TenderCategory = entity.Tender.CategoryEntity.Category,
+                    TenderLiveDate = entity.Tender.Live_End_Date,
+                    TenderTitle = entity.Tender.Tender_Title,
+                    TenderCode = entity.Tender.Tender_Code
+                };
+            }
+
+        }
 
         /// <summary>
         /// Return list of bid card dto from list of bid request entity
@@ -133,8 +162,28 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        public IEnumerable<BidHistoryCardDto> ToBidHistory(IEnumerable<BidRequestEntity> bidderRequests, IEnumerable<TenderWinnerEntity> winbids)
+        {
+            if (bidderRequests == null)
+            {
+                return null;
+            }
 
+            else
+            {
+                List<BidHistoryCardDto> getBiddings = new List<BidHistoryCardDto>();
+                foreach (BidRequestEntity requestEntity in bidderRequests)
+                {
+                    BidHistoryCardDto c = BidEntityToHistoryCard(requestEntity);
+                    c.IsWinner = winbids.Any(x => x.TenderId == requestEntity.TenderId);
+                    getBiddings.Add(c);
+                };
+                return getBiddings;
 
+            }
+        }
+
+ 
         /// <summary>
         /// Convert entity to detail dto
         /// </summary>
@@ -177,6 +226,18 @@ namespace MeroBolee.EntityMapper
                                 }).ToList();
 
             return dto;
+        }
+
+
+        public TenderWinnerEntity ToWinnerEntity(BidWinnerRequestDto dto)
+        {
+            return new TenderWinnerEntity
+            {
+                TenderId = dto.TenderId,
+                WinnerCompanyId = dto.CompanyId,
+                Date_created = DateTime.Now,
+                Date_modified = DateTime.Now
+            };
         }
     }
 }

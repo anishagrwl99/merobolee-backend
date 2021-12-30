@@ -376,10 +376,11 @@ namespace MeroBolee.Service
             return BidderRequestToDto(requests);
         }
 
-        public async Task<IEnumerable<BidCardDto>> SupplierBidHistory(long supplierCompanyId)
+        public async Task<IEnumerable<BidHistoryCardDto>> SupplierBidHistory(long supplierCompanyId)
         {
             IEnumerable<BidRequestEntity> requests = await bidRequestRepository.SupplierBidHistory(supplierCompanyId);
-            return BidderRequestToDto(requests);
+            IEnumerable<TenderWinnerEntity> winingTenders = await bidRequestRepository.GetSupplierWinningBids(supplierCompanyId);
+            return ToBidHistory(requests, winingTenders);
         }
 
         public async Task<BidCardDto> ApproveOrDisapprove(BidUpdateRequestDto updateRequest)
@@ -392,6 +393,29 @@ namespace MeroBolee.Service
                 entity.Date_modified = DateTime.Now;
                 entity = await bidRequestRepository.UpdateBidRequest(entity);
                 return BidEntityToCard(entity);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<long> SetTenderWinner(BidWinnerRequestDto dto)
+        {
+            try
+            {
+                bool exists = await bidRequestRepository.CheckTenderWinner(dto.TenderId);
+                if (!exists)
+                {
+                    TenderWinnerEntity ent = ToWinnerEntity(dto);
+                    ent = await bidRequestRepository.SetTenderWinner(ent);
+                    return ent.Id;
+                }
+                else
+                {
+                    return -1; 
+                }
             }
             catch (Exception)
             {

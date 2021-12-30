@@ -101,12 +101,35 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         public async Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId)
         {
-            return await meroBoleeDbContexts.BidRequestEntities
-                .Include(x => x.Tender)
-                .Include(x => x.Tender.CategoryEntity)
-                .Include(x => x.BidRequestStatus)
-                .Where(x => x.CompanyId == supplierCompanyId && x.Tender.Live_End_Date < DateTime.Now)
-                .ToListAsync();
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities
+                        .Include(x => x.Tender)
+                        .Include(x => x.Tender.CategoryEntity)
+                        .Include(x => x.BidRequestStatus)
+                        .Where(x => x.CompanyId == supplierCompanyId && x.Tender.Live_End_Date < DateTime.Now)
+                        .ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<TenderWinnerEntity>> GetSupplierWinningBids(long supplierCompanyId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderWinnerEntities
+                    .Where(x => x.WinnerCompanyId == supplierCompanyId)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -399,6 +422,35 @@ namespace MeroBolee.Repository
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckTenderWinner(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderWinnerEntities
+                    .AnyAsync(x=> x.TenderId == tenderId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<TenderWinnerEntity> SetTenderWinner(TenderWinnerEntity ent)
+        {
+            try
+            {
+                meroBoleeDbContexts.TenderWinnerEntities.Add(ent);
+                await unitOfWork.SaveChangesAsync();
+                return ent; 
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

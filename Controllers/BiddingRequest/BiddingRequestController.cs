@@ -306,11 +306,11 @@ namespace MeroBolee.Controllers.BiddingRequest
                 string url = Url.Action("GetBidderRequest", null, new { supplierCompanyId = supplierCompanyId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<BidCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId);
+                IEnumerable<BidHistoryCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId);
                 int totalCount = BiddingRequest.Count();
                 if (totalCount == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<BidCardDto>>(BiddingRequest, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<BidHistoryCardDto>>(BiddingRequest, "404", "Record not found"));
                 }
                 return Ok(ResultAfterPagination(BiddingRequest, pagination, totalCount)); // To pass result in object along with pagination info
             }
@@ -591,19 +591,56 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
 
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
 
+        /// <summary>
+        /// Select a tender winner 
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("Bidding/Admin/SetTenderWinner")]
+        public async Task<IActionResult> SelectBidWinner([FromBody] BidWinnerRequestDto dto)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    long id = await biddingRequestService.SetTenderWinner(dto);
+                    if (id < 0)
+                    {
+                        response.statusCode = "409";
+                        response.Message = "Bid winner already selected";
+                        return StatusCode(StatusCodes.Status409Conflict, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<long>(id, "200", "Tender winner selected"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
         private PagedResponse<AuctionLog> ResultAfterPagination(IEnumerable<AuctionLog> logs, PaginationQuery pagination, int totalCount)
         {
@@ -632,6 +669,21 @@ namespace MeroBolee.Controllers.BiddingRequest
             return paginationResponse;
 
         }
+
+        private PagedResponse<BidHistoryCardDto> ResultAfterPagination(IEnumerable<BidHistoryCardDto> getBiddingRequest, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<BidHistoryCardDto>(getBiddingRequest, totalCount);
+            }
+
+            var get = getBiddingRequest.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
 
         private PagedResponse<LiveBidResponse> ResultAfterPagination(IEnumerable<LiveBidResponse> getBiddingRequest, PaginationQuery pagination, int totalCount)
         {

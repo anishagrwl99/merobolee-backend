@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+    public class TenderDocuments
+    {
+        public string TenderDetailDocTitle { get; set; }
+        public string TenderDetailDocPath { get; set; }
+        public string TermsAndConditionDocPath { get; set; }
+    }
     public class GetTenderDto : TenderCard
     {
         public string Location { get; set; }
@@ -16,9 +22,7 @@ namespace MeroBolee.Dto
         public string AdditionalRequest { get; set; }
         public decimal Price { get; set; }
         public decimal MaxQuotation { get; set; }
-        public string TenderDetailDocTitle { get; set; }
-        public string TenderDetailDocPath { get; set; }
-        public string TermsAndConditionDocPath { get; set; }
+       
         public int TenderLiveInterval { get; set; }
         public string CancelRemarks { get; set; }
         public DateTime CreatedDate { get; set; }

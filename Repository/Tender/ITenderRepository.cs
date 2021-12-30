@@ -11,9 +11,9 @@ namespace MeroBolee.Repository
    public interface ITenderRepository: IRepositoryBase<TenderEntity>
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
-        IEnumerable<TenderCard> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
-        TenderEntity GetTenderDetail(long id);
+        Task<TenderEntity> GetTenderDetail(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
 
         /// <summary>
@@ -21,11 +21,10 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        IEnumerable<TenderCard> UpcomingTender(string search);
+        Task<IEnumerable<TenderCard>> UpcomingTender(string search);
 
-        IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId ,string search);
-        IEnumerable<TenderCard> GetBidIniviterTenderListing(long companyId ,string search);
-        IEnumerable<TenderEntity> GetBidInviterTenderListing(long companyId ,string search);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId ,string search);
         Tuple<long, long> GetTenderIdFromCode(string tenderCode);
 
         Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
@@ -47,8 +46,9 @@ namespace MeroBolee.Repository
         Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
 
         Tuple<decimal, DateTime, DateTime>  GetMaxQuotationAllowed(long tenderId);
-        TenderEntity GetTenderEntityOnly(long tenderId);
+        Task<TenderEntity> GetTenderEntityOnly(long tenderId);
 
+        Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
 
     }
 }

@@ -110,14 +110,14 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/History")]
-        public IActionResult GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
+        public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
             {
                 string url = Url.Action("GetBidInviterTenderHistory", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = tenderService.GetBidIniviterTenderHistory(companyId, search);
+                IEnumerable<TenderCard> tenders = await tenderService.GetBidIniviterTenderHistory(companyId, search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -140,14 +140,14 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
-        public IActionResult GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string search = "")
+        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
             {
                 string url = Url.Action("GetBidInviterTenderListing", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                BidInviterTenderListing tenders = tenderService.GetBidInviterTenderListing(companyId, search);
+                BidInviterTenderListing tenders = await tenderService.GetBidInviterTenderListing(companyId, search);
                 int totalCount = tenders.ActiveTenders.Count() + tenders.PendingTenders.Count();
                 if (totalCount == 0)
                 {
@@ -170,13 +170,13 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Tender/BidInviter/Approve")]
-        public IActionResult ApproveTender([FromBody] TenderApproveDto dto)
+        public async Task<IActionResult> ApproveTender([FromBody] TenderApproveDto dto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    TenderApproveDto res = tenderService.ApproveTenderByBidInviter(dto);
+                    TenderApproveDto res = await tenderService.ApproveTenderByBidInviter(dto);
                     return Ok(new Responses<TenderApproveDto>(res, "200", "Record is successfully updated"));
                 }
                 else
@@ -190,7 +190,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -203,14 +203,14 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Marketplace")]
-        public IActionResult Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
                 string url = Url.Action("Marketplace", null, new { search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = tenderService.GetMarketplaceTender(search);
+                IEnumerable<TenderCard> tenders = await tenderService.GetMarketplaceTender(search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -235,14 +235,14 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/Upcoming")]
-        public IActionResult GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
                 string url = Url.Action("GetUpCommingTender", null, new { search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = tenderService.UpcomingTender(search);
+                IEnumerable<TenderCard> tenders = await tenderService.UpcomingTender(search);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -265,7 +265,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Tender/TenderDetail")]
-        public IActionResult GetById([FromQuery] long tenderId)
+        public async Task<IActionResult> GetById([FromQuery] long tenderId)
         {
             try
             {
@@ -277,12 +277,12 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    GetTenderDto tenderEntity = tenderService.GetTenderDetail(tenderId, _baseUrl);
+                    GetTenderDto tenderEntity = await tenderService.GetTenderDetail(tenderId, _baseUrl);
                     if (tenderEntity == null)
                     {
                         response.statusCode = "404";
                         response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
                     return Ok(new Responses<GetTenderDto>(tenderEntity, "200", "Record found"));
                 }
@@ -297,7 +297,62 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
-       
+        /// <summary>
+        /// To get tender documents created by merobolee
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Admin/TenderDocument")]
+        public async Task<IActionResult> GetTenderDocuments([FromQuery] long tenderId)
+        {
+            try
+            {
+                TenderDocuments doc = await tenderService.GetTenderDocuments(tenderId, _baseUrl);
+                if (doc == null)
+                {
+                    response.statusCode = "404";
+                    response.Message = "Record not found";
+                    return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                }
+                return Ok(new Responses<TenderDocuments>(doc, "200", "Record found"));
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// To get tender documents created by merobolee for suppliers
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Supplier/TenderDocument")]
+        public async Task<IActionResult> GetTenderDocumentsForSupplier([FromQuery] long tenderId, [FromQuery] long companyId)
+        {
+            try
+            {
+                TenderDocuments doc = await tenderService.GetTenderDocumentsForSupplier(tenderId, companyId, _baseUrl);
+                if (doc == null)
+                {
+                    response.statusCode = "404";
+                    response.Message = "Record not found";
+                    return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                }
+                return Ok(new Responses<TenderDocuments>(doc, "200", "Record found"));
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

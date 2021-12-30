@@ -74,20 +74,20 @@ namespace MeroBolee.Service
             return entity;
         }
 
-        public IEnumerable<TenderCard> GetMarketplaceTender(string search)
+        public Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search)
         {
             return tenderRepository.GetMarketplaceTender(search);
         }
 
 
-        public IEnumerable<TenderCard> GetBidIniviterTenderHistory(long companyId, string search)
+        public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search)
         {
-            return tenderRepository.GetBidIniviterTenderHistory(companyId, search);
+            return await tenderRepository.GetBidIniviterTenderHistory(companyId, search);
         }
 
-        public BidInviterTenderListing GetBidInviterTenderListing(long companyId, string search)
+        public async Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId, string search)
         {
-            IEnumerable<TenderCard> tenders = tenderRepository.GetBidIniviterTenderListing(companyId, search);
+            IEnumerable<TenderCard> tenders = await tenderRepository.GetBidIniviterTenderListing(companyId, search);
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
                 PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
@@ -97,19 +97,52 @@ namespace MeroBolee.Service
         }
 
 
-        public GetTenderDto GetTenderDetail(long tenderId, string baseUrl)
+        public async Task<GetTenderDto> GetTenderDetail(long tenderId, string baseUrl)
         {
-            return TenderEntityToDto(tenderRepository.GetTenderDetail(tenderId), baseUrl);
+            TenderEntity te = await tenderRepository.GetTenderDetail(tenderId);
+            if (te != null)
+            {
+                return TenderEntityToDto(te, baseUrl);
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public IEnumerable<TenderCard> UpcomingTender(string search)
+        public async Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath)
         {
-            return tenderRepository.UpcomingTender(search);
+            TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId);
+            if (te != null)
+            {
+                return ToTenderDocuments(te, basePath);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath)
+        {
+            TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId, companyId);
+            if (te != null)
+            {
+                return ToTenderDocuments(te, basePath);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<IEnumerable<TenderCard>> UpcomingTender(string search)
+        {
+            return await tenderRepository.UpcomingTender(search);
         }
 
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
-            TenderEntity entity = tenderRepository.GetTenderDetail(tenderDto.TenderId);
+            TenderEntity entity = await tenderRepository.GetTenderEntityOnly (tenderDto.TenderId);
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
             string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
 
@@ -191,11 +224,11 @@ namespace MeroBolee.Service
             }
         }
 
-        public TenderApproveDto ApproveTenderByBidInviter(TenderApproveDto dto)
+        public async Task<TenderApproveDto> ApproveTenderByBidInviter(TenderApproveDto dto)
         {
             try
             {
-                TenderEntity t = tenderRepository.GetTenderDetail(dto.TenderId);
+                TenderEntity t = await tenderRepository.GetTenderEntityOnly(dto.TenderId);
                 t.Tender_Status_Id = 2;//Approved
                 t.Date_modified = DateTime.Now;
                 t.ApprovedBy = dto.UserId;
@@ -235,7 +268,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                TenderEntity t = tenderRepository.GetTenderEntityOnly(tenderId);
+                TenderEntity t = await tenderRepository.GetTenderEntityOnly(tenderId);
                 t.MaxQuotation = maxQuotation;
                 await tenderRepository.UpdateTender(t);
             }

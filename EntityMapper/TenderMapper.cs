@@ -169,9 +169,7 @@ namespace MeroBolee.EntityMapper
             getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
             getTender.Price = tenderEntity.Price;
             getTender.MaxQuotation = tenderEntity.MaxQuotation;
-            getTender.TenderDetailDocTitle = tenderEntity.TenderDetailDocTitle;
-            getTender.TenderDetailDocPath = $"{baseUrl}{tenderEntity.TenderDetailDocPath.Replace("\\", "/")}";
-            getTender.TermsAndConditionDocPath = $"{baseUrl}{tenderEntity.TermsAndConditionDocPath.Replace("\\", "/")}";
+
             getTender.CreatedDate = tenderEntity.Date_created;
             getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
                                          select new TenderMaterialResponseDto
@@ -194,10 +192,25 @@ namespace MeroBolee.EntityMapper
                                         {
                                             Id = txd.Id,
                                             DocTitle = txd.DocTitle,
-                                            DocPath = $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
+                                            DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
+                                                        $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                         }).ToList();
 
             return getTender;
+
+        }
+
+        public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
+        {
+            TenderDocuments doc = new TenderDocuments
+            {
+                TenderDetailDocTitle = tenderEntity.TenderDetailDocTitle,
+                TenderDetailDocPath = string.IsNullOrEmpty(tenderEntity.TenderDetailDocPath) ? "" :
+                                        $"{baseUrl}{tenderEntity.TenderDetailDocPath.Replace("\\", "/")}",
+                TermsAndConditionDocPath = string.IsNullOrEmpty(tenderEntity.TermsAndConditionDocPath) ? "" : 
+                                        $"{baseUrl}{tenderEntity.TermsAndConditionDocPath.Replace("\\", "/")}"
+            };
+            return doc;
 
         }
 

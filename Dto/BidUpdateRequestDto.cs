@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
+
+    public class BidWinnerRequestDto
+    {
+        [Required(ErrorMessage = "Company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
+        public long CompanyId { get; set; }
+
+        [Required(ErrorMessage = "Tender id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
+        public long TenderId { get; set; }
+    }
     public class BidUpdateRequestDto
     {
 
