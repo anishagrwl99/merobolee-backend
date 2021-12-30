@@ -380,8 +380,11 @@ namespace MeroBolee.Utility
                 );
             builder.Entity<RoleEntity>().HasData(
                 new RoleEntity() { Role_Id = 1, Role_Name = "Super Admin", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 2, Role_Name = "Bid Inviter", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 3, Role_Name = "Bidder", Date_created = DateTime.Now, Date_modified = DateTime.Now }
+                new RoleEntity() { Role_Id = 2, Role_Name = "Tender Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Role_Id = 3, Role_Name = "Customer Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Role_Id = 4, Role_Name = "Bid Inviter", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Role_Id = 5, Role_Name = "Bidder", Date_created = DateTime.Now, Date_modified = DateTime.Now }
+                
                 );
 
             builder.Entity<CompanyEntity>().HasData(
@@ -461,10 +464,34 @@ namespace MeroBolee.Utility
                 new UserEntity
                 {
                     User_Id = 2,
+                    First_Name = "Tender",
+                    Last_Name = "Support",
+                    Person_email = "tender.suport@test.com",
+                    Role_Id = 2,
+                    Status_id = 1,
+                    Date_created = DateTime.Now,
+                    Date_modified = DateTime.Now,
+                    Password = cryptoService.Encrypt("123123"),
+                },
+                new UserEntity
+                {
+                    User_Id = 3,
+                    First_Name = "Customer",
+                    Last_Name = "Support",
+                    Person_email = "customer.support@test.com",
+                    Role_Id = 3,
+                    Status_id = 1,
+                    Date_created = DateTime.Now,
+                    Date_modified = DateTime.Now,
+                    Password = cryptoService.Encrypt("123123"),
+                },
+                new UserEntity
+                {
+                    User_Id = 4,
                     First_Name = "Bid",
                     Last_Name = "Inviter",
                     Person_email = "bid.inviter@test.com",
-                    Role_Id = 2,
+                    Role_Id = 4,
                     Status_id = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
@@ -472,11 +499,11 @@ namespace MeroBolee.Utility
                 },
                 new UserEntity
                 {
-                    User_Id = 3,
+                    User_Id = 5,
                     First_Name = "Bid",
                     Last_Name = "Bidder",
                     Person_email = "bid.bidder@test.com",
-                    Role_Id = 3,
+                    Role_Id = 5,
                     Status_id = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
@@ -486,8 +513,10 @@ namespace MeroBolee.Utility
 
             builder.Entity<UserCompany>().HasData(
                 new UserCompany { Id = 1, UserId = 1, CompanyId = 1 },
-                new UserCompany { Id = 2, UserId = 2, CompanyId = 2 },
-                new UserCompany { Id = 3, UserId = 3, CompanyId = 3 }
+                new UserCompany { Id = 2, UserId = 2, CompanyId = 1 },
+                new UserCompany { Id = 3, UserId = 3, CompanyId = 1 },
+                new UserCompany { Id = 4, UserId = 4, CompanyId = 2 },
+                new UserCompany { Id = 5, UserId = 5, CompanyId = 3 }
                 );
 
             builder.Entity<TenderSubmissionStatus>().HasData(
