@@ -69,7 +69,7 @@ namespace MeroBolee.Utility
 
         public DbSet<FAQEntity> FAQEntities { get; set; }
 
-        public DbSet<RequestHelpStatus> TechnicalSupportStatuses { get; set; }
+        public DbSet<TechnicalSupportStatus> TechnicalSupportStatuses { get; set; }
         public DbSet<TechnicalSupportEntity> TechnicalSupportEntities { get; set; }
 
         public DbSet<MailEntity> MailEntities { get; set; }
@@ -275,11 +275,11 @@ namespace MeroBolee.Utility
                 new PaymentStatusEntity() { Id = 2, Payment_status = "Paid" }
                 );
 
-            builder.Entity<RequestHelpStatus>().HasData(
-                new RequestHelpStatus() { Status_id = 1, Request_status = "Requested" },
-                new RequestHelpStatus() { Status_id = 2, Request_status = "Approved" },
-                new RequestHelpStatus() { Status_id = 3, Request_status = "Running" },
-                new RequestHelpStatus() { Status_id = 4, Request_status = "Resolved" }
+            builder.Entity<TechnicalSupportStatus>().HasData(
+                new TechnicalSupportStatus() { StatusId = 1, Status = "Requested" },
+                new TechnicalSupportStatus() { StatusId = 2, Status = "Approved" },
+                new TechnicalSupportStatus() { StatusId = 3, Status = "Running" },
+                new TechnicalSupportStatus() { StatusId = 4, Status = "Resolved" }
                 );
 
             builder.Entity<UserStatusEntity>().HasData(

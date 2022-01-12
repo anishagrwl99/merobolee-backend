@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Model
 {
-    [Table("lk_request_help_status")]
+    [Table("lk_TechnicalSupportStatus")]
     public class TechnicalSupportStatus
     {
-        private int status_id;
-        private string request_status;
-
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("status_id")]
-        public int Status_id { get => status_id; set => status_id = value; }
-        [Column("request_status")]
-        public string Request_status { get => request_status; set => request_status = value; }
+        [Column("Id")]
+        public int StatusId { get; set; }
+
+
+        [Column("Status", TypeName = "VARCHAR")]
+        [MaxLength(50)]
+        public string Status { get; set; }
     }
 }

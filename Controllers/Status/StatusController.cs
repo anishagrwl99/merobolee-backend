@@ -250,13 +250,13 @@ namespace MeroBolee.Controllers.Status
         {
             try
             {
-                IEnumerable<RequestHelpStatus> requestHelpStatuses = await statusService.GetTechnicalSupportStatuses();
+                IEnumerable<TechnicalSupportStatus> requestHelpStatuses = await statusService.GetTechnicalSupportStatuses();
                 if (requestHelpStatuses.Count() == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<RequestHelpStatus>>(requestHelpStatuses, "404", "Record not found")); // To pass result in object along with pagination info
+                    return NotFound(new Responses<IEnumerable<TechnicalSupportStatus>>(requestHelpStatuses, "404", "Record not found")); // To pass result in object along with pagination info
 
                 }
-                return Ok(new Responses<IEnumerable<RequestHelpStatus>>(requestHelpStatuses, "200", "Record found")); // To pass result in object along with pagination info
+                return Ok(new Responses<IEnumerable<TechnicalSupportStatus>>(requestHelpStatuses, "200", "Record found")); // To pass result in object along with pagination info
             }
             catch (Exception e)
             {

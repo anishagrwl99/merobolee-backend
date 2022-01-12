@@ -58,7 +58,7 @@ namespace MeroBolee.Repository
         /// Get help request status
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<RequestHelpStatus>> GetTechnicalSupportStatus();
+        Task<IEnumerable<TechnicalSupportStatus>> GetTechnicalSupportStatus();
 
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace MeroBolee.Repository
         /// Get request help status
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<RequestHelpStatus>> GetTechnicalSupportStatus()
+        public async Task<IEnumerable<TechnicalSupportStatus>> GetTechnicalSupportStatus()
         {
             return await meroBoleeDbContexts.TechnicalSupportStatuses.ToListAsync();
         }
