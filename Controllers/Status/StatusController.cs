@@ -245,12 +245,12 @@ namespace MeroBolee.Controllers.Status
         /// To display all request help status 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Status/HelpRequest")]
+        [HttpGet("Status/TechnicalSupport")]
         public async Task<IActionResult> HelpRequestStatus()
         {
             try
             {
-                IEnumerable<RequestHelpStatus> requestHelpStatuses = await statusService.GetRequestHelpStatuses();
+                IEnumerable<RequestHelpStatus> requestHelpStatuses = await statusService.GetTechnicalSupportStatuses();
                 if (requestHelpStatuses.Count() == 0)
                 {
                     return NotFound(new Responses<IEnumerable<RequestHelpStatus>>(requestHelpStatuses, "404", "Record not found")); // To pass result in object along with pagination info

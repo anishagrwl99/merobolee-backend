@@ -69,8 +69,8 @@ namespace MeroBolee.Utility
 
         public DbSet<FAQEntity> FAQEntities { get; set; }
 
-        public DbSet<RequestHelpStatus> RequestHelpStatuses { get; set; }
-        public DbSet<RequestHelpEntity> RequestHelpEntities { get; set; }
+        public DbSet<RequestHelpStatus> TechnicalSupportStatuses { get; set; }
+        public DbSet<TechnicalSupportEntity> TechnicalSupportEntities { get; set; }
 
         public DbSet<MailEntity> MailEntities { get; set; }
         public DbSet<MailAttachmentEntity> MailAttachmentEntities { get; set; }

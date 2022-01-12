@@ -196,8 +196,8 @@ namespace MeroBolee
             services.AddScoped<IBidderRequestRepository, BidderRequestRepository>();
             services.AddScoped<IFAQRepository, FAQRepository>();
             services.AddScoped<IFAQService, FAQService>();
-            services.AddScoped<IRequestHelpRepository, RequestHelpRepository>();
-            services.AddScoped<IRequestHelpService, RequestHelpService>();
+            services.AddScoped<ITechnicalSupportRepository, TechnicalSupportRepository>();
+            services.AddScoped<ITechnicalSupportService, TechnicalSupportService>();
             services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
             //status

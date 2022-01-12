@@ -7,16 +7,11 @@ namespace MeroBolee.Dto
 {
     public class UpdateRequestHelpDto
     {
-        private string problemTitle;
-        private string description;
-        private string remark;
-        private int helpStatusId;
-        private DateTime? resolveDate;
-
-        public string ProblemTitle { get => problemTitle; set => problemTitle = value; }
-        public string Description { get => description; set => description = value; }
-        public string Remark { get => remark; set => remark = value; }
-        public int HelpStatusId { get => helpStatusId; set => helpStatusId = value; }
-        public DateTime? ResolveDate { get => resolveDate; set => resolveDate = value; }
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public long? UserId { get; set; }
     }
 }

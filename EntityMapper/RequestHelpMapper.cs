@@ -10,27 +10,28 @@ namespace MeroBolee.EntityMapper
     public class RequestHelpMapper
     {
 
-        public RequestHelpEntity RequestHelpDtoToEntity(PostRequestHelpDto postRequestHelpDto)
+        public TechnicalSupportEntity RequestHelpDtoToEntity(PostTechnicalSupportDto postRequestHelpDto)
         {
             if (postRequestHelpDto == null)
             {
                 return null;
             }
 
-            else 
+            else
             {
-                return new RequestHelpEntity 
-                { 
-                 Problem_title= postRequestHelpDto.ProblemTitle,
-                 Description= postRequestHelpDto.Description,
-                 Help_status_id= postRequestHelpDto.HelpStatusId,
-                 User_id= postRequestHelpDto.UserId
+                return new TechnicalSupportEntity
+                {
+                    Name = postRequestHelpDto.Name,
+                    Email = postRequestHelpDto.Email,
+                    Title = postRequestHelpDto.Title,
+                    Description = postRequestHelpDto.Description,
+                    UserId = postRequestHelpDto.UserId.HasValue? postRequestHelpDto.UserId.Value : null
                 };
             }
-        
+
         }
 
-        public RequestHelpEntity RequestHelpDtoToEntity(UpdateRequestHelpDto updateRequestDto)
+        public TechnicalSupportEntity RequestHelpDtoToEntity(UpdateRequestHelpDto updateRequestDto)
         {
             if (updateRequestDto == null)
             {
@@ -39,19 +40,20 @@ namespace MeroBolee.EntityMapper
 
             else
             {
-                return new RequestHelpEntity
+                return new TechnicalSupportEntity
                 {
-                    Problem_title = updateRequestDto.ProblemTitle,
+                    Title = updateRequestDto.Title,
                     Description = updateRequestDto.Description,
-                    Help_status_id = updateRequestDto.HelpStatusId,
-                    Remark= updateRequestDto.Remark,
-                    Help_close_date= updateRequestDto.ResolveDate
+                    Name = updateRequestDto.Name,
+                    Email = updateRequestDto.Email,
+                    UserId = updateRequestDto.UserId.HasValue? updateRequestDto.UserId.Value : null,
+                    Id = updateRequestDto.Id
                 };
             }
 
         }
 
-        public GetRequestHelpDto RequestHelpToDto(RequestHelpEntity requestHelpEntity)
+        public GetRequestHelpDto RequestHelpToDto(TechnicalSupportEntity requestHelpEntity)
         {
             if (requestHelpEntity == null)
             {
@@ -62,29 +64,27 @@ namespace MeroBolee.EntityMapper
             {
                 return new GetRequestHelpDto
                 {
-                    ProblemTitle = requestHelpEntity.Problem_title,
+                    Id = requestHelpEntity.Id,
+                    Title = requestHelpEntity.Title,
+                    Email = requestHelpEntity.Email,
+                    Name = requestHelpEntity.Name,
                     Description = requestHelpEntity.Description,
-                    HelpStatusId = requestHelpEntity.Help_status_id,
-                    Remark = requestHelpEntity.Remark,
-                    ResolvDate = requestHelpEntity.Help_close_date,
-                    Username= requestHelpEntity.UserEntity.Username,
-                    UserCode= requestHelpEntity.UserEntity.User_Code,
-                    UserId= requestHelpEntity.User_id
+                    UserId = requestHelpEntity.UserId
                 };
             }
 
         }
 
-        public IEnumerable<GetRequestHelpDto> RequestHelpDtoToList(IEnumerable<RequestHelpEntity> requestHelp)
+        public IEnumerable<GetRequestHelpDto> RequestHelpDtoToList(IEnumerable<TechnicalSupportEntity> requestHelp)
         {
             if (requestHelp == null)
             {
                 return null;
             }
-            else 
+            else
             {
                 List<GetRequestHelpDto> getRequestHelpDtos = new List<GetRequestHelpDto>();
-                foreach (RequestHelpEntity requestHelpEntity in requestHelp)
+                foreach (TechnicalSupportEntity requestHelpEntity in requestHelp)
                 {
                     getRequestHelpDtos.Add(RequestHelpToDto(requestHelpEntity));
                 }
