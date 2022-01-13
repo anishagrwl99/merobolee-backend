@@ -10,7 +10,7 @@ namespace MeroBolee.EntityMapper
     public class RequestHelpMapper
     {
 
-        public TechnicalSupportEntity RequestHelpDtoToEntity(PostTechnicalSupportDto postRequestHelpDto)
+        public TechnicalSupportEntity RequestHelpDtoToEntity(PostTechnicalSupportDto postRequestHelpDto, List<long> receivers)
         {
             if (postRequestHelpDto == null)
             {
@@ -19,14 +19,27 @@ namespace MeroBolee.EntityMapper
 
             else
             {
-                return new TechnicalSupportEntity
+                TechnicalSupportEntity technicalSupportEntity =  new TechnicalSupportEntity
                 {
                     Name = postRequestHelpDto.Name,
                     Email = postRequestHelpDto.Email,
                     Title = postRequestHelpDto.Title,
                     Description = postRequestHelpDto.Description,
-                    UserId = postRequestHelpDto.UserId.HasValue? postRequestHelpDto.UserId.Value : null
+                    UserId = postRequestHelpDto.UserId.HasValue? postRequestHelpDto.UserId.Value : null,
+                    Date_created = DateTime.Now,
+                    Date_modified = DateTime.Now
                 };
+                technicalSupportEntity.Receivers = new List<TechnicalSupportReceiver>();
+                foreach (var receiver in receivers)
+                {
+                    technicalSupportEntity.Receivers.Add(new TechnicalSupportReceiver
+                    {
+                        IsRead = false,
+                        UserId = receiver,
+                        TechnicalSupportId = technicalSupportEntity.Id
+                    });
+                }
+                return technicalSupportEntity;
             }
 
         }

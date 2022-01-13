@@ -181,6 +181,12 @@ namespace MeroBolee.Service
             }
         }
 
+
+        public async Task<List<UserEntity>> GetMeroboleeUsers()
+        {
+            return await userRepository.GetMeroboleeUsers();
+        }
+
         private async Task<string> GetUserProfilePicture(string profilePic, string basePath, string defaultPic)
         {
             if (!string.IsNullOrEmpty(profilePic))
@@ -200,6 +206,8 @@ namespace MeroBolee.Service
                 return defaultPic;
             }
         }
+
+
 
     }
 }

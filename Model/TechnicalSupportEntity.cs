@@ -42,13 +42,13 @@ namespace MeroBolee.Model
         public UserEntity UserEntity { get; set; }
 
         [JsonIgnore]
-        public ICollection<TechnicalSupportReciver> Recivers { get; set; }
+        public ICollection<TechnicalSupportReceiver> Receivers { get; set; }
 
     }
 
 
     [Table("mb_TechnicalSupport_Receiver")]
-    public class TechnicalSupportReciver
+    public class TechnicalSupportReceiver
     {
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

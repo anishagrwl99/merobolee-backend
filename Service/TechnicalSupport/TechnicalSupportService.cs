@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Model;
 using MeroBolee.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,67 +12,48 @@ namespace MeroBolee.Service
     public class TechnicalSupportService : RequestHelpMapper, ITechnicalSupportService
     {
         private readonly ITechnicalSupportRepository requestHelpRepository;
+        private readonly IUserService userService;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TechnicalSupportService"/> class.
         /// </summary>
         /// <param name="requestHelpRepository">The request help repository.</param>
-        public TechnicalSupportService (ITechnicalSupportRepository requestHelpRepository)
+        public TechnicalSupportService (ITechnicalSupportRepository requestHelpRepository, IUserService userService)
         {
             this.requestHelpRepository = requestHelpRepository;
+            this.userService = userService;
         }
-
-        /// <summary>
-        /// Gets all request help.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<GetRequestHelpDto> GetAllRequestHelp()
-        {
-            return RequestHelpDtoToList(requestHelpRepository.GetAllRequestHelp());
-        }
-
-        /// <summary>
-        /// Gets all request help by bidder.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
-        public IEnumerable<GetRequestHelpDto> GetAllRequestHelpByBidder(int id)
-        {
-            return RequestHelpDtoToList(requestHelpRepository.GetAllRequestHelpByBidder(id));
-        }
-
-        /// <summary>
-        /// Gets the request help.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
-        public GetRequestHelpDto GetRequestHelp(int id)
-        {
-            return RequestHelpToDto(requestHelpRepository.GetRequestHelp(id));
-        }
-
 
         /// <summary>
         /// Posts the request.
         /// </summary>
         /// <param name="requestHelp">The request help.</param>
         /// <returns></returns>
-        public GetRequestHelpDto PostRequest(PostTechnicalSupportDto requestHelp)
+        public async Task<GetRequestHelpDto> PostRequest(PostTechnicalSupportDto requestHelp)
         {
-            return RequestHelpToDto(requestHelpRepository.PostRequest(RequestHelpDtoToEntity(requestHelp)));
+            try
+            {
+                List<long> receivers = await GetTechnicalSupportReceiverUsers();
+                TechnicalSupportEntity ent = RequestHelpDtoToEntity(requestHelp, receivers);
+                return RequestHelpToDto(await requestHelpRepository.PostRequest(ent));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-
-        /// <summary>
-        /// Updates the request help.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="requestHelp">The request help.</param>
-        /// <returns></returns>
-        public GetRequestHelpDto UpdateRequestHelp(int id, UpdateRequestHelpDto requestHelp)
+        private async Task<List<long>> GetTechnicalSupportReceiverUsers()
         {
-            return RequestHelpToDto(requestHelpRepository.UpdateRequestHelp(id,RequestHelpDtoToEntity(requestHelp)));
+            List<UserEntity> users = await userService.GetMeroboleeUsers();
+            List<long> userIds = new List<long>();
+            userIds.AddRange(users.Where(x => x.Role_Id == 1).Select(x => x.User_Id).ToList()); //Super Admin
+            userIds.AddRange(users.Where(x => x.Role_Id == 3).Select(x => x.User_Id).ToList()); //Customer Support
+
+            return userIds;
         }
+
     }
 }

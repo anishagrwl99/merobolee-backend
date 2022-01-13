@@ -240,6 +240,8 @@ namespace MeroBolee
 
             //File writing service
             services.AddScoped<IMemoryStreamService, MemoryStreamService>();
+
+            /*
             //Hangfire configuration
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration
@@ -257,7 +259,7 @@ namespace MeroBolee
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
-
+            */
             services.AddControllers();
             services.AddMvc();
 
@@ -302,7 +304,7 @@ namespace MeroBolee
             //    app.Run(context => { throw new Exception("error"); });
 
             //Use Hangfire dashboard
-            app.UseHangfireDashboard();
+            //app.UseHangfireDashboard();
 
             app.UseHttpsRedirection();
 
@@ -323,7 +325,7 @@ namespace MeroBolee
                        name: "default",
                        pattern: "{controller=BackgroundJob}/{action=MoveRecord}/{id?}");
 
-                endpoints.MapHangfireDashboard();
+                //endpoints.MapHangfireDashboard();
             });
         }
     }

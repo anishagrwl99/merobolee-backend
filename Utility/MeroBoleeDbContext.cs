@@ -13,7 +13,7 @@ namespace MeroBolee.Utility
 {
     public class MeroBoleeDbContext : DbContext
     {
-        public DbSet<TechnicalSupportReciver> TechnicalSupportRecivers { get; set; }
+        public DbSet<TechnicalSupportReceiver> TechnicalSupportRecivers { get; set; }
         public DbSet<TenderExtraDocumentEntity> TenderExtraDocuments { get; set; }
         public DbSet<TenderCardFeedbackEntity> TenderCardFeedbacks { get; set; }
         public DbSet<TenderCardEntity> TenderCards { get; set; }

@@ -161,7 +161,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.SendPreAuctionEmailBidder(email, true);
+                    EmailResponseDto res = emailService.SaveDraftPreAuctionEmailBidder(email);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -328,7 +328,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.SendPostAuctionEmailBidder(email, false);
+                    EmailResponseDto res = emailService.SavePostAuctionEmailBidder(email, false);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));
@@ -368,7 +368,7 @@ namespace MeroBolee.Controllers.Correspondence
             {
                 if (ModelState.IsValid)
                 {
-                    EmailResponseDto res = emailService.SendPostAuctionEmailBidder(email, true);
+                    EmailResponseDto res = emailService.SavePostAuctionEmailBidder(email, true);
                     if (res != null)
                     {
                         return Ok(new Responses<EmailResponseDto>(res, "200", "Email is successfully sent"));

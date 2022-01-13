@@ -124,31 +124,31 @@ namespace MeroBolee.Repository
                                     .FirstOrDefaultAsync();
 
                 List<CompanyEntity> companies = await (from uc in meroBoleeDbContexts.UserCompanies
-                                                 join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
-                                                 join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
-                                                 join ct in meroBoleeDbContexts.CountryEntities on c.CountryId equals ct.Country_Id
-                                                 join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
-                                                 where uc.UserId == id
-                                                 select new CompanyEntity
-                                                 {
-                                                     Address1 = c.Address1,
-                                                     Address2 = c.Address2,
-                                                     Address3 = c.Address3,
-                                                     City = c.City,
-                                                     ReferenceCode = c.ReferenceCode,
-                                                     Country = ct,
-                                                     CompanyEmail = c.CompanyEmail,
-                                                     CompanyId = c.CompanyId,
-                                                     Name = c.Name,
-                                                     Phone1 = c.Phone1,
-                                                     Phone2 = c.Phone2,
-                                                     Province = p,
-                                                     Date_created = c.Date_created,
-                                                     CompanyStatus = s,
-                                                     CompanyWebsite = c.CompanyWebsite,
-                                                     Zip = c.Zip
+                                                       join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
+                                                       join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
+                                                       join ct in meroBoleeDbContexts.CountryEntities on c.CountryId equals ct.Country_Id
+                                                       join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                                       where uc.UserId == id
+                                                       select new CompanyEntity
+                                                       {
+                                                           Address1 = c.Address1,
+                                                           Address2 = c.Address2,
+                                                           Address3 = c.Address3,
+                                                           City = c.City,
+                                                           ReferenceCode = c.ReferenceCode,
+                                                           Country = ct,
+                                                           CompanyEmail = c.CompanyEmail,
+                                                           CompanyId = c.CompanyId,
+                                                           Name = c.Name,
+                                                           Phone1 = c.Phone1,
+                                                           Phone2 = c.Phone2,
+                                                           Province = p,
+                                                           Date_created = c.Date_created,
+                                                           CompanyStatus = s,
+                                                           CompanyWebsite = c.CompanyWebsite,
+                                                           Zip = c.Zip
 
-                                                 }
+                                                       }
 
                                                  ).ToListAsync();
                 return Tuple.Create(user, companies);
@@ -274,7 +274,7 @@ namespace MeroBolee.Repository
 
                     ).FirstOrDefaultAsync();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -285,7 +285,7 @@ namespace MeroBolee.Repository
             try
             {
                 UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == userId).FirstOrDefaultAsync();
-                if(u != null)
+                if (u != null)
                 {
                     string oldPic = u.ProfilePicture;
                     u.ProfilePicture = picLocation;
@@ -321,6 +321,23 @@ namespace MeroBolee.Repository
                 {
                     return false;
                 }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<UserEntity>> GetMeroboleeUsers()
+        {
+            try
+            {
+                return await (from u in meroBoleeDbContexts.UserEntities
+                              join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                               where uc.CompanyId == 1
+                              select u
+                    ).ToListAsync();
             }
             catch (Exception)
             {

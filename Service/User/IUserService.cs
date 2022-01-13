@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Model;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace MeroBolee.Service
         Task<UserProfileDto> GetUserProfile(long userId, long companyId, string defaultPic, string baseUrl);
         Task<ProfilePictureResponseDto> UpdateProfilePicture(ProfilePictureDto dto, string baseUrl);
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
+
+        Task<List<UserEntity>> GetMeroboleeUsers();
 
     }
 }

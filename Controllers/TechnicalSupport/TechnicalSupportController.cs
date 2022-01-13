@@ -14,46 +14,39 @@ namespace MeroBolee.Controllers.RequestHelp
     public class TechnicalSupportController : Controller
     {
         private readonly ITechnicalSupportService RequestHelpService;
-        private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
-        private IUriService uriService;
 
         public TechnicalSupportController(ITechnicalSupportService RequestHelpService)
         {
             this.RequestHelpService = RequestHelpService;
         }
         /// <summary>
-        /// To add RequestHelp and status is request help status    /// </summary>
+        /// Send technical support query  
+        /// </summary>
         /// <returns></returns>
         [HttpPost("RequestSupport")]
-        public IActionResult Add([FromBody] PostTechnicalSupportDto addRequestHelp)
+        public async Task<IActionResult> Add([FromBody] PostTechnicalSupportDto addRequestHelp)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-
-                    return Ok(new Responses<GetRequestHelpDto>(RequestHelpService.PostRequest(addRequestHelp), "200", "Record is successfully added"));
+                    GetRequestHelpDto dto = await RequestHelpService.PostRequest(addRequestHelp);
+                    return Ok(new Responses<GetRequestHelpDto>(dto, "200", "Record is successfully added"));
                 }
                 else
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

@@ -9,10 +9,6 @@ namespace MeroBolee.Repository
 {
     public interface ITechnicalSupportRepository : IRepositoryBase<TechnicalSupportEntity >
     {
-        TechnicalSupportEntity  PostRequest(TechnicalSupportEntity  requestHelp);
-        TechnicalSupportEntity  GetRequestHelp(int id);
-        IEnumerable<TechnicalSupportEntity > GetAllRequestHelp();
-        IEnumerable<TechnicalSupportEntity > GetAllRequestHelpByBidder(int id);
-        TechnicalSupportEntity  UpdateRequestHelp(int id, TechnicalSupportEntity  requestHelp);
+        Task<TechnicalSupportEntity>  PostRequest(TechnicalSupportEntity  requestHelp);
     }
 }
