@@ -41,5 +41,41 @@ namespace MeroBolee.Model
         [JsonIgnore]
         public UserEntity UserEntity { get; set; }
 
+        [JsonIgnore]
+        public ICollection<TechnicalSupportReciver> Recivers { get; set; }
+
+    }
+
+
+    [Table("mb_TechnicalSupport_Receiver")]
+    public class TechnicalSupportReciver
+    {
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+
+        /// <summary>
+        /// Email receiver id
+        /// </summary>
+        [ForeignKey("User")]
+        public long UserId { get; set; }
+
+
+        /// <summary>
+        /// Email Id
+        /// </summary>
+        [ForeignKey("TechnicalSupport")]
+        public long TechnicalSupportId { get; set; }
+
+        public bool IsRead { get; set; }
+
+
+        [JsonIgnore]
+        public virtual UserEntity User { get; set; }
+
+        [JsonIgnore]
+        public virtual TechnicalSupportEntity TechnicalSupport { get; set; }
+
     }
 }

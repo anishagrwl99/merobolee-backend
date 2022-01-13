@@ -48,15 +48,18 @@ namespace MeroBolee.Repository
                             CategoryName = c.Category,
                             LiveStartDate = t.Live_Start_Date,
                             StatusId = s.StatusId,
-                            Status = s.Status
+                            Status = s.Status,
+                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                        where tc.TenderId == t.Tender_Id
+                                        select new TenderCardInfo
+                                        {
+                                            Id = tc.Id,
+                                            Label = tc.Label,
+                                            Value = tc.Value
+                                        }).ToList()
                         }
 
                     ).ToList();
-
-                //meroBoleeDbContexts.TenderEntities.ToList();
-                //meroBoleeDbContexts.CategoryEntities.ToList();
-                //meroBoleeDbContexts.AdminStatusEntities.ToList();
-                //return meroBoleeDbContexts.WatchListEntities.Where(m => m.User_Id == id).ToList();
             }
             catch
             {
