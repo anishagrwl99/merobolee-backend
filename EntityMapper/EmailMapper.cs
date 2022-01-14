@@ -9,7 +9,7 @@ namespace MeroBolee.EntityMapper
 {
     public class EmailMapper
     {
-        public EmailEntity DtoToEntity(SendEmailDto dto, bool isDraft = false)
+        public EmailEntity DtoToEntity(SendEmailDto dto, bool isDraft = false, bool isPostAuctionEmail = false)
         {
             if (dto == null) return null;
 
@@ -20,6 +20,7 @@ namespace MeroBolee.EntityMapper
                 Subject = dto.Subject,
                 CompanyId = dto.CompanyId,
                 IsDraft = isDraft,
+                IsPostAuctionEmail = isPostAuctionEmail,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -38,7 +39,8 @@ namespace MeroBolee.EntityMapper
                 SenderUserId = entity.AuthorId,
                 Subject = entity.Subject,
                 SentDate = entity.Date_created,
-                AuthorName = $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " ")
+                AuthorName = $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " "),
+                IsPostAuctionEmail = entity.IsPostAuctionEmail
             };
         }
 
@@ -54,11 +56,13 @@ namespace MeroBolee.EntityMapper
                 {
                     Body = entity.Body,
                     EmailId = entity.Id,
-                    AuthorName = $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " "),
+                    AuthorName = entity.User == null  ? "" :  
+                            $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " "),
                     SentDate = entity.Date_created,
                     IsRead = isInbox ? entity.UserEmails.FirstOrDefault().IsRead : true,
                     SenderUserId = entity.AuthorId,
-                    Subject = entity.Subject
+                    Subject = entity.Subject,
+                    IsPostAuctionEmail = entity.IsPostAuctionEmail
                 });
             }
             return emailResponseDto;

@@ -55,10 +55,20 @@ namespace MeroBolee.Dto
 
         public string TenderCode { get; set; }
 
+        public bool IsPostAuctionEmail { get; set; }
+
 
         [JsonIgnore]
         public bool IsTenderFound { get; set; }
     }
 
-
+    public class TechnicalSupportEmailResponseDto
+    {
+        public long SupportId { get; set; }
+        public string AuthorName { get; set; }
+        public string AuthorEmail { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public DateTime DateCreated { get; set; }
+    }
 }

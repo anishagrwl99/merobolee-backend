@@ -24,10 +24,14 @@ namespace MeroBolee.Service
         EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto);
 
         List<EmailResponseDto> GetInbox(long userId);
+        List<TechnicalSupportEmailResponseDto> GetTechnicalSupportInbox(long userId);
         List<EmailResponseDto> GetOutbox(long userId);
+        List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutbox(long userId);
         List<EmailResponseDto> GetDraft(long userId);
         EmailResponseDto GetEmailDetail(long emailId);
+        TechnicalSupportEmailResponseDto GetTechnicalSupportEmailDetail(long emailId);
         bool ReadEmail(long emailId, long userId);
+        bool ReadTechnicalSupportEmail(long emailId, long userId);
 
         EmailResponseDto SendDraftEmail(ReplyEmailDto dto);
 
@@ -64,16 +68,30 @@ namespace MeroBolee.Service
             return EntityToDto(entity, false, entity.TenderCode);
         }
 
+        public TechnicalSupportEmailResponseDto GetTechnicalSupportEmailDetail(long emailId)
+        {
+            return emailRepository.GetTechnicalSupportEmailDetail(emailId);
+        }
+
         public List<EmailResponseDto> GetInbox(long userId)
         {
             List<EmailEntity> entities = emailRepository.GetInboxEmails(userId);
             return EntityToDtoList(entities, true);
         }
 
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportInbox(long userId)
+        {
+            return emailRepository.GetTechnicalSupportInboxEmails(userId);
+        }
+
         public List<EmailResponseDto> GetOutbox(long userId)
         {
             List<EmailEntity> entities = emailRepository.GetOutboxEmails(userId);
             return EntityToDtoList(entities, false);
+        }
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutbox(long userId)
+        {
+            return emailRepository.GetTechnicalSupportOutboxEmails(userId);            
         }
 
         public List<EmailResponseDto> GetDraft(long userId)
@@ -84,27 +102,27 @@ namespace MeroBolee.Service
 
         public EmailResponseDto SavePostAuctionEmailBidder(SendEmailDto dto, bool isDraft)
         {
-            Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
+            Tuple<long, List<long>> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
             if (tender_user.Item1 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto, isDraft);
+                EmailEntity entity = DtoToEntity(dto, isDraft, true);
                 if (entity != null)
                 {
 
 
                     entity.TenderId = tender_user.Item1;//Item 1 is tender id
-                    entity.UserEmails = new List<UserEmailEntity>()
-                                        {
-                                            //Tender default user
-                                            new UserEmailEntity
-                                            {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
-                                                Email = entity,
-                                                IsRead = false,
-                                                UserId = tender_user.Item2
-                                            }
-                                        };
+                    entity.UserEmails = new List<UserEmailEntity>();
+                    foreach (var u in tender_user.Item2)
+                    {
+                        entity.UserEmails.Add(new UserEmailEntity
+                        {
+                            Date_created = DateTime.Now,
+                            Date_modified = DateTime.Now,
+                            Email = entity,
+                            IsRead = false,
+                            UserId = u
+                        });
+                    }
                     List<long> users = GetMeroboleeEmailReceivers().Result;
                     foreach (var user in users)
                     {
@@ -127,16 +145,16 @@ namespace MeroBolee.Service
 
         public EmailResponseDto SendPreAuctionEmailBidder(SendEmailDto dto, bool isDraft)
         {
-            Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
+            Tuple<long, List<long>> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
 
             if (tender_user.Item1 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto, isDraft);
+                EmailEntity entity = DtoToEntity(dto, isDraft, false);
                 if (entity != null)
                 {
                     entity.TenderId = tender_user.Item1;//Item 1 is tender id
                     List<long> users = GetMeroboleeEmailReceivers().Result;
-                    entity.UserEmails =  new List<UserEmailEntity>();
+                    entity.UserEmails = new List<UserEmailEntity>();                   
                     foreach (var user in users)
                     {
                         entity.UserEmails.Add(new UserEmailEntity
@@ -162,7 +180,7 @@ namespace MeroBolee.Service
 
             if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, false, false);
                 if (entity != null)
                 {
                     entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
@@ -204,7 +222,7 @@ namespace MeroBolee.Service
 
             if (parentEmail_Tender_Author.Item1 > 0 && parentEmail_Tender_Author.Item2 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, false, false);
                 if (entity != null)
                 {
                     entity.TenderId = parentEmail_Tender_Author.Item1;//Item 1 is tender id
@@ -221,7 +239,7 @@ namespace MeroBolee.Service
                             UserId = user
                         });
                     }
-                    
+
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
@@ -232,27 +250,28 @@ namespace MeroBolee.Service
 
         public EmailResponseDto ReplyPostAuctionEmailByBidInviter(ReplyEmailDto dto)
         {
-            Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
-            if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
+            Tuple<long, List<long>> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+            if (tenderWinner.Item1 > 0 && tenderWinner.Item2.Count > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, false, true);
                 if (entity != null)
                 {
 
 
                     entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
-                    entity.UserEmails = new List<UserEmailEntity>()
-                                        {
-                                            //Supplier 
-                                            new UserEmailEntity
-                                            {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
-                                                Email = entity,
-                                                IsRead = false,
-                                                UserId = tenderWinner.Item2
-                                            }
-                                        };
+                    entity.UserEmails = new List<UserEmailEntity>();
+                    foreach (var winnerUser in tenderWinner.Item2)
+                    {
+                        entity.UserEmails.Add(new UserEmailEntity
+                        {
+                            Date_created = DateTime.Now,
+                            Date_modified = DateTime.Now,
+                            Email = entity,
+                            IsRead = false,
+                            UserId = winnerUser
+                        });
+                    }
+
                     List<long> users = GetMeroboleeEmailReceivers().Result;
                     foreach (var user in users)
                     {
@@ -275,39 +294,52 @@ namespace MeroBolee.Service
 
         public EmailResponseDto ReplyPostAuctionEmailByAdmin(ReplyEmailDto dto)
         {
-            Tuple<long, long> tender_winner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
-            Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
-            if (tender_winner.Item1 > 0 && tender_winner.Item2 > 0)
+            Tuple<long, List<long>> tender_winner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+            Tuple<long, List<long>> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
+            if (tender_winner.Item1 > 0 && tender_winner.Item2.Count > 0)
             {
-                EmailEntity entity = DtoToEntity(dto);
+                EmailEntity entity = DtoToEntity(dto, false, true);
                 if (entity != null)
                 {
-
-
                     entity.TenderId = tender_winner.Item1;//Item 1 is tender id
-                    entity.UserEmails = new List<UserEmailEntity>()
-                                        {
-                                            //Bid Winner
+                    entity.UserEmails = new List<UserEmailEntity>();
+                    foreach (var winnerUser in tender_winner.Item2)
+                    {
+                        entity.UserEmails.Add(//Bid Inviter 
                                             new UserEmailEntity
                                             {
                                                 Date_created = DateTime.Now,
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = tender_winner.Item2
-                                            },
-
-                                            //Bid Inviter 
+                                                UserId = winnerUser
+                                            });
+                    }
+                    foreach (var companyUser in tender_user.Item2)
+                    {
+                        entity.UserEmails.Add(//Bid Inviter 
                                             new UserEmailEntity
                                             {
                                                 Date_created = DateTime.Now,
                                                 Date_modified = DateTime.Now,
                                                 Email = entity,
                                                 IsRead = false,
-                                                UserId = tender_user.Item2
-                                            }
-                                        };
-
+                                                UserId = companyUser
+                                            });
+                    }
+                    List<long> meroboleeUsers = GetReplyReceiversForAdmin(dto.UserId).Result;
+                    foreach (var user in meroboleeUsers)
+                    {
+                        entity.UserEmails.Add(//Bid Inviter 
+                                            new UserEmailEntity
+                                            {
+                                                Date_created = DateTime.Now,
+                                                Date_modified = DateTime.Now,
+                                                Email = entity,
+                                                IsRead = false,
+                                                UserId = user
+                                            });
+                    }
                     emailRepository.AddEmail(entity);
                 }
                 entity.Body = "";
@@ -321,6 +353,11 @@ namespace MeroBolee.Service
             UserEmailEntity ue = emailRepository.ReadEmail(emailId, userId);
             return ue != null;
         }
+        public bool ReadTechnicalSupportEmail(long emailId, long userId)
+        {
+            TechnicalSupportReceiver ue = emailRepository.ReadTechnicalSupportEmail(emailId, userId);
+            return ue != null;
+        }
 
 
 
@@ -329,15 +366,15 @@ namespace MeroBolee.Service
 
         public EmailResponseDto SaveDraftPreAuctionEmailBidder(SendEmailDto dto)
         {
-            Tuple<long, long> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
+            Tuple<long, List<long>> tender_user = tenderService.GetTenderIdFromCode(dto.TenderCode);
 
             if (tender_user.Item1 > 0)
             {
-                EmailEntity entity = DtoToEntity(dto, true);
+                EmailEntity entity = DtoToEntity(dto, true, false);
                 if (entity != null)
                 {
                     entity.TenderId = tender_user.Item1;//Item 1 is tender id
-                    List<long> users = GetMeroboleeEmailReceivers().Result ;
+                    List<long> users = GetMeroboleeEmailReceivers().Result;
                     entity.UserEmails = new List<UserEmailEntity>();
                     foreach (var user in users)
                     {
@@ -386,27 +423,28 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
-                if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
+                Tuple<long, List<long>> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+                if (tenderWinner.Item1 > 0 && tenderWinner.Item2.Count > 0)
                 {
-                    EmailEntity entity = DtoToEntity(dto, isDraft);
+                    EmailEntity entity = DtoToEntity(dto, isDraft, true);
                     if (entity != null)
                     {
 
 
                         entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
-                        entity.UserEmails = new List<UserEmailEntity>()
-                                        {
-                                            //Tender default user
-                                            new UserEmailEntity
-                                            {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
-                                                Email = entity,
-                                                IsRead = false,
-                                                UserId = tenderWinner.Item2
-                                            }
-                                        };
+                        entity.UserEmails = new List<UserEmailEntity>();
+                        foreach (var winnerUser in tenderWinner.Item2)
+                        {
+                            entity.UserEmails.Add(new UserEmailEntity
+                            {
+                                Date_created = DateTime.Now,
+                                Date_modified = DateTime.Now,
+                                Email = entity,
+                                IsRead = false,
+                                UserId = winnerUser
+                            });
+                        }
+
                         List<long> users = GetMeroboleeEmailReceivers().Result;
                         foreach (var user in users)
                         {
@@ -444,40 +482,41 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<long, long> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
-                Tuple<long, long> tenderCreator = tenderService.GetTenderIdFromCode(dto.TenderCode);
-                if (tenderWinner.Item1 > 0 && tenderWinner.Item2 > 0)
+                Tuple<long, List<long>> tenderWinner = tenderService.GetTenderWinnerIdFromCode(dto.TenderCode);
+                Tuple<long, List<long>> tenderCreator = tenderService.GetTenderIdFromCode(dto.TenderCode);
+                if (tenderWinner.Item1 > 0 && tenderWinner.Item2.Count > 0)
                 {
-                    EmailEntity entity = DtoToEntity(dto, isDraft);
+                    EmailEntity entity = DtoToEntity(dto, isDraft, true);
                     if (entity != null)
                     {
 
 
                         entity.TenderId = tenderWinner.Item1;//Item 1 is tender id
-                        entity.UserEmails = new List<UserEmailEntity>()
-                                        {
-                                            //Tender winner default user
-                                            new UserEmailEntity
-                                            {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
-                                                Email = entity,
-                                                IsRead = false,
-                                                UserId = tenderWinner.Item2
-                                            },
-
-                                            //Tender default user
-                                            new UserEmailEntity
-                                            {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
-                                                Email = entity,
-                                                IsRead = false,
-                                                UserId = tenderCreator.Item2
-                                            }
-                                        };
-                        List<long> users = GetReplyReceiversForAdmin(dto.UserId).Result;
-                        foreach (var user in users)
+                        entity.UserEmails = new List<UserEmailEntity>();
+                        foreach (var winnerUser in tenderWinner.Item2)
+                        {
+                            entity.UserEmails.Add(new UserEmailEntity
+                            {
+                                Date_created = DateTime.Now,
+                                Date_modified = DateTime.Now,
+                                Email = entity,
+                                IsRead = false,
+                                UserId = winnerUser
+                            });
+                        }
+                        foreach (var companyUser in tenderCreator.Item2)
+                        {
+                            entity.UserEmails.Add(new UserEmailEntity
+                            {
+                                Date_created = DateTime.Now,
+                                Date_modified = DateTime.Now,
+                                Email = entity,
+                                IsRead = false,
+                                UserId = companyUser
+                            });
+                        }
+                        List<long> meroboleUsers = GetReplyReceiversForAdmin(dto.UserId).Result;
+                        foreach (var user in meroboleUsers)
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {

@@ -13,10 +13,14 @@ namespace MeroBolee.Repository
     {
         public EmailEntity AddEmail(EmailEntity obj);
         public List<EmailEntity> GetInboxEmails(long userId);
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportInboxEmails(long userId);
         public List<EmailEntity> GetOutboxEmails(long userId);
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutboxEmails(long userId);
         public List<EmailEntity> GetDraftEmails(long userId);
         public EmailEntity GetEmailDetail(long emailId);
+        public TechnicalSupportEmailResponseDto GetTechnicalSupportEmailDetail(long emailId);
         UserEmailEntity ReadEmail(long emailId, long userId);
+        TechnicalSupportReceiver ReadTechnicalSupportEmail(long emailId, long userId);
 
         EmailEntity SendDraftEmail(ReplyEmailDto dto);
 
@@ -81,6 +85,25 @@ namespace MeroBolee.Repository
             return userEmails.OrderBy(x => x.Date_created).ToList();
         }
 
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportInboxEmails(long userId)
+        {
+            List<TechnicalSupportEmailResponseDto> userEmails = (from ts in meroBoleeDbContexts.TechnicalSupportEntities
+                                            join tsr in meroBoleeDbContexts.TechnicalSupportReceivers on ts.Id equals tsr.TechnicalSupportId 
+                                            where tsr.UserId == userId 
+                                            select new TechnicalSupportEmailResponseDto
+                                            {
+                                                SupportId = ts.Id,
+                                                AuthorName = ts.Name,
+                                                AuthorEmail = ts.Email,
+                                                Subject = ts.Title,
+                                                Body = null,
+                                                DateCreated = ts.Date_created
+                                            }
+
+                                        ).ToList<TechnicalSupportEmailResponseDto>();
+            return userEmails.OrderBy(x => x.DateCreated).ToList();
+        }
+
         public List<EmailEntity> GetOutboxEmails(long userId)
         {
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
@@ -101,6 +124,28 @@ namespace MeroBolee.Repository
                                         ).ToList<EmailEntity>();
 
             return userEmails.OrderBy(x => x.Date_created).ToList();
+        }
+
+        public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutboxEmails(long userId)
+        {
+            List<TechnicalSupportEmailResponseDto> userEmails = (from ts in meroBoleeDbContexts.TechnicalSupportEntities
+                                            join u in meroBoleeDbContexts.UserEntities on ts.UserId equals u.User_Id
+                                            into SupportSender
+                                            from user in SupportSender.DefaultIfEmpty()
+                                            where ts.UserId == userId 
+                                            select new TechnicalSupportEmailResponseDto
+                                            {
+                                                SupportId = ts.Id,
+                                                AuthorName = ts.Name,
+                                                AuthorEmail = ts.Email,
+                                                Subject = ts.Title,
+                                                Body = null,
+                                                DateCreated = ts.Date_created
+                                            }
+
+                                        ).ToList<TechnicalSupportEmailResponseDto>();
+
+            return userEmails.OrderBy(x => x.DateCreated).ToList();
         }
 
         public List<EmailEntity> GetDraftEmails(long userId)
@@ -156,6 +201,33 @@ namespace MeroBolee.Repository
             }
         }
 
+
+        public TechnicalSupportEmailResponseDto GetTechnicalSupportEmailDetail(long emailId)
+        {
+            try
+            {
+                TechnicalSupportEmailResponseDto emailDetail = (from ts in meroBoleeDbContexts.TechnicalSupportEntities
+                                           where ts.Id == emailId
+                                           select new TechnicalSupportEmailResponseDto
+                                           {
+                                              SupportId = ts.Id,
+                                              AuthorName = ts.Name,
+                                              AuthorEmail = ts.Email,
+                                              Subject = ts.Title,
+                                              Body = ts.Description,
+                                              DateCreated = ts.Date_created
+                                           }
+
+                                        ).FirstOrDefault();
+                return emailDetail;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public UserEmailEntity ReadEmail(long emailId, long userId)
         {
             try
@@ -182,6 +254,32 @@ namespace MeroBolee.Repository
             }
         }
 
+        public TechnicalSupportReceiver ReadTechnicalSupportEmail(long emailId, long userId)
+        {
+            try
+            {
+                TechnicalSupportReceiver userEmail = (from ts in meroBoleeDbContexts.TechnicalSupportEntities
+                                                    join tsr in meroBoleeDbContexts.TechnicalSupportReceivers on ts.Id equals tsr.TechnicalSupportId
+                                             where tsr.TechnicalSupportId == emailId && tsr.UserId == userId
+                                             select tsr
+                         ).FirstOrDefault();
+                if (userEmail != null)
+                {
+                    if (!userEmail.IsRead)
+                    {
+                        userEmail.IsRead = true;
+                        meroBoleeDbContexts.Update(userEmail);
+                        unitOfWork.SaveChange();
+                    }
+                }
+                return userEmail;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public EmailEntity SendDraftEmail(ReplyEmailDto dto)
         {

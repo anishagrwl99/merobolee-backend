@@ -25,9 +25,9 @@ namespace MeroBolee.Repository
 
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId ,string search);
-        Tuple<long, long> GetTenderIdFromCode(string tenderCode);
+        Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 
-        Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
+        Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode);
 
         /// <summary>
         /// End tender auction if bidding is not received

@@ -26,7 +26,7 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="tenderCode"></param>
         /// <returns><see cref="Tuple{TenderId, UserId}"/> where T1 is TenderId and T2 is UserId who created a tender</returns>
-        Tuple<long, long> GetTenderIdFromCode(string tenderCode);
+        Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="tenderCode"></param>
         /// <returns></returns>
-        Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode);
+        Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode);
 
 
 

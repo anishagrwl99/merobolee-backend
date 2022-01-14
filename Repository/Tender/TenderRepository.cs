@@ -61,32 +61,32 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from t in meroBoleeDbContexts.TenderEntities
-                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
-                        where t.Tender_Status_Id == 3 && (search == null || t.Tender_Title.Contains(search))
-                        select new TenderCard
-                        {
-                            TenderId = t.Tender_Id,
-                            TenderCode = t.Tender_Code,
-                            TenderTitle = t.Tender_Title,
-                            CategoryId = c.Category_Id,
-                            CategoryName = c.Category,
-                            LiveStartDate = t.Live_Start_Date,
-                            LiveEndDate = t.Live_End_Date,
-                            RegistrationTill = t.RegistrationTill,
-                            Status = s.Status,
-                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Tender_Id
-                                        select new TenderCardInfo
-                                        {
-                                            Id = tc.Id,
-                                            Label = tc.Label,
-                                            Value = tc.Value
-                                        }).ToList()
-                        }
+                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
+                              where t.Tender_Status_Id == 3 && (search == null || t.Tender_Title.Contains(search))
+                              select new TenderCard
+                              {
+                                  TenderId = t.Tender_Id,
+                                  TenderCode = t.Tender_Code,
+                                  TenderTitle = t.Tender_Title,
+                                  CategoryId = c.Category_Id,
+                                  CategoryName = c.Category,
+                                  LiveStartDate = t.Live_Start_Date,
+                                  LiveEndDate = t.Live_End_Date,
+                                  RegistrationTill = t.RegistrationTill,
+                                  Status = s.Status,
+                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                              where tc.TenderId == t.Tender_Id
+                                              select new TenderCardInfo
+                                              {
+                                                  Id = tc.Id,
+                                                  Label = tc.Label,
+                                                  Value = tc.Value
+                                              }).ToList()
+                              }
 
                 ).ToListAsync();
-                
+
             }
             catch (Exception)
             {
@@ -107,31 +107,31 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from t in meroBoleeDbContexts.TenderEntities
-                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
-                        where t.CompanyId == companyId && t.Tender_Status_Id == 3 && t.Live_End_Date < DateTime.Now
-                                    && (search == null || t.Tender_Title.Contains(search))
-                        select new TenderCard
-                        {
-                            TenderId = t.Tender_Id,
-                            TenderCode = t.Tender_Code,
-                            TenderTitle = t.Tender_Title,
-                            CategoryId = c.Category_Id,
-                            CategoryName = c.Category,
-                            LiveStartDate = t.Live_Start_Date,
-                            LiveEndDate = t.Live_End_Date,
-                            RegistrationTill = t.RegistrationTill,
-                            StatusId = t.Tender_Status_Id,
-                            Status = s.Status,
-                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Tender_Id
-                                        select new TenderCardInfo
-                                        {
-                                            Id = tc.Id,
-                                            Label = tc.Label,
-                                            Value = tc.Value
-                                        }).ToList()
-                        }
+                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
+                              where t.CompanyId == companyId && t.Tender_Status_Id == 3 && t.Live_End_Date < DateTime.Now
+                                          && (search == null || t.Tender_Title.Contains(search))
+                              select new TenderCard
+                              {
+                                  TenderId = t.Tender_Id,
+                                  TenderCode = t.Tender_Code,
+                                  TenderTitle = t.Tender_Title,
+                                  CategoryId = c.Category_Id,
+                                  CategoryName = c.Category,
+                                  LiveStartDate = t.Live_Start_Date,
+                                  LiveEndDate = t.Live_End_Date,
+                                  RegistrationTill = t.RegistrationTill,
+                                  StatusId = t.Tender_Status_Id,
+                                  Status = s.Status,
+                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                              where tc.TenderId == t.Tender_Id
+                                              select new TenderCardInfo
+                                              {
+                                                  Id = tc.Id,
+                                                  Label = tc.Label,
+                                                  Value = tc.Value
+                                              }).ToList()
+                              }
 
                     ).ToListAsync();
             }
@@ -155,31 +155,31 @@ namespace MeroBolee.Repository
         {
             try
             {
-                return await(from t in meroBoleeDbContexts.TenderEntities
-                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
-                        where t.CompanyId == companyId && t.Tender_Status_Id != 4 && (search == null || t.Tender_Title.Contains(search))
-                        select new TenderCard
-                        {
-                            TenderId = t.Tender_Id,
-                            TenderCode = t.Tender_Code,
-                            TenderTitle = t.Tender_Title,
-                            CategoryId = c.Category_Id,
-                            CategoryName = c.Category,
-                            LiveStartDate = t.Live_Start_Date,
-                            LiveEndDate = t.Live_End_Date,
-                            RegistrationTill = t.RegistrationTill,
-                            Status = s.Status,
-                            StatusId = t.Tender_Status_Id,
-                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Tender_Id
-                                        select new TenderCardInfo
-                                        {
-                                            Id = tc.Id,
-                                            Label = tc.Label,
-                                            Value = tc.Value
-                                        }).ToList()
-                        }
+                return await (from t in meroBoleeDbContexts.TenderEntities
+                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join s in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals s.StatusId
+                              where t.CompanyId == companyId && t.Tender_Status_Id != 4 && (search == null || t.Tender_Title.Contains(search))
+                              select new TenderCard
+                              {
+                                  TenderId = t.Tender_Id,
+                                  TenderCode = t.Tender_Code,
+                                  TenderTitle = t.Tender_Title,
+                                  CategoryId = c.Category_Id,
+                                  CategoryName = c.Category,
+                                  LiveStartDate = t.Live_Start_Date,
+                                  LiveEndDate = t.Live_End_Date,
+                                  RegistrationTill = t.RegistrationTill,
+                                  Status = s.Status,
+                                  StatusId = t.Tender_Status_Id,
+                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                              where tc.TenderId == t.Tender_Id
+                                              select new TenderCardInfo
+                                              {
+                                                  Id = tc.Id,
+                                                  Label = tc.Label,
+                                                  Value = tc.Value
+                                              }).ToList()
+                              }
 
                     ).ToListAsync();
 
@@ -241,9 +241,9 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from br in meroBoleeDbContexts.BidRequestEntities
-                                 join t in meroBoleeDbContexts.TenderEntities on br.TenderId equals t.Tender_Id
-                                 where br.CompanyId == companyId && br.TenderId == tenderId
-                                 select t
+                              join t in meroBoleeDbContexts.TenderEntities on br.TenderId equals t.Tender_Id
+                              where br.CompanyId == companyId && br.TenderId == tenderId
+                              select t
                              ).FirstOrDefaultAsync();
             }
             catch (Exception)
@@ -264,34 +264,34 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from t in meroBoleeDbContexts.TenderEntities
-                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.BidRequestStatusEntities on t.Tender_Status_Id equals s.StatusId
-                        where t.Tender_Status_Id == 3 && (search == null || t.Tender_Title.Contains(search))
-                            && (t.Live_Start_Date >= DateTime.Now && t.Live_Start_Date <= DateTime.Now.AddDays(7))
-                        select new TenderCard
-                        {
-                            TenderId = t.Tender_Id,
-                            TenderCode = t.Tender_Code,
-                            TenderTitle = t.Tender_Title,
-                            CategoryId = c.Category_Id,
-                            CategoryName = c.Category,
-                            LiveStartDate = t.Live_Start_Date,
-                            LiveEndDate = t.Live_End_Date,
-                            RegistrationTill = t.RegistrationTill,
-                            StatusId = t.Tender_Status_Id,
-                            Status = s.Status,
-                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Tender_Id
-                                        select new TenderCardInfo
-                                        {
-                                            Id = tc.Id,
-                                            Label = tc.Label,
-                                            Value = tc.Value
-                                        }).ToList()
-                        }
+                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join s in meroBoleeDbContexts.BidRequestStatusEntities on t.Tender_Status_Id equals s.StatusId
+                              where t.Tender_Status_Id == 3 && (search == null || t.Tender_Title.Contains(search))
+                                  && (t.Live_Start_Date >= DateTime.Now && t.Live_Start_Date <= DateTime.Now.AddDays(7))
+                              select new TenderCard
+                              {
+                                  TenderId = t.Tender_Id,
+                                  TenderCode = t.Tender_Code,
+                                  TenderTitle = t.Tender_Title,
+                                  CategoryId = c.Category_Id,
+                                  CategoryName = c.Category,
+                                  LiveStartDate = t.Live_Start_Date,
+                                  LiveEndDate = t.Live_End_Date,
+                                  RegistrationTill = t.RegistrationTill,
+                                  StatusId = t.Tender_Status_Id,
+                                  Status = s.Status,
+                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                              where tc.TenderId == t.Tender_Id
+                                              select new TenderCardInfo
+                                              {
+                                                  Id = tc.Id,
+                                                  Label = tc.Label,
+                                                  Value = tc.Value
+                                              }).ToList()
+                              }
 
                ).ToListAsync();
-               
+
             }
             catch (Exception)
             {
@@ -333,31 +333,55 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="tenderCode">Unique tender code of a tender</param>
         /// <returns><see cref="Tuple{T1, T2}"/></returns>
-        public Tuple<long, long> GetTenderIdFromCode(string tenderCode)
+        public Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode)
         {
+            Tuple<long, long> tenderInfo = (from t in meroBoleeDbContexts.TenderEntities
+                                            where t.Tender_Code == tenderCode
+                                            select Tuple.Create(t.Tender_Id, t.CompanyId)
+                                           ).FirstOrDefault();
 
-            Tuple<long, long> tender_User = (from t in meroBoleeDbContexts.TenderEntities
-                                             join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
-                                             join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
-                                             join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
-                                             where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
-                                             select Tuple.Create(t.Tender_Id, u.User_Id)
-                                            ).FirstOrDefault();
-            return tender_User;
+            List<long> userIds = (from c in meroBoleeDbContexts.CompanyEntities
+                                  join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
+                                  where c.CompanyId == tenderInfo.Item2
+                                  select uc.UserId
+             ).ToList();
+
+            //Tuple<long, long> tender_User = (from t in meroBoleeDbContexts.TenderEntities
+            //                                 join c in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c.CompanyId
+            //                                 join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
+            //                                 join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.User_Id
+            //                                 where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
+            //                                 select Tuple.Create(t.Tender_Id, u.User_Id)
+            //                                ).FirstOrDefault();
+            return Tuple.Create(tenderInfo.Item1, userIds);
         }
 
 
-        public Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode)
+        public Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode)
         {
-            Tuple<long, long> tender_Winner = (from t in meroBoleeDbContexts.TenderEntities
-                                               join tw in meroBoleeDbContexts.TenderWinnerEntities on t.Tender_Id equals tw.TenderId
-                                               join c in meroBoleeDbContexts.CompanyEntities on tw.WinnerCompanyId equals c.CompanyId
-                                               join cu in meroBoleeDbContexts.UserCompanies on c.CompanyId equals cu.CompanyId
-                                               join u in meroBoleeDbContexts.UserEntities on cu.UserId equals u.User_Id
-                                               where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
-                                               select Tuple.Create(t.Tender_Id, u.User_Id)
-                                              ).FirstOrDefault();
-            return tender_Winner;
+            Tuple<long, long> tenderInfo = (from t in meroBoleeDbContexts.TenderEntities
+                                            where t.Tender_Code == tenderCode
+                                            select Tuple.Create(t.Tender_Id, t.CompanyId)
+                                           ).FirstOrDefault();
+
+            List<long> userIds = (from tw in meroBoleeDbContexts.TenderWinnerEntities
+                                  join c in meroBoleeDbContexts.CompanyEntities on tw.WinnerCompanyId equals c.CompanyId
+                                  join uc in meroBoleeDbContexts.UserCompanies on c.CompanyId equals uc.CompanyId
+                                  where tw.TenderId == tenderInfo.Item1
+                                  select uc.UserId
+                                  ).ToList();
+
+            return Tuple.Create(tenderInfo.Item1, userIds);
+
+            //Tuple<long, long> tender_Winner = (from t in meroBoleeDbContexts.TenderEntities
+            //                                   join tw in meroBoleeDbContexts.TenderWinnerEntities on t.Tender_Id equals tw.TenderId
+            //                                   join c in meroBoleeDbContexts.CompanyEntities on tw.WinnerCompanyId equals c.CompanyId
+            //                                   join cu in meroBoleeDbContexts.UserCompanies on c.CompanyId equals cu.CompanyId
+            //                                   join u in meroBoleeDbContexts.UserEntities on cu.UserId equals u.User_Id
+            //                                   where t.Tender_Code == tenderCode && u.IsEmailReceiver == true
+            //                                   select Tuple.Create(t.Tender_Id, u.User_Id)
+            //                                  ).FirstOrDefault();
+            //return tender_Winner;
         }
 
         public bool EndTenderAuction(long tenderId)

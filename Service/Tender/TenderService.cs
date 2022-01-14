@@ -196,13 +196,13 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="tenderCode"></param>
         /// <returns><see cref="Tuple{T1, T2}"/></returns>
-        public Tuple<long, long> GetTenderIdFromCode(string tenderCode)
+        public Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode)
         {
             return tenderRepository.GetTenderIdFromCode(tenderCode);
         }
 
 
-        public Tuple<long, long> GetTenderWinnerIdFromCode(string tenderCode)
+        public Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode)
         {
             return tenderRepository.GetTenderWinnerIdFromCode(tenderCode);
         }

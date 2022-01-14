@@ -46,6 +46,7 @@ namespace MeroBolee.Model
 
         public bool IsDraft { get; set; }
 
+        public bool IsPostAuctionEmail { get; set; }
 
         [NotMapped]
         public string TenderCode { get; set; }

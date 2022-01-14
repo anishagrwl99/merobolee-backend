@@ -798,6 +798,37 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
+        /// <summary>
+        /// All technical support email inbox for a user
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Email/Inbox/TechnicalSupport")]
+        public IActionResult GetTechnicalSupportInbox([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId)
+        {
+            try
+            {
+                string url = Url.Action("GetTechnicalSupportInbox", null, new { userId = userId, companyId = companyId }, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                List<TechnicalSupportEmailResponseDto> email = emailService.GetTechnicalSupportInbox(userId);
+
+                int totalCount = email == null ? 0 : email.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<TechnicalSupportEmailResponseDto>>(email, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(email, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
 
 
         /// <summary>
@@ -831,6 +862,36 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
+        /// <summary>
+        /// Get Technical Support email outbox for a user
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Email/Outbox/TechnicalSupport")]
+        public IActionResult TechnicalSupportOutbox([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId)
+        {
+            try
+            {
+                string url = Url.Action("TechnicalSupportOutbox", null, new { userId = userId, companyId = companyId }, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                List<TechnicalSupportEmailResponseDto> email = emailService.GetTechnicalSupportOutbox(userId);
+
+                int totalCount = email == null ? 0 : email.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<TechnicalSupportEmailResponseDto>>(email, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(email, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
 
 
@@ -902,6 +963,41 @@ namespace MeroBolee.Controllers.Correspondence
         }
 
 
+        /// <summary>
+        /// Email detail
+        /// </summary>
+        /// <param name="emailId"></param>
+        /// <returns></returns>
+        [HttpGet("Email/Detail/TechnicalSupport")]
+        public IActionResult GetTechnicalSupportEmailDetail([FromQuery] long emailId)
+        {
+            try
+            {
+                if (emailId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    TechnicalSupportEmailResponseDto email = emailService.GetTechnicalSupportEmailDetail(emailId);
+                    if (email == null)
+                    {
+                        return StatusCode(StatusCodes.Status404NotFound, new Responses<TechnicalSupportEmailResponseDto>(email, "404", "Record not found"));
+                    }
+                    return Ok(new Responses<TechnicalSupportEmailResponseDto>(email, "200", "Record found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
 
         /// <summary>
         /// Mark email as a read
@@ -952,6 +1048,54 @@ namespace MeroBolee.Controllers.Correspondence
             }
         }
 
+        /// <summary>
+        /// Mark email as a read
+        /// </summary>
+        /// <param name="emailId"></param>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpPost("Email/Read/TechnicalSupport")]
+        public IActionResult ReadTechnicalSupportEmail([FromQuery] long emailId, [FromQuery] long userId, [FromQuery] long companyId)
+        {
+            try
+            {
+                if (emailId == 0 || userId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        bool res = emailService.ReadTechnicalSupportEmail(emailId, userId);
+                        if (!res)
+                        {
+                            response.statusCode = "404";
+                            response.Message = "Record not found";
+                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        }
+
+                        return Ok(new Responses<ResponseMsg>(null, "200", "Email status set to read"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
 
 
         private PagedResponse<EmailResponseDto> ResultAfterPagination(IEnumerable<EmailResponseDto> emails, PaginationQuery pagination, int totalCount)
@@ -960,6 +1104,20 @@ namespace MeroBolee.Controllers.Correspondence
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
                 return new PagedResponse<EmailResponseDto>(emails, totalCount);
+            }
+
+            var get = emails.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
+        private PagedResponse<TechnicalSupportEmailResponseDto> ResultAfterPagination(IEnumerable<TechnicalSupportEmailResponseDto> emails, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<TechnicalSupportEmailResponseDto>(emails, totalCount);
             }
 
             var get = emails.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
