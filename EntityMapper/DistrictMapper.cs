@@ -43,7 +43,7 @@ namespace MeroBolee.EntityMapper
                 Id = districtEntity.District_Id,
                 District =districtEntity.District_Name,
                 ProvinceId = districtEntity.Province_Id,
-                Province = districtEntity.Province.Province
+                Province = districtEntity.Province.Province_Title
 
             };
 
@@ -66,7 +66,7 @@ namespace MeroBolee.EntityMapper
                       Id = district.District_Id,
                       District = district.District_Name,
                       ProvinceId = district.Province_Id,
-                      Province = district.Province.Province
+                      Province = district.Province.Province_Title
                   }
                 );
             }

@@ -141,7 +141,7 @@ namespace MeroBolee.EntityMapper
                 Phone1 = company.Phone1,
                 Phone2 = company.Phone2,
                 PANNumber = company.PANNumber,
-                Province = company.Province.Province,
+                Province = company.Province.Province_Title,
                 Status = company.CompanyStatus.Status,
                 RegisteredDate = company.Date_created
             };

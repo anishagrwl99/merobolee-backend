@@ -263,7 +263,7 @@ namespace MeroBolee.Repository
                                                        Email = c.CompanyEmail,
                                                        Phone1 = c.Phone1,
                                                        Phone2 = c.Phone2,
-                                                       Province = p.Province,
+                                                       Province = p.Province_Title,
                                                        RegisteredDate = c.Date_created,
                                                        Status = s.Status,
                                                        Website = c.CompanyWebsite,

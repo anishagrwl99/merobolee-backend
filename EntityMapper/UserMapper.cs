@@ -168,7 +168,7 @@ namespace MeroBolee.EntityMapper
                                            Name = c.Name,
                                            Phone1 = c.Phone1,
                                            Phone2 = c.Phone2,
-                                           Province = c.Province.Province,
+                                           Province = c.Province.Province_Title,
                                            RegisteredDate = c.Date_created,
                                            Status = c.CompanyStatus.Status,
                                            Website = c.CompanyWebsite,

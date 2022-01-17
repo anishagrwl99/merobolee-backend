@@ -17,7 +17,7 @@ namespace MeroBolee.Model
 
         private string province;
         [Column("province_title")]
-        public string Province { get => province; set => province = value; }
+        public string Province_Title { get => province; set => province = value; }
 
         private int? country_Id;
         [ForeignKey("Country")]

@@ -15,7 +15,7 @@ namespace MeroBolee.Model
         public long CompanyId { get; set; }
 
 
-        public virtual CompanyEntity Company { get; set; }
-        public virtual UserEntity User { get; set; }
+        public  CompanyEntity Company { get; set; }
+        public  UserEntity User { get; set; }
     }
 }

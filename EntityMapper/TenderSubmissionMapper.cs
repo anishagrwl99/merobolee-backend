@@ -289,7 +289,7 @@ namespace MeroBolee.EntityMapper
                 Name = ent.Company.Name,
                 Phone1 = ent.Company.Phone1,
                 Phone2 = ent.Company.Phone2,
-                Province = ent.Company.Province.Province,
+                Province = ent.Company.Province.Province_Title,
                 RegisteredDate = ent.Company.Date_created,
                 Status = ent.Company.CompanyStatus.Status,
                 Website = ent.Company.CompanyWebsite,

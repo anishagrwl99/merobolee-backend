@@ -339,13 +339,13 @@ namespace MeroBolee.Utility
                new CountryEntity() { Country_Id = 1, Country_Name = "Nepal", Country_Code = "NEP", Abbre = "NP", Date_created = DateTime.Now, Date_modified = DateTime.Now }
                );
             builder.Entity<ProvinceEntity>().HasData(
-              new ProvinceEntity() { Province_Id = 1, Province = "Province No. 1", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 2, Province = "Province No. 2", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 3, Province = "Bagmati Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 4, Province = "Gandaki Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 5, Province = "Lumbini Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 6, Province = "Karnali Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 7, Province = "Sudurpashchim Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now }
+              new ProvinceEntity() { Province_Id = 1, Province_Title = "Province No. 1", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 2, Province_Title = "Province No. 2", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 3, Province_Title = "Bagmati Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 4, Province_Title = "Gandaki Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 5, Province_Title = "Lumbini Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 6, Province_Title = "Karnali Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Province_Id = 7, Province_Title = "Sudurpashchim Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now }
               );
 
             builder.Entity<DocumentStatusEntity>().HasData(

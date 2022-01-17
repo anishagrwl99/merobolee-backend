@@ -96,7 +96,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.CountryEntities.ToList();
                 List<ProvinceEntity> provinces=  meroBoleeDbContexts.ProvinceEntities.Where(m => (search == null)
-                || (m.Province.ToLower().Contains(search.ToLower()))
+                || (m.Province_Title.ToLower().Contains(search.ToLower()))
                 ).ToList();
                 return provinces;
             }
@@ -129,7 +129,7 @@ namespace MeroBolee.Repository
                     return provinceEntity;
                 }
                 
-                province.Province = provinceEntity.Province;
+                province.Province_Title = provinceEntity.Province_Title;
                 province.Country_Id = provinceEntity.Country_Id;
                 province.Date_modified = provinceEntity.Date_modified;
               //  province.Modified_time_stamp = provinceEntity.Modified_time_stamp;

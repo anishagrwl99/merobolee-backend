@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
+using System.Text.Json.Serialization;
 
 namespace MeroBolee
 {
@@ -241,6 +242,11 @@ namespace MeroBolee
             //File writing service
             services.AddScoped<IMemoryStreamService, MemoryStreamService>();
 
+
+            //Search Engine
+            services.AddScoped<ISearchEngineRepository, SearchEngineRepository>();
+            services.AddScoped<ISearchEngineService, SearchEngineService>();
+
             /*
             //Hangfire configuration
             // Add Hangfire services.
@@ -260,7 +266,8 @@ namespace MeroBolee
             // Add the processing server as IHostedService
             services.AddHangfireServer();
             */
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddMvc();
 
         }

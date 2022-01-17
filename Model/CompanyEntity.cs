@@ -86,14 +86,15 @@ namespace MeroBolee.Model
 
         public virtual CountryEntity Country { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ProvinceEntity Province { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual MembershipTypeEntity MembershipType { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual CompanyStatusEntity CompanyStatus { get; set; }
 
+        public virtual ICollection<UserCompany> CompanyUsers { get; set; }
     }
 }
