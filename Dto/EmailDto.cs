@@ -71,5 +71,6 @@ namespace MeroBolee.Dto
         public string Body { get; set; }
         public DateTime DateCreated { get; set; }
         public bool CanReply { get; set; }
+        public long? SenderId { get; set; }
     }
 }

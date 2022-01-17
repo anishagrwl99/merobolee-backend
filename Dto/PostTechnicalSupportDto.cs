@@ -44,5 +44,37 @@ namespace MeroBolee.Dto
                 }
             }
         }
+
+        [Required(ErrorMessage = "Phone number is required")]
+        [MaxLength(22)]
+        public string PhoneNumber { get; set; }
+    }
+
+
+    public class ReplyTechnicalSupportDto
+    {
+        [Required(ErrorMessage = "Sender name is required")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Sender email is required")]
+        [EmailAddress]
+        public string Email { get; set; }
+
+
+        [Required(ErrorMessage = "Subject is required")]
+        public string Subject { get; set; }
+
+        [Required(ErrorMessage = "Body is required")]
+        public string Body { get; set; }
+
+
+        [Required(ErrorMessage = "Sender Id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid sender id")]
+        public long ReplyUserId { get; set; }
+
+
+        [Required(ErrorMessage = "Help request sender user id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid help request user id")]
+        public long SenderUserId { get; set; }
     }
 }

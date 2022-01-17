@@ -15,5 +15,7 @@ namespace MeroBolee.Service
         /// <returns></returns>
         Task<GetRequestHelpDto> PostRequest(PostTechnicalSupportDto requestHelp);
 
+        Task<GetRequestHelpDto> PostReply(ReplyTechnicalSupportDto reply);
+
     }
 }

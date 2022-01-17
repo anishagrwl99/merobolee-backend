@@ -38,6 +38,9 @@ namespace MeroBolee.Model
         [ForeignKey ("UserEntity")]
         public long? UserId { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
+        public string PhoneNo { get; set; }
+
         [JsonIgnore]
         public UserEntity UserEntity { get; set; }
 

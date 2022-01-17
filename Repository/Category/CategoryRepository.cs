@@ -104,7 +104,6 @@ namespace MeroBolee.Repository
                     return category = null;
                 }
                 category.Category = categoryEntity.Category;
-                category.Status_Id = categoryEntity.Status_Id;
                 category.Date_modified = categoryEntity.Date_modified;
              //   categoryEntity.Modified_time_stamp = categoryEntity.Modified_time_stamp;
                 unitOfWork.SaveChange();

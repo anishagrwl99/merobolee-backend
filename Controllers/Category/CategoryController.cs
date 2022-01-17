@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers
 {
-    public class CategoryController : Controller
+   
+    public class CategoryController : AuthorizeController
     {
         private readonly ICategoryService categoryService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -22,18 +24,21 @@ namespace MeroBolee.Controllers
         {
             this.categoryService = categoryService;
         }
+
+
         /// <summary>
         /// To add category by Admin and status is commonStatus
         /// </summary>
         /// <returns></returns>
         [HttpPost("Category")]
+        [Authorize(Roles = "Super Admin")]
         public IActionResult Add([FromBody] AddCategoryDto addCategory)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                 
+
                     return Ok(new Responses<GetCategoryDto>(categoryService.AddCategory(addCategory), "200", "Record is successfully added"));
                 }
                 else
@@ -59,6 +64,79 @@ namespace MeroBolee.Controllers
         }
 
         /// <summary>
+        /// To update Category info and status is commonStatus
+        /// </summary>
+        /// <param name="updateCategory"></param>
+        /// <returns></returns>
+        [HttpPut("Category")]
+        [Authorize(Roles = "Super Admin")]
+        public IActionResult Update([FromBody] UpdateCategoryDto updateCategory)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    GetCategoryDto getCategory = categoryService.UpdateCategory(updateCategory);
+                    if (getCategory == null)
+                    {
+                        response.statusCode = "404";
+                        response.Message = "Record not Found";
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<GetCategoryDto>(getCategory, "200", "Record is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
+        /// <summary>
+        /// To delete category record (var: id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteCategory")]
+        [Authorize(Roles = "Super Admin")]
+        public IActionResult Delete([FromBody] int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    categoryService.DeleteCategory(id);
+                    response.statusCode = "200";
+                    response.Message = "Record is successfully deleted";
+                    return Ok(new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        /// <summary>
         /// To display all category by Admin
         /// </summary>
         /// <param name="pagination"></param>
@@ -80,70 +158,16 @@ namespace MeroBolee.Controllers
                 }
                 return Ok(ResultAfterPagination(category, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
-        /// <summary>
-        /// To delete category record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteCategory")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    categoryService.DeleteCategory(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return Ok(new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
+
 
         /// <summary>
         /// To get individual category detail
@@ -173,87 +197,16 @@ namespace MeroBolee.Controllers
                     return Ok(new Responses<GetCategoryDto>(getCategory, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
 
-        /// <summary>
-        /// To update Category info and status is commonStatus
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addCategory"></param>
-        /// <returns></returns>
-        [HttpPut("Category")]
-        public IActionResult Update([FromQuery] int id, [FromBody] AddCategoryDto addCategory)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response)); 
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetCategoryDto getCategory = categoryService.UpdateCategory(id,addCategory);
-                        if (getCategory == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not Found";
-                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetCategoryDto>(getCategory, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
 
         private PagedResponse<GetCategoryDto> ResultAfterPagination(IEnumerable<GetCategoryDto> getCategory, PaginationQuery pagination, int totalCount)
         {
@@ -268,6 +221,6 @@ namespace MeroBolee.Controllers
             return paginationResponse;
 
         }
-        
+
     }
 }

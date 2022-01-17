@@ -364,9 +364,9 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<CategoryEntity>().HasData(
-                new CategoryEntity() { Category_Id = 1, Category = "Transportation", Status_Id = 1 },
-                new CategoryEntity() { Category_Id = 2, Category = "Construction", Status_Id = 1 },
-                new CategoryEntity() { Category_Id = 3, Category = "Tourism", Status_Id = 1 }
+                new CategoryEntity() { Category_Id = 1, Category = "Transportation" },
+                new CategoryEntity() { Category_Id = 2, Category = "Construction" },
+                new CategoryEntity() { Category_Id = 3, Category = "Tourism" }
                 );
 
             builder.Entity<CompanyTypeLookupEntity>().HasData(

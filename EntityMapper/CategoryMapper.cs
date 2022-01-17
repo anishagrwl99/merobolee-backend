@@ -18,7 +18,6 @@ namespace MeroBolee.EntityMapper
             return new CategoryEntity
             {
                 Category = addCategoryDto.Category,
-                Status_Id = addCategoryDto.StatusId,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -34,9 +33,7 @@ namespace MeroBolee.EntityMapper
             return new GetCategoryDto
             {
                 Id = categoryEntity.Category_Id,
-                Category = categoryEntity.Category,
-                StatusId= categoryEntity.Status_Id,
-                Status= categoryEntity.Status.Status
+                Category = categoryEntity.Category
             };
 
         }
@@ -56,9 +53,7 @@ namespace MeroBolee.EntityMapper
                   new GetCategoryDto
                   {
                       Id = category.Category_Id,
-                      Category = category.Category ,
-                     StatusId= category.Status_Id,
-                     Status= category.Status.Status
+                      Category = category.Category 
                   }
                 );
             }

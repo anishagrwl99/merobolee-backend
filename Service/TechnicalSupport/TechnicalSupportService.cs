@@ -45,12 +45,38 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<GetRequestHelpDto> PostReply(ReplyTechnicalSupportDto reply)
+        {
+            try
+            {
+                List<long> receivers = await GetTechnicalSupportReceiverUsers(reply.ReplyUserId);
+                receivers.Add(reply.SenderUserId);
+                TechnicalSupportEntity ent = RequestHelpDtoToEntity(reply, receivers);
+                return RequestHelpToDto(await requestHelpRepository.PostRequest(ent));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         private async Task<List<long>> GetTechnicalSupportReceiverUsers()
         {
             List<UserEntity> users = await userService.GetMeroboleeUsers();
             List<long> userIds = new List<long>();
             userIds.AddRange(users.Where(x => x.Role_Id == 1).Select(x => x.User_Id).ToList()); //Super Admin
             userIds.AddRange(users.Where(x => x.Role_Id == 3).Select(x => x.User_Id).ToList()); //Customer Support
+
+            return userIds;
+        }
+
+        private async Task<List<long>> GetTechnicalSupportReceiverUsers(long myId)
+        {
+            List<UserEntity> users = await userService.GetMeroboleeUsers();
+            List<long> userIds = new List<long>();
+            userIds.AddRange(users.Where(x => x.Role_Id == 1 && x.User_Id != myId).Select(x => x.User_Id).ToList()); //Super Admin
+            userIds.AddRange(users.Where(x => x.Role_Id == 3 && x.User_Id != myId).Select(x => x.User_Id).ToList()); //Customer Support
 
             return userIds;
         }

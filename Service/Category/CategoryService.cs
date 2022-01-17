@@ -36,9 +36,9 @@ namespace MeroBolee.Service
             return CategoryEntityListToDto(CategoryRepository.GetCategory(search));
         }
 
-        public GetCategoryDto UpdateCategory(int id, AddCategoryDto CategoryDto)
+        public GetCategoryDto UpdateCategory(UpdateCategoryDto CategoryDto)
         {
-            return CategoryEntityToDto(CategoryRepository.UpdateCategory(id, CategoryDtoEntity(CategoryDto)));
+            return CategoryEntityToDto(CategoryRepository.UpdateCategory(CategoryDto.Id, CategoryDtoEntity(CategoryDto)));
         }
 
     }

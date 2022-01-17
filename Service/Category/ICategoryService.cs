@@ -12,7 +12,7 @@ namespace MeroBolee.Service
         IEnumerable<GetCategoryDto> GetCategory(string search);
         GetCategoryDto GetCategoryDetail(int id);
 
-        GetCategoryDto UpdateCategory(int id, AddCategoryDto CategoryDto);
+        GetCategoryDto UpdateCategory( UpdateCategoryDto CategoryDto);
         void DeleteCategory(int id);
     }
 }

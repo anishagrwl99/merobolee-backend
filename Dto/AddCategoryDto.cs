@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using static MeroBolee.Model.CommonStatus;
@@ -11,18 +12,17 @@ namespace MeroBolee.Dto
     /// </summary>
     public class AddCategoryDto
     {
-        private string category;
+        [Required(ErrorMessage = "Category name is required")]
+        [MaxLength(100, ErrorMessage = "Category name can be {1} character long")]
+        public string Category { get; set; }
 
-        private int statusId;
+    }
 
-        /// <summary>
-        /// Category test
-        /// </summary>
-        public string Category { get => category; set => category = value; }
 
-        /// <summary>
-        /// Status id
-        /// </summary>
-        public int StatusId { get => statusId; set => statusId = value; }
+    public class UpdateCategoryDto : AddCategoryDto
+    {
+        [Required(ErrorMessage = "Category id is required")]
+        [Range(1, byte.MaxValue, ErrorMessage = "Invalid category id")]
+        public int Id { get; set; }
     }
 }
