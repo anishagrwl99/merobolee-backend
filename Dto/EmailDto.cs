@@ -70,5 +70,6 @@ namespace MeroBolee.Dto
         public string Subject { get; set; }
         public string Body { get; set; }
         public DateTime DateCreated { get; set; }
+        public bool CanReply { get; set; }
     }
 }

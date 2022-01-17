@@ -259,7 +259,6 @@ namespace MeroBolee.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

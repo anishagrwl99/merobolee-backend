@@ -25,7 +25,7 @@ namespace MeroBolee.Repository
         /// <param name="ent"></param>
         /// <returns></returns>
         Task<TenderWinnerEntity> SetTenderWinner(TenderWinnerEntity ent);
-        
+
         /// <summary>
         /// Update a bid request entity
         /// </summary>
@@ -56,6 +56,16 @@ namespace MeroBolee.Repository
         /// <param name="entity"></param>
         /// <returns></returns>
         Task<BidRequestEntity> RegisterForBidding(BidRequestEntity entity);
+
+        /// <summary>
+        /// Registers for bidding.
+        /// </summary>
+        /// <param name="documents">The entity.</param>
+        /// <returns></returns>
+        Task<bool> SubmitDocumentRegisterForBidding(List<BidderRequestDocEntity> documents);
+
+
+
 
 
         /// <summary>
@@ -101,7 +111,7 @@ namespace MeroBolee.Repository
         Task<bool> DeleteLiveBids(List<LiveBiddingEntity> records);
         Task<bool> AddHistory(List<BiddingHistoryEntity> records);
         TenderEntity GetTenderDetail(long tenderId);
-
+        Task<bool> IsBidderRegistered(long companyId, long tenderId, long biddingId);
         void WriteAutionLogEntry(AuctionLog log);
 
         /// <summary>

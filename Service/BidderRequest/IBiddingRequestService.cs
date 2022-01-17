@@ -18,6 +18,14 @@ namespace MeroBolee.Service
         /// <returns></returns>
         Task<long> RegisterInTenderBidding(RegisterForTenderDto dto);
 
+
+        /// <summary>
+        /// Submits the document for registered tender.
+        /// </summary>
+        /// <param name="dto">The dto.</param>
+        /// <returns></returns>
+        Task<long> SubmitDocumentForRegisteredTender(SubmitDocumentForRegisteredTender dto);
+
         /// <summary>
         /// Update a tender registration
         /// </summary>

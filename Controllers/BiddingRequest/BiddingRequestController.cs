@@ -36,12 +36,12 @@ namespace MeroBolee.Controllers.BiddingRequest
 
 
         /// <summary>
-        /// Register into a tender for bidding (init var: registration)
+        /// Register into a tender for bidding 
         /// </summary>
         /// <param name="registration"></param>
         /// <returns></returns>
         [HttpPost("Bidding/Register")]
-        public async Task<IActionResult> RegisterForTender([FromForm] RegisterForTenderDto registration)
+        public async Task<IActionResult> RegisterForTender([FromBody] RegisterForTenderDto registration)
         {
             try
             {
@@ -74,25 +74,25 @@ namespace MeroBolee.Controllers.BiddingRequest
         }
 
         /// <summary>
-        /// Update registered into a tender for bidding (init var: registration)
+        /// Register into a tender for bidding (init var: regDocument)
         /// </summary>
-        /// <param name="registration"></param>
+        /// <param name="regDocument"></param>
         /// <returns></returns>
-        [HttpPut("Bidding/Register")]
-        public async Task<IActionResult> UpdateForTenderRegistration([FromForm] UpdateRegistrationForTenderDto registration)
+        [HttpPost("Bidding/Register/SubmitDocuments")]
+        public async Task<IActionResult> SubmitDocumentForRegisteredTender([FromForm] SubmitDocumentForRegisteredTender regDocument)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    long bidId = await biddingRequestService.UpdateRegistration(registration);
+                    long bidId = await biddingRequestService.SubmitDocumentForRegisteredTender(regDocument);
                     if (bidId > 0)
                     {
                         return Ok(new Responses<long>(bidId, "200", "Registration for bidding successful"));
                     }
                     else
                     {
-                        return StatusCode(StatusCodes.Status302Found, new Responses<long>(-1, "302", "You have already registered for a tender"));
+                        return StatusCode(StatusCodes.Status302Found, new Responses<long>(-1, "302", "You have to register before submitting documents."));
                     }
                 }
                 else
@@ -110,6 +110,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
 
         /// <summary>
         /// Bid to a tender
@@ -165,9 +166,13 @@ namespace MeroBolee.Controllers.BiddingRequest
             this.uriService = new UriService(url);
             LiveBidResponse res = await biddingRequestService.TenderPosition(tenderId, supplierId);
             //int totalCount = res.Count();
-            if (res.IsBidSuccess)
+            if (res != null && res.IsBidSuccess)
             {
                 return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+            }
+            else if (res == null)
+            {
+                return NotFound(new Responses<LiveBidResponse>(null, "404", "You must bid before calculating your position"));
             }
             else
             {
@@ -192,9 +197,13 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     LiveBidResponse res = await biddingRequestService.LiveBid(bidRequest);
 
-                    if (res.IsBidSuccess)
+                    if (res != null && res.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+                    }
+                    else if(res == null)
+                    {
+                        return StatusCode(400, new Responses<LiveBidResponse>(res, "400", "You are not allowed to bid in this tender."));
                     }
                     else
                     {

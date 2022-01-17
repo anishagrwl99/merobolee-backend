@@ -97,7 +97,7 @@ namespace MeroBolee
             {
                 o.UseSqlServer(Configuration.GetConnectionString("MeroBoleeConn"));
 
-            }); // Connection string is available in appsettings.Json file
+            }, ServiceLifetime.Transient); // Connection string is available in appsettings.Json file
                 // UseSqlServer help to database connection which use package Ms.EntityFrameworkCore.SqlServer
 
 
@@ -170,7 +170,7 @@ namespace MeroBolee
             services.AddScoped<IUploadFile, FileUpload>();
 
             services.AddScoped<IDbFactory, DbFactory>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICountryRepository, CountryRepository>();

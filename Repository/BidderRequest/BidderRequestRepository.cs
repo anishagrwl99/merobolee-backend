@@ -154,6 +154,23 @@ namespace MeroBolee.Repository
         }
 
 
+
+        public async Task<bool> SubmitDocumentRegisterForBidding(List<BidderRequestDocEntity> documents)
+        {
+            try
+            {
+                meroBoleeDbContexts.BidderRequestDocEntities.AddRange(documents);
+                await unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
         /// <summary>
         /// Return a bid request for business validation
         /// </summary>
@@ -397,6 +414,49 @@ namespace MeroBolee.Repository
             }
         }
 
+        public async Task<bool>  IsBidderRegistered(long companyId, long tenderId, long biddingId)
+        {
+            try
+            {
+                var info =  await meroBoleeDbContexts.BidRequestEntities
+                    .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
+                    .Select(x => new { 
+                            x.Id , 
+                            x.BidRequestStatusId 
+                        })
+                    .FirstOrDefaultAsync();
+
+
+                bool isRegistered = false;
+
+                if (info != null && info.Id > 0 && info.BidRequestStatusId == 2) //2 Status is approved
+                {
+                    isRegistered = true;
+                    var bidTimeRange = await meroBoleeDbContexts.TenderEntities
+                        .Where(x=> x.Tender_Id == tenderId)
+                        .Select(x=> new
+                        {
+                            x.Live_Start_Date,
+                            x.Live_End_Date
+                        })
+                        .FirstOrDefaultAsync();
+
+                    //if bidding time is in future don't allow bidding
+                    if (bidTimeRange.Live_Start_Date > DateTime.Now || bidTimeRange.Live_End_Date < DateTime.Now) isRegistered = false;
+
+                    //user is using different bid id to bid 
+                    if (biddingId != info.Id) isRegistered = false; 
+
+                }
+
+                return isRegistered;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
         {
             try

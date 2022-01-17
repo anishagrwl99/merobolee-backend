@@ -18,7 +18,7 @@ namespace MeroBolee.EntityMapper
         /// <param name="companyFolder"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public BidRequestEntity ToEntity(RegisterForTenderDto dto, string companyFolder, IUploadFile file)
+        public BidRequestEntity ToEntity(RegisterForTenderDto dto/*, string companyFolder, IUploadFile file*/)
         {
             BidRequestEntity entity = new BidRequestEntity
             {
@@ -31,19 +31,34 @@ namespace MeroBolee.EntityMapper
                 Amount = dto.PaymentAmount,
                 Remark = null
             };
-            entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
-            string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
-            foreach (var item in dto.Documents)
-            {
-                entity.BidderRequestDocs.Add(new BidderRequestDocEntity
-                {
-                    DocPath = file.Upload(item.Document, folder).Result,
-                    DocTitle = item.DocTitle
-                });
-            }
+            //entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
+            //string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
+            //foreach (var item in dto.Documents)
+            //{
+            //    entity.BidderRequestDocs.Add(new BidderRequestDocEntity
+            //    {
+            //        DocPath = file.Upload(item.Document, folder).Result,
+            //        DocTitle = item.DocTitle
+            //    });
+            //}
             return entity;
         }
 
+        public List<BidderRequestDocEntity> ToEntity(SubmitDocumentForRegisteredTender dto, long bidRequestId, string companyFolder, IUploadFile file)
+        {
+            List<BidderRequestDocEntity> documents = new List<BidderRequestDocEntity>();
+            string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
+            foreach (var item in dto.Documents)
+            {
+                documents.Add(new BidderRequestDocEntity
+                {
+                    DocPath = file.Upload(item.Document, folder).Result,
+                    DocTitle = item.DocTitle,
+                    BidRequestId = bidRequestId
+                });
+            }
+            return documents;
+        }
 
         /// <summary>
         /// Convert dto to list of entities

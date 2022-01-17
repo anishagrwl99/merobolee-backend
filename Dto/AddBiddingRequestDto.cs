@@ -27,6 +27,10 @@ namespace MeroBolee.Dto
         
     }
 
+    public class SubmitDocumentForRegisteredTender : TenderRegistrationDto
+    {
+        public List<TenderSubmissionAdditionalDocDto> Documents { get; set; }
+    }
     public class RegisterForTenderDto : TenderRegistrationDto
     {
         
@@ -45,7 +49,6 @@ namespace MeroBolee.Dto
         public DateTime RegistrationTime { get; set; }
 
 
-        public List<TenderSubmissionAdditionalDocDto> Documents { get; set; }
     }
 
 

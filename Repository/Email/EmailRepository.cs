@@ -97,7 +97,8 @@ namespace MeroBolee.Repository
                                                 AuthorEmail = ts.Email,
                                                 Subject = ts.Title,
                                                 Body = null,
-                                                DateCreated = ts.Date_created
+                                                DateCreated = ts.Date_created,
+                                                CanReply = ts.UserId.HasValue
                                             }
 
                                         ).ToList<TechnicalSupportEmailResponseDto>();
@@ -140,7 +141,8 @@ namespace MeroBolee.Repository
                                                 AuthorEmail = ts.Email,
                                                 Subject = ts.Title,
                                                 Body = null,
-                                                DateCreated = ts.Date_created
+                                                DateCreated = ts.Date_created,
+                                                CanReply = ts.UserId.HasValue
                                             }
 
                                         ).ToList<TechnicalSupportEmailResponseDto>();
@@ -215,7 +217,8 @@ namespace MeroBolee.Repository
                                               AuthorEmail = ts.Email,
                                               Subject = ts.Title,
                                               Body = ts.Description,
-                                              DateCreated = ts.Date_created
+                                              DateCreated = ts.Date_created,
+                                              CanReply = ts.UserId.HasValue 
                                            }
 
                                         ).FirstOrDefault();
