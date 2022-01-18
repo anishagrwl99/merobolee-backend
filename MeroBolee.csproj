@@ -20,6 +20,7 @@
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
+		<StartupObject>MeroBolee.Program</StartupObject>
 	</PropertyGroup>
 	
   <ItemGroup>

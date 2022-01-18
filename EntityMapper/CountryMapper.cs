@@ -17,8 +17,8 @@ namespace MeroBolee.EntityMapper
             }
             return new CountryEntity
             {
-                Country_Name = addCountryDto.Country,
-                Country_Code=addCountryDto.Code,
+                Name = addCountryDto.Country,
+                Code=addCountryDto.Code,
                 Abbre=addCountryDto.Abrre
             };
         }
@@ -34,9 +34,9 @@ namespace MeroBolee.EntityMapper
             {
                 getCountryDtos.Add(new GetCountryDto
                 {
-                    Id = country.Country_Id,
-                    Country = country.Country_Name,
-                    Code= country.Country_Code,
+                    Id = country.Id,
+                    Country = country.Name,
+                    Code= country.Code,
                     Abrre= country.Abbre
                 }
                 );
@@ -52,9 +52,9 @@ namespace MeroBolee.EntityMapper
             }
             return new GetCountryDto
             {
-                Id = country.Country_Id,
-                Country = country.Country_Name,
-                Code = country.Country_Code,
+                Id = country.Id,
+                Country = country.Name,
+                Code = country.Code,
                 Abrre = country.Abbre
             };
         }

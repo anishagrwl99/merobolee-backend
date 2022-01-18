@@ -81,15 +81,19 @@ namespace MeroBolee.Infrastructure
         {
             return Task.Run(() =>
             {
-                string fullPath = Path.Combine(_baseFolderFullPath, filePath);
-                if(File.Exists(fullPath))
+                if (!String.IsNullOrEmpty(filePath))
                 {
-                    return true;
+                    string fullPath = Path.Combine(_baseFolderFullPath, filePath);
+                    if (File.Exists(fullPath))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             });
         }
     }

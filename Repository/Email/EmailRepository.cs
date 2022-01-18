@@ -47,7 +47,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.EmailEntities.Add(obj);
                 unitOfWork.SaveChange();
-                obj.User = meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == obj.AuthorId).FirstOrDefault();
+                obj.User = meroBoleeDbContexts.UserEntities.Where(x => x.Id == obj.AuthorId).FirstOrDefault();
                 return obj;
 
             }
@@ -62,7 +62,7 @@ namespace MeroBolee.Repository
         {
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
                                             join ue in meroBoleeDbContexts.UserEmailEntities on e.Id equals ue.EmailId
-                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.Id
                                             where ue.UserId == userId && e.IsDraft == false
                                             select new EmailEntity
                                             {
@@ -109,7 +109,7 @@ namespace MeroBolee.Repository
         public List<EmailEntity> GetOutboxEmails(long userId)
         {
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
-                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.Id
                                             where e.AuthorId == userId && e.IsDraft == false
                                             select new EmailEntity
                                             {
@@ -131,7 +131,7 @@ namespace MeroBolee.Repository
         public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutboxEmails(long userId)
         {
             List<TechnicalSupportEmailResponseDto> userEmails = (from ts in meroBoleeDbContexts.TechnicalSupportEntities
-                                            join u in meroBoleeDbContexts.UserEntities on ts.UserId equals u.User_Id
+                                            join u in meroBoleeDbContexts.UserEntities on ts.UserId equals u.Id
                                             into SupportSender
                                             from user in SupportSender.DefaultIfEmpty()
                                             where ts.UserId == userId 
@@ -155,7 +155,7 @@ namespace MeroBolee.Repository
         public List<EmailEntity> GetDraftEmails(long userId)
         {
             List<EmailEntity> userEmails = (from e in meroBoleeDbContexts.EmailEntities
-                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.Id
                                             where e.AuthorId == userId && e.IsDraft == true
                                             select new EmailEntity
                                             {
@@ -179,7 +179,7 @@ namespace MeroBolee.Repository
             try
             {
                 EmailEntity emailDetail = (from e in meroBoleeDbContexts.EmailEntities
-                                           join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.User_Id
+                                           join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.Id
                                            join t in meroBoleeDbContexts.TenderEntities  on e.TenderId equals t.Tender_Id
                                            where e.Id == emailId
                                            select new EmailEntity

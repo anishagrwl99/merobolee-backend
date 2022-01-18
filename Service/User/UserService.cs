@@ -61,9 +61,9 @@ namespace MeroBolee.Service
             UserEntity user = await userRepository.GetUserInfoDetail(dto.Id);
             if(user != null)
             {
-                user.First_Name = dto.FirstName;
-                user.Middle_Name = dto.MiddleName;
-                user.Last_Name = dto.LastName;
+                user.FirstName = dto.FirstName;
+                user.MiddleName = dto.MiddleName;
+                user.LastName = dto.LastName;
                 user.Designation = dto.Designation;
                 user.Username = dto.UserName;
                 user.Date_modified = DateTime.Now;
@@ -76,9 +76,9 @@ namespace MeroBolee.Service
             UserEntity user = await userRepository.GetUserInfoDetail(dto.Id);
             if (user != null)
             {
-                user.First_Name = dto.FirstName;
-                user.Middle_Name = dto.MiddleName;
-                user.Last_Name = dto.LastName;
+                user.FirstName = dto.FirstName;
+                user.MiddleName = dto.MiddleName;
+                user.LastName = dto.LastName;
                 user.Designation = dto.Designation;
                 user.Username = dto.UserName;
                 user.Date_modified = DateTime.Now;
@@ -184,9 +184,29 @@ namespace MeroBolee.Service
 
         public async Task<List<UserEntity>> GetMeroboleeUsers()
         {
-            return await userRepository.GetMeroboleeUsers();
+            try
+            {
+                return await userRepository.GetMeroboleeUsers();
+            }
+            catch ( Exception)
+            {
+
+                throw;
+            }
         }
 
+        public async Task<List<UserEntity>> GetCompanyUsers(long companyId)
+        {
+            try
+            {
+                return await userRepository.GetCompanyUsers(companyId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private async Task<string> GetUserProfilePicture(string profilePic, string basePath, string defaultPic)
         {
             if (!string.IsNullOrEmpty(profilePic))

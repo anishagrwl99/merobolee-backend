@@ -21,9 +21,9 @@ namespace MeroBolee.Repository
             try
             {
                 provinceEntity.Date_created = provinceEntity.Date_modified = DateTime.Now;
-                if (meroBoleeDbContexts.CountryEntities.Find(provinceEntity.Country_Id) == null)
+                if (meroBoleeDbContexts.CountryEntities.Find(provinceEntity.CountryId) == null)
                 {
-                    provinceEntity.Country_Id = 0;
+                    provinceEntity.CountryId = 0;
                     return provinceEntity;
                 }
                 meroBoleeDbContexts.ProvinceEntities.Add(provinceEntity);
@@ -46,7 +46,7 @@ namespace MeroBolee.Repository
             try
             {
                 meroBoleeDbContexts.CountryEntities.ToList();
-                return meroBoleeDbContexts.ProvinceEntities.Where(m => m.Country_Id == countryId).ToList();
+                return meroBoleeDbContexts.ProvinceEntities.Where(m => m.CountryId == countryId).ToList();
             }
             catch (Exception)
             {
@@ -96,7 +96,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.CountryEntities.ToList();
                 List<ProvinceEntity> provinces=  meroBoleeDbContexts.ProvinceEntities.Where(m => (search == null)
-                || (m.Province_Title.ToLower().Contains(search.ToLower()))
+                || (m.Name.ToLower().Contains(search.ToLower()))
                 ).ToList();
                 return provinces;
             }
@@ -123,14 +123,14 @@ namespace MeroBolee.Repository
                 {
                     return province = null;
                 }
-                if (meroBoleeDbContexts.CountryEntities.Find(provinceEntity.Country_Id) == null)
+                if (meroBoleeDbContexts.CountryEntities.Find(provinceEntity.CountryId) == null)
                 {
-                    provinceEntity.Country_Id = 0;
+                    provinceEntity.CountryId = 0;
                     return provinceEntity;
                 }
                 
-                province.Province_Title = provinceEntity.Province_Title;
-                province.Country_Id = provinceEntity.Country_Id;
+                province.Name = provinceEntity.Name;
+                province.CountryId = provinceEntity.CountryId;
                 province.Date_modified = provinceEntity.Date_modified;
               //  province.Modified_time_stamp = provinceEntity.Modified_time_stamp;
                 unitOfWork.SaveChange();

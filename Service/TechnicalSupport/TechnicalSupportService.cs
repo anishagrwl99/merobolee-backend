@@ -65,8 +65,8 @@ namespace MeroBolee.Service
         {
             List<UserEntity> users = await userService.GetMeroboleeUsers();
             List<long> userIds = new List<long>();
-            userIds.AddRange(users.Where(x => x.Role_Id == 1).Select(x => x.User_Id).ToList()); //Super Admin
-            userIds.AddRange(users.Where(x => x.Role_Id == 3).Select(x => x.User_Id).ToList()); //Customer Support
+            userIds.AddRange(users.Where(x => x.RoleId == 1).Select(x => x.Id).ToList()); //Super Admin
+            userIds.AddRange(users.Where(x => x.RoleId == 3).Select(x => x.Id).ToList()); //Customer Support
 
             return userIds;
         }
@@ -75,8 +75,8 @@ namespace MeroBolee.Service
         {
             List<UserEntity> users = await userService.GetMeroboleeUsers();
             List<long> userIds = new List<long>();
-            userIds.AddRange(users.Where(x => x.Role_Id == 1 && x.User_Id != myId).Select(x => x.User_Id).ToList()); //Super Admin
-            userIds.AddRange(users.Where(x => x.Role_Id == 3 && x.User_Id != myId).Select(x => x.User_Id).ToList()); //Customer Support
+            userIds.AddRange(users.Where(x => x.RoleId == 1 && x.Id != myId).Select(x => x.Id).ToList()); //Super Admin
+            userIds.AddRange(users.Where(x => x.RoleId == 3 && x.Id != myId).Select(x => x.Id).ToList()); //Customer Support
 
             return userIds;
         }

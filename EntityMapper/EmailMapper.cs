@@ -39,7 +39,7 @@ namespace MeroBolee.EntityMapper
                 SenderUserId = entity.AuthorId,
                 Subject = entity.Subject,
                 SentDate = entity.Date_created,
-                AuthorName = $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " "),
+                AuthorName = $"{entity.User.FirstName} {entity.User.MiddleName} {entity.User.LastName}".Replace("  ", " "),
                 IsPostAuctionEmail = entity.IsPostAuctionEmail
             };
         }
@@ -57,7 +57,7 @@ namespace MeroBolee.EntityMapper
                     Body = entity.Body,
                     EmailId = entity.Id,
                     AuthorName = entity.User == null  ? "" :  
-                            $"{entity.User.First_Name} {entity.User.Middle_Name} {entity.User.Last_Name}".Replace("  ", " "),
+                            $"{entity.User.FirstName} {entity.User.MiddleName} {entity.User.LastName}".Replace("  ", " "),
                     SentDate = entity.Date_created,
                     IsRead = isInbox ? entity.UserEmails.FirstOrDefault().IsRead : true,
                     SenderUserId = entity.AuthorId,

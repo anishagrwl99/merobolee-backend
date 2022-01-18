@@ -62,7 +62,7 @@ namespace MeroBolee.Repository
                 UserCompany uc = new UserCompany
                 {
                     CompanyId = companyId,
-                    UserId = user.User_Id
+                    UserId = user.Id
                 };
                 meroBoleeDbContexts.UserCompanies.Add(uc);
                 unitOfWork.SaveChange();
@@ -90,7 +90,7 @@ namespace MeroBolee.Repository
                 {
 
                     List<UserEntity> users = await (from u in meroBoleeDbContexts.UserEntities
-                                                    join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                                                    join uc in meroBoleeDbContexts.UserCompanies on u.Id equals uc.UserId
                                                     where uc.CompanyId == companyId
                                                     select u
                                                  )

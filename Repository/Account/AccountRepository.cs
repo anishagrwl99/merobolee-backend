@@ -54,20 +54,20 @@ namespace MeroBolee.Repository
             {
 
                 var user = from u in meroBoleeDbContexts.UserEntities
-                           join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                           join uc in meroBoleeDbContexts.UserCompanies on u.Id equals uc.UserId
                            join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
-                           join r in meroBoleeDbContexts.RoleEntities on u.Role_Id equals r.Role_Id
-                           where u.Person_email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs.ToString())
+                           join r in meroBoleeDbContexts.RoleEntities on u.RoleId equals r.Id
+                           where u.Email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs.ToString())
                            select new AuthenticateResponse
                            {
-                               Id = u.User_Id,
-                               FirstName = u.First_Name,
-                               MiddleName = u.Middle_Name,
-                               LastName = u.Last_Name,
+                               Id = u.Id,
+                               FirstName = u.FirstName,
+                               MiddleName = u.MiddleName,
+                               LastName = u.LastName,
                                Created = u.Date_created,
-                               Email = u.Person_email,
-                               Role = r.Role_Name,
-                               UserStatusId = u.Status_id == null ? 0 : u.Status_id.Value,
+                               Email = u.Email,
+                               Role = r.Name,
+                               UserStatusId = u.StatusId == null ? 0 : u.StatusId.Value,
                                ProfilePicture = u.ProfilePicture,
                                CompanyId = c.CompanyId,
                                CompanyName = c.Name,

@@ -60,8 +60,8 @@ namespace MeroBolee.Repository
             try
             {
                 return meroBoleeDbContexts.CountryEntities.Where(m => (search == null)
-                || ((m.Country_Name.ToLower().Contains(search.ToLower()))
-                || (m.Country_Code.ToLower().Contains(search.ToLower()))
+                || ((m.Name.ToLower().Contains(search.ToLower()))
+                || (m.Code.ToLower().Contains(search.ToLower()))
                 || (m.Abbre.ToLower().Contains(search.ToLower()))
                 )).ToList();
             }
@@ -80,7 +80,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                CountryEntity country = meroBoleeDbContexts.CountryEntities.Where(m => m.Country_Id == id).FirstOrDefault();
+                CountryEntity country = meroBoleeDbContexts.CountryEntities.Where(m => m.Id == id).FirstOrDefault();
                 
                 return country;
             }
@@ -100,8 +100,8 @@ namespace MeroBolee.Repository
                     return country = null;
                 }
                 countryEntity.Abbre = country.Abbre;
-                countryEntity.Country_Name = country.Country_Name;
-                countryEntity.Country_Code = country.Country_Code;
+                countryEntity.Name = country.Name;
+                countryEntity.Code = country.Code;
                 countryEntity.Date_modified = country.Date_modified;
              //   countryEntity.Modified_time_stamp = country.Modified_time_stamp;
                 unitOfWork.SaveChange();

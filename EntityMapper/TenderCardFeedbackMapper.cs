@@ -30,7 +30,7 @@ namespace MeroBolee.EntityMapper
             dto.UserId = entity.UserId;
             dto.Feedback = entity.Feeback;
             dto.SenderCompany = entity.Company.Name;
-            dto.SenderName = $"{entity.User.First_Name} {(string.IsNullOrEmpty(entity.User.Middle_Name) ? entity.User.Last_Name : entity.User.Middle_Name + " " + entity.User.Last_Name)}";
+            dto.SenderName = $"{entity.User.FirstName} {(string.IsNullOrEmpty(entity.User.MiddleName) ? entity.User.LastName : entity.User.MiddleName + " " + entity.User.LastName)}";
 
             return dto;
         }

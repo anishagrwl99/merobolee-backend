@@ -10,51 +10,52 @@ using MeroBolee.Settings;
 using System.Text;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MeroBolee.Service
 {
-    public class SearchParam
-    {
-        public List<SearchField> CompanyFields { get; set; }
-        public List<SearchField> UserFields { get; set; }
-        public List<SearchField> CountryFields { get; set; }
-        public List<SearchField> ProvinceFields { get; set; }
-    }
 
-
-    public class SearchField
-    {
-        public string Key { get; set; }
-        public string Value { get; set; }
-    }
-    
     /// <summary>
     /// Signup service interface
     /// </summary>
     public interface ISearchEngineService
     {
-        Task<IEnumerable<CompanyEntity>> Search(List<SearchField> searchParams);
+        Task<List<CompanyDetailResponse>> Search(AdvanceSearch searchParams, string baseUrl, string defaultPic);
     }
 
     /// <summary>
     /// Signup service implementation
     /// </summary>
-    public class SearchEngineService : ISearchEngineService
+    public class SearchEngineService : CompanyMapper, ISearchEngineService
     {
         private readonly ISearchEngineRepository searchEngineRepository;
+        private readonly IUploadFile fileService;
+        private readonly IUserService userService;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="searchEngineRepository"></param>
-        public SearchEngineService(ISearchEngineRepository searchEngineRepository)
+        /// <param name="fileService"></param>
+        /// <param name="userService"></param>
+        public SearchEngineService(ISearchEngineRepository searchEngineRepository, IUploadFile fileService, IUserService userService)
         {
             this.searchEngineRepository = searchEngineRepository;
+            this.fileService = fileService;
+            this.userService = userService;
         }
 
-        public Task<IEnumerable<CompanyEntity>> Search(List<SearchField> searchParams)
+        public async Task<List<CompanyDetailResponse>> Search(AdvanceSearch searchParams, string baseUrl, string defaultPic)
         {
-            return searchEngineRepository.GetCompanies(searchParams);
+            List<CompanyEntity> companies = await searchEngineRepository.GetCompanies(searchParams);
+            if (companies != null && companies.Count > 0)
+            {
+                //CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
+                List<CompanyDetailResponse> resp = await ToDetailResponse(companies,  userService, fileService, baseUrl, defaultPic);
+                return resp;
+            }
+
+            return null;
         }
     }
 }

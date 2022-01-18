@@ -266,8 +266,8 @@ namespace MeroBolee
             // Add the processing server as IHostedService
             services.AddHangfireServer();
             */
-            services.AddControllers()
-                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers();
+                //.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddMvc();
 
         }

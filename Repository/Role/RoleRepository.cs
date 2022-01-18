@@ -49,7 +49,7 @@ namespace MeroBolee.Repository
             try
             {
                 return meroBoleeDbContexts.RoleEntities.Where(m => (search == null)
-                   || (m.Role_Name.ToLower().Contains(search.ToLower()))).ToList();
+                   || (m.Name.ToLower().Contains(search.ToLower()))).ToList();
             }
             catch (InvalidOperationException)
             {
@@ -64,7 +64,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                RoleEntity role= meroBoleeDbContexts.RoleEntities.Where(m => m.Role_Id == id).First();
+                RoleEntity role= meroBoleeDbContexts.RoleEntities.Where(m => m.Id == id).First();
                 if (role==null)
                 {
                     return role = null;
@@ -90,7 +90,7 @@ namespace MeroBolee.Repository
                 {
                     return toEditRole = null;
                 }
-                toEditRole.Role_Name = role.Role_Name;
+                toEditRole.Name = role.Name;
                 toEditRole.Date_modified = role.Date_modified;
                // toEditRole.Modified_time_stamp = role.Modified_time_stamp;
                 unitOfWork.SaveChange();

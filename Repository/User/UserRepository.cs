@@ -36,7 +36,7 @@ namespace MeroBolee.Repository
                 {
                     user.Date_created = DateTime.Now.Date;
                     user.Date_modified = DateTime.Now.Date;
-                    user.Activate_Date = DateTime.Now.Date;
+                    user.ActivateDate = DateTime.Now.Date;
 
                     meroBoleeDbContexts.UserEntities.Add(user);
                     await unitOfWork.SaveChangesAsync();
@@ -59,7 +59,7 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.UserEntities.Remove(user);
                 unitOfWork.SaveChange();
-                DeleteFile(user.Company_Name);
+                DeleteFile(user.CompanyName);
                 throw;
             }
         }
@@ -95,16 +95,16 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.CompanyTypeLookupEntities.ToList();
                 meroBoleeDbContexts.CategoryEntities.ToList();
                 return meroBoleeDbContexts.UserEntities.Where(m => (search == null)
-                || (m.User_Code.ToString().Contains(search))
-                || (m.First_Name.ToLower().Contains(search.ToLower()))
-                || (m.Middle_Name.ToLower().Contains(search.ToLower()))
-                || (m.Last_Name.ToLower().Contains(search.ToLower()))
+                || (m.Code.ToString().Contains(search))
+                || (m.FirstName.ToLower().Contains(search.ToLower()))
+                || (m.MiddleName.ToLower().Contains(search.ToLower()))
+                || (m.LastName.ToLower().Contains(search.ToLower()))
                 || (m.Designation.ToLower().Contains(search.ToLower()))
-                || (m.Person_email.ToLower().Contains(search.ToLower()))
+                || (m.Email.ToLower().Contains(search.ToLower()))
                 || (m.Username.ToLower().Contains(search.ToLower()))
                 || (m.UserStatus.Status.ToLower().Contains(search.ToLower()))
-                || (m.Activate_Date.ToString().ToLower().Contains(search.ToLower()))
-                || (m.Expried_Date.ToString().ToLower().Contains(search.ToLower()))
+                || (m.ActivateDate.ToString().ToLower().Contains(search.ToLower()))
+                || (m.ExpriedDate.ToString().ToLower().Contains(search.ToLower()))
                 ).ToList();
             }
             catch (Exception)
@@ -120,13 +120,13 @@ namespace MeroBolee.Repository
                 UserEntity user = await meroBoleeDbContexts.UserEntities
                                     .Include(x => x.UserStatus)
                                     .Include(x => x.Role)
-                                    .Where(x => x.User_Id == id)
+                                    .Where(x => x.Id == id)
                                     .FirstOrDefaultAsync();
 
                 List<CompanyEntity> companies = await (from uc in meroBoleeDbContexts.UserCompanies
                                                        join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
-                                                       join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
-                                                       join ct in meroBoleeDbContexts.CountryEntities on c.CountryId equals ct.Country_Id
+                                                       join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Id
+                                                       join ct in meroBoleeDbContexts.CountryEntities on c.CountryId equals ct.Id
                                                        join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
                                                        where uc.UserId == id
                                                        select new CompanyEntity
@@ -167,7 +167,7 @@ namespace MeroBolee.Repository
                 UserEntity user = await meroBoleeDbContexts.UserEntities
                                     .Include(x => x.UserStatus)
                                     .Include(x => x.Role)
-                                    .Where(x => x.User_Id == id)
+                                    .Where(x => x.Id == id)
                                     .FirstOrDefaultAsync();
                 if (user == null)
                 {
@@ -214,8 +214,8 @@ namespace MeroBolee.Repository
             try
             {
                 string userCompany = meroBoleeDbContexts.UserEntities
-                                .Where(x => x.User_Id == id)
-                                .Select(x => x.Company_Name)
+                                .Where(x => x.Id == id)
+                                .Select(x => x.CompanyName)
                                 .DefaultIfEmpty("")
                                 .FirstOrDefault();
 
@@ -232,22 +232,22 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from u in meroBoleeDbContexts.UserEntities
-                              join s in meroBoleeDbContexts.UserStatusEntities on u.Status_id equals s.Status_Id
-                              where u.User_Id == userId
+                              join s in meroBoleeDbContexts.UserStatusEntities on u.StatusId equals s.Id
+                              where u.Id == userId
                               select new UserProfileDto
                               {
-                                  Id = u.User_Id,
+                                  Id = u.Id,
                                   Designation = u.Designation,
-                                  Email = u.Person_email,
-                                  FirstName = u.First_Name,
-                                  LastName = u.Last_Name,
-                                  MiddleName = u.Middle_Name,
+                                  Email = u.Email,
+                                  FirstName = u.FirstName,
+                                  LastName = u.LastName,
+                                  MiddleName = u.MiddleName,
                                   ProfilePicture = u.ProfilePicture,
                                   Status = s.Status,
                                   UserCompanies = (from uc in meroBoleeDbContexts.UserCompanies
                                                    join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
-                                                   join c1 in meroBoleeDbContexts.CountryEntities on c.CountryId equals c1.Country_Id
-                                                   join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Province_Id
+                                                   join c1 in meroBoleeDbContexts.CountryEntities on c.CountryId equals c1.Id
+                                                   join p in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals p.Id
                                                    join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
                                                    where uc.UserId == userId
                                                    select new CompanyDto()
@@ -259,11 +259,11 @@ namespace MeroBolee.Repository
                                                        City = c.City,
                                                        Code = c.ReferenceCode,
                                                        Name = c.Name,
-                                                       Country = c1.Country_Name,
+                                                       Country = c1.Name,
                                                        Email = c.CompanyEmail,
                                                        Phone1 = c.Phone1,
                                                        Phone2 = c.Phone2,
-                                                       Province = p.Province_Title,
+                                                       Province = p.Name,
                                                        RegisteredDate = c.Date_created,
                                                        Status = s.Status,
                                                        Website = c.CompanyWebsite,
@@ -284,7 +284,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == userId).FirstOrDefaultAsync();
+                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.Id == userId).FirstOrDefaultAsync();
                 if (u != null)
                 {
                     string oldPic = u.ProfilePicture;
@@ -309,7 +309,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.User_Id == dto.UserId).FirstOrDefaultAsync();
+                UserEntity u = await meroBoleeDbContexts.UserEntities.Where(x => x.Id == dto.UserId).FirstOrDefaultAsync();
                 if (u != null)
                 {
                     u.Password = dto.Password;
@@ -334,8 +334,25 @@ namespace MeroBolee.Repository
             try
             {
                 return await (from u in meroBoleeDbContexts.UserEntities
-                              join uc in meroBoleeDbContexts.UserCompanies on u.User_Id equals uc.UserId
+                              join uc in meroBoleeDbContexts.UserCompanies on u.Id equals uc.UserId
                                where uc.CompanyId == 1
+                              select u
+                    ).ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<UserEntity>> GetCompanyUsers(long companyId)
+        {
+            try
+            {
+                return await (from u in meroBoleeDbContexts.UserEntities
+                              join uc in meroBoleeDbContexts.UserCompanies on u.Id equals uc.UserId
+                              where uc.CompanyId == companyId
                               select u
                     ).ToListAsync();
             }

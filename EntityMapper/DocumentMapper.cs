@@ -32,8 +32,8 @@ namespace MeroBolee.EntityMapper
                 DocumentTypeId = x.DocumentTypeyId,
                 DocumentType = x.DocumentType.TypeName,
                 DocumentPath = $"{baseUrl}{x.DocumentPath.Replace('\\','/')}",
-                UploadedBy = $"{x.UploadUserEntity.First_Name} {x.UploadUserEntity.Last_Name}",
-                StatusChangedBy = x.StatusChangedUserEntity != null? $"{x.StatusChangedUserEntity.First_Name} {x.StatusChangedUserEntity.Last_Name}" : "",
+                UploadedBy = $"{x.UploadUserEntity.FirstName} {x.UploadUserEntity.LastName}",
+                StatusChangedBy = x.StatusChangedUserEntity != null? $"{x.StatusChangedUserEntity.FirstName} {x.StatusChangedUserEntity.LastName}" : "",
                 Remarks = x.Remarks
             }).ToList();
         }

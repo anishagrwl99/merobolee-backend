@@ -25,14 +25,14 @@ namespace MeroBolee.EntityMapper
 
             return new UserEntity
             {
-                First_Name = obj.FirstName,
-                Last_Name = obj.LastName,
-                Person_email = obj.Email,
+                FirstName = obj.FirstName,
+                LastName = obj.LastName,
+                Email = obj.Email,
                 Password = obj.Password,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now,
-                Role_Id = companyTypeEnum == CompanyTypeEnum.Bidder ? 3 : 2, //Bidder(Supplier) role
-                Status_id = 1, //Registered status
+                RoleId = companyTypeEnum == CompanyTypeEnum.Bidder ? 3 : 2, //Bidder(Supplier) role
+                StatusId = 1, //Registered status
                 IsEmailReceiver = true
             };
         }
@@ -51,9 +51,9 @@ namespace MeroBolee.EntityMapper
             }
             return new UserEntity
             {
-                First_Name = userDto.FirstName,
-                Middle_Name = userDto.MiddleName,
-                Last_Name = userDto.LastName,
+                FirstName = userDto.FirstName,
+                MiddleName = userDto.MiddleName,
+                LastName = userDto.LastName,
                 Designation = userDto.Designation,
                 Username = userDto.Username,
                 Password = userDto.Password
@@ -74,15 +74,15 @@ namespace MeroBolee.EntityMapper
 
             return new UserEntity
             {
-                First_Name = userDto.FirstName,
-                Middle_Name = userDto.MiddleName,
-                Last_Name = userDto.LastName,
+                FirstName = userDto.FirstName,
+                MiddleName = userDto.MiddleName,
+                LastName = userDto.LastName,
                 Designation = userDto.Designation,
-                Person_email = userDto.PersonEmail,
+                Email = userDto.PersonEmail,
                 Username = userDto.Username,
                 Password = userDto.Password,
-                Role_Id = userDto.RoleId,
-                Status_id = userDto.StatusId
+                RoleId = userDto.RoleId,
+                StatusId = userDto.StatusId
             };
 
         }
@@ -107,7 +107,7 @@ namespace MeroBolee.EntityMapper
             }
             else
             {
-                getUser.Role = userEntity.Role.Role_Name;
+                getUser.Role = userEntity.Role.Name;
             }
 
 
@@ -121,19 +121,19 @@ namespace MeroBolee.EntityMapper
             }
 
 
-            getUser.UserId = userEntity.User_Id;
-            getUser.CompanyCode = userEntity.User_Code;
-            getUser.FirstName = userEntity.First_Name;
-            getUser.MiddleName = userEntity.Middle_Name;
-            getUser.LastName = userEntity.Last_Name;
+            getUser.UserId = userEntity.Id;
+            getUser.CompanyCode = userEntity.Code;
+            getUser.FirstName = userEntity.FirstName;
+            getUser.MiddleName = userEntity.MiddleName;
+            getUser.LastName = userEntity.LastName;
             getUser.Designation = userEntity.Designation;
-            getUser.PersonEmail = userEntity.Person_email;
+            getUser.PersonEmail = userEntity.Email;
             getUser.Username = userEntity.Username;
             getUser.Password = userEntity.Password;
-            getUser.RoleId = userEntity.Role_Id;
-            getUser.StatusId = userEntity.Status_id;
-            getUser.ActivateDate = userEntity.Activate_Date;
-            getUser.ExpriedDate = userEntity.Expried_Date;
+            getUser.RoleId = userEntity.RoleId;
+            getUser.StatusId = userEntity.StatusId;
+            getUser.ActivateDate = userEntity.ActivateDate;
+            getUser.ExpriedDate = userEntity.ExpriedDate;
             return getUser;
 
         }
@@ -144,14 +144,14 @@ namespace MeroBolee.EntityMapper
             UserDetailDto userDetailDto = new UserDetailDto
             {
                 Designation = user.Designation,
-                FirstName = user.First_Name,
-                Id = user.User_Id,
-                LastName = user.Last_Name,
-                MiddleName = user.Middle_Name,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                MiddleName = user.MiddleName,
                 ProfilePicture = user.ProfilePicture,
                 UserName = user.Username,
                 RegistrationDate = user.Date_created,
-                ActivationDate = user.Activate_Date
+                ActivationDate = user.ActivateDate
             };
 
             userDetailDto.Companies = (from c in companies
@@ -162,13 +162,13 @@ namespace MeroBolee.EntityMapper
                                            Address3 = c.Address3,
                                            City = c.City,
                                            Code = c.ReferenceCode,
-                                           Country = c.Country.Country_Name,
+                                           Country = c.Country.Name,
                                            Email = c.CompanyEmail,
                                            Id = c.CompanyId,
                                            Name = c.Name,
                                            Phone1 = c.Phone1,
                                            Phone2 = c.Phone2,
-                                           Province = c.Province.Province_Title,
+                                           Province = c.Province.Name,
                                            RegisteredDate = c.Date_created,
                                            Status = c.CompanyStatus.Status,
                                            Website = c.CompanyWebsite,

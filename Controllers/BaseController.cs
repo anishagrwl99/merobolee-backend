@@ -24,7 +24,12 @@ namespace MeroBolee.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme/*, Roles = "Bid Inviter, Bidder"*/)]
     public class AuthorizeController : Controller
     {
-
+        internal string _baseUrl, _defaultPic;
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            _baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+            base.OnActionExecuting(context);
+        }
     }
 
     /// <summary>
@@ -32,9 +37,6 @@ namespace MeroBolee.Controllers
     /// </summary>   
     public class BaseController : AuthorizeController
     {
-        internal string _baseUrl, _defaultPic;
-
-
         /// <summary>
         /// Condition to check before executing action in each controller
         /// </summary>

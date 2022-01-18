@@ -23,6 +23,7 @@ namespace MeroBolee.Service
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
 
         Task<List<UserEntity>> GetMeroboleeUsers();
+        Task<List<UserEntity>> GetCompanyUsers(long companyId);
 
     }
 }

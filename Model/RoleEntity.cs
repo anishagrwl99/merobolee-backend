@@ -11,12 +11,12 @@ namespace MeroBolee.Model
     public class RoleEntity: BaseEntity
     {
             private int role_Id;
-            [Column("role_id")]
+            [Column("Id")]
             [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public int Role_Id { get => role_Id; set => role_Id = value; }
+            public int Id { get => role_Id; set => role_Id = value; }
 
             private string role_Name;
-            [Column("role")]
-            public string Role_Name { get => role_Name; set => role_Name = value; }
+            [Column("Name")]
+            public string Name { get => role_Name; set => role_Name = value; }
     }
 }

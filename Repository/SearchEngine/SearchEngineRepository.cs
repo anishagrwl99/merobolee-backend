@@ -1,4 +1,5 @@
-﻿using MeroBolee.Infrastructure;
+﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace MeroBolee.Repository
     /// </summary>
     public interface ISearchEngineRepository : IRepositoryBase<CommonStatus>
     {
-        Task<IEnumerable<CompanyEntity>> GetCompanies(List<SearchField> searchParams);
+        Task<List<CompanyEntity>> GetCompanies(AdvanceSearch searchParams);
     }
 
 
@@ -39,53 +40,55 @@ namespace MeroBolee.Repository
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<CompanyEntity>> GetCompanies(List<SearchField> searchParams)
+        public async Task<List<CompanyEntity>> GetCompanies(AdvanceSearch searchParams)
         {
             try
             {
-                /*
-                List<long> userIds = new List<long>();
-                List<int> countryIds = new List<int>();
-                List<int> provinceIds = new List<int>();
-
-                if(searchParams.UserFields.Count>0)
+                List<long> companyIds = new List<long>();
+                if (searchParams.UserFields != null && searchParams.UserFields.Count > 0)
                 {
-                    userIds = await meroBoleeDbContexts
-                        .UserEntities
-                        .Where(FilterLinq<UserEntity>.GetWherePredicate(searchParams.UserFields.ToArray()))
-                        .Select(x => x.User_Id)
-                        .ToListAsync();
-                }
-                if (searchParams.CountryFields.Count > 0)
-                {
-                    countryIds = await meroBoleeDbContexts
-                        .CountryEntities
-                        .Where(FilterLinq<CountryEntity>.GetWherePredicate(searchParams.CountryFields.ToArray()))
-                        .Select(x => x.Country_Id)
-                        .ToListAsync();
+                    companyIds = meroBoleeDbContexts.UserCompanies
+                                  .Include(x => x.User)
+                                  .Where(FilterLinq<UserCompany>.GetWherePredicate(searchParams.UserFields.ToArray()))
+                                  .Select(x => x.CompanyId)
+                                  .ToList();
                 }
 
-                if (searchParams.ProvinceFields.Count > 0)
+
+                if (companyIds.Count == 0 && searchParams.CompanyFields.Count > 0)
                 {
-                    countryIds = await meroBoleeDbContexts
-                        .ProvinceEntities
-                        .Where(FilterLinq<ProvinceEntity>.GetWherePredicate(searchParams.ProvinceFields.ToArray()))
-                        .Select(x => x.Province_Id)
+                    return await meroBoleeDbContexts
+                        .CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.Province)
+                        .Include(x => x.CompanyStatus)
+                        .Where(FilterLinq<CompanyEntity>.GetWherePredicate(searchParams.CompanyFields.ToArray()))
                         .ToListAsync();
                 }
-                */
-                List<long> companyIds = new List<long> { 1, 2, 3 };
-                return await meroBoleeDbContexts
-                    .CompanyEntities
-                    .Include(x=> x.Country)
-                    .Include(x => x.Province)
-                    .Include(x=> x.CompanyUsers)
-                    .ThenInclude(y=> y.User)
-                    .Where(FilterLinq<CompanyEntity>.GetWherePredicate(searchParams.ToArray()))
-                    .Where(x=> companyIds.Contains(x.CompanyId))
-                    .ToListAsync();
+                else if (companyIds.Count > 0 && searchParams.CompanyFields.Count > 0)
+                {
+
+                    return await meroBoleeDbContexts
+                        .CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.Province)
+                        .Include(x => x.CompanyStatus)
+                        .Where(FilterLinq<CompanyEntity>.GetWherePredicate(searchParams.CompanyFields.ToArray()))
+                        .Where(x => companyIds.Contains(x.CompanyId))
+                        .ToListAsync();
+
+                }
+                else
+                {
+                    return await meroBoleeDbContexts
+                        .CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.Province)
+                        .Include(x => x.CompanyStatus)
+                        .ToListAsync();
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -95,7 +98,7 @@ namespace MeroBolee.Repository
 
     public class FilterLinq<T>
     {
-        
+
 
         static Expression GetPropertyExpression(Expression pe, string chain)
         {
@@ -108,9 +111,10 @@ namespace MeroBolee.Repository
 
         public static Expression<Func<T, Boolean>> GetWherePredicate(params SearchField[] SearchFieldList)
         {
-
             //the 'IN' parameter for expression ie T=> condition
             ParameterExpression pe = Expression.Parameter(typeof(T), typeof(T).Name);
+
+
 
             //combine them with and 1=1 Like no expression
             Expression combined = null;
@@ -125,8 +129,13 @@ namespace MeroBolee.Repository
                     //the name constant to match 
                     Expression columnValue = Expression.Constant(fieldItem.Value);
 
-                    //the first expression: PatientantLastName = ?
-                    Expression e1 = Expression.Equal(columnNameProperty, columnValue);
+                    //the first expression: Name = ?
+                    //Expression e1 = Expression.Equal(columnNameProperty, columnValue);
+
+                    //the first expression: Name LIKE '%<columnValue>%'
+                    Expression e1 = Expression.Call(columnNameProperty, "Contains", null, columnValue);
+
+                    // return Expression.Call(e, "Contains", null, Expression.Constant(s));
                     if (combined == null)
                     {
                         combined = e1;
@@ -140,6 +149,7 @@ namespace MeroBolee.Repository
 
             //create and return the predicate
             return Expression.Lambda<Func<T, Boolean>>(combined, new ParameterExpression[] { pe });
+
         }
 
     }

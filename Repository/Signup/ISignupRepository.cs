@@ -31,7 +31,7 @@ namespace MeroBolee.Repository
                 await unitOfWork .SaveChangesAsync();
                 UserCompany userCompany = new UserCompany
                 {
-                    UserId = user.User_Id,
+                    UserId = user.Id,
                     CompanyId = company.CompanyId
                 };
                 meroBoleeDbContexts.UserCompanies.Add(userCompany);

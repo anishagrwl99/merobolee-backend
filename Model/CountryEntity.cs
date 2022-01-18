@@ -11,17 +11,17 @@ namespace MeroBolee.Model
     public class CountryEntity : BaseEntity
     {
         private int country_Id;
-        [Column("country_id")]
+        [Column("Id")]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity) ]
-        public int Country_Id { get => country_Id; set => country_Id = value; }
+        public int Id { get => country_Id; set => country_Id = value; }
 
         private string country_Name;
-        [Column("country_name")]
-        public string Country_Name { get => country_Name; set => country_Name = value; }
+        [Column("Name")]
+        public string Name { get => country_Name; set => country_Name = value; }
         
         private string country_Code;
-        [Column("country_code")]
-        public string Country_Code { get => country_Code; set => country_Code = value; }
+        [Column("Code")]
+        public string Code { get => country_Code; set => country_Code = value; }
 
         private string abbre;
         [Column("abbre")]

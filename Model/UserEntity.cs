@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Model
@@ -29,16 +30,16 @@ namespace MeroBolee.Model
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("user_id")]
-        public long User_Id { get => user_Id; set => user_Id = value; }
+        [Column("Id")]
+        public long Id { get => user_Id; set => user_Id = value; }
 
-        [Column("user_code")]        
-        public Guid User_Code { get => user_Code; set => user_Code = value; }
+        [Column("Code")]        
+        public Guid Code { get => user_Code; set => user_Code = value; }
 
 
-        [Column("role_id")]
+        [Column("RoleId")]
         [ForeignKey("Role")]
-        public int? Role_Id { get => role_Id; set => role_Id = value; }
+        public int? RoleId { get => role_Id; set => role_Id = value; }
 
 
         public bool IsEmailReceiver
@@ -48,39 +49,45 @@ namespace MeroBolee.Model
         }
 
 
-        [Column("first_name")]
-        public string First_Name { get => first_Name; set => first_Name = value; }
+        [Column("FirstName", TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string FirstName { get => first_Name; set => first_Name = value; }
 
-        [Column("middle_name")]
-        
-        public string Middle_Name { get => middle_Name; set => middle_Name = value; }
+        [Column("MiddleName",  TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string MiddleName { get => middle_Name; set => middle_Name = value; }
 
-        [Column("last_name")]
-        public string Last_Name { get => last_Name; set => last_Name = value; }
+        [Column("LastName", TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string LastName { get => last_Name; set => last_Name = value; }
 
-        [Column("designation")]
+        [Column("Designation")]
+        [MaxLength(100)]
         public string Designation { get => designation; set => designation = value; }
 
 
-        [Column("email")]
-        public string Person_email { get => person_email; set => person_email = value; }
+        [Column("Email")]
+        [MaxLength(100)]
+        public string Email { get => person_email; set => person_email = value; }
 
-        [Column("username")]
+        [Column("Username")]
+        [MaxLength(100)]
         public string Username { get => username; set => username = value; }
 
-        [Column("password")]
+        [Column("Password")]
+        [MaxLength(250)]
         public string Password { get => password; set => password = value; }
 
-        [Column("activate_date")]
-        public DateTime? Activate_Date { get => activate_Date; set => activate_Date = value; }
+        [Column("ActivateDate")]
+        public DateTime? ActivateDate { get => activate_Date; set => activate_Date = value; }
 
-        [Column("expired_date")]
-        public DateTime? Expried_Date { get => expried_Date; set => expried_Date = value; }
+        [Column("ExpriedDate")]
+        public DateTime? ExpriedDate { get => expried_Date; set => expried_Date = value; }
 
 
-        [Column("status_id")]
+        [Column("StatusId")]
         [ForeignKey("UserStatus")]
-        public int? Status_id { get => status_id; set => status_id = value; }
+        public int? StatusId { get => status_id; set => status_id = value; }
 
 
         [Column(TypeName = "VARCHAR")]
@@ -89,7 +96,8 @@ namespace MeroBolee.Model
 
 
         [NotMapped]
-        public string Company_Name { get; set; }
+        [JsonIgnore]
+        public string CompanyName { get; set; }
 
 
         public virtual UserStatusEntity UserStatus { get => userStatus; set => userStatus = value; }

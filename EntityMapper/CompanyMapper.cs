@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
+using MeroBolee.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,12 +97,12 @@ namespace MeroBolee.EntityMapper
 
             return new UserEntity
             {
-                User_Code = Guid.NewGuid(),
-                First_Name = dto.FirstName,
-                Middle_Name = dto.MiddleName,
-                Last_Name = dto.LastName,
+                Code = Guid.NewGuid(),
+                FirstName = dto.FirstName,
+                MiddleName = dto.MiddleName,
+                LastName = dto.LastName,
                 Designation = dto.Designation,
-                Person_email = dto.PersonEmail,
+                Email = dto.PersonEmail,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
             };
@@ -113,12 +114,12 @@ namespace MeroBolee.EntityMapper
 
             return new AddUserReponseDto
             {
-                FirstName = entity.First_Name,
-                MiddleName = entity.Middle_Name,
-                LastName = entity.Last_Name,
+                FirstName = entity.FirstName,
+                MiddleName = entity.MiddleName,
+                LastName = entity.LastName,
                 Designation = entity.Designation,
-                PersonEmail = entity.Person_email,
-                UserId = entity.User_Id
+                PersonEmail = entity.Email,
+                UserId = entity.Id
             };
         }
 
@@ -128,7 +129,7 @@ namespace MeroBolee.EntityMapper
             {
                 Id = company.CompanyId,
                 Name = company.Name,
-                Country = company.Country.Country_Name,
+                Country = company.Country.Name,
                 City = company.City,
                 Address1 = company.Address1,
                 Address2 = company.Address2,
@@ -141,66 +142,84 @@ namespace MeroBolee.EntityMapper
                 Phone1 = company.Phone1,
                 Phone2 = company.Phone2,
                 PANNumber = company.PANNumber,
-                Province = company.Province.Province_Title,
+                Province = company.Province.Name,
                 Status = company.CompanyStatus.Status,
                 RegisteredDate = company.Date_created
             };
 
-            companyDetailResponse.Users = new List<UserResponseDto>();
-
-            foreach (UserEntity u in users)
+            if (users != null && users.Count > 0)
             {
-                UserResponseDto dto = new UserResponseDto
+                companyDetailResponse.Users = new List<UserResponseDto>();
+                foreach (UserEntity u in users)
                 {
-                    Id = u.User_Id,
-                    Designation = u.Designation,
-                    FirstName = u.First_Name,
-                    MiddleName = u.Middle_Name,
-                    LastName = u.Last_Name,
-                    Email = u.Person_email,
-                    UserName = u.Username
-                };
-                bool dpExists =  fileService.FileExists(u.ProfilePicture).Result;
-                if(!dpExists)
-                {
-                    dto.ProfilePic = defaultPic;
+                    UserResponseDto dto = new UserResponseDto
+                    {
+                        Id = u.Id,
+                        Designation = u.Designation,
+                        FirstName = u.FirstName,
+                        MiddleName = u.MiddleName,
+                        LastName = u.LastName,
+                        Email = u.Email,
+                        UserName = u.Username
+                    };
+                    bool dpExists = fileService.FileExists(u.ProfilePicture).Result;
+                    if (!dpExists)
+                    {
+                        dto.ProfilePic = defaultPic;
+                    }
+                    else
+                    {
+                        dto.ProfilePic = $"{baseUrl}{u.ProfilePicture.Replace("\\", "/")}";
+                    }
+                    companyDetailResponse.Users.Add(dto);
                 }
-                else
-                {
-                    dto.ProfilePic = $"{baseUrl}{u.ProfilePicture.Replace("\\","/")}";
-                }
-                companyDetailResponse.Users.Add(dto);
             }
 
-            companyDetailResponse.Tenders = new List<TenderCard>();
-            foreach (TenderEntity t in tenders)
+            if (tenders != null && tenders.Count > 0)
             {
-                TenderCard dto = new TenderCard
+                companyDetailResponse.Tenders = new List<TenderCard>();
+                foreach (TenderEntity t in tenders)
                 {
-                    TenderId = t.Tender_Id,
-                    TenderCode = t.Tender_Code,
-                    TenderTitle = t.Tender_Title,
-                    CategoryName = t.CategoryEntity.Category,
-                    CategoryId = t.Category_Id,
-                    LiveStartDate = t.Live_Start_Date,
-                    LiveEndDate = t.Live_End_Date,
-                    RegistrationTill = t.RegistrationTill,
-                    Status = t.TenderStatusEntity.Status,
-                    StatusId = t.Tender_Status_Id,
-                    CardInfo = (from tc in t.TenderCards
-                                select new TenderCardInfo
-                                {
-                                    Id = tc.Id,
-                                    Label = tc.Label,
-                                    Value = tc.Value
-                                }).ToList()
-                };
-                companyDetailResponse.Tenders.Add(dto);
+                    TenderCard dto = new TenderCard
+                    {
+                        TenderId = t.Tender_Id,
+                        TenderCode = t.Tender_Code,
+                        TenderTitle = t.Tender_Title,
+                        CategoryName = t.CategoryEntity.Category,
+                        CategoryId = t.Category_Id,
+                        LiveStartDate = t.Live_Start_Date,
+                        LiveEndDate = t.Live_End_Date,
+                        RegistrationTill = t.RegistrationTill,
+                        Status = t.TenderStatusEntity.Status,
+                        StatusId = t.Tender_Status_Id,
+                        CardInfo = (from tc in t.TenderCards
+                                    select new TenderCardInfo
+                                    {
+                                        Id = tc.Id,
+                                        Label = tc.Label,
+                                        Value = tc.Value
+                                    }).ToList()
+                    };
+                    companyDetailResponse.Tenders.Add(dto);
+                }
             }
-
             return companyDetailResponse;
         }
 
+
+        public async Task<List<CompanyDetailResponse>> ToDetailResponse(List<CompanyEntity> companies, IUserService userservice, IUploadFile fileService, string baseUrl, string defaultPic)
+        {
+            List<CompanyDetailResponse> response = new List<CompanyDetailResponse>();
+
+            foreach (CompanyEntity company in companies)
+            {
+                List<UserEntity> users = await userservice.GetCompanyUsers(company.CompanyId);
+                CompanyDetailResponse resp = ToDetailResponse(company, users, null, fileService, baseUrl, defaultPic);
+                response.Add(resp);
+            }
+
+            return response;
+        }
         public CompanyCardResponseDto ToCard(CompanyEntity company)
         {
             return new CompanyCardResponseDto
@@ -209,7 +228,7 @@ namespace MeroBolee.EntityMapper
                 Name = company.Name,
                 ReferenceCode = company.ReferenceCode,
                 City = company.City,
-                Country = company.Country.Country_Name,
+                Country = company.Country.Name,
                 Email = company.CompanyEmail,
                 Status = company.CompanyStatus.Status
             };

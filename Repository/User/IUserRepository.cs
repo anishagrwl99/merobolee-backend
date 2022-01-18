@@ -20,6 +20,7 @@ namespace MeroBolee.Repository
         Task<Tuple<bool, string>> UpdateProfilePicture(long userId, string picLocation);
         Task<bool> ChangeUserPassword(ChangePasswordDto dto);
         Task<List<UserEntity>> GetMeroboleeUsers();
+        Task<List<UserEntity>> GetCompanyUsers(long companyId);
 
     }
 }

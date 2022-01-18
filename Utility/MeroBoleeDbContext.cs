@@ -103,7 +103,7 @@ namespace MeroBolee.Utility
 
             modelBuilder.HasDefaultSchema("dbo");
 
-            modelBuilder.Entity<UserEntity>().Property(x => x.User_Code).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<UserEntity>().Property(x => x.Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<TenderEntity>().Property(x => x.Tender_Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
@@ -279,10 +279,10 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<UserStatusEntity>().HasData(
-                new UserStatusEntity() { Status_Id = 1, Status = "Active" },
-                new UserStatusEntity() { Status_Id = 2, Status = "Temporary Disabled" },
-                new UserStatusEntity() { Status_Id = 3, Status = "Suspended" },
-                new UserStatusEntity() { Status_Id = 4, Status = "Deleted" }
+                new UserStatusEntity() { Id = 1, Status = "Active" },
+                new UserStatusEntity() { Id = 2, Status = "Temporary Disabled" },
+                new UserStatusEntity() { Id = 3, Status = "Suspended" },
+                new UserStatusEntity() { Id = 4, Status = "Deleted" }
                 );
 
             builder.Entity<CompanyStatusEntity>().HasData(
@@ -336,16 +336,16 @@ namespace MeroBolee.Utility
                  });
 
             builder.Entity<CountryEntity>().HasData(
-               new CountryEntity() { Country_Id = 1, Country_Name = "Nepal", Country_Code = "NEP", Abbre = "NP", Date_created = DateTime.Now, Date_modified = DateTime.Now }
+               new CountryEntity() { Id = 1, Name = "Nepal", Code = "NEP", Abbre = "NP", Date_created = DateTime.Now, Date_modified = DateTime.Now }
                );
             builder.Entity<ProvinceEntity>().HasData(
-              new ProvinceEntity() { Province_Id = 1, Province_Title = "Province No. 1", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 2, Province_Title = "Province No. 2", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 3, Province_Title = "Bagmati Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 4, Province_Title = "Gandaki Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 5, Province_Title = "Lumbini Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 6, Province_Title = "Karnali Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
-              new ProvinceEntity() { Province_Id = 7, Province_Title = "Sudurpashchim Province", Country_Id = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now }
+              new ProvinceEntity() { Id = 1, Name = "Province No. 1", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 2, Name = "Province No. 2", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 3, Name = "Bagmati Province", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 4, Name = "Gandaki Province", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 5, Name = "Lumbini Province", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 6, Name = "Karnali Province", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now },
+              new ProvinceEntity() { Id = 7, Name = "Sudurpashchim Province", CountryId = 1, Date_created = DateTime.Now, Date_modified = DateTime.Now }
               );
 
             builder.Entity<DocumentStatusEntity>().HasData(
@@ -375,11 +375,11 @@ namespace MeroBolee.Utility
                 new CompanyTypeLookupEntity() { Company_Type_Id = 3, Company_type = "Tourism" }
                 );
             builder.Entity<RoleEntity>().HasData(
-                new RoleEntity() { Role_Id = 1, Role_Name = "Super Admin", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 2, Role_Name = "Tender Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 3, Role_Name = "Customer Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 4, Role_Name = "Bid Inviter", Date_created = DateTime.Now, Date_modified = DateTime.Now },
-                new RoleEntity() { Role_Id = 5, Role_Name = "Bidder", Date_created = DateTime.Now, Date_modified = DateTime.Now }
+                new RoleEntity() { Id = 1, Name = "Super Admin", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Id = 2, Name = "Tender Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Id = 3, Name = "Customer Support", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Id = 4, Name = "Bid Inviter", Date_created = DateTime.Now, Date_modified = DateTime.Now },
+                new RoleEntity() { Id = 5, Name = "Bidder", Date_created = DateTime.Now, Date_modified = DateTime.Now }
                 
                 );
 
@@ -447,60 +447,60 @@ namespace MeroBolee.Utility
             builder.Entity<UserEntity>().HasData(
                 new UserEntity
                 {
-                    User_Id = 1,
-                    First_Name = "Super",
-                    Last_Name = "Admin",
-                    Person_email = "super.admin@test.com",
-                    Role_Id = 1,
-                    Status_id = 1,
+                    Id = 1,
+                    FirstName = "Super",
+                    LastName = "Admin",
+                    Email = "super.admin@test.com",
+                    RoleId = 1,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123"),
                 },
                 new UserEntity
                 {
-                    User_Id = 2,
-                    First_Name = "Tender",
-                    Last_Name = "Support",
-                    Person_email = "tender.suport@test.com",
-                    Role_Id = 2,
-                    Status_id = 1,
+                    Id = 2,
+                    FirstName = "Tender",
+                    LastName = "Support",
+                    Email = "tender.suport@test.com",
+                    RoleId = 2,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123"),
                 },
                 new UserEntity
                 {
-                    User_Id = 3,
-                    First_Name = "Customer",
-                    Last_Name = "Support",
-                    Person_email = "customer.support@test.com",
-                    Role_Id = 3,
-                    Status_id = 1,
+                    Id = 3,
+                    FirstName = "Customer",
+                    LastName = "Support",
+                    Email = "customer.support@test.com",
+                    RoleId = 3,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123"),
                 },
                 new UserEntity
                 {
-                    User_Id = 4,
-                    First_Name = "Bid",
-                    Last_Name = "Inviter",
-                    Person_email = "bid.inviter@test.com",
-                    Role_Id = 4,
-                    Status_id = 1,
+                    Id = 4,
+                    FirstName = "Bid",
+                    LastName = "Inviter",
+                    Email = "bid.inviter@test.com",
+                    RoleId = 4,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123")
                 },
                 new UserEntity
                 {
-                    User_Id = 5,
-                    First_Name = "Bid",
-                    Last_Name = "Bidder",
-                    Person_email = "bid.bidder@test.com",
-                    Role_Id = 5,
-                    Status_id = 1,
+                    Id = 5,
+                    FirstName = "Bid",
+                    LastName = "Bidder",
+                    Email = "bid.bidder@test.com",
+                    RoleId = 5,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
                     Password = cryptoService.Encrypt("123123")
@@ -535,7 +535,7 @@ namespace MeroBolee.Utility
 
             builder.Entity<UserEntity>(entity =>
             {
-                entity.HasIndex(e => e.Person_email).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
             });
         }
     }

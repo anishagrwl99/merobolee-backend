@@ -14,9 +14,11 @@ namespace MeroBolee.Model
         private string status;
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("status_id")]
-        public int Status_Id { get => status_Id; set => status_Id = value; }
-        [Column("user_status")]
+        [Column("Id")]
+        public int Id { get => status_Id; set => status_Id = value; }
+
+
+        [Column("Status")]
         public string Status { get => status; set => status = value; }
 
     }

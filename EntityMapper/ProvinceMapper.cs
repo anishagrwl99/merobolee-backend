@@ -17,8 +17,8 @@ namespace MeroBolee.EntityMapper
             }
             return new ProvinceEntity
             {
-                Province_Title = addProvinceDto.Province,
-                Country_Id= addProvinceDto.CountryId
+                Name = addProvinceDto.Province,
+                CountryId= addProvinceDto.CountryId
 
             };
         
@@ -30,23 +30,23 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else if (provinceEntity.Country_Id==null)  
+            else if (provinceEntity.CountryId==null)  
             {
                 return new GetProvinceDto 
                 {
 
-                    Id = provinceEntity.Province_Id,
-                    Province = provinceEntity.Province_Title,
+                    Id = provinceEntity.Id,
+                    Province = provinceEntity.Name,
                     CountryId =null,
                     Country =null
                 };
             }
             return new GetProvinceDto
             {
-                Id= provinceEntity.Province_Id,
-                Province= provinceEntity.Province_Title,
-                CountryId= provinceEntity.Country_Id,
-                Country= provinceEntity.Country.Country_Name
+                Id= provinceEntity.Id,
+                Province= provinceEntity.Name,
+                CountryId= provinceEntity.CountryId,
+                Country= provinceEntity.Country.Name
 
             };
         
@@ -64,10 +64,10 @@ namespace MeroBolee.EntityMapper
             {
                 getProvinces.Add(new GetProvinceDto
                   {
-                      Id = province.Province_Id,
-                      Province = province.Province_Title,
-                      CountryId = province.Country_Id,
-                      Country = province.Country.Country_Name
+                      Id = province.Id,
+                      Province = province.Name,
+                      CountryId = province.CountryId,
+                      Country = province.Country.Name
                   } 
                 );
             }

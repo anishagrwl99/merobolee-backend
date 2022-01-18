@@ -283,13 +283,13 @@ namespace MeroBolee.EntityMapper
                 Address3 = ent.Company.Address3,
                 City = ent.Company.City,
                 Code = ent.Company.ReferenceCode,
-                Country = ent.Company.Country.Country_Name,
+                Country = ent.Company.Country.Name,
                 Email = ent.Company.CompanyEmail,
                 Id = ent.Company.CompanyId,
                 Name = ent.Company.Name,
                 Phone1 = ent.Company.Phone1,
                 Phone2 = ent.Company.Phone2,
-                Province = ent.Company.Province.Province_Title,
+                Province = ent.Company.Province.Name,
                 RegisteredDate = ent.Company.Date_created,
                 Status = ent.Company.CompanyStatus.Status,
                 Website = ent.Company.CompanyWebsite,
@@ -299,11 +299,11 @@ namespace MeroBolee.EntityMapper
             resp.SubmissionCreatedBy = new UserProfileDto
             {
                 Designation = ent.CreatedByUser.Designation,
-                Email = ent.CreatedByUser.Person_email,
-                FirstName = ent.CreatedByUser.First_Name,
-                Id = ent.CreatedByUser.User_Id,
-                LastName = ent.CreatedByUser.Last_Name,
-                MiddleName = ent.CreatedByUser.Middle_Name,
+                Email = ent.CreatedByUser.Email,
+                FirstName = ent.CreatedByUser.FirstName,
+                Id = ent.CreatedByUser.Id,
+                LastName = ent.CreatedByUser.LastName,
+                MiddleName = ent.CreatedByUser.MiddleName,
                 ProfilePicture = ent.CreatedByUser.ProfilePicture,
                 Status = ent.CreatedByUser.UserStatus.Status
             };
@@ -312,11 +312,11 @@ namespace MeroBolee.EntityMapper
                 resp.SubmissionUpdatedBy = new UserProfileDto
                 {
                     Designation = ent.UpdatedByUser.Designation,
-                    Email = ent.UpdatedByUser.Person_email,
-                    FirstName = ent.UpdatedByUser.First_Name,
-                    Id = ent.UpdatedByUser.User_Id,
-                    LastName = ent.UpdatedByUser.Last_Name,
-                    MiddleName = ent.UpdatedByUser.Middle_Name,
+                    Email = ent.UpdatedByUser.Email,
+                    FirstName = ent.UpdatedByUser.FirstName,
+                    Id = ent.UpdatedByUser.Id,
+                    LastName = ent.UpdatedByUser.LastName,
+                    MiddleName = ent.UpdatedByUser.MiddleName,
                     ProfilePicture = ent.UpdatedByUser.ProfilePicture,
                     Status = ent.UpdatedByUser.UserStatus.Status
                 };
