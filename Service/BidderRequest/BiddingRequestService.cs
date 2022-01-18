@@ -157,13 +157,17 @@ namespace MeroBolee.Service
             {
                 BidRequestEntity entity = await bidRequestRepository.EnterLiveBiddingRoom(bidRequest.TenderId, bidRequest.CompanyId);
 
-                return new EnterLiveBiddingRoomResponseDto
+                if (entity != null)
                 {
-                    BidId = entity.BidRequestStatusId == 2 ? entity.Id : -1,
-                    CompanyId = entity.CompanyId,
-                    TenderId = entity.TenderId,
-                    BidRequestStatus = entity.BidRequestStatus.Status
-                };
+                    return new EnterLiveBiddingRoomResponseDto
+                    {
+                        BidId = entity.BidRequestStatusId == 2 ? entity.Id : -1,
+                        CompanyId = entity.CompanyId,
+                        TenderId = entity.TenderId,
+                        BidRequestStatus = entity.BidRequestStatus.Status
+                    };
+                }
+                return null;
             }
             catch
             {

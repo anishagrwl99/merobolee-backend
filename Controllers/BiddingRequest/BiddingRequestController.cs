@@ -125,13 +125,13 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
                     EnterLiveBiddingRoomResponseDto dto = await biddingRequestService.EnterLiveBiddingRoom(addBiddingRequest);
-                    if (dto.BidId > 0)
+                    if (dto != null &&  dto.BidId > 0)
                     {
                         return Ok(new Responses<EnterLiveBiddingRoomResponseDto>(dto, "200", "Record is successfully added"));
                     }
                     else
                     {
-                        return StatusCode(StatusCodes.Status403Forbidden, new Responses<long>(-1, "403", "You can't enter a live bidding room"));
+                        return StatusCode(StatusCodes.Status403Forbidden, new Responses<long?>(null, "403", "You can't enter a live bidding room"));
                     }
 
                 }
