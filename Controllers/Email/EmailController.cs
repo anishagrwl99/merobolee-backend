@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -29,6 +30,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PreAuction/Reply")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult ReplyToPreAuctionEmail([FromBody] ReplyEmailDto email)
         {
             try
@@ -72,6 +74,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PreAuction/Send")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SendPreAuctionEmail([FromBody] SendEmailDto email)
         {
             try
@@ -115,6 +118,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PreAuction/Reply")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult ReplyToPreAuctionEmailBidder([FromBody] ReplyEmailDto email)
         {
             try
@@ -155,6 +159,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PreAuction/Draft/Save")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SaveDraftPreAuctionEmailBidder([FromBody] SendEmailDto email)
         {
             try
@@ -196,6 +201,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PreAuction/Draft/Send")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SendDraftPreAuctionEmailBidder([FromBody] ReplyEmailDto email)
         {
             try
@@ -322,6 +328,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PostAuction/Send")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SendPostAuctionEmailBidder([FromBody] SendEmailDto email)
         {
             try
@@ -362,6 +369,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PostAuction/Draft/Save")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SaveDraftPostAuctionEmailBidder([FromBody] SendEmailDto email)
         {
             try
@@ -403,6 +411,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Bidder/PostAuction/Draft/Send")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult SendDraftPostAuctionEmailBidder([FromBody] ReplyEmailDto email)
         {
             try
@@ -444,6 +453,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Send")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult SendPostAuctionEmailByBidInviter([FromBody] SendEmailDto email)
         {
             try
@@ -484,6 +494,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Reply")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult ReplyToPostAuctionEmailByTenderAdmin([FromBody] ReplyEmailDto email)
         {
             try
@@ -525,6 +536,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Draft/Save")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult SaveDraftPostAuctionEmailByTenderAdmin([FromBody] SendEmailDto email)
         {
             try
@@ -567,6 +579,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/BidInviter/PostAuction/Draft/Send")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult SendDraftPostAuctionEmailByTenderAdmin([FromBody] ReplyEmailDto email)
         {
             try
@@ -610,6 +623,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PostAuction/Send")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult SendPostAuctionEmailByAdmin([FromBody] SendEmailDto email)
         {
             try
@@ -651,6 +665,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PostAuction/Reply")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult ReplyToPostAuctionEmailByAdmin([FromBody] ReplyEmailDto email)
         {
             try
@@ -692,6 +707,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PostAuction/Draft/Save")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult SaveDraftPostAuctionEmailByAdmin([FromBody] SendEmailDto email)
         {
             try
@@ -733,6 +749,7 @@ namespace MeroBolee.Controllers.Correspondence
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("Email/Admin/PostAuction/Draft/Send")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult SendDraftPostAuctionEmailByAdmin([FromBody] ReplyEmailDto email)
         {
             try

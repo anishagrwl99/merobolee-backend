@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -51,7 +52,8 @@ namespace MeroBolee.Controllers.RequestHelp
         }
 
 
-        [HttpPost("Reply")]
+        [HttpPost("Admin/Reply")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> Reply([FromBody] ReplyTechnicalSupportDto replyDto)
         {
             try

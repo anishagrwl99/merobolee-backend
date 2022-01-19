@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Membership
 {
-    public class MembershipTypeController : Controller
+    public class MembershipTypeController : AuthorizeController
     {
         private readonly IMembershipTypeService membershipTypeService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -22,11 +23,14 @@ namespace MeroBolee.Controllers.Membership
         {
             this.membershipTypeService = membershipTypeService;
         }
+
+
         /// <summary>
         /// To add membershipType by Admin
         /// </summary>
         /// <returns></returns>
         [HttpPost("MembershipType")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult Add([FromBody] AddMemeberShipDto addMemeberShipDto)
         {
             try
@@ -40,21 +44,99 @@ namespace MeroBolee.Controllers.Membership
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-         
-            catch (SqlException)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        /// <summary>
+        /// To update membership Type info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="addMemeberShip"></param>
+        /// <returns></returns>
+        [HttpPut("Membership")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult Update([FromQuery] int id, [FromBody] AddMemeberShipDto addMemeberShip)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        GetMembershipDto getMembership = membershipTypeService.UpdateMembership(id, addMemeberShip);
+                        if (getMembership == null)
+                        {
+                            response.statusCode = "404";
+                            response.Message = "Record not Found";
+                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                        }
+                        return Ok(new Responses<GetMembershipDto>(getMembership, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
+
+        /// <summary>
+        /// To delete membership type record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteMembershipType")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    membershipTypeService.DeleteCategory(id);
+                    response.statusCode = "200";
+                    response.Message = "Record is successfully deleted";
+                    return Ok(new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -101,49 +183,6 @@ namespace MeroBolee.Controllers.Membership
 
         }
 
-        /// <summary>
-        /// To delete membership type record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteMembershipType")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    membershipTypeService.DeleteCategory(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return Ok(new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
 
         /// <summary>
         /// To get individual membership type detail
@@ -173,85 +212,11 @@ namespace MeroBolee.Controllers.Membership
                     return Ok(new Responses<GetMembershipDto>(getMembership, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
-        /// <summary>
-        /// To update membership Type info
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addMemeberShip"></param>
-        /// <returns></returns>
-        [HttpPut("Membership")]
-        public IActionResult Update([FromQuery] int id, [FromBody] AddMemeberShipDto  addMemeberShip)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetMembershipDto getMembership = membershipTypeService.UpdateMembership(id, addMemeberShip);
-                        if (getMembership == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not Found";
-                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetMembershipDto>(getMembership, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (SqlException)
-            {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

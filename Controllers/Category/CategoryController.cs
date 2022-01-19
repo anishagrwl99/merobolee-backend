@@ -31,7 +31,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Category")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult Add([FromBody] AddCategoryDto addCategory)
         {
             try
@@ -69,7 +69,7 @@ namespace MeroBolee.Controllers
         /// <param name="updateCategory"></param>
         /// <returns></returns>
         [HttpPut("Category")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult Update([FromBody] UpdateCategoryDto updateCategory)
         {
             try
@@ -108,7 +108,7 @@ namespace MeroBolee.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("DeleteCategory")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult Delete([FromBody] int id)
         {
             try

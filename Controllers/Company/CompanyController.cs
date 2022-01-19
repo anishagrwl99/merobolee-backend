@@ -38,6 +38,7 @@ namespace MeroBolee.Controllers.City
         /// </summary>
         /// <returns></returns>
         [HttpPost("Company/BidInviter/Add")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult AddBidInviterCompany([FromBody] AddCompanyDto addCompany)
         {
             try
@@ -84,6 +85,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="addCompany">Request payload</param>
         /// <returns></returns>
         [HttpPost("Company/Bidder/Add")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult AddBidderCompany([FromBody] AddCompanyDto addCompany)
         {
             try
@@ -130,6 +132,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="company">Request payload</param>
         /// <returns></returns>
         [HttpPut("Company/BidInviter/Update")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult UpdateBidInviterCompany([FromBody] AddCompanyResponseDto company)
         {
             try
@@ -171,6 +174,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="company">Request payload</param>
         /// <returns></returns>
         [HttpPut("Company/Bidder/Update")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult UpdateBidderCompany([FromBody] AddCompanyResponseDto company)
         {
             try
@@ -212,6 +216,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="user">Request payload</param>
         /// <returns></returns>
         [HttpPost("Company/BidInviter/AddUser")]
+        [Authorize(Roles = "Bid Inviter")]
         public IActionResult AddBidInviterCompanyUser([FromBody] AddUserDto user)
         {
             try
@@ -254,6 +259,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="user">Request payload</param>
         /// <returns></returns>
         [HttpPost("Company/Bidder/AddUser")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult AddBidderCompanyUser([FromBody] AddUserDto user)
         {
             try
@@ -367,6 +373,7 @@ namespace MeroBolee.Controllers.City
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Company/Admin/ChangeStatus")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> ChangeStatus([FromBody] ChangeCompanyStatusDto dto)
         {
             try
@@ -399,6 +406,8 @@ namespace MeroBolee.Controllers.City
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
+
         private PagedResponse<CompanyCardResponseDto> ResultAfterPagination(IEnumerable<CompanyCardResponseDto> companies, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

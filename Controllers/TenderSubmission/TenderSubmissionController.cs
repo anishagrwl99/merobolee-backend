@@ -47,12 +47,13 @@ namespace MeroBolee.Controllers
 
 
         /// <summary>
-        /// Submit Tender submission for tender creation using merobolee default form
+        /// Submit Tender submission for tender creation using merobolee default form (init var: tenderSubmission)
         /// </summary>
         /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MeroboleeForm")]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> CreateSubmission([FromForm] TenderSubmissionRequestDto tenderSubmission)
         {
             try
@@ -89,19 +90,20 @@ namespace MeroBolee.Controllers
 
 
         /// <summary>
-        /// Update Tender submission for tender creation using merobolee default form
+        /// Update Tender submission for tender creation using merobolee default form (init var: tenderSubmission)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MeroboleeForm/Update")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateSubmission([FromForm] TenderSubmissionUpdateRequestDto model)
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> UpdateSubmission([FromForm] TenderSubmissionUpdateRequestDto tenderSubmission)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByForm(model);
+                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByForm(tenderSubmission);
                     if (res != null)
                     {
                         return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully updated"));
@@ -130,20 +132,21 @@ namespace MeroBolee.Controllers
 
 
         /// <summary>
-        /// Submit tender submission for tender creation using prepared documents
+        /// Submit tender submission for tender creation using prepared documents (init var: tenderSubmission)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/ExternalDocument")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> CreateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentRequestDto model)
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> CreateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentRequestDto tenderSubmission)
 
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    TenderSubmission res = await submissionService.CreateTenderSubmissionByDocument(model);
+                    TenderSubmission res = await submissionService.CreateTenderSubmissionByDocument(tenderSubmission);
                     if (res != null)
                     {
                         return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully added"));
@@ -172,19 +175,20 @@ namespace MeroBolee.Controllers
 
 
         /// <summary>
-        /// Update a tender submission by submitting prepared documents
+        /// Update a tender submission by submitting prepared documents (init var: tenderSubmission)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="tenderSubmission"></param>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/ExternalDocument/Update")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentUpdateRequestDto model)
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> UpdateDocumentSubmission([FromForm] TenderSubmissionExternalDocumentUpdateRequestDto tenderSubmission)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByDocument(model);
+                    TenderSubmission res = await submissionService.UpdateTenderSubmissionByDocument(tenderSubmission);
                     if (res != null)
                     {
                         return Ok(new Responses<TenderSubmission>(null, "200", "Record is successfully updated"));
@@ -216,6 +220,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("BidInviter/TenderSubmission/MakePayment")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> MakePayment([FromBody] TenderSubmissionPaymentRequestDto model)
         {
             try
@@ -255,6 +260,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("BidInviter/TenderSubmission")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetTenderSubmissions([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] long userId)
         {
             try
@@ -301,6 +307,7 @@ namespace MeroBolee.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("BidInviter/TenderSubmission/Detail")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetTenderSubmissionDetail([FromQuery] long tenderSubmissionId, [FromQuery] long companyId, [FromQuery] long userId)
         {
             try
@@ -340,6 +347,7 @@ namespace MeroBolee.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Admin/TenderSubmission/ChangeStatus")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> ChangeSubmissionStatus([FromBody] ChangeSubmissionStatusDto model)
         {
             try
@@ -379,6 +387,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("Admin/TenderSubmission")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> GetTenderSubmissionsForAdmin([FromQuery] PaginationQuery pagination)
         {
             try
@@ -423,6 +432,7 @@ namespace MeroBolee.Controllers
         /// <param name="tenderSubmissionId"></param>
         /// <returns></returns>
         [HttpGet("Admin/TenderSubmission/Detail")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> GetTenderSubmissionDetail([FromQuery] long tenderSubmissionId)
         {
             try

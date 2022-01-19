@@ -56,7 +56,7 @@ namespace MeroBolee.Service
         Task<BidCardDto> ApproveOrDisapprove(BidUpdateRequestDto updateRequest);
         Task<long> SetTenderWinner(BidWinnerRequestDto dto);
 
-        Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId);
+        Task<LiveBidResponse> TenderPosition(long tenderId, long supplierId);
 
 
         Task MoveBidToHistory();

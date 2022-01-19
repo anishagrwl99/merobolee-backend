@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.CompanyType
 {
-    public class CompanyTypeController : Controller
+    public class CompanyTypeController : BaseController
     {
         private readonly ICompanyTypeService CompanyTypeService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -28,6 +29,7 @@ namespace MeroBolee.Controllers.CompanyType
         /// </summary>
         /// <returns></returns>
         [HttpPost("CompanyType")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult AddCompanyType([FromBody] AddCompanyTypeDto addCompanyType)
         {
             try
@@ -40,65 +42,20 @@ namespace MeroBolee.Controllers.CompanyType
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
-        /// <summary>
-        /// To display all Company Type by Admin
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="search"></param>>
-        /// <returns></returns>
-        [HttpGet("CompanyType")]
-        public IActionResult GetAllCompanyType([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
-        {
-            try
-            {
-                string url = Url.Action("GetAllCompanyType", null, null, Request.Scheme); //get url for current request
-                uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetCompanyTypeDto> CompanyType = CompanyTypeService.GetCompanyType(search);
-                int totalCount = CompanyType.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<GetCompanyTypeDto>>(CompanyType, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(CompanyType, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
 
-        }
+
 
         /// <summary>
         /// To delete CompanyType record
@@ -106,6 +63,7 @@ namespace MeroBolee.Controllers.CompanyType
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("DeleteCompanyType")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult DeleteCompanyType([FromQuery] int id)
         {
             try
@@ -124,27 +82,49 @@ namespace MeroBolee.Controllers.CompanyType
                     return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
+
+
+
+        /// <summary>
+        /// To display all Company Type by Admin
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="search"></param>>
+        /// <returns></returns>
+        [HttpGet("CompanyType")]
+        public IActionResult GetAllCompanyType([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        {
+            try
+            {
+                string url = Url.Action("GetAllCompanyType", null, new { search = search}, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<GetCompanyTypeDto> CompanyType = CompanyTypeService.GetCompanyType(search);
+                int totalCount = CompanyType.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<GetCompanyTypeDto>>(CompanyType, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(CompanyType, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
+
 
         /// <summary>
         /// To get individual CompanyType detail
@@ -172,27 +152,17 @@ namespace MeroBolee.Controllers.CompanyType
                     return Ok(new Responses<GetCompanyTypeDto>(getCompanyType, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
+
+
+
         /// <summary>
         /// To update CompanyType info
         /// </summary>
@@ -200,6 +170,7 @@ namespace MeroBolee.Controllers.CompanyType
         /// <param name="addCompanyType"></param>
         /// <returns></returns>
         [HttpPut("CompanyType")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult UpdateCompanyType([FromQuery] int id, [FromBody] AddCompanyTypeDto addCompanyType)
         {
             try
@@ -225,32 +196,22 @@ namespace MeroBolee.Controllers.CompanyType
                     {
                         response.statusCode = "400";
                         response.Message = "Invalid Format";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
 
         }
+
+
 
         private PagedResponse<GetCompanyTypeDto> ResultAfterPagination(IEnumerable<GetCompanyTypeDto> CompanyType, PaginationQuery pagination, int totalCount)
         {

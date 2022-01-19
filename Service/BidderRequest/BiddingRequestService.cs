@@ -175,7 +175,7 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId)
+        public async Task<LiveBidResponse> TenderPosition(long tenderId, long supplierId)
         {
             List<LiveBiddingEntity> bids = await bidRequestRepository.TenderLiveBids(tenderId);
             if (bids != null && bids.Count > 0)

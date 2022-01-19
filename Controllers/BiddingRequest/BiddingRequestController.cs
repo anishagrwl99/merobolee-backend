@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -41,6 +42,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="registration"></param>
         /// <returns></returns>
         [HttpPost("Bidding/Register")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> RegisterForTender([FromBody] RegisterForTenderDto registration)
         {
             try
@@ -79,6 +81,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="regDocument"></param>
         /// <returns></returns>
         [HttpPost("Bidding/Register/SubmitDocuments")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> SubmitDocumentForRegisteredTender([FromForm] SubmitDocumentForRegisteredTender regDocument)
         {
             try
@@ -118,6 +121,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="addBiddingRequest"></param>
         /// <returns></returns>
         [HttpPost("Bidding/EnterLiveBiddingRoom")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> EnterLiveBiddingRoom([FromBody] AddBiddingRequestDto addBiddingRequest)
         {
             try
@@ -160,7 +164,8 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="supplierId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Position")]
-        public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination, [FromQuery] int tenderId, [FromQuery] int supplierId)
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination, [FromQuery] long tenderId, [FromQuery] long supplierId)
         {
             string url = Url.Action("GetBiddingPosition", null, null, Request.Scheme); //get url for current request
             this.uriService = new UriService(url);
@@ -189,6 +194,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="bidRequest"></param>
         /// <returns></returns>
         [HttpPost("Bidding/LiveBid")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> LiveBid([FromBody] TenderMaterialBiddingDto bidRequest)
         {
             try
@@ -235,6 +241,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <returns></returns>
 
         [HttpGet("Bidding/CheckBiddingTime")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> CheckBiddingTime([FromQuery] long tenderId)
         {
             try
@@ -268,6 +275,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <returns></returns>
         [HttpPost("Bidding/AutoBid")]
+        [Authorize(Roles = "Bidder")]
         public IActionResult AutoBid([FromBody] TenderAutoBidDto autoBidDto)
         {
             try
@@ -308,6 +316,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="supplierCompanyId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/History")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetBidderRequest([FromQuery] PaginationQuery pagination, [FromQuery] long supplierCompanyId)
         {
             try
@@ -340,6 +349,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Bid/Detail")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetDetail([FromQuery] long bidId, [FromQuery] long companyId, [FromQuery] long tenderId)
         {
             try
@@ -380,6 +390,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("Bidding/BidInviter/AuctionLog")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetAuctionLogForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -421,6 +432,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("Bidding/BidInviter/AuctionLog/Download")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetAuctionLogForBidInviterInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -464,6 +476,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Bidder/AuctionLog")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetAuctionLog([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -505,6 +518,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Bidder/AuctionLog/Download")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetAuctionLogInFile([FromQuery] PaginationQuery pagination, [FromQuery] AuctionLogRequestDto dto)
         {
             try
@@ -549,6 +563,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Admin/Registrations")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> Registrations([FromQuery] PaginationQuery pagination, [FromQuery] long tenderId)
         {
             try
@@ -581,6 +596,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="updateRequest"></param>
         /// <returns></returns>
         [HttpPut("Bidding/Admin/Registration/ApproveOrDisapprove")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> ApproveOrDisapprove([FromBody] BidUpdateRequestDto updateRequest)
         {
             try
@@ -620,6 +636,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Bidding/Admin/SetTenderWinner")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> SelectBidWinner([FromBody] BidWinnerRequestDto dto)
         {
             try

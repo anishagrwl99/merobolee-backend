@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Country
 {
-    public class CountryController : Controller
+    public class CountryController : AuthorizeController
     {
         private readonly ICountryService countryService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -23,11 +24,14 @@ namespace MeroBolee.Controllers.Country
             this.countryService = countryService;
         }
 
+
+
         /// <summary>
         /// To add country by Admin
         /// </summary>
         /// <returns></returns>
         [HttpPost("Country")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult AddCountry([FromBody]AddCountryDto addCountry)
         {
             try
@@ -56,6 +60,8 @@ namespace MeroBolee.Controllers.Country
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
+
 
         /// <summary>
         /// To display all country by Admin
@@ -100,12 +106,15 @@ namespace MeroBolee.Controllers.Country
 
         }
 
+
+
         /// <summary>
         /// To delete country record
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("DeleteCountry")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult DeleteCountry([FromQuery] int id)
         {
             try
@@ -132,6 +141,8 @@ namespace MeroBolee.Controllers.Country
 
             }
         }
+
+
 
         /// <summary>
         /// To get individual country detail
@@ -180,6 +191,8 @@ namespace MeroBolee.Controllers.Country
 
             }
         }
+
+
         /// <summary>
         /// To update country info
         /// </summary>
@@ -187,6 +200,7 @@ namespace MeroBolee.Controllers.Country
         /// <param name="addCountry"></param>
         /// <returns></returns>
         [HttpPut("Country")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult UpdateCountry([FromQuery] int id, [FromBody]AddCountryDto addCountry)
         {
             try
@@ -238,6 +252,8 @@ namespace MeroBolee.Controllers.Country
             }
 
         }
+
+
 
         private PagedResponse<GetCountryDto> ResultAfterPagination(IEnumerable<GetCountryDto> country, PaginationQuery pagination, int totalCount)
         {

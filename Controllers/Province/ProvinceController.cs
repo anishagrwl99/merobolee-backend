@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Province
 {
-    public class ProvinceController : Controller
+    public class ProvinceController : AuthorizeController
     {
         private readonly IProvinceService provinceService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -27,6 +28,7 @@ namespace MeroBolee.Controllers.Province
         /// </summary>
         /// <returns></returns>
         [HttpPost("Province")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult Add([FromBody] AddProvinceDto addProvince)
         {
             try
@@ -46,26 +48,107 @@ namespace MeroBolee.Controllers.Province
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
-            catch (InvalidOperationException)
+        }
+
+
+        /// <summary>
+        /// To update province info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="addProvince"></param>
+        /// <returns></returns>
+        [HttpPut("Province")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult Update([FromQuery] int id, [FromBody] AddProvinceDto addProvince)
+        {
+            try
             {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        GetProvinceDto getProvince = provinceService.UpdateProvince(id, addProvince);
+                        if (getProvince.Id == 0)
+                        {
+                            response.statusCode = "400";
+                            response.Message = "Invalid Country";
+                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+
+                        }
+                        if (getProvince == null)
+                        {
+                            response.statusCode = "404";
+                            response.Message = "Record not found";
+                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        }
+                        return Ok(new Responses<GetProvinceDto>(getProvince, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
+
+        /// <summary>
+        /// To delete province record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteProvince")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    provinceService.DeleteProvince(id);
+                    response.statusCode = "200";
+                    response.Message = "Record is successfully deleted";
+                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -91,73 +174,16 @@ namespace MeroBolee.Controllers.Province
                 }
                 return Ok(ResultAfterPagination(province, pagination, totalCount)); // To pass result in object along with pagination info
             }
-
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
-        /// <summary>
-        /// To delete province record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteProvince")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    provinceService.DeleteProvince(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
+        
 
         /// <summary>
         /// To get individual province detail
@@ -186,27 +212,16 @@ namespace MeroBolee.Controllers.Province
                     return Ok(new Responses<GetProvinceDto>(getProvince, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
+
+
 
         /// <summary>
         /// To get list of province for cascade dropdown by country_id
@@ -260,73 +275,7 @@ namespace MeroBolee.Controllers.Province
 
             }
         }
-        /// <summary>
-        /// To update province info
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addProvince"></param>
-        /// <returns></returns>
-        [HttpPut("Province")]
-        public IActionResult Update([FromQuery] int id, [FromBody] AddProvinceDto addProvince)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetProvinceDto getProvince = provinceService.UpdateProvince(id, addProvince);
-                        if (getProvince.Id == 0)
-                        {
-                            response.statusCode = "400";
-                            response.Message = "Invalid Country";
-                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-                        }
-                        if (getProvince == null)
-                        {
-                            response.statusCode = "404";
-                            response.Message = "Record not found";
-                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                        }
-                        return Ok(new Responses<GetProvinceDto>(getProvince, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
+       
 
         private PagedResponse<GetProvinceDto> ResultAfterPagination(IEnumerable<GetProvinceDto> getProvinces, PaginationQuery pagination, int totalCount)
         {

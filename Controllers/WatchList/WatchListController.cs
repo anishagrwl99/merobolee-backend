@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.WatchList
 {
+    [Authorize(Roles = "Bidder")]
     public class WatchListController : BaseController
     {
         private readonly IWatchListService watchListService;

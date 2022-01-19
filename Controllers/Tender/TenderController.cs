@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -27,11 +28,12 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To create a tender by admin
+        /// To create a tender by admin (init var: tender)
         /// </summary>
         /// <param name="tender"></param>
         /// <returns></returns>
         [HttpPost("Tender/Admin/Create")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> Add([FromForm] AddTenderRequestDto tender)
         {
             try
@@ -65,11 +67,12 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To update tender 
+        /// To update tender (init var: tender)
         /// </summary>
         /// <param name="tender"></param>
         /// <returns></returns>
         [HttpPost("Tender/Admin/Update")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> UpdateTender([FromForm] UpdateTenderRequestDto tender)
         {
             try
@@ -110,6 +113,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/History")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
@@ -140,6 +144,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string search = "")
         {
             try
@@ -170,6 +175,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Tender/BidInviter/Approve")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> ApproveTender([FromBody] TenderApproveDto dto)
         {
             try
@@ -303,6 +309,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Tender/Admin/TenderDocument")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> GetTenderDocuments([FromQuery] long tenderId)
         {
             try
@@ -330,7 +337,8 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderId"></param>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("Tender/Supplier/TenderDocument")]
+        [HttpGet("Tender/Bidder/TenderDocument")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetTenderDocumentsForSupplier([FromQuery] long tenderId, [FromQuery] long companyId)
         {
             try

@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.FavouriteCategory
 {
-    public class FavouriteCategoryController : Controller
+    [Authorize(Roles = "Bidder")]
+    public class FavouriteCategoryController : BaseController
     {
         private readonly IFavouriteCategoryService favouriteCategoryService;
         private readonly PaginationMapper pagination = new PaginationMapper();

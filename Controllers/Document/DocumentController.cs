@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -40,7 +41,7 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("Document/Type")]
+        [HttpGet("Document/Type")]       
         public IActionResult GetDocumentType([FromQuery] PaginationQuery pagination)
         {
             try
@@ -139,6 +140,7 @@ namespace MeroBolee.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Document/ChangeStatus")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult ChangeStatus([FromBody] DocumentUpdateStatusDto dto)
 
         {

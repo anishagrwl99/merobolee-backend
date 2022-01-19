@@ -1,6 +1,7 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.Role
 {
-    public class RoleController : Controller
+    public class RoleController : AuthorizeController
     {
         private readonly IRoleService roleService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -29,6 +30,7 @@ namespace MeroBolee.Controllers.Role
         /// </summary>
         /// <returns></returns>
         [HttpPost("Role")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult AddRole([FromBody] AddRoleDto addRole)
         {
             try
@@ -41,22 +43,101 @@ namespace MeroBolee.Controllers.Role
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// To update role info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="addRole"></param>
+        /// <returns></returns>
+        [HttpPut("Role")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult UpdateRole([FromQuery] int id, [FromBody] AddRoleDto addRole)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        GetRoleDto getRole = roleService.UpdateRole(id, addRole);
+                        if (getRole == null)
+                        {
+                            return NotFound(new Responses<GetRoleDto>(getRole, "404", "Record not found"));
+                        }
+                        return Ok(new Responses<GetRoleDto>(getRole, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
             }
         }
+
+
+        /// <summary>
+        /// To delete role record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteRole")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult DeleteRole([FromQuery] int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    roleService.DeleteRole(id);
+                    response.statusCode = "200";
+                    response.Message = "Record is successfully deleted";
+                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
+
 
         /// <summary>
         /// To display all role by Admin
@@ -80,72 +161,16 @@ namespace MeroBolee.Controllers.Role
                 }
                 return Ok(ResultAfterPagination(role, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
+                response.statusCode = "500";
                 response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
-        /// <summary>
-        /// To delete role record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteRole")]
-        public IActionResult DeleteRole([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    roleService.DeleteRole(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
+        
 
         /// <summary>
         /// To get individual role detail
@@ -172,84 +197,15 @@ namespace MeroBolee.Controllers.Role
                     return Ok(new Responses<GetRoleDto>(getRole,"200","Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-        /// <summary>
-        /// To update role info
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addRole"></param>
-        /// <returns></returns>
-        [HttpPut("Role")]
-        public IActionResult UpdateRole([FromQuery] int id, [FromBody]AddRoleDto addRole)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetRoleDto getRole = roleService.UpdateRole(id,addRole);
-                        if (getRole == null)
-                        {
-                            return NotFound(new Responses<GetRoleDto>(getRole, "404", "Record not found"));
-                        }
-                        return Ok(new Responses<GetRoleDto>(getRole,"200","Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (SqlException)
-            {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
         }
+       
 
         private PagedResponse<GetRoleDto> ResultAfterPagination(IEnumerable<GetRoleDto> role, PaginationQuery pagination, int totalCount)
         {

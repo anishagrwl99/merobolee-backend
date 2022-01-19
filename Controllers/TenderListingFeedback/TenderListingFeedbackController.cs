@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -32,6 +33,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="feedback"></param>
         /// <returns></returns>
         [HttpPost("TenderListing/Feedback/Send")]
+        [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> SendFeedback([FromBody] TenderCardFeedbackDto feedback)
         {
             try
@@ -65,6 +67,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("TenderListing/Feedback/List")]
+        [Authorize(Roles = "Bid Inviter, Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> GetTenderFeedbaks([FromQuery] long companyId, [FromQuery] long tenderId)
         {
             try

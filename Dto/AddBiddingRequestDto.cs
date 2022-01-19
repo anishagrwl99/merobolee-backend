@@ -24,7 +24,7 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
         public long TenderId { get; set; }
 
-        
+
     }
 
     public class SubmitDocumentForRegisteredTender : TenderRegistrationDto
@@ -33,7 +33,7 @@ namespace MeroBolee.Dto
     }
     public class RegisterForTenderDto : TenderRegistrationDto
     {
-        
+
 
         [Required(ErrorMessage = "Payment reference code is required")]
         public string PaymentReferenceCode { get; set; }
@@ -52,7 +52,7 @@ namespace MeroBolee.Dto
     }
 
 
-    public class UpdateRegistrationForTenderDto: TenderRegistrationDto
+    public class UpdateRegistrationForTenderDto : TenderRegistrationDto
     {
         public long BidId { get; set; }
         public List<TenderSubmissionAdditionalDocumentResponseDto> Documents { get; set; }
@@ -63,50 +63,23 @@ namespace MeroBolee.Dto
     /// </summary>
     public class AddBiddingRequestDto
     {
-
-     
-        private long userid;
-        private long companyid;
-        private long tenderId;
-        //private TenderEntity tenderEntity;
-        //private AdminStatusEntity adminStatusEntity;
-        //private DateTime request_Send_Date;
-        //private string remark;
-        private ICollection<IFormFile> bidderRequestDocs;
-
-        /// <summary>
-        /// User Id
-        /// </summary>
-        public long UserId { get => userid; set => userid = value; }
-
-
-       
-        /// <summary>
-        /// Company id
-        /// </summary>
-        public long CompanyId
-        {
-            get { return companyid; }
-            set { companyid = value; }
-        }
-
-
-        /// <summary>
-        /// Tender Id
-        /// </summary>
-        public long TenderId { get => tenderId; set => tenderId = value; }
+        [Required(ErrorMessage = "User id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
+        public long UserId { get; set; }
 
 
 
-        /// <summary>
-        /// Bidder request docs
-        /// </summary>
-        public ICollection<IFormFile> BidderRequestDocs { get => bidderRequestDocs; set => bidderRequestDocs = value; }
-        
-        
-        /// <summary>
-        /// Bidding time
-        /// </summary>
+        [Required(ErrorMessage = "Company id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
+        public long CompanyId { get; set; }
+
+
+        [Required(ErrorMessage = "Tender id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
+        public long TenderId { get; set; }
+
+
+        [Required(ErrorMessage = "Bidding time is required")]
         public DateTime BiddingTime { get; set; }
     }
 
