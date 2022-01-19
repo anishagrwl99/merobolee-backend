@@ -178,9 +178,14 @@ namespace MeroBolee.Service
         public async Task<LiveBidResponse> TenderPosition(int tenderId, int supplierId)
         {
             List<LiveBiddingEntity> bids = await bidRequestRepository.TenderLiveBids(tenderId);
-            return GetSupplierBiddingPosition(bids, supplierId, decimal.MinValue);
-            //// return bids;
-            //return null;
+            if (bids != null && bids.Count > 0)
+            {
+                return GetSupplierBiddingPosition(bids, supplierId, decimal.MinValue);
+            }
+            else
+            {
+                return null;
+            }
         }
         public async Task<LiveBidResponse> LiveBid(TenderMaterialBiddingDto materialDto)
         {

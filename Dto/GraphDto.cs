@@ -26,9 +26,11 @@ namespace MeroBolee.Dto
 
     public class BidInviterGraphDto
     {
-        public List<GraphPoint> Invited { get; set; }
-        public List<GraphPoint> Pending { get; set; }
-        public List<GraphPoint> Completed { get; set; }
+        public List<GraphPoint> PendingByCategory { get; set; }
+        public List<GraphPoint> CompletedByCategory { get; set; }
+
+        public List<GraphPoint> PendingByMonth { get; set; }
+        public List<GraphPoint> CompletedByMonth { get; set; }
     }
 
 

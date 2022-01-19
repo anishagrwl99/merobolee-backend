@@ -275,7 +275,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
                     LiveBidResponse response = biddingRequestService.AutoBid(autoBidDto);
-                    if (response.IsBidSuccess)
+                    if (response != null && response.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(response, "200", response.Message));
                     }

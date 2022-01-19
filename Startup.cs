@@ -247,6 +247,10 @@ namespace MeroBolee
             services.AddScoped<ISearchEngineRepository, SearchEngineRepository>();
             services.AddScoped<ISearchEngineService, SearchEngineService>();
 
+            //Graph
+            services.AddScoped<IGraphRepository, GraphRepository>();
+            services.AddScoped<IGraphService, GraphService>();
+
             /*
             //Hangfire configuration
             // Add Hangfire services.
