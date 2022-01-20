@@ -17,8 +17,8 @@ namespace MeroBolee.EntityMapper
             }
             return new MunicipalityEntity
             {
-                Municipality_Name = addMunicipality.Municipality,
-                District_id= addMunicipality.DistrictId
+                MunicipalityName = addMunicipality.Municipality,
+                DistrictId= addMunicipality.DistrictId
             };
 
         }
@@ -29,12 +29,12 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else if (municipalityEntity.District_id==  null)
+            else if (municipalityEntity.DistrictId==  null)
             {
                 return new GetMunicipalityDto
                 {
-                    Id= municipalityEntity.Municipality_id,
-                    Municipality= municipalityEntity.Municipality_Name,
+                    Id= municipalityEntity.MunicipalityId,
+                    Municipality= municipalityEntity.MunicipalityName,
                     DistrictId= null,
                     District=null
                 };
@@ -42,10 +42,10 @@ namespace MeroBolee.EntityMapper
 
             return new GetMunicipalityDto
             {
-                Id = municipalityEntity.Municipality_id,
-                Municipality = municipalityEntity.Municipality_Name,
-                DistrictId= municipalityEntity.District_id,
-                District= municipalityEntity.District.District_Name
+                Id = municipalityEntity.MunicipalityId,
+                Municipality = municipalityEntity.MunicipalityName,
+                DistrictId= municipalityEntity.DistrictId,
+                District= municipalityEntity.District.Name
             };
 
         }
@@ -64,10 +64,10 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetMunicipalityDto
                   {
-                      Id = municipalityEntity.Municipality_id,
-                      Municipality = municipalityEntity.Municipality_Name,
-                      DistrictId = municipalityEntity.District_id,
-                      District = municipalityEntity.District.District_Name
+                      Id = municipalityEntity.MunicipalityId,
+                      Municipality = municipalityEntity.MunicipalityName,
+                      DistrictId = municipalityEntity.DistrictId,
+                      District = municipalityEntity.District.Name
                   }
                 );
             }

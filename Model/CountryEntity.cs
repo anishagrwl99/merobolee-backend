@@ -10,22 +10,20 @@ namespace MeroBolee.Model
     [Table("mb_country")]
     public class CountryEntity : BaseEntity
     {
-        private int country_Id;
-        [Column("Id")]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity) ]
-        public int Id { get => country_Id; set => country_Id = value; }
+        public int Id { get; set; }
 
-        private string country_Name;
-        [Column("Name")]
-        public string Name { get => country_Name; set => country_Name = value; }
-        
-        private string country_Code;
-        [Column("Code")]
-        public string Code { get => country_Code; set => country_Code = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string Name { get; set; }
 
-        private string abbre;
-        [Column("abbre")]
-        public string Abbre { get => abbre; set => abbre = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(10)]
+        public string Code { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(5)]
+        public string Abbre { get; set; }
 
     }
 }

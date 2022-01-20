@@ -35,7 +35,7 @@ namespace MeroBolee.Service
                 TenderCardFeedbackEntity ent = ToEntity(feedbackDto);
                 await feedbackRepository.SaveFeedback(ent);
                 TenderEntity te = await tenderRepository.GetTenderEntityOnly(feedbackDto.TenderId);
-                te.Tender_Status_Id = 2;
+                te.StatusId = 2;
                 await tenderRepository.UpdateTender(te);
                 return feedbackDto;
             }

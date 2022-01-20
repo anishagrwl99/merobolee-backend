@@ -11,22 +11,18 @@ namespace MeroBolee.Model
     [Table("mb_vdc")]
     public class VDCEntity: BaseEntity
     {
-        private int vdc_Id;
-        private string vdc_Name;
-        private int? district_Id;
-        private DistrictEntity district;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("vdc_id")]
-        public int Vdc_Id { get => vdc_Id; set => vdc_Id = value; }
+        public int Id { get; set; }
 
-        [Column("vdc")]
-        public string Vdc_Name { get => vdc_Name; set => vdc_Name = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
+        public string Name { get; set; }
 
-        [Column("district_id")]
         [ForeignKey("District")]
-        public int? District_Id { get => district_Id; set => district_Id = value; }
-        public DistrictEntity District { get => district; set => district = value; }
+        public int? DistrictId { get; set; }
+
+        public DistrictEntity District { get; set; }
 
     }
 }

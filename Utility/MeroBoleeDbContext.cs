@@ -32,7 +32,6 @@ namespace MeroBolee.Utility
         public DbSet<TenderWinnerEntity> TenderWinnerEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
         public DbSet<UserEmailEntity> UserEmailEntities { get; set; }
-        public DbSet<CompanyTypeEntity> CompanyTypeEntities { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<BiddingHistoryEntity> BiddingHistoryEntities { get; set; }
         public DbSet<CompanyEntity> CompanyEntities { get; set; }
@@ -104,7 +103,7 @@ namespace MeroBolee.Utility
             modelBuilder.HasDefaultSchema("dbo");
 
             modelBuilder.Entity<UserEntity>().Property(x => x.Code).HasDefaultValueSql("NEWID()");
-            modelBuilder.Entity<TenderEntity>().Property(x => x.Tender_Code).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<TenderEntity>().Property(x => x.Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
@@ -262,13 +261,13 @@ namespace MeroBolee.Utility
 
 
             builder.Entity<CommonStatus>().HasData(
-                new CommonStatus() { Status_id = 1, Status = "Active" },
-                new CommonStatus() { Status_id = 2, Status = "Inactive" }
+                new CommonStatus() { Id = 1, Status = "Active" },
+                new CommonStatus() { Id = 2, Status = "Inactive" }
                 );
 
             builder.Entity<PaymentStatusEntity>().HasData(
-                new PaymentStatusEntity() { Id = 1, Payment_status = "Pending" },
-                new PaymentStatusEntity() { Id = 2, Payment_status = "Paid" }
+                new PaymentStatusEntity() { Id = 1, PaymentStatus = "Pending" },
+                new PaymentStatusEntity() { Id = 2, PaymentStatus = "Paid" }
                 );
 
             builder.Entity<TechnicalSupportStatus>().HasData(
@@ -300,37 +299,37 @@ namespace MeroBolee.Utility
             builder.Entity<MembershipTypeEntity>().HasData(
                 new MembershipTypeEntity
                 {
-                    Membership_Id = 1,
-                    Membership_Title = "Registration",
+                    MembershipId = 1,
+                    MembershipTitle = "Registration",
                     Duration = 1,
-                    Duration_Type = "Year",
-                    Membership_fee = 2000,
+                    DurationType = "Year",
+                    MembershipFee = 2000,
                     Discount = 0,
-                    Status_Id = 1,
+                    StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now
                 },
                  new MembershipTypeEntity
                  {
-                     Membership_Id = 2,
-                     Membership_Title = "Add New Company",
+                     MembershipId = 2,
+                     MembershipTitle = "Add New Company",
                      Duration = 1,
-                     Duration_Type = "Year",
-                     Membership_fee = 1500,
+                     DurationType = "Year",
+                     MembershipFee = 1500,
                      Discount = 0,
-                     Status_Id = 1,
+                     StatusId = 1,
                      Date_created = DateTime.Now,
                      Date_modified = DateTime.Now
                  },
                  new MembershipTypeEntity
                  {
-                     Membership_Id = 3,
-                     Membership_Title = "Renew",
+                     MembershipId = 3,
+                     MembershipTitle = "Renew",
                      Duration = 1,
-                     Duration_Type = "Year",
-                     Membership_fee = 1000,
+                     DurationType = "Year",
+                     MembershipFee = 1000,
                      Discount = 0,
-                     Status_Id = 1,
+                     StatusId = 1,
                      Date_created = DateTime.Now,
                      Date_modified = DateTime.Now
                  });
@@ -364,15 +363,15 @@ namespace MeroBolee.Utility
                 );
 
             builder.Entity<CategoryEntity>().HasData(
-                new CategoryEntity() { Category_Id = 1, Category = "Transportation" },
-                new CategoryEntity() { Category_Id = 2, Category = "Construction" },
-                new CategoryEntity() { Category_Id = 3, Category = "Tourism" }
+                new CategoryEntity() { Id = 1, Category = "Transportation" },
+                new CategoryEntity() { Id = 2, Category = "Construction" },
+                new CategoryEntity() { Id = 3, Category = "Tourism" }
                 );
 
             builder.Entity<CompanyTypeLookupEntity>().HasData(
-                new CompanyTypeLookupEntity() { Company_Type_Id = 1, Company_type = "Transportation" },
-                new CompanyTypeLookupEntity() { Company_Type_Id = 2, Company_type = "Construction" },
-                new CompanyTypeLookupEntity() { Company_Type_Id = 3, Company_type = "Tourism" }
+                new CompanyTypeLookupEntity() { Id = 1, Name = "Transportation" },
+                new CompanyTypeLookupEntity() { Id = 2, Name = "Construction" },
+                new CompanyTypeLookupEntity() { Id = 3, Name = "Tourism" }
                 );
             builder.Entity<RoleEntity>().HasData(
                 new RoleEntity() { Id = 1, Name = "Super Admin", Date_created = DateTime.Now, Date_modified = DateTime.Now },

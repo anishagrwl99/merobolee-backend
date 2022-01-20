@@ -18,9 +18,9 @@ namespace MeroBolee.EntityMapper
 
             return new CityEntity
             {
-                City_Name = addCityDto.City,
-                Municipality_Id = addCityDto.MunicipalityId.HasValue ? addCityDto.MunicipalityId : null,
-                Vdc_Id = addCityDto.VDCId.HasValue ? addCityDto.VDCId.Value : null
+                Name = addCityDto.City,
+                MunicipalityId = addCityDto.MunicipalityId.HasValue ? addCityDto.MunicipalityId : null,
+                VdcId = addCityDto.VDCId.HasValue ? addCityDto.VDCId.Value : null
             };
         }
 
@@ -33,12 +33,12 @@ namespace MeroBolee.EntityMapper
 
             return new GetCityDto
             {
-                Id = cityEntity.City_Id,
-                City = cityEntity.City_Name,
-                Municipality_Id = cityEntity.Municipality ==null? null: cityEntity.Municipality.Municipality_id,
-                Municipality = cityEntity.Municipality == null ? null : cityEntity.Municipality.Municipality_Name,
-                VDCId = cityEntity.VDC == null? null: cityEntity.VDC.Vdc_Id,
-                Vdc = cityEntity.VDC == null ? null : cityEntity.VDC.Vdc_Name                
+                Id = cityEntity.Id,
+                City = cityEntity.Name,
+                Municipality_Id = cityEntity.Municipality ==null? null: cityEntity.Municipality.MunicipalityId,
+                Municipality = cityEntity.Municipality == null ? null : cityEntity.Municipality.MunicipalityName,
+                VDCId = cityEntity.VDC == null? null: cityEntity.VDC.Id,
+                Vdc = cityEntity.VDC == null ? null : cityEntity.VDC.Name                
             };
         }
 
@@ -54,12 +54,12 @@ namespace MeroBolee.EntityMapper
             {
                 getCity.Add(new GetCityDto
                 {
-                    Id = city.City_Id,
-                    City = city.City_Name,
-                    Municipality_Id = city.Municipality == null? null: city.Municipality.Municipality_id,
-                    Municipality = city.Municipality==null? null: city.Municipality.Municipality_Name,
-                    VDCId = city.VDC == null? null: city.VDC.Vdc_Id,
-                    Vdc = city.VDC == null?  null: city.VDC.Vdc_Name
+                    Id = city.Id,
+                    City = city.Name,
+                    Municipality_Id = city.Municipality == null? null: city.Municipality.MunicipalityId,
+                    Municipality = city.Municipality==null? null: city.Municipality.MunicipalityName,
+                    VDCId = city.VDC == null? null: city.VDC.Id,
+                    Vdc = city.VDC == null?  null: city.VDC.Name
                 });
                 /*
                 if (city.Municipality_Id == null && city.Vdc_Id == null)

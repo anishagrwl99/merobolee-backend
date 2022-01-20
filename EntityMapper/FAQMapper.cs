@@ -40,7 +40,7 @@ namespace MeroBolee.EntityMapper
             if (entity == null) return null;
             return new FAQResponseDto
             {
-                Id = entity.FAQ_id,
+                Id = entity.Id,
                 Question = entity.Question,
                 Answer = entity.Answer,
                 CreatedDate = entity.Date_created,

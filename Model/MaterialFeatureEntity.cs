@@ -7,37 +7,24 @@ namespace MeroBolee.Model
     [Table("mb_material_feature")]
     public class MaterialFeatureEntity
     {
-        private long id;
-        private long material_id;
-        private TenderMaterialEntity tenderMaterialEntity;
-        private string featureName;
-        private string featureValue;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        [JsonIgnore]
-        public long Id { get => id; set => id = value; }
+        public long Id { get; set; }
 
-        [Column("material_id")]
         [ForeignKey("TenderMaterialEntity")]
         [JsonIgnore]
-        public long MaterialId { get => material_id; set => material_id = value; }
-       
+        public long MaterialId { get; set; }
 
-        [Column("feature_name")]
-        public string FeatureName { get => featureName; set => featureName = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
+        public string FeatureName { get; set; }
 
-        
-
-        [Column("feature_value")]
-        public string FeatureValue
-        {
-            get { return featureValue; }
-            set { featureValue = value; }
-        }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
+        public string FeatureValue { get; set; }
 
 
         [JsonIgnore]
-        public virtual TenderMaterialEntity TenderMaterialEntity { get => tenderMaterialEntity; set => tenderMaterialEntity = value; }
+        public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }
     }
 }

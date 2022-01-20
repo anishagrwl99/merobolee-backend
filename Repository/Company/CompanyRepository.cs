@@ -111,7 +111,7 @@ namespace MeroBolee.Repository
                     else if (string.Equals(company.RegisteredAs, "Bidder", StringComparison.OrdinalIgnoreCase))
                     {
                         tenders = await (from b in meroBoleeDbContexts.BidRequestEntities
-                                         join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Tender_Id
+                                         join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Id
                                          where b.CompanyId == companyId
                                          select t
                                      )

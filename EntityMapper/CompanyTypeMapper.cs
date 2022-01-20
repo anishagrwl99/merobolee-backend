@@ -17,7 +17,7 @@ namespace MeroBolee.EntityMapper
             }
             return new CompanyTypeLookupEntity
             {
-                Company_type = addCompanyType.CompanyType                            
+                Name = addCompanyType.CompanyType                            
             };
 
         }
@@ -30,8 +30,8 @@ namespace MeroBolee.EntityMapper
             }
             return new GetCompanyTypeDto
             {
-                Id = companyTypeEntity.Company_Type_Id,
-                CompanyType = companyTypeEntity.Company_type
+                Id = companyTypeEntity.Id,
+                CompanyType = companyTypeEntity.Name
                 
             };
 
@@ -51,8 +51,8 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetCompanyTypeDto
                   {
-                      Id = companyType.Company_Type_Id,
-                      CompanyType = companyType.Company_type
+                      Id = companyType.Id,
+                      CompanyType = companyType.Name
                   }
                 );
             }

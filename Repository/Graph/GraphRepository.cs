@@ -101,20 +101,20 @@ namespace MeroBolee.Repository
             {
                 DateTime fromDate = DateTime.Now.AddYears(-1);
                 return await (from br in meroBoleeDbContexts.BidRequestEntities
-                              join t in meroBoleeDbContexts.TenderEntities on br.TenderId equals t.Tender_Id
-                              join ts in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals ts.StatusId
-                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join t in meroBoleeDbContexts.TenderEntities on br.TenderId equals t.Id
+                              join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               where br.CompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
                                   CompanyId = t.CompanyId,
-                                  Tender_Id = t.Tender_Id,
+                                  Id = t.Id,
                                   AdditionalRequest = t.AdditionalRequest,
                                   ApprovedBy = t.ApprovedBy,
                                   ApprovedByUser = t.ApprovedByUser,
-                                  Cancel_remark = t.Cancel_remark,
+                                  CancelRemarks = t.CancelRemarks,
                                   CategoryEntity = c,
-                                  Category_Id = t.Category_Id,
+                                  CategoryId = t.CategoryId,
                                   Company = t.Company,
                                   CreatedBy = t.CreatedBy,
                                   CreatedByUser = t.CreatedByUser,
@@ -123,8 +123,8 @@ namespace MeroBolee.Repository
                                   EligibilityCriteria = t.EligibilityCriteria,
                                   ExtraDocuments = t.ExtraDocuments,
                                   Feedbacks = t.Feedbacks,
-                                  Live_End_Date = t.Live_End_Date,
-                                  Live_Start_Date = t.Live_Start_Date,
+                                  LiveEndDate = t.LiveEndDate,
+                                  LiveStartDate = t.LiveStartDate,
                                   Location = t.Location,
                                   MaxQuotation = t.MaxQuotation,
                                   PerformanceRequest = t.PerformanceRequest,
@@ -137,10 +137,10 @@ namespace MeroBolee.Repository
                                   TenderMaterialEntities = t.TenderMaterialEntities,
                                   TenderStatusEntity = ts,
                                   TenderTermsConditionEntities = t.TenderTermsConditionEntities,
-                                  Tender_Code = t.Tender_Code,
-                                  Tender_live_interval = t.Tender_live_interval,
-                                  Tender_Status_Id = t.Tender_Status_Id,
-                                  Tender_Title = t.Tender_Title,
+                                  Code = t.Code,
+                                  LiveInterval = t.LiveInterval,
+                                  StatusId = t.StatusId,
+                                  Title = t.Title,
                                   TermsAndConditionDocPath = t.TermsAndConditionDocPath
 
                               }
@@ -167,20 +167,20 @@ namespace MeroBolee.Repository
             {
                 DateTime fromDate = DateTime.Now.AddYears(-1);
                 return await (from tw in meroBoleeDbContexts.TenderWinnerEntities
-                              join t in meroBoleeDbContexts.TenderEntities on tw.TenderId equals t.Tender_Id
-                              join ts in meroBoleeDbContexts.TenderStatus on t.Tender_Status_Id equals ts.StatusId
-                              join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
+                              join t in meroBoleeDbContexts.TenderEntities on tw.TenderId equals t.Id
+                              join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               where tw.WinnerCompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
                                   CompanyId = t.CompanyId,
-                                  Tender_Id = t.Tender_Id,
+                                  Id = t.Id,
                                   AdditionalRequest = t.AdditionalRequest,
                                   ApprovedBy = t.ApprovedBy,
                                   ApprovedByUser = t.ApprovedByUser,
-                                  Cancel_remark = t.Cancel_remark,
+                                  CancelRemarks = t.CancelRemarks,
                                   CategoryEntity = c,
-                                  Category_Id = t.Category_Id,
+                                  CategoryId = t.CategoryId,
                                   Company = t.Company,
                                   CreatedBy = t.CreatedBy,
                                   CreatedByUser = t.CreatedByUser,
@@ -189,8 +189,8 @@ namespace MeroBolee.Repository
                                   EligibilityCriteria = t.EligibilityCriteria,
                                   ExtraDocuments = t.ExtraDocuments,
                                   Feedbacks = t.Feedbacks,
-                                  Live_End_Date = t.Live_End_Date,
-                                  Live_Start_Date = t.Live_Start_Date,
+                                  LiveEndDate = t.LiveEndDate,
+                                  LiveStartDate = t.LiveStartDate,
                                   Location = t.Location,
                                   MaxQuotation = t.MaxQuotation,
                                   PerformanceRequest = t.PerformanceRequest,
@@ -203,10 +203,10 @@ namespace MeroBolee.Repository
                                   TenderMaterialEntities = t.TenderMaterialEntities,
                                   TenderStatusEntity = ts,
                                   TenderTermsConditionEntities = t.TenderTermsConditionEntities,
-                                  Tender_Code = t.Tender_Code,
-                                  Tender_live_interval = t.Tender_live_interval,
-                                  Tender_Status_Id = t.Tender_Status_Id,
-                                  Tender_Title = t.Tender_Title,
+                                  Code = t.Code,
+                                  LiveInterval = t.LiveInterval,
+                                  StatusId = t.StatusId,
+                                  Title = t.Title,
                                   TermsAndConditionDocPath = t.TermsAndConditionDocPath
 
                               }

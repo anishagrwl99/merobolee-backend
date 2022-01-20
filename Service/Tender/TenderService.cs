@@ -37,7 +37,7 @@ namespace MeroBolee.Service
             TenderEntity entity = TenderDtoEntity(tenderDto);
 
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
-            string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
+            string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
             {
@@ -59,7 +59,7 @@ namespace MeroBolee.Service
                     {
                         CompanyId = tenderDto.CompanyId,
                         UserId = tenderDto.CreatedBy,
-                        TenderId = entity.Tender_Id,
+                        TenderId = entity.Id,
                         DocTitle = item.DocTitle,
                         DocPath = await uploadFileService.Upload(item.Document, docPath)
                     };
@@ -68,7 +68,7 @@ namespace MeroBolee.Service
             }
 
             entity = tenderRepository.AddTender(entity);
-            entity.Tender_Code = await referenceCodeService.GenerateCode(ReferenceEnum.Tender) + entity.Tender_Id.ToString("D3");
+            entity.Code = await referenceCodeService.GenerateCode(ReferenceEnum.Tender) + entity.Id.ToString("D3");
             await tenderRepository.UpdateTender(entity);
 
             return entity;
@@ -144,7 +144,7 @@ namespace MeroBolee.Service
         {
             TenderEntity entity = await tenderRepository.GetTenderEntityOnly (tenderDto.TenderId);
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
-            string docPath = companyFolder + $"\\Tender\\{entity.Tender_Id}";
+            string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
             {
@@ -169,7 +169,7 @@ namespace MeroBolee.Service
                     {
                         CompanyId = tenderDto.CompanyId,
                         UserId = tenderDto.CreatedBy,
-                        TenderId = entity.Tender_Id,
+                        TenderId = entity.Id,
                         DocTitle = item.DocTitle,
                         DocPath = await uploadFileService.Upload(item.Document, docPath)
                     };
@@ -229,7 +229,7 @@ namespace MeroBolee.Service
             try
             {
                 TenderEntity t = await tenderRepository.GetTenderEntityOnly(dto.TenderId);
-                t.Tender_Status_Id = 2;//Approved
+                t.StatusId = 2;//Approved
                 t.Date_modified = DateTime.Now;
                 t.ApprovedBy = dto.UserId;
                 tenderRepository.ApproveTenderByBidInviter(t);

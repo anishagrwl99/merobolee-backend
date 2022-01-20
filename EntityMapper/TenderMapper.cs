@@ -48,11 +48,11 @@ namespace MeroBolee.EntityMapper
             TenderEntity entity = new TenderEntity
             {
                 CompanyId = tenderDto.CompanyId,
-                Tender_Title = tenderDto.TenderTitle,
-                Category_Id = tenderDto.CategoryId,
-                Live_Start_Date = tenderDto.LiveStartDate,
-                Live_End_Date = tenderDto.LiveEndDate,
-                Tender_Status_Id = 1,
+                Title = tenderDto.TenderTitle,
+                CategoryId = tenderDto.CategoryId,
+                LiveStartDate = tenderDto.LiveStartDate,
+                LiveEndDate = tenderDto.LiveEndDate,
+                StatusId = 1,
                 CreatedBy = tenderDto.CreatedBy,
                 PerformanceRequest = tenderDto.PerformanceRequest,
                 AdditionalRequest = tenderDto.AdditionalRequest,
@@ -91,12 +91,12 @@ namespace MeroBolee.EntityMapper
 
         public void UpdateTenderEntity(ref TenderEntity entity, UpdateTenderRequestDto dto)
         {
-            entity.Tender_Title = dto.TenderTitle;
-            entity.Category_Id = dto.CategoryId;
+            entity.Title = dto.TenderTitle;
+            entity.CategoryId = dto.CategoryId;
             entity.PerformanceRequest = dto.PerformanceRequest;
             entity.RegistrationTill = dto.RegistrationTill;
-            entity.Live_Start_Date = dto.LiveStartDate;
-            entity.Live_End_Date = dto.LiveEndDate;
+            entity.LiveStartDate = dto.LiveStartDate;
+            entity.LiveEndDate = dto.LiveEndDate;
             entity.QualityRequest = dto.QualityRequest;
             entity.CompanyId = dto.CompanyId;
             entity.Date_modified = DateTime.Now;
@@ -151,17 +151,17 @@ namespace MeroBolee.EntityMapper
             }
 
             GetTenderDto getTender = new GetTenderDto();
-            getTender.TenderId = tenderEntity.Tender_Id;
-            getTender.TenderCode = tenderEntity.Tender_Code;
-            getTender.TenderTitle = tenderEntity.Tender_Title;
-            getTender.CategoryId = tenderEntity.Category_Id;
+            getTender.TenderId = tenderEntity.Id;
+            getTender.TenderCode = tenderEntity.Code;
+            getTender.TenderTitle = tenderEntity.Title;
+            getTender.CategoryId = tenderEntity.CategoryId;
             getTender.CategoryName = tenderEntity.CategoryEntity.Category;
-            getTender.TenderLiveInterval = tenderEntity.Tender_live_interval;
-            getTender.LiveStartDate = tenderEntity.Live_Start_Date;
-            getTender.LiveEndDate = tenderEntity.Live_End_Date;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-            getTender.StatusId = tenderEntity.Tender_Status_Id;
+            getTender.TenderLiveInterval = tenderEntity.LiveInterval;
+            getTender.LiveStartDate = tenderEntity.LiveStartDate;
+            getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+            getTender.StatusId = tenderEntity.StatusId;
             getTender.Status = tenderEntity.TenderStatusEntity.Status;
-            getTender.CancelRemarks = tenderEntity.Cancel_remark;
+            getTender.CancelRemarks = tenderEntity.CancelRemarks;
             getTender.Location = tenderEntity.Location;
             getTender.QualityRequest = tenderEntity.QualityRequest;
             getTender.PerformanceRequest = tenderEntity.PerformanceRequest;

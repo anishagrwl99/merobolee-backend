@@ -47,7 +47,7 @@ namespace MeroBolee.Controllers.Tender
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                     var res = await tenderService.AddTender(tender);
-                    return Ok(new Responses<long>(res.Tender_Id, "200", "Record is successfully added"));
+                    return Ok(new Responses<long>(res.Id, "200", "Record is successfully added"));
                 }
                 else
                 {
@@ -86,7 +86,7 @@ namespace MeroBolee.Controllers.Tender
                         response.Message = "Record not Found";
                         return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                     }
-                    return Ok(new Responses<long>(resp.Tender_Id, "200", "Record is successfully updated"));
+                    return Ok(new Responses<long>(resp.Id, "200", "Record is successfully updated"));
                 }
                 else
                 {

@@ -11,43 +11,36 @@ namespace MeroBolee.Model
     [Table("mb_watchlist")]
     public class WatchListEntity
     {
-        private int id;
-        private long userId;
-        private UserEntity userEntity;
-        private long tenderId;
-        private long companyId;
-        private TenderEntity tenderEntity;
-        private CompanyEntity companyEntity;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        public int Id { get => id; set => id = value; }
+        public long Id { get; set; }
 
 
-        [Column("user_id")]
         [ForeignKey("UserEntity")]       
-        public long UserId { get => userId; set => userId = value; }
+        public long UserId { get; set; }
 
 
-        [JsonIgnore]
-        public UserEntity UserEntity { get => userEntity; set => userEntity = value; }
 
-
-        [Column("tender_id")]
         [ForeignKey("TenderEntity")]
-        public long TenderId { get => tenderId; set => tenderId = value; }
+        public long TenderId { get; set; }
 
 
-        [Column("company_id")]
         [ForeignKey("CompanyEntity")]
-        public long CompanyId { get => companyId; set => companyId = value; }
+        public long CompanyId { get; set; }
+
+
 
         [JsonIgnore]
-        public TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+        public TenderEntity TenderEntity { get; set; }
 
 
         [JsonIgnore]
-        public CompanyEntity CompanyEntity { get => companyEntity; set => companyEntity = value; }
+        public CompanyEntity CompanyEntity { get; set; }
+
+
+
+        [JsonIgnore]
+        public UserEntity UserEntity { get; set; }
 
     }
 }

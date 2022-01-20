@@ -10,21 +10,16 @@ namespace MeroBolee.Model
     [Table("mb_province")]
     public class ProvinceEntity : BaseEntity
     {
-        private int province_Id;
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("Id")]
-        public int Id { get => province_Id; set => province_Id = value;}
+        public int Id { get; set; }
 
-        private string province;
-        [Column("Name")]
-        public string Name { get => province; set => province = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
+        public string Name { get; set; }
 
-        private int? country_Id;
         [ForeignKey("Country")]
-        [Column("CountryId")]
-        public int? CountryId { get => country_Id; set => country_Id = value; }
+        public int? CountryId { get; set; }
 
-        private CountryEntity country;
-        public CountryEntity Country { get => country; set => country = value; }
+        public CountryEntity Country { get; set; }
     }
 }

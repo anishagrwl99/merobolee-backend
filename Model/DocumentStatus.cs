@@ -12,27 +12,13 @@ namespace MeroBolee.Model
     [Table("lk_document_status")]
     public class DocumentStatusEntity
     {
-
-        private int _id;
-        private string status;
-
-
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         
-
         [Required(ErrorMessage = "Document status is required")]
         [Column(TypeName = "VARCHAR")]
         [MaxLength(50)]
-        public string Status
-        {
-            get { return status; }
-            set { status = value; }
-        }
+        public string Status { get; set; }
 
 
     }
@@ -41,20 +27,14 @@ namespace MeroBolee.Model
     [Table("mb_document_type")]
     public class DocumentTypeEntity
     {
-        private int _id;
-        private string typeName;
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set;}
 
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
 
-        public string TypeName
-        {
-            get { return typeName; }
-            set { typeName = value; }
-        }
+        [Required(ErrorMessage = "Document status is required")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(50)]
+        public string TypeName { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<CompanyDocumentEntity> CompanyDocuments { get; set; }
@@ -63,78 +43,38 @@ namespace MeroBolee.Model
     [Table("mb_company_document")]
     public class CompanyDocumentEntity
     {
-        private long _id;
-        private long _companyId;
-        private long _userId;
-        private int _documentStatusId;
-        private int _docCategoryId;
-        private long? _statusChangedBy;
-        private string _documentPath;
-        private string _remarks;
 
-
-        public long Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
 
 
         [ForeignKey("Company")]
-        public long CompanyID
-        {
-            get { return _companyId; }
-            set { _companyId = value; }
-        }
+        public long CompanyID { get; set; }
 
-       
+
         [ForeignKey("UploadUserEntity")]
-        public long UploadedBy
-        {
-            get { return _userId; }
-            set { _userId = value; }
-        }
+        public long UploadedBy { get; set; }
 
 
         [ForeignKey("StatusChangedUserEntity")]
-        public long? StatusChangedBy
-        {
-            get { return _statusChangedBy; }
-            set { _statusChangedBy = value; }
-        }
+        public long? StatusChangedBy { get; set; }
 
 
         [ForeignKey("DocumentType")]
-        public int DocumentTypeyId
-        {
-            get { return _docCategoryId; }
-            set { _docCategoryId = value; }
-        }
+        public int DocumentTypeyId { get; set; }
 
         [ForeignKey("DocumentStatus")]
-        public int DocumentStatusId
-        {
-            get { return _documentStatusId; }
-            set { _documentStatusId = value; }
-        }
+        public int DocumentStatusId { get; set; }
 
 
-        [Column("DocumentPath", TypeName = "VARCHAR")]
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(300)]
-        public string DocumentPath
-        {
-            get { return _documentPath; }
-            set { _documentPath = value; }
-        }
+        public string DocumentPath { get; set; }
 
 
-        [Column("Remarks", TypeName = "VARCHAR")]
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(500)]
-        public string Remarks
-        {
-            get { return _remarks; }
-            set { _remarks = value; }
-        }
+        public string Remarks { get; set; }
 
         public virtual UserEntity UploadUserEntity { get; set; }
         public virtual UserEntity StatusChangedUserEntity { get; set; }

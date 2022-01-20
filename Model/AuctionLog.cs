@@ -44,6 +44,7 @@ namespace MeroBolee.Model
         public decimal Amount { get; set; }
 
         [Required(ErrorMessage = "Auction position is required")]
+        [MaxLength(10)]
         public string Position { get; set; }
 
         [Required(ErrorMessage = "Log date is required")]

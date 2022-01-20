@@ -11,25 +11,22 @@ namespace MeroBolee.Model
     [Table("mb_experience_doc")]
     public class UserExperienceDocEntity
     {
-
-        private int id;
-        private string experienced_doc;
-        private UserEntity user;
-        private long user_id;
-
-      
-        [Column("experience_doc")]
-        public string Experienced_doc { get => experienced_doc; set => experienced_doc = value; }
-
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
-        public UserEntity User { get => user; set => user= value; }
+        public int Id { get; set; }
 
-        [Column("user_id")]
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1500)]
+        public string ExperiencedDoc { get; set; }
+
+
         [ForeignKey("User")]
-        public long User_id { get => user_id; set => user_id = value; }
+        public long UserId { get; set; }
 
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [JsonIgnore]
-        public int Id { get => id; set => id = value; }
+        public UserEntity User { get; set; }
+
     }
 }

@@ -34,23 +34,23 @@ namespace MeroBolee.Repository
             try
             {
                 return (from w in meroBoleeDbContexts.WatchListEntities
-                        join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Tender_Id
-                        join c in meroBoleeDbContexts.CategoryEntities on t.Category_Id equals c.Category_Id
-                        join s in meroBoleeDbContexts.BidRequestStatusEntities on t.Tender_Status_Id equals s.StatusId
+                        join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Id
+                        join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                        join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
                         where w.CompanyId == companyId
                         select new TenderWatchListCard
                         {
                             WatchListId = w.Id,
-                            TenderId = t.Tender_Id,
-                            TenderCode = t.Tender_Code,
-                            TenderTitle = t.Tender_Title,
-                            CategoryId = c.Category_Id,
+                            TenderId = t.Id,
+                            TenderCode = t.Code,
+                            TenderTitle = t.Title,
+                            CategoryId = c.Id,
                             CategoryName = c.Category,
-                            LiveStartDate = t.Live_Start_Date,
+                            LiveStartDate = t.LiveStartDate,
                             StatusId = s.StatusId,
                             Status = s.Status,
                             CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Tender_Id
+                                        where tc.TenderId == t.Id
                                         select new TenderCardInfo
                                         {
                                             Id = tc.Id,

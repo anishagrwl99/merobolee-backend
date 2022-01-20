@@ -10,13 +10,12 @@ namespace MeroBolee.Model
     [Table("lk_common_status")]
     public class CommonStatus
     {
-        private int status_id;
-        private string status;
-
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity) ]
-        [Column("status_id")]
-        public int Status_id { get => status_id; set => status_id = value; }
-        [Column ("status")] 
-        public string Status { get => status; set => status = value; }
+        public int Id { get; set; }
+
+
+        [Column (TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string Status { get; set; }
     }
 }

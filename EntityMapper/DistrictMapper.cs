@@ -16,8 +16,8 @@ namespace MeroBolee.EntityMapper
             }
             return new DistrictEntity
             {
-                District_Name = addDistrictDto.District,
-                Province_Id = addDistrictDto.ProvinceId
+                Name = addDistrictDto.District,
+                ProvinceId = addDistrictDto.ProvinceId
 
             };
 
@@ -28,21 +28,21 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else if (districtEntity.Province_Id == null)
+            else if (districtEntity.ProvinceId == null)
             {
                 return new GetDistrictDto 
                 {
-                    Id = districtEntity.District_Id,
-                    District = districtEntity.District_Name,
+                    Id = districtEntity.Id,
+                    District = districtEntity.Name,
                     ProvinceId = null,
                     Province = null
                 };
             }
             return new GetDistrictDto
             {
-                Id = districtEntity.District_Id,
-                District =districtEntity.District_Name,
-                ProvinceId = districtEntity.Province_Id,
+                Id = districtEntity.Id,
+                District =districtEntity.Name,
+                ProvinceId = districtEntity.ProvinceId,
                 Province = districtEntity.Province.Name
 
             };
@@ -63,9 +63,9 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetDistrictDto
                   {
-                      Id = district.District_Id,
-                      District = district.District_Name,
-                      ProvinceId = district.Province_Id,
+                      Id = district.Id,
+                      District = district.Name,
+                      ProvinceId = district.ProvinceId,
                       Province = district.Province.Name
                   }
                 );

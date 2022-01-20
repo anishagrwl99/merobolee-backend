@@ -14,7 +14,6 @@ namespace MeroBolee.Model
        
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("Id")]
         public long Id { get; set; }
 
         [Column(TypeName = "VARCHAR")]
@@ -30,7 +29,7 @@ namespace MeroBolee.Model
         [MaxLength (250)]
         public string Title { get; set; }
 
-        [Column("Description")]
+        [Column(TypeName = "VARCHAR(MAX)")]
         public string Description { get; set; }
 
       
@@ -39,6 +38,7 @@ namespace MeroBolee.Model
         public long? UserId { get; set; }
 
         [Column(TypeName = "VARCHAR")]
+        [MaxLength(20)]
         public string PhoneNo { get; set; }
 
         [JsonIgnore]

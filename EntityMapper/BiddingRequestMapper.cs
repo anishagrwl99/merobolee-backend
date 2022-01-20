@@ -110,15 +110,15 @@ namespace MeroBolee.EntityMapper
                 return new BidCardDto
                 {
                     BidId = entity.Id,
-                    TenderId = entity.Tender.Tender_Id,
+                    TenderId = entity.Tender.Id,
                     Amount = entity.Amount,
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
                     TenderCategory = entity.Tender.CategoryEntity.Category,
-                    TenderLiveDate = entity.Tender.Live_End_Date,
-                    TenderTitle = entity.Tender.Tender_Title,
-                    TenderCode = entity.Tender.Tender_Code
+                    TenderLiveDate = entity.Tender.LiveEndDate,
+                    TenderTitle = entity.Tender.Title,
+                    TenderCode = entity.Tender.Code
                 };
             }
 
@@ -140,15 +140,15 @@ namespace MeroBolee.EntityMapper
                 return new BidHistoryCardDto
                 {
                     BidId = entity.Id,
-                    TenderId = entity.Tender.Tender_Id,
+                    TenderId = entity.Tender.Id,
                     Amount = entity.Amount,
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
                     TenderCategory = entity.Tender.CategoryEntity.Category,
-                    TenderLiveDate = entity.Tender.Live_End_Date,
-                    TenderTitle = entity.Tender.Tender_Title,
-                    TenderCode = entity.Tender.Tender_Code,
+                    TenderLiveDate = entity.Tender.LiveEndDate,
+                    TenderTitle = entity.Tender.Title,
+                    TenderCode = entity.Tender.Code,
                     CardInfo = (from tc in entity.Tender.TenderCards
                                 select new TenderCardInfo
                                 {

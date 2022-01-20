@@ -182,16 +182,16 @@ namespace MeroBolee.EntityMapper
                 {
                     TenderCard dto = new TenderCard
                     {
-                        TenderId = t.Tender_Id,
-                        TenderCode = t.Tender_Code,
-                        TenderTitle = t.Tender_Title,
+                        TenderId = t.Id,
+                        TenderCode = t.Code,
+                        TenderTitle = t.Title,
                         CategoryName = t.CategoryEntity.Category,
-                        CategoryId = t.Category_Id,
-                        LiveStartDate = t.Live_Start_Date,
-                        LiveEndDate = t.Live_End_Date,
+                        CategoryId = t.CategoryId,
+                        LiveStartDate = t.LiveStartDate,
+                        LiveEndDate = t.LiveEndDate,
                         RegistrationTill = t.RegistrationTill,
                         Status = t.TenderStatusEntity.Status,
-                        StatusId = t.Tender_Status_Id,
+                        StatusId = t.StatusId,
                         CardInfo = (from tc in t.TenderCards
                                     select new TenderCardInfo
                                     {

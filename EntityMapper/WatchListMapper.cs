@@ -45,13 +45,13 @@ namespace MeroBolee.EntityMapper
             }
             return new TenderWatchlistDto
             {
-                TenderId = tender.Tender_Id,
-                TenderCode = tender.Tender_Code,
-                TenderTitle = tender.Tender_Title,
-                LiveStartDate = tender.Live_Start_Date,
-                LiveEndDate = tender.Live_End_Date,
+                TenderId = tender.Id,
+                TenderCode = tender.Code,
+                TenderTitle = tender.Title,
+                LiveStartDate = tender.LiveStartDate,
+                LiveEndDate = tender.LiveEndDate,
                 PublishDate = tender.Date_created,
-                CategoryId = tender.Category_Id,
+                CategoryId = tender.CategoryId,
                 Category = CategoryTODto(tender.CategoryEntity)
             };
 
@@ -65,7 +65,7 @@ namespace MeroBolee.EntityMapper
             }
             return new WatchCategoryDto
             {
-                Id = category.Category_Id,
+                Id = category.Id,
                 Categgory = category.Category
             };
         }

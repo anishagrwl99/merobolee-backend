@@ -11,17 +11,13 @@ namespace MeroBolee.Model
     [Table("lk_category")]
     public class CategoryEntity : BaseEntity
     {
-        private int category_Id;
-        private string category;
 
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("category_id")]
-        public int Category_Id { get => category_Id; set => category_Id = value; }
+        public int Id { get; set; }
         
-        [Column("category")]
-        public string Category { get => category; set => category = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string Category { get; set; }
 
-        //[Column("status")]
-        //public int status_Id { get => (int) this.status; set => this.status = (PublishStatus)value; }
     }
 }

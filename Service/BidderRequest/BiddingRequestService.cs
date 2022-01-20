@@ -396,13 +396,13 @@ namespace MeroBolee.Service
                         dto = new ResetBidDto
                         {
                             MinQuotationRecivedAt = DateTime.Now,
-                            RemainingMinute = e.Tender_live_interval,
+                            RemainingMinute = e.LiveInterval,
                             RemainingSecond = 0,
-                            Interval = e.Tender_live_interval,
+                            Interval = e.LiveInterval,
                             IsTenderExpired = false,
                             IsQuotationReceived = false,
                             FullIntervalCountWithoutReceivingBid = 0,
-                            TenderLiveEndDate = e.Live_End_Date
+                            TenderLiveEndDate = e.LiveEndDate
                         };
 
                     }
@@ -605,7 +605,7 @@ namespace MeroBolee.Service
             {
                 string key = $"Tender_Bidding_{tenderId}";
                 string batch = $"Tender_Batch_{supplierId}_{tenderId}";
-                DateTime expiryDate = bids.FirstOrDefault().TenderEntity.Live_End_Date.AddMinutes(5);
+                DateTime expiryDate = bids.FirstOrDefault().TenderEntity.LiveEndDate.AddMinutes(5);
                 long batchNo = 0;
                 List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
                 memoryCache.TryGetValue<List<LiveBiddingEntity>>(key, out biddings);
@@ -709,7 +709,7 @@ namespace MeroBolee.Service
             try
             {
                 if (livebids == null || livebids.Count < 1) return null;
-                DateTime tenderEndDate = livebids.FirstOrDefault().TenderEntity.Live_End_Date;
+                DateTime tenderEndDate = livebids.FirstOrDefault().TenderEntity.LiveEndDate;
                 var a = livebids
                     .GroupBy(x => new { x.TenderId, x.UserId })
                     .Select(x => new
@@ -717,7 +717,7 @@ namespace MeroBolee.Service
                         SupplierId = x.Key.UserId,
                         TenderId = x.Key.TenderId,
                         Quotation = x.Sum(o => cryptoService.Decrypt<decimal>(o.Quotation)),
-                        Interval = x.Min(o => o.TenderEntity.Tender_live_interval)
+                        Interval = x.Min(o => o.TenderEntity.LiveInterval)
                     })
                     .OrderBy(x => x.Quotation)
                     .ToList();

@@ -17,8 +17,8 @@ namespace MeroBolee.EntityMapper
             }
             return new VDCEntity
             {
-                Vdc_Name = addVDC.Vdc,
-                District_Id = addVDC.DistrictId
+                Name = addVDC.Vdc,
+                DistrictId = addVDC.DistrictId
             };
 
         }
@@ -29,12 +29,12 @@ namespace MeroBolee.EntityMapper
             {
                 return null;
             }
-            else if (vdcEntity.District_Id == null)
+            else if (vdcEntity.DistrictId == null)
             {
                 return new GetVDCDto
                 {
-                    Id = vdcEntity.Vdc_Id,
-                    Vdc = vdcEntity.Vdc_Name,
+                    Id = vdcEntity.Id,
+                    Vdc = vdcEntity.Name,
                     DistrictId = null,
                     District = null
                 };
@@ -42,10 +42,10 @@ namespace MeroBolee.EntityMapper
 
             return new GetVDCDto
             {
-                Id = vdcEntity.Vdc_Id,
-                Vdc = vdcEntity.Vdc_Name,
-                DistrictId = vdcEntity.District_Id,
-                District = vdcEntity.District.District_Name
+                Id = vdcEntity.Id,
+                Vdc = vdcEntity.Name,
+                DistrictId = vdcEntity.DistrictId,
+                District = vdcEntity.District.Name
             };
 
         }
@@ -64,10 +64,10 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetVDCDto
                   {
-                      Id = vdcEntity.Vdc_Id,
-                      Vdc = vdcEntity.Vdc_Name,
-                      DistrictId = vdcEntity.District_Id,
-                      District = vdcEntity.District.District_Name
+                      Id = vdcEntity.Id,
+                      Vdc = vdcEntity.Name,
+                      DistrictId = vdcEntity.DistrictId,
+                      District = vdcEntity.District.Name
                   }
                 );
             }

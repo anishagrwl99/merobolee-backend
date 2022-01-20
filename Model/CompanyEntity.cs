@@ -14,7 +14,8 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Column(TypeName = "VARCHAR(100)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
         public string Status { get; set; }
     }
 
@@ -28,6 +29,10 @@ namespace MeroBolee.Model
         [ForeignKey("CompanyStatus")]
         public int? CompanyStatusId { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1500)]
+        [Required]
         public string Name { get; set; }
 
 
@@ -41,11 +46,26 @@ namespace MeroBolee.Model
 
         [ForeignKey("Province")]
         public int ProvinceId { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
         public string City { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
         public string Address1 { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
         public string Address2 { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(300)]
         public string Address3 { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(30)]
         public string Zip { get; set; }
 
         [JsonIgnore]
@@ -59,20 +79,28 @@ namespace MeroBolee.Model
         public string ReferenceCode { get; set; }
 
 
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(150)]
         public string ContactPerson { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
         [EmailAddress]
         [MaxLength(100)]
         public string CompanyEmail { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
         [Url]
         [MaxLength(100)]
         public string CompanyWebsite { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(15)]
         public string Phone1 { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(15)]
         public string Phone2 { get; set; }
 

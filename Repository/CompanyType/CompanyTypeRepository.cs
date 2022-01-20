@@ -46,7 +46,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => (search == null) || (m.Company_type.ToLower().Contains(search.ToLower()))).ToList();
+                return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => (search == null) || (m.Name.ToLower().Contains(search.ToLower()))).ToList();
             }
             catch (Exception) { throw new Exception(); }
         }
@@ -55,7 +55,7 @@ namespace MeroBolee.Repository
         {
             try 
             { 
-            return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => m.Company_Type_Id == id).FirstOrDefault();
+            return meroBoleeDbContexts.CompanyTypeLookupEntities.Where(m => m.Id == id).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -70,7 +70,7 @@ namespace MeroBolee.Repository
                 CompanyTypeLookupEntity companyType = GetCompanyTypeDetail(id);
                 if (companyType != null)
                 {
-                    companyType.Company_type = companyTypeEntity.Company_type;
+                    companyType.Name = companyTypeEntity.Name;
                     companyType.Date_modified = companyTypeEntity.Date_modified;
                  //   companyType.Modified_time_stamp = companyType.Modified_time_stamp;
                     unitOfWork.SaveChange();

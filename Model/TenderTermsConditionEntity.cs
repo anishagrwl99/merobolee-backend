@@ -7,25 +7,20 @@ namespace MeroBolee.Model
     [Table("mb_tender_term_condition")]
     public class TenderTermsConditionEntity
     {
-        private long id;
-        private long tender_Id;
-        private TenderEntity tenderEntity;
-        private string term_Condition;
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        [JsonIgnore]
-        public long Id { get => id; set => id = value; }
+        public long Id { get; set; }
 
-        [Column("tender_id")]
+
         [ForeignKey("TenderEntity")]
         [JsonIgnore]
-        public long TenderId { get => tender_Id; set => tender_Id = value; }
+        public long TenderId { get; set; }
 
-        [Column("term_condition")]
-        public string TermCondition { get => term_Condition; set => term_Condition = value; }
-        
+
+        [Column(TypeName = "VARCHAR(MAX)")]
+        public string TermCondition { get; set; }
+
         [JsonIgnore]
-        public virtual TenderEntity TenderEntity { get => tenderEntity; set => tenderEntity = value; }
+        public virtual TenderEntity TenderEntity { get; set; }
     }
 }

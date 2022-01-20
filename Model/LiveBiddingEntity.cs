@@ -28,6 +28,7 @@ namespace MeroBolee.Model
         public long MaterialId { get; set; }
 
         [MaxLength(300)]
+        [Required]
         public string Quotation { get; set; }
 
         public long BatchNo { get; set; }

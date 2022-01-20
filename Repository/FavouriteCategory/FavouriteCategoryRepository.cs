@@ -46,7 +46,7 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         public IEnumerable<FavouriteCategoryEntity> GetFavouriteList(int id)
         {
-            return meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.User_id == id).ToList();
+            return meroBoleeDbContexts.FavouriteCategoryEntities.Where(m => m.UserId == id).ToList();
         }
 
 

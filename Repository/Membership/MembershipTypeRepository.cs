@@ -53,10 +53,10 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.CommonStatusEntities.ToList();
                 return meroBoleeDbContexts.MembershipTypeEntities.Where(m => (search == null)
-                || (m.Membership_Title.ToLower().Contains(search.ToLower()))
-                || (m.Membership_fee.ToString().Contains(search.ToLower()))
+                || (m.MembershipTitle.ToLower().Contains(search.ToLower()))
+                || (m.MembershipFee.ToString().Contains(search.ToLower()))
                 || (m.Duration.ToString().Contains(search.ToLower()))
-                || (m.Duration_Type.ToLower().Contains(search.ToLower()))
+                || (m.DurationType.ToLower().Contains(search.ToLower()))
                 || (m.Status.Status.ToLower().Contains(search.ToLower()))
                 || (m.Discount.ToString().Contains(search.ToLower()))
                 ).ToList();
@@ -106,10 +106,10 @@ namespace MeroBolee.Repository
                 {
                     return membership = null;
                 }
-                membership.Membership_Title = membershipType.Membership_Title;
+                membership.MembershipTitle = membershipType.MembershipTitle;
                 membership.Duration = membershipType.Duration;
-                membership.Duration_Type = membershipType.Duration_Type;
-                membership.Membership_fee = membershipType.Membership_fee;
+                membership.DurationType = membershipType.DurationType;
+                membership.MembershipFee = membershipType.MembershipFee;
                 membership.Discount = membershipType.Discount;
                 membership.Date_modified = membershipType.Date_modified;
             //    membership.Modified_time_stamp = membershipType.Modified_time_stamp;

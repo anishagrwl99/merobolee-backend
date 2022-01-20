@@ -11,11 +11,10 @@ namespace MeroBolee.Model
     public class TechnicalSupportStatus
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("Id")]
         public int StatusId { get; set; }
 
 
-        [Column("Status", TypeName = "VARCHAR")]
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(50)]
         public string Status { get; set; }
     }

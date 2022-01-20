@@ -17,12 +17,12 @@ namespace MeroBolee.EntityMapper
             }
             return new MembershipTypeEntity
             {
-                Membership_Title = memeberShipDto.MembershipTitle,
-                Membership_fee= memeberShipDto.Membershipfee,
+                MembershipTitle = memeberShipDto.MembershipTitle,
+                MembershipFee= memeberShipDto.Membershipfee,
                 Duration = memeberShipDto.Duration,
-                Duration_Type= memeberShipDto.DurationType,
+                DurationType= memeberShipDto.DurationType,
                 Discount= memeberShipDto.Discount,
-                Status_Id= memeberShipDto.StatusId
+                StatusId= memeberShipDto.StatusId
             };
 
         }
@@ -35,13 +35,13 @@ namespace MeroBolee.EntityMapper
             }
             return new GetMembershipDto
             {
-                MembershipId= membershipType.Membership_Id,
-                MembershipTitle = membershipType.Membership_Title,
+                MembershipId= membershipType.MembershipId,
+                MembershipTitle = membershipType.MembershipTitle,
                 Duration = membershipType.Duration,
-                DurationType = membershipType.Duration_Type,
+                DurationType = membershipType.DurationType,
                 Discount = membershipType.Discount,
                 Status = membershipType.Status.Status,
-                StatusId= membershipType.Status_Id
+                StatusId= membershipType.StatusId
             };
 
         }
@@ -60,13 +60,13 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetMembershipDto
                   {
-                      MembershipId = membershipType.Membership_Id,
-                      MembershipTitle = membershipType.Membership_Title,
+                      MembershipId = membershipType.MembershipId,
+                      MembershipTitle = membershipType.MembershipTitle,
                       Duration = membershipType.Duration,
-                      DurationType = membershipType.Duration_Type,
+                      DurationType = membershipType.DurationType,
                       Discount = membershipType.Discount,
                       Status = membershipType.Status.Status,
-                      StatusId= membershipType.Status_Id
+                      StatusId= membershipType.StatusId
                   }
                 );
             }

@@ -10,20 +10,18 @@ namespace MeroBolee.Model
     [Table("mb_FAQ")]
     public class FAQEntity : BaseEntity
     {
-        private int faq_id;
-        private string question;
-        private string answer;
 
-        [Column("faq_id")]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int FAQ_id { get => faq_id; set => faq_id = value; }
+        public int Id { get; set; }
         
         
-        [Column("question")]
-        public string Question { get => question; set => question = value; }
-        
-        
-        [Column("answer")]
-        public string Answer { get => answer; set => answer = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1000)]
+        public string Question { get; set; }
+
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(5000)]
+        public string Answer { get; set; }
     }
 }

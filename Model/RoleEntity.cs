@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 namespace MeroBolee.Model
 {
     [Table("mb_role")]
-    public class RoleEntity: BaseEntity
+    public class RoleEntity : BaseEntity
     {
-            private int role_Id;
-            [Column("Id")]
-            [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public int Id { get => role_Id; set => role_Id = value; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-            private string role_Name;
-            [Column("Name")]
-            public string Name { get => role_Name; set => role_Name = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string Name { get; set; }
     }
 }

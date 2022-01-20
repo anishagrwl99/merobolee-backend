@@ -111,7 +111,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.Tender.TenderCards)
                         .Include(x => x.Tender.CategoryEntity)
                         .Include(x => x.BidRequestStatus)
-                        .Where(x => x.CompanyId == supplierCompanyId && x.Tender.Live_End_Date < DateTime.Now)
+                        .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTime.Now)
                         .ToListAsync();
             }
             catch (Exception)
@@ -202,7 +202,7 @@ namespace MeroBolee.Repository
             try
             {
                 var tenderEntity = meroBoleeDbContexts.TenderEntities
-                    .Where(x => x.Tender_Id == bidEntity.FirstOrDefault().TenderId)
+                    .Where(x => x.Id == bidEntity.FirstOrDefault().TenderId)
                     .FirstOrDefault();
                 foreach (var bidItem in bidEntity)
                 {
@@ -221,12 +221,12 @@ namespace MeroBolee.Repository
             try
             {
                 var tenderEntity = meroBoleeDbContexts.TenderEntities
-                    .Where(x => x.Tender_Id == bidEntity.FirstOrDefault().TenderId)
+                    .Where(x => x.Id == bidEntity.FirstOrDefault().TenderId)
                     .FirstOrDefault();
                 //bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
                 //    .Where(x => x.Tender_Id == bidEntity.TenderId)
                 //    .FirstOrDefault();
-                if (bidEntity.FirstOrDefault().BidDate <= tenderEntity.Live_End_Date)
+                if (bidEntity.FirstOrDefault().BidDate <= tenderEntity.LiveEndDate)
                 {
                     meroBoleeDbContexts.LiveBiddingEntities.AddRange(bidEntity);
                     unitOfWork.SaveChange();
@@ -339,8 +339,8 @@ namespace MeroBolee.Repository
                 return Task.Run<List<LiveBiddingEntity>>(() =>
                 {
                     var list = from t in meroBoleeDbContexts.TenderEntities
-                               join b in meroBoleeDbContexts.LiveBiddingEntities on t.Tender_Id equals b.TenderId
-                               where t.Live_End_Date < DateTime.Now
+                               join b in meroBoleeDbContexts.LiveBiddingEntities on t.Id equals b.TenderId
+                               where t.LiveEndDate < DateTime.Now
                                select new LiveBiddingEntity
                                {
                                    Id = b.Id,
@@ -400,7 +400,7 @@ namespace MeroBolee.Repository
         public TenderEntity GetTenderDetail(long tenderId)
         {
             return meroBoleeDbContexts.TenderEntities
-                .Where(x => x.Tender_Id == tenderId)
+                .Where(x => x.Id == tenderId)
                 .FirstOrDefault();
         }
 
@@ -437,16 +437,16 @@ namespace MeroBolee.Repository
                 {
                     isRegistered = true;
                     var bidTimeRange = await meroBoleeDbContexts.TenderEntities
-                        .Where(x=> x.Tender_Id == tenderId)
+                        .Where(x=> x.Id == tenderId)
                         .Select(x=> new
                         {
-                            x.Live_Start_Date,
-                            x.Live_End_Date
+                            x.LiveStartDate,
+                            x.LiveEndDate
                         })
                         .FirstOrDefaultAsync();
 
                     //if bidding time is in future don't allow bidding
-                    if (bidTimeRange.Live_Start_Date > DateTime.Now || bidTimeRange.Live_End_Date < DateTime.Now) isRegistered = false;
+                    if (bidTimeRange.LiveStartDate > DateTime.Now || bidTimeRange.LiveEndDate < DateTime.Now) isRegistered = false;
 
                     //user is using different bid id to bid 
                     if (biddingId != info.Id) isRegistered = false; 

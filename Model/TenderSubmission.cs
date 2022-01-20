@@ -12,7 +12,11 @@ namespace MeroBolee.Model
     [Table("lk_TenderSubmissionStatus")]
     public class TenderSubmissionStatus
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
         public string Status { get; set; }
     }
 
@@ -39,9 +43,12 @@ namespace MeroBolee.Model
         [ForeignKey("TenderSubmissionStatus")]
         public int StatusId { get; set; }
 
+
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(50)]
         public string PaymentProvider { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
         [MaxLength(200)]
         public string PaymentReferenceCode { get; set; }
 
@@ -54,7 +61,12 @@ namespace MeroBolee.Model
         public bool IsFormSubmission { get; set; }
 
 
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(150)]
         public string PriceScheduleDocName { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(1500)]
         public string PriceScheduleDocPath { get; set; }
         
 
@@ -87,7 +99,7 @@ namespace MeroBolee.Model
 
         [Required]
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(500)]
+        [MaxLength(1500)]
         public string DocumentPath { get; set; }
 
         public virtual TenderSubmission TenderSubmission { get; set; }
@@ -223,7 +235,7 @@ namespace MeroBolee.Model
 
         [Required]
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(1000)]
+        [MaxLength(1500)]
         public string DocPath { get; set; }
 
         public virtual TenderSubmission Submission { get; set; }

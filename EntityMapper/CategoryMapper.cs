@@ -32,7 +32,7 @@ namespace MeroBolee.EntityMapper
             }
             return new GetCategoryDto
             {
-                Id = categoryEntity.Category_Id,
+                Id = categoryEntity.Id,
                 Category = categoryEntity.Category
             };
 
@@ -52,7 +52,7 @@ namespace MeroBolee.EntityMapper
                 (
                   new GetCategoryDto
                   {
-                      Id = category.Category_Id,
+                      Id = category.Id,
                       Category = category.Category 
                   }
                 );

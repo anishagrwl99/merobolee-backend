@@ -180,7 +180,7 @@ namespace MeroBolee.Repository
             {
                 EmailEntity emailDetail = (from e in meroBoleeDbContexts.EmailEntities
                                            join u in meroBoleeDbContexts.UserEntities on e.AuthorId equals u.Id
-                                           join t in meroBoleeDbContexts.TenderEntities  on e.TenderId equals t.Tender_Id
+                                           join t in meroBoleeDbContexts.TenderEntities  on e.TenderId equals t.Id
                                            where e.Id == emailId
                                            select new EmailEntity
                                            {
@@ -189,7 +189,7 @@ namespace MeroBolee.Repository
                                                Body = e.Body,
                                                Subject = e.Subject,
                                                TenderId = e.TenderId,
-                                               TenderCode = t.Tender_Code,
+                                               TenderCode = t.Code,
                                                User = u,
                                                UserEmails = null
                                            }

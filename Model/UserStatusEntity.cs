@@ -10,16 +10,12 @@ namespace MeroBolee.Model
     [Table("lk_user_status")]
     public class UserStatusEntity
     {
-        private int status_Id;
-        private string status;
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("Id")]
-        public int Id { get => status_Id; set => status_Id = value; }
+        public int Id { get; set; }
 
-
-        [Column("Status")]
-        public string Status { get => status; set => status = value; }
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(100)]
+        public string Status { get; set; }
 
     }
 }
