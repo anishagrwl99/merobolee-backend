@@ -44,64 +44,63 @@ namespace MeroBolee.Controllers.Country
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
 
-
         /// <summary>
-        /// To display all country by Admin
+        /// To update country info
         /// </summary>
-        /// <param name="pagination"></param>
-        /// <param name="search"></param>
+        /// <param name="id"></param>
+        /// <param name="addCountry"></param>
         /// <returns></returns>
-        [HttpGet("Country")]
-        public IActionResult GetAllCountry([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        [HttpPut("Country")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public IActionResult UpdateCountry([FromQuery] int id, [FromBody] AddCountryDto addCountry)
         {
             try
             {
-                string url = Url.Action("GetAllCountry", null, null, Request.Scheme); //get url for current request
-                uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetCountryDto> country = countryService.GetCountry(search);
-                int totalCount = country.Count();
-                if (totalCount == 0)
+                if (id == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetCountryDto>>(country, "404", "Record not found"));
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
-                return Ok(ResultAfterPagination(country, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        GetCountryDto getCountry = countryService.UpdateCountry(id, addCountry);
+                        if (getCountry == null)
+                        {
+                            return NotFound(new Responses<GetCountryDto>(getCountry, "404", "Record not found"));
+                        }
+                        return Ok(new Responses<GetCountryDto>(getCountry, "200", "Record is successfully updated"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = ModelState;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
+                }
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
             }
 
         }
@@ -135,11 +134,45 @@ namespace MeroBolee.Controllers.Country
             }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
+        }
+
+
+
+        /// <summary>
+        /// To display all country by Admin
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpGet("Country")]
+        [AllowAnonymous]
+        public IActionResult GetAllCountry([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        {
+            try
+            {
+                string url = Url.Action("GetAllCountry", null, null, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<GetCountryDto> country = countryService.GetCountry(search);
+                int totalCount = country.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<GetCountryDto>>(country, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(country, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
         }
 
 
@@ -150,6 +183,7 @@ namespace MeroBolee.Controllers.Country
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("CountryDetail")]
+        [AllowAnonymous]
         public IActionResult GetCountryById([FromQuery] int id)
         {
             try
@@ -170,89 +204,14 @@ namespace MeroBolee.Controllers.Country
                     return Ok(new Responses<GetCountryDto>(getCountry, "200", "Record found"));
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
-
-        /// <summary>
-        /// To update country info
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addCountry"></param>
-        /// <returns></returns>
-        [HttpPut("Country")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public IActionResult UpdateCountry([FromQuery] int id, [FromBody]AddCountryDto addCountry)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    if (ModelState.IsValid)
-                    {
-                        GetCountryDto getCountry = countryService.UpdateCountry(id,addCountry);
-                        if (getCountry == null)
-                        {
-                            return NotFound(new Responses<GetCountryDto>(getCountry, "404", "Record not found"));
-                        }
-                        return Ok(new Responses<GetCountryDto>(getCountry, "200", "Record is successfully updated"));
-                    }
-                    else
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Invalid Format";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
-                }
-            }
-            catch (SqlException)
-            {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
-
         }
-
 
 
         private PagedResponse<GetCountryDto> ResultAfterPagination(IEnumerable<GetCountryDto> country, PaginationQuery pagination, int totalCount)

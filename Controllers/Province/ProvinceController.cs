@@ -36,7 +36,7 @@ namespace MeroBolee.Controllers.Province
                 if (ModelState.IsValid)
                 {
                     GetProvinceDto getProvince = provinceService.AddProvince(addProvince);
-                    if (getProvince.Id == 0)
+                    if (getProvince ==null || getProvince.Id == 0)
                     {
                         response.statusCode = "400";
                         response.Message = "Invalid Country";
@@ -55,7 +55,7 @@ namespace MeroBolee.Controllers.Province
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -85,18 +85,19 @@ namespace MeroBolee.Controllers.Province
                     if (ModelState.IsValid)
                     {
                         GetProvinceDto getProvince = provinceService.UpdateProvince(id, addProvince);
-                        if (getProvince.Id == 0)
-                        {
-                            response.statusCode = "400";
-                            response.Message = "Invalid Country";
-                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-                        }
+                       
                         if (getProvince == null)
                         {
                             response.statusCode = "404";
                             response.Message = "Record not found";
                             return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                        }
+                        else if (getProvince.Id == 0)
+                        {
+                            response.statusCode = "400";
+                            response.Message = "Invalid Country";
+                            return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+
                         }
                         return Ok(new Responses<GetProvinceDto>(getProvince, "200", "Record is successfully updated"));
                     }
@@ -112,7 +113,7 @@ namespace MeroBolee.Controllers.Province
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -147,7 +148,7 @@ namespace MeroBolee.Controllers.Province
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -159,11 +160,12 @@ namespace MeroBolee.Controllers.Province
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Province")]
+        [AllowAnonymous]
         public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
         {
             try
             {
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAll", null, new { search = search}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<GetProvinceDto> province = provinceService.GetProvinces(search);
@@ -177,7 +179,7 @@ namespace MeroBolee.Controllers.Province
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -191,6 +193,7 @@ namespace MeroBolee.Controllers.Province
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("ProvinceDetail")]
+        [AllowAnonymous]
         public IActionResult GetById([FromQuery] int id)
         {
             try
@@ -215,7 +218,7 @@ namespace MeroBolee.Controllers.Province
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -229,6 +232,7 @@ namespace MeroBolee.Controllers.Province
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("CascadeProvince")]
+        [AllowAnonymous]
         public IActionResult GetCascade([FromQuery] int id)
         {
             try
@@ -242,7 +246,7 @@ namespace MeroBolee.Controllers.Province
                 }
                 else
                 {
-                    string url = Url.Action("GetCascade", null, null, Request.Scheme); //get url for current request
+                    string url = Url.Action("GetCascade", null, new { id=id}, Request.Scheme); //get url for current request
                     uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     IEnumerable<GetProvinceDto> province = provinceService.CascadeProvince(id);
@@ -254,24 +258,11 @@ namespace MeroBolee.Controllers.Province
                     return Ok(new PagedResponse<GetProvinceDto>(province,totalCount)); // To pass result in object along with pagination info
                 }
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (ArgumentNullException)
-            {
-                response.statusCode = "400";
-                response.Message = "Invalid Info";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-            }
             catch (Exception e)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
         }
