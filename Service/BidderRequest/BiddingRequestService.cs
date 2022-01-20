@@ -52,7 +52,7 @@ namespace MeroBolee.Service
                 BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(dto.TenderId, dto.CompanyId);
                 if (entity == null)
                 {
-                    string companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
+                    //tring companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
                     BidRequestEntity bidRequest = ToEntity(dto /*, companyFolder, fileService*/);
                     bidRequest = await bidRequestRepository.RegisterForBidding(bidRequest);
                     return bidRequest.Id;
