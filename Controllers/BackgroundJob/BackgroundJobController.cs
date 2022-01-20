@@ -22,7 +22,7 @@ namespace MeroBolee.Controllers.City
         }
 
 
-        [HttpGet("/BackgroundJob/MoveBidHistory")]
+        //[HttpGet("/BackgroundJob/MoveBidHistory")]
         public IActionResult MoveRecord()
         {
             try

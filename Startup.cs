@@ -315,7 +315,13 @@ namespace MeroBolee
             //    app.Run(context => { throw new Exception("error"); });
 
             //Use Hangfire dashboard
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard(pathMatch: "/backgroundwork", new DashboardOptions
+            {
+                AppPath = null,
+                IsReadOnlyFunc = context => true,
+                DashboardTitle = "Merobolee Background Activities",
+                DisplayStorageConnectionString = false,
+            });
 
             app.UseHttpsRedirection();
 
