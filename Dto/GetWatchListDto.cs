@@ -7,7 +7,7 @@ namespace MeroBolee.Dto
 {
     public class GetWatchListDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public long UserId { get; set; }
         public long CompanyId { get; set; }
 
