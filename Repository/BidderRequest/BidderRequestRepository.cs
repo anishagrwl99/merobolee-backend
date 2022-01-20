@@ -63,6 +63,9 @@ namespace MeroBolee.Repository
             {
                 return await meroBoleeDbContexts.BidRequestEntities
                     .Include(x => x.BidderRequestDocs)
+                    .Include(x => x.BidRequestStatus)
+                    .Include(x => x.Tender)
+                    .Include(x=> x.Tender.CategoryEntity)
                     .Where(x =>  x.Id == bidId)
                     .FirstOrDefaultAsync();
             }
@@ -346,7 +349,8 @@ namespace MeroBolee.Repository
                                    TenderId = b.TenderId,
                                    MaterialId = b.MaterialId,
                                    Quotation = b.Quotation,
-                                   BidDate = b.BidDate
+                                   BidDate = b.BidDate,
+                                   BatchNo = b.BatchNo,
                                };
                     return list.ToList<LiveBiddingEntity>();
                 });

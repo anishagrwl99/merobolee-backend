@@ -63,6 +63,7 @@ namespace MeroBolee.Dto
         public decimal Quotation { get; set; }
         public DateTime BidTime { get; set; }
         public long BatchNo { get; set; }
+        public string Position { get; set; }
     }
 
     public class ResetBidDto

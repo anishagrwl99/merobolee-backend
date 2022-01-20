@@ -349,7 +349,6 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Bid/Detail")]
-        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetDetail([FromQuery] long bidId, [FromQuery] long companyId, [FromQuery] long tenderId)
         {
             try

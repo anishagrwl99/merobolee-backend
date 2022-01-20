@@ -31,6 +31,7 @@ namespace MeroBolee.Model
         public long CompanyId { get; set; }
 
         [Column(TypeName = "VARCHAR")]
+        [MaxLength(500)]
         public string Remark { get; set; }
 
         [Column(TypeName = "VARCHAR")]

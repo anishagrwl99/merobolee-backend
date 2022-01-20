@@ -1,4 +1,5 @@
-﻿using MeroBolee.Dto;
+﻿using Hangfire;
+using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
@@ -191,10 +192,10 @@ namespace MeroBolee.Service
         {
             try
             {
-                bool isSupplierRegistered = await bidRequestRepository.IsBidderRegistered(materialDto.CompanyId, materialDto.TenderId, materialDto.BiddingId);
+                bool isSupplierRegistered = await IsSupplierRegistered(materialDto);// bidRequestRepository.IsBidderRegistered(materialDto.CompanyId, materialDto.TenderId, materialDto.BiddingId);
                 if (!isSupplierRegistered) return null;
 
-                
+
                 Tuple<bool, string> tuple = await IsQuotationValid(materialDto);
                 bool isQuotationValid = tuple.Item1;
                 string errorMessage = tuple.Item2;
@@ -256,17 +257,25 @@ namespace MeroBolee.Service
                 {
                     decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
                     LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
-                    response.IsBidSuccess = false;
-                    response.CurrentQuotation = currentQuotation;
-                    response.MaterialQuotation = materialDto.MaterialQuotation;
-                    response.Message = errorMessage;
-                    return response;
+                    if (response != null)
+                    {
+                        response.IsBidSuccess = false;
+                        response.CurrentQuotation = currentQuotation;
+                        response.MaterialQuotation = materialDto.MaterialQuotation;
+                        response.Message = errorMessage;
+                        return response;
+                    }
+                    return null;
                 }
             }
             catch (Exception)
             {
 
                 throw;
+            }
+            finally
+            {
+                MoveToHistory();
             }
 
         }
@@ -349,7 +358,7 @@ namespace MeroBolee.Service
 
 
                     //if tender live end date is about to end
-                    if(DateTime.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
+                    if (DateTime.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
                     {
                         dto.RemainingMinute = (dto.TenderLiveEndDate - DateTime.Now).Minutes;
                         dto.RemainingSecond = (dto.TenderLiveEndDate - DateTime.Now).Seconds;
@@ -447,11 +456,15 @@ namespace MeroBolee.Service
             try
             {
                 BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(updateRequest.BidId);
-                entity.BidRequestStatusId = updateRequest.StatusId;
-                entity.Remark = updateRequest.Remark;
-                entity.Date_modified = DateTime.Now;
-                entity = await bidRequestRepository.UpdateBidRequest(entity);
-                return BidEntityToCard(entity);
+                if (entity != null)
+                {
+                    entity.BidRequestStatusId = updateRequest.StatusId;
+                    entity.Remark = updateRequest.Remark;
+                    entity.Date_modified = DateTime.Now;
+                    entity = await bidRequestRepository.UpdateBidRequest(entity);
+                    return BidEntityToCard(entity);
+                }
+                return null;
             }
             catch (Exception)
             {
@@ -489,8 +502,39 @@ namespace MeroBolee.Service
             {
                 List<LiveBiddingEntity> list = await bidRequestRepository.GetExpiredBids();
                 List<BiddingHistoryEntity> historyEntities = new List<BiddingHistoryEntity>();
+
+                var tempResult = (from l in list
+                                  orderby l.BidDate descending
+                                  group l by new { l.UserId, l.TenderId } into g
+
+                                  select new
+                                  {
+                                      UserId = g.Key.UserId,
+                                      TenderId = g.Key.TenderId,
+                                      BidDate = g.Max(x => x.BidDate),
+                                      BatchNo = g.Max(x => x.BatchNo)
+
+                                  }).ToList();
+
+                List<LiveBiddingEntity> finalRecords = (from ol in list
+                               join t in tempResult on new { ol.TenderId, ol.BidDate, ol.BatchNo } equals new { t.TenderId, t.BidDate, t.BatchNo }
+                               select ol
+                               ).ToList();
+
+                var computedAmount = (from ol in finalRecords
+                                      group ol by new { ol.UserId, ol.TenderId, ol.BatchNo } into g                                      
+                                      select new
+                                      {
+                                          TenderId = g.Key.TenderId,
+                                          UserId = g.Key.UserId,
+                                          Amount = g.Sum(x=> cryptoService.Decrypt<decimal>(x.Quotation))
+                                      })
+                                      .OrderBy(x=>x.Amount)
+                                      .ToList();
+
                 foreach (LiveBiddingEntity item in list)
                 {
+                    int position = computedAmount.FindIndex(x => x.UserId == item.UserId && x.TenderId == item.TenderId);
                     //Create history object with decrypted quotation
                     BiddingHistoryEntity entity = new BiddingHistoryEntity
                     {
@@ -500,7 +544,8 @@ namespace MeroBolee.Service
                         MaterialId = item.MaterialId,
                         Quotation = cryptoService.Decrypt<decimal>(item.Quotation),
                         BidDate = item.BidDate,
-                        BatchNo = item.BatchNo
+                        BatchNo = item.BatchNo,
+                        FinalPosition = position >= 0 ? $"L{position+1}" : null
                     };
                     historyEntities.Add(entity);
 
@@ -603,7 +648,7 @@ namespace MeroBolee.Service
             string errorMsg = "You have already quotated less than or same as current quotation";
             Tuple<decimal, DateTime, DateTime> tenderInfo = tenderService.GetMaxQuotationAllowed(dto.TenderId);
             decimal currentQuotation = dto.MaterialQuotation.Sum(x => x.Quotation);
-            if (tenderInfo.Item1 != 0 && currentQuotation < tenderInfo.Item1)
+            if (tenderInfo.Item1 != 0 && currentQuotation <= tenderInfo.Item1)
             {
                 foreach (var item in dto.MaterialQuotation)
                 {
@@ -793,6 +838,29 @@ namespace MeroBolee.Service
                 await tenderService.UpdateTenderMaxQuotation(maxQtn, tenderId);
 
             }
+        }
+
+        private void MoveToHistory()
+        {
+            string jobId = "Move Live Bid To History";
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, () => MoveBidToHistory(), Cron.Hourly());
+        }
+
+        private async Task<bool> IsSupplierRegistered(TenderMaterialBiddingDto dto)
+        {
+
+            bool? isSupplierRegistered = null;
+            string key = $"SuppReg_{dto.TenderId}_{dto.SupplierId}";
+            memoryCache.TryGetValue<bool?>(key, out isSupplierRegistered);
+
+            if (isSupplierRegistered == null)
+            {
+                isSupplierRegistered = await bidRequestRepository.IsBidderRegistered(dto.CompanyId, dto.TenderId, dto.BiddingId);
+            }
+
+            memoryCache.Set<bool>(key, isSupplierRegistered.Value, DateTime.Now.AddDays(1));
+            return isSupplierRegistered.Value;
         }
     }
 }

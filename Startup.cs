@@ -251,7 +251,7 @@ namespace MeroBolee
             services.AddScoped<IGraphRepository, GraphRepository>();
             services.AddScoped<IGraphService, GraphService>();
 
-            /*
+            
             //Hangfire configuration
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration
@@ -269,7 +269,7 @@ namespace MeroBolee
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
-            */
+            
             services.AddControllers();
                 //.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddMvc();
@@ -315,7 +315,7 @@ namespace MeroBolee
             //    app.Run(context => { throw new Exception("error"); });
 
             //Use Hangfire dashboard
-            //app.UseHangfireDashboard();
+            app.UseHangfireDashboard();
 
             app.UseHttpsRedirection();
 
@@ -336,7 +336,7 @@ namespace MeroBolee
                        name: "default",
                        pattern: "{controller=BackgroundJob}/{action=MoveRecord}/{id?}");
 
-                //endpoints.MapHangfireDashboard();
+                endpoints.MapHangfireDashboard();
             });
         }
     }

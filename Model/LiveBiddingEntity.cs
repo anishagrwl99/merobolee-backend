@@ -71,6 +71,10 @@ namespace MeroBolee.Model
 
         public long BatchNo { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(10)]
+        public string FinalPosition { get; set; }
+
         public DateTime BidDate { get; set; }
 
 

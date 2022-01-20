@@ -29,7 +29,9 @@ namespace MeroBolee.EntityMapper
                 PaymentProvider = dto.PaymentProvider,
                 PaymentReferenceCode = dto.PaymentReferenceCode,
                 Amount = dto.PaymentAmount,
-                Remark = null
+                Remark = null,
+                Date_created = DateTime.Now,
+                Date_modified = DateTime.Now
             };
             //entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
             //string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
@@ -244,7 +246,8 @@ namespace MeroBolee.EntityMapper
                                     BidTime = h.BidDate,
                                     Material = h.TenderMaterialEntity.Materials,
                                     Quotation = h.Quotation,
-                                    TenderId = h.TenderId
+                                    TenderId = h.TenderId,
+                                    Position = h.FinalPosition
                                 }).ToList();
 
             return dto;
