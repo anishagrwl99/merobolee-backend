@@ -41,7 +41,8 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("Position")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<long>("TenderId")
                         .HasColumnType("bigint");
@@ -228,15 +229,14 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.CategoryEntity", b =>
                 {
-                    b.Property<int>("Category_Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("category_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("category");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -246,45 +246,40 @@ namespace MeroBolee.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Date_Modified");
 
-                    b.HasKey("Category_Id");
+                    b.HasKey("Id");
 
                     b.ToTable("lk_category");
 
                     b.HasData(
                         new
                         {
-                            Category_Id = 1,
+                            Id = 1,
                             Category = "Transportation",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(332),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(358)
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7298),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7338)
                         },
                         new
                         {
-                            Category_Id = 2,
+                            Id = 2,
                             Category = "Construction",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(372),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(375)
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7353),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7356)
                         },
                         new
                         {
-                            Category_Id = 3,
+                            Id = 3,
                             Category = "Tourism",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(386),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(389)
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7366),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 939, DateTimeKind.Local).AddTicks(7369)
                         });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.CityEntity", b =>
                 {
-                    b.Property<int>("City_Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("city_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("City_Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("city_title");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -294,48 +289,49 @@ namespace MeroBolee.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Date_Modified");
 
-                    b.Property<int?>("Municipality_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("municipality_id");
+                    b.Property<int?>("MunicipalityId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("Vdc_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("vdc_id");
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
-                    b.HasKey("City_Id");
+                    b.Property<int?>("VdcId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Municipality_Id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Vdc_Id");
+                    b.HasIndex("MunicipalityId");
+
+                    b.HasIndex("VdcId");
 
                     b.ToTable("mb_city");
                 });
 
             modelBuilder.Entity("MeroBolee.Model.CommonStatus", b =>
                 {
-                    b.Property<int>("Status_id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("status");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
-                    b.HasKey("Status_id");
+                    b.HasKey("Id");
 
                     b.ToTable("lk_common_status");
 
                     b.HasData(
                         new
                         {
-                            Status_id = 1,
+                            Id = 1,
                             Status = "Active"
                         },
                         new
                         {
-                            Status_id = 2,
+                            Id = 2,
                             Status = "Inactive"
                         });
                 });
@@ -352,8 +348,7 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("DocumentPath")
                         .HasMaxLength(300)
-                        .HasColumnType("VARCHAR(300)")
-                        .HasColumnName("DocumentPath");
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<int>("DocumentStatusId")
                         .HasColumnType("int");
@@ -363,8 +358,7 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
-                        .HasColumnType("VARCHAR(500)")
-                        .HasColumnName("Remarks");
+                        .HasColumnType("VARCHAR(500)");
 
                     b.Property<long?>("StatusChangedBy")
                         .HasColumnType("bigint");
@@ -395,31 +389,35 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address1")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<string>("Address2")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<string>("Address3")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<string>("CompanyEmail")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<int?>("CompanyStatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyWebsite")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<string>("ContactPerson")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("VARCHAR(150)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -440,7 +438,9 @@ namespace MeroBolee.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
                     b.Property<string>("PANNumber")
                         .IsRequired()
@@ -449,11 +449,11 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("Phone1")
                         .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("VARCHAR(15)");
 
                     b.Property<string>("Phone2")
                         .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("VARCHAR(15)");
 
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
@@ -467,7 +467,8 @@ namespace MeroBolee.Migrations
                         .HasColumnType("VARCHAR(20)");
 
                     b.Property<string>("Zip")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("VARCHAR(30)");
 
                     b.HasKey("CompanyId");
 
@@ -499,8 +500,8 @@ namespace MeroBolee.Migrations
                             CompanyEmail = "super.admin@test.com",
                             CompanyStatusId = 4,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5004),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5013),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1628),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1636),
                             FolderName = "001M",
                             MembershipTypeId = 1,
                             Name = "Merobolee",
@@ -520,8 +521,8 @@ namespace MeroBolee.Migrations
                             CompanyEmail = "bid.inviter@test.com",
                             CompanyStatusId = 4,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5168),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5172),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1744),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1748),
                             FolderName = "002BIC",
                             MembershipTypeId = 1,
                             Name = "Bid Inviter Company",
@@ -541,8 +542,8 @@ namespace MeroBolee.Migrations
                             CompanyEmail = "bid.bidder@test.com",
                             CompanyStatusId = 4,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5240),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(5244),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1813),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(1816),
                             FolderName = "003SC",
                             MembershipTypeId = 1,
                             Name = "Supplier Company",
@@ -562,6 +563,7 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Status")
+                        .HasMaxLength(100)
                         .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
@@ -601,99 +603,12 @@ namespace MeroBolee.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MeroBolee.Model.CompanyTypeEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("CompanyTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date_created")
-                        .HasColumnType("datetime")
-                        .HasColumnName("Date_Created");
-
-                    b.Property<DateTime>("Date_modified")
-                        .HasColumnType("datetime")
-                        .HasColumnName("Date_Modified");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("CompanyTypeId");
-
-                    b.ToTable("mb_company_type");
-                });
-
             modelBuilder.Entity("MeroBolee.Model.CompanyTypeLookupEntity", b =>
-                {
-                    b.Property<int>("Company_Type_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("company_type_id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Company_type")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("company_type");
-
-                    b.Property<DateTime>("Date_created")
-                        .HasColumnType("datetime")
-                        .HasColumnName("Date_Created");
-
-                    b.Property<DateTime>("Date_modified")
-                        .HasColumnType("datetime")
-                        .HasColumnName("Date_Modified");
-
-                    b.HasKey("Company_Type_Id");
-
-                    b.ToTable("lk_company_type");
-
-                    b.HasData(
-                        new
-                        {
-                            Company_Type_Id = 1,
-                            Company_type = "Transportation",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8120),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8132)
-                        },
-                        new
-                        {
-                            Company_Type_Id = 2,
-                            Company_type = "Construction",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8143),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8147)
-                        },
-                        new
-                        {
-                            Company_Type_Id = 3,
-                            Company_type = "Tourism",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8157),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 48, 321, DateTimeKind.Local).AddTicks(8160)
-                        });
-                });
-
-            modelBuilder.Entity("MeroBolee.Model.CountryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Abbre")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("abbre");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Code");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -704,8 +619,63 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("lk_company_type");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3477),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3486),
+                            Name = "Transportation"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3500),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3503),
+                            Name = "Construction"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3512),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 16, 940, DateTimeKind.Local).AddTicks(3516),
+                            Name = "Tourism"
+                        });
+                });
+
+            modelBuilder.Entity("MeroBolee.Model.CountryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Abbre")
+                        .HasMaxLength(5)
+                        .HasColumnType("VARCHAR(5)");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(10)
+                        .HasColumnType("VARCHAR(10)");
+
+                    b.Property<DateTime>("Date_created")
+                        .HasColumnType("datetime")
+                        .HasColumnName("Date_Created");
+
+                    b.Property<DateTime>("Date_modified")
+                        .HasColumnType("datetime")
+                        .HasColumnName("Date_Modified");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -717,18 +687,17 @@ namespace MeroBolee.Migrations
                             Id = 1,
                             Abbre = "NP",
                             Code = "NEP",
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(2975),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(2980),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(9306),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(9311),
                             Name = "Nepal"
                         });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.DistrictEntity", b =>
                 {
-                    b.Property<int>("District_Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("district_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -739,17 +708,16 @@ namespace MeroBolee.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Date_Modified");
 
-                    b.Property<string>("District_Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("district_title");
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
-                    b.Property<int?>("Province_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("province_id");
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("int");
 
-                    b.HasKey("District_Id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Province_Id");
+                    b.HasIndex("ProvinceId");
 
                     b.ToTable("mb_district");
                 });
@@ -801,7 +769,9 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("VARCHAR(50)");
 
                     b.HasKey("Id");
 
@@ -886,15 +856,14 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.FAQEntity", b =>
                 {
-                    b.Property<int>("FAQ_id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("faq_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("answer");
+                        .HasMaxLength(5000)
+                        .HasColumnType("VARCHAR(5000)");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -905,10 +874,10 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("question");
+                        .HasMaxLength(1000)
+                        .HasColumnType("VARCHAR(1000)");
 
-                    b.HasKey("FAQ_id");
+                    b.HasKey("Id");
 
                     b.ToTable("mb_FAQ");
                 });
@@ -918,22 +887,19 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Category_id")
-                        .HasColumnType("int")
-                        .HasColumnName("category_id");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<long>("User_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Category_id");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("User_id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("mb_favourite");
                 });
@@ -958,6 +924,7 @@ namespace MeroBolee.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Quotation")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -985,20 +952,18 @@ namespace MeroBolee.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FeatureName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("feature_name");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<string>("FeatureValue")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("feature_value");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<long>("MaterialId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("material_id");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -1009,10 +974,9 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.MembershipTypeEntity", b =>
                 {
-                    b.Property<int>("Membership_Id")
+                    b.Property<int>("MembershipId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("membership_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -1024,80 +988,75 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<float>("Discount")
-                        .HasColumnType("real")
-                        .HasColumnName("discount");
+                        .HasColumnType("real");
 
                     b.Property<int>("Duration")
-                        .HasColumnType("int")
-                        .HasColumnName("duration");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Duration_Type")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("duration_type");
+                    b.Property<string>("DurationType")
+                        .HasMaxLength(10)
+                        .HasColumnType("VARCHAR(10)");
 
-                    b.Property<string>("Membership_Title")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("title");
+                    b.Property<float>("MembershipFee")
+                        .HasColumnType("real");
 
-                    b.Property<float>("Membership_fee")
-                        .HasColumnType("real")
-                        .HasColumnName("membership_fee");
+                    b.Property<string>("MembershipTitle")
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
-                    b.Property<int>("Status_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("status");
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
 
-                    b.HasKey("Membership_Id");
+                    b.HasKey("MembershipId");
 
-                    b.HasIndex("Status_Id");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("mb_membership");
 
                     b.HasData(
                         new
                         {
-                            Membership_Id = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 230, DateTimeKind.Local).AddTicks(5081),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(832),
+                            MembershipId = 1,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 611, DateTimeKind.Local).AddTicks(1149),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(6933),
                             Discount = 0f,
                             Duration = 1,
-                            Duration_Type = "Year",
-                            Membership_Title = "Registration",
-                            Membership_fee = 2000f,
-                            Status_Id = 1
+                            DurationType = "Year",
+                            MembershipFee = 2000f,
+                            MembershipTitle = "Registration",
+                            StatusId = 1
                         },
                         new
                         {
-                            Membership_Id = 2,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(1334),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(1339),
+                            MembershipId = 2,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(7440),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(7445),
                             Discount = 0f,
                             Duration = 1,
-                            Duration_Type = "Year",
-                            Membership_Title = "Add New Company",
-                            Membership_fee = 1500f,
-                            Status_Id = 1
+                            DurationType = "Year",
+                            MembershipFee = 1500f,
+                            MembershipTitle = "Add New Company",
+                            StatusId = 1
                         },
                         new
                         {
-                            Membership_Id = 3,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(1342),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(1343),
+                            MembershipId = 3,
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(7447),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 612, DateTimeKind.Local).AddTicks(7448),
                             Discount = 0f,
                             Duration = 1,
-                            Duration_Type = "Year",
-                            Membership_Title = "Renew",
-                            Membership_fee = 1000f,
-                            Status_Id = 1
+                            DurationType = "Year",
+                            MembershipFee = 1000f,
+                            MembershipTitle = "Renew",
+                            StatusId = 1
                         });
                 });
 
             modelBuilder.Entity("MeroBolee.Model.MunicipalityEntity", b =>
                 {
-                    b.Property<int>("Municipality_id")
+                    b.Property<int>("MunicipalityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("municipality_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -1108,17 +1067,16 @@ namespace MeroBolee.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Date_Modified");
 
-                    b.Property<int?>("District_id")
-                        .HasColumnType("int")
-                        .HasColumnName("district_id");
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Municipality_Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("municipality");
+                    b.Property<string>("MunicipalityName")
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
-                    b.HasKey("Municipality_id");
+                    b.HasKey("MunicipalityId");
 
-                    b.HasIndex("District_id");
+                    b.HasIndex("DistrictId");
 
                     b.ToTable("mb_municipality");
                 });
@@ -1128,12 +1086,11 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Payment_status")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("payment_status");
+                    b.Property<string>("PaymentStatus")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -1143,12 +1100,12 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Id = 1,
-                            Payment_status = "Pending"
+                            PaymentStatus = "Pending"
                         },
                         new
                         {
                             Id = 2,
-                            Payment_status = "Paid"
+                            PaymentStatus = "Paid"
                         });
                 });
 
@@ -1157,12 +1114,10 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CountryId")
-                        .HasColumnType("int")
-                        .HasColumnName("CountryId");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -1173,8 +1128,8 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.HasKey("Id");
 
@@ -1187,56 +1142,56 @@ namespace MeroBolee.Migrations
                         {
                             Id = 1,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4184),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4188),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(896),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(901),
                             Name = "Province No. 1"
                         },
                         new
                         {
                             Id = 2,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4192),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4193),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(904),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(905),
                             Name = "Province No. 2"
                         },
                         new
                         {
                             Id = 3,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4194),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4196),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(907),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(908),
                             Name = "Bagmati Province"
                         },
                         new
                         {
                             Id = 4,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4197),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4198),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(909),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(910),
                             Name = "Gandaki Province"
                         },
                         new
                         {
                             Id = 5,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4199),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4201),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(913),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(913),
                             Name = "Lumbini Province"
                         },
                         new
                         {
                             Id = 6,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4202),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4203),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(915),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(916),
                             Name = "Karnali Province"
                         },
                         new
                         {
                             Id = 7,
                             CountryId = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4204),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(4205),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(917),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(918),
                             Name = "Sudurpashchim Province"
                         });
                 });
@@ -1246,7 +1201,6 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -1258,8 +1212,8 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -1269,36 +1223,36 @@ namespace MeroBolee.Migrations
                         new
                         {
                             Id = 1,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8847),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8854),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6711),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6717),
                             Name = "Super Admin"
                         },
                         new
                         {
                             Id = 2,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8856),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8857),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6720),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6721),
                             Name = "Tender Support"
                         },
                         new
                         {
                             Id = 3,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8858),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8860),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6722),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6723),
                             Name = "Customer Support"
                         },
                         new
                         {
                             Id = 4,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8861),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8862),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6724),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6725),
                             Name = "Bid Inviter"
                         },
                         new
                         {
                             Id = 5,
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8863),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 232, DateTimeKind.Local).AddTicks(8864),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6727),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 613, DateTimeKind.Local).AddTicks(6728),
                             Name = "Bidder"
                         });
                 });
@@ -1308,7 +1262,6 @@ namespace MeroBolee.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -1320,8 +1273,7 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Description");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
@@ -1332,7 +1284,8 @@ namespace MeroBolee.Migrations
                         .HasColumnType("VARCHAR(150)");
 
                     b.Property<string>("PhoneNo")
-                        .HasColumnType("VARCHAR");
+                        .HasMaxLength(20)
+                        .HasColumnType("VARCHAR(20)");
 
                     b.Property<string>("Title")
                         .HasMaxLength(250)
@@ -1380,13 +1333,11 @@ namespace MeroBolee.Migrations
                     b.Property<int>("StatusId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("VARCHAR(50)")
-                        .HasColumnName("Status");
+                        .HasColumnType("VARCHAR(50)");
 
                     b.HasKey("StatusId");
 
@@ -1465,7 +1416,7 @@ namespace MeroBolee.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("VARCHAR(1500)");
 
-                    b.Property<long?>("TenderEntityTender_Id")
+                    b.Property<long?>("TenderEntityId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TenderId")
@@ -1478,7 +1429,7 @@ namespace MeroBolee.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("TenderEntityTender_Id");
+                    b.HasIndex("TenderEntityId");
 
                     b.HasIndex("TenderId");
 
@@ -1489,34 +1440,35 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.TenderEntity", b =>
                 {
-                    b.Property<long>("Tender_Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("tender_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AdditionalRequest")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.Property<long?>("ApprovedBy")
-                        .HasColumnType("bigint")
-                        .HasColumnName("approved_by");
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Cancel_remark")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("cancel_remark");
+                    b.Property<string>("CancelRemarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR(500)");
 
-                    b.Property<int>("Category_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("category_id");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("VARCHAR(20)")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<long>("CompanyId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("company_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint")
-                        .HasColumnName("created_by");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Date_created")
                         .HasColumnType("datetime")
@@ -1527,73 +1479,65 @@ namespace MeroBolee.Migrations
                         .HasColumnName("Date_Modified");
 
                     b.Property<string>("EligibilityCriteria")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(MAX)");
 
-                    b.Property<DateTime>("Live_End_Date")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("end_date");
+                    b.Property<DateTime>("LiveEndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Live_Start_Date")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("start_date");
+                    b.Property<int>("LiveInterval")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LiveStartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.Property<decimal>("MaxQuotation")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PerformanceRequest")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("QualityRequest")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.Property<DateTime>("RegistrationTill")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenderDetailDocPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
                     b.Property<string>("TenderDetailDocTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tender_Code")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("tender_code")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<int>("Tender_Status_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("tender_status_id");
-
-                    b.Property<string>("Tender_Title")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("tender_title");
-
-                    b.Property<int>("Tender_live_interval")
-                        .HasColumnType("int")
-                        .HasColumnName("live_interval");
+                        .HasMaxLength(150)
+                        .HasColumnType("VARCHAR(150)");
 
                     b.Property<string>("TermsAndConditionDocPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
-                    b.HasKey("Tender_Id");
+                    b.Property<string>("Title")
+                        .HasMaxLength(200)
+                        .HasColumnType("VARCHAR(200)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ApprovedBy");
 
-                    b.HasIndex("Category_Id");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("Tender_Status_Id");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("mb_tender");
                 });
@@ -1618,7 +1562,7 @@ namespace MeroBolee.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("VARCHAR(100)");
 
-                    b.Property<long?>("TenderEntityTender_Id")
+                    b.Property<long?>("TenderEntityId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TenderId")
@@ -1631,7 +1575,7 @@ namespace MeroBolee.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("TenderEntityTender_Id");
+                    b.HasIndex("TenderEntityId");
 
                     b.HasIndex("TenderId");
 
@@ -1645,20 +1589,17 @@ namespace MeroBolee.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Materials")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("material");
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnType("int");
 
                     b.Property<long>("TenderId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("tender_id");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -1735,17 +1676,19 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("PaymentProvider")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("VARCHAR(50)");
 
                     b.Property<string>("PaymentReferenceCode")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("VARCHAR(200)");
 
                     b.Property<string>("PriceScheduleDocName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("VARCHAR(150)");
 
                     b.Property<string>("PriceScheduleDocPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
@@ -1780,8 +1723,8 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("DocPath")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("VARCHAR(1000)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
                     b.Property<string>("DocTitle")
                         .IsRequired()
@@ -1812,8 +1755,8 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("DocumentPath")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("VARCHAR(500)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
                     b.Property<long>("SubmissionId")
                         .HasColumnType("bigint");
@@ -1951,7 +1894,8 @@ namespace MeroBolee.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -1990,16 +1934,13 @@ namespace MeroBolee.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("TenderId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("tender_id");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TermCondition")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("term_condition");
+                        .HasColumnType("VARCHAR(MAX)");
 
                     b.HasKey("Id");
 
@@ -2131,17 +2072,14 @@ namespace MeroBolee.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ActivateDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ActivateDate");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("Code")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Code")
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("Date_created")
@@ -2154,57 +2092,47 @@ namespace MeroBolee.Migrations
 
                     b.Property<string>("Designation")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Designation");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Email");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<DateTime?>("ExpriedDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ExpriedDate");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(100)
-                        .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("FirstName");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<bool>("IsEmailReceiver")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(100)
-                        .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("LastName");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(100)
-                        .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("MiddleName");
-
-                    b.Property<string>("Password")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)")
-                        .HasColumnName("Password");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasMaxLength(100)
                         .HasColumnType("VARCHAR(100)");
 
+                    b.Property<string>("Password")
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR(500)");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
+
                     b.Property<int?>("RoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("RoleId");
+                        .HasColumnType("int");
 
                     b.Property<int?>("StatusId")
-                        .HasColumnType("int")
-                        .HasColumnName("StatusId");
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Username");
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -2227,11 +2155,11 @@ namespace MeroBolee.Migrations
                         {
                             Id = 1L,
                             Code = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 239, DateTimeKind.Local).AddTicks(3170),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 239, DateTimeKind.Local).AddTicks(3180),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 618, DateTimeKind.Local).AddTicks(8764),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 618, DateTimeKind.Local).AddTicks(8770),
                             Email = "super.admin@test.com",
                             FirstName = "Super",
-                            IsEmailReceiver = true,
+                            IsEmailReceiver = false,
                             LastName = "Admin",
                             Password = "ZDztlPNVNo1CxEclyEDngQ==",
                             RoleId = 1,
@@ -2241,11 +2169,11 @@ namespace MeroBolee.Migrations
                         {
                             Id = 2L,
                             Code = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(6805),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(6819),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(424),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(450),
                             Email = "tender.suport@test.com",
                             FirstName = "Tender",
-                            IsEmailReceiver = true,
+                            IsEmailReceiver = false,
                             LastName = "Support",
                             Password = "ZDztlPNVNo1CxEclyEDngQ==",
                             RoleId = 2,
@@ -2255,11 +2183,11 @@ namespace MeroBolee.Migrations
                         {
                             Id = 3L,
                             Code = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7139),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7142),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(987),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(990),
                             Email = "customer.support@test.com",
                             FirstName = "Customer",
-                            IsEmailReceiver = true,
+                            IsEmailReceiver = false,
                             LastName = "Support",
                             Password = "ZDztlPNVNo1CxEclyEDngQ==",
                             RoleId = 3,
@@ -2269,11 +2197,11 @@ namespace MeroBolee.Migrations
                         {
                             Id = 4L,
                             Code = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7242),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7244),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(1027),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(1028),
                             Email = "bid.inviter@test.com",
                             FirstName = "Bid",
-                            IsEmailReceiver = true,
+                            IsEmailReceiver = false,
                             LastName = "Inviter",
                             Password = "ZDztlPNVNo1CxEclyEDngQ==",
                             RoleId = 4,
@@ -2283,11 +2211,11 @@ namespace MeroBolee.Migrations
                         {
                             Id = 5L,
                             Code = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Date_created = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7265),
-                            Date_modified = new DateTime(2022, 1, 20, 11, 55, 47, 248, DateTimeKind.Local).AddTicks(7266),
+                            Date_created = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(1048),
+                            Date_modified = new DateTime(2022, 1, 20, 14, 52, 15, 624, DateTimeKind.Local).AddTicks(1049),
                             Email = "bid.bidder@test.com",
                             FirstName = "Bid",
-                            IsEmailReceiver = true,
+                            IsEmailReceiver = false,
                             LastName = "Bidder",
                             Password = "ZDztlPNVNo1CxEclyEDngQ==",
                             RoleId = 5,
@@ -2302,17 +2230,16 @@ namespace MeroBolee.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Experienced_doc")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("experience_doc");
+                    b.Property<string>("ExperiencedDoc")
+                        .HasMaxLength(1500)
+                        .HasColumnType("VARCHAR(1500)");
 
-                    b.Property<long>("User_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("User_id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("mb_experience_doc");
                 });
@@ -2322,12 +2249,11 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Status");
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
 
                     b.HasKey("Id");
 
@@ -2358,10 +2284,9 @@ namespace MeroBolee.Migrations
 
             modelBuilder.Entity("MeroBolee.Model.VDCEntity", b =>
                 {
-                    b.Property<int>("Vdc_Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("vdc_id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date_created")
@@ -2372,17 +2297,16 @@ namespace MeroBolee.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Date_Modified");
 
-                    b.Property<int?>("District_Id")
-                        .HasColumnType("int")
-                        .HasColumnName("district_id");
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Vdc_Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("vdc");
+                    b.Property<string>("Name")
+                        .HasMaxLength(300)
+                        .HasColumnType("VARCHAR(300)");
 
-                    b.HasKey("Vdc_Id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("District_Id");
+                    b.HasIndex("DistrictId");
 
                     b.ToTable("mb_vdc");
                 });
@@ -2392,20 +2316,16 @@ namespace MeroBolee.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("CompanyId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("company_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("TenderId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("tender_id");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -2538,11 +2458,11 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.MunicipalityEntity", "Municipality")
                         .WithMany()
-                        .HasForeignKey("Municipality_Id");
+                        .HasForeignKey("MunicipalityId");
 
                     b.HasOne("MeroBolee.Model.VDCEntity", "VDC")
                         .WithMany()
-                        .HasForeignKey("Vdc_Id");
+                        .HasForeignKey("VdcId");
 
                     b.Navigation("Municipality");
 
@@ -2623,30 +2543,11 @@ namespace MeroBolee.Migrations
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("MeroBolee.Model.CompanyTypeEntity", b =>
-                {
-                    b.HasOne("MeroBolee.Model.CompanyEntity", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MeroBolee.Model.CompanyTypeLookupEntity", "CompanyTypeLookup")
-                        .WithMany()
-                        .HasForeignKey("CompanyTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyTypeLookup");
-                });
-
             modelBuilder.Entity("MeroBolee.Model.DistrictEntity", b =>
                 {
                     b.HasOne("MeroBolee.Model.ProvinceEntity", "Province")
                         .WithMany()
-                        .HasForeignKey("Province_Id");
+                        .HasForeignKey("ProvinceId");
 
                     b.Navigation("Province");
                 });
@@ -2682,13 +2583,13 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.CategoryEntity", "Category")
                         .WithMany()
-                        .HasForeignKey("Category_id")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MeroBolee.Model.UserEntity", "User")
                         .WithMany()
-                        .HasForeignKey("User_id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2747,7 +2648,7 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.CommonStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("Status_Id")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2758,7 +2659,7 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.DistrictEntity", "District")
                         .WithMany()
-                        .HasForeignKey("District_id");
+                        .HasForeignKey("DistrictId");
 
                     b.Navigation("District");
                 });
@@ -2821,7 +2722,7 @@ namespace MeroBolee.Migrations
 
                     b.HasOne("MeroBolee.Model.TenderEntity", null)
                         .WithMany("Feedbacks")
-                        .HasForeignKey("TenderEntityTender_Id");
+                        .HasForeignKey("TenderEntityId");
 
                     b.HasOne("MeroBolee.Model.TenderEntity", "Tender")
                         .WithMany()
@@ -2850,7 +2751,7 @@ namespace MeroBolee.Migrations
 
                     b.HasOne("MeroBolee.Model.CategoryEntity", "CategoryEntity")
                         .WithMany()
-                        .HasForeignKey("Category_Id")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2868,7 +2769,7 @@ namespace MeroBolee.Migrations
 
                     b.HasOne("MeroBolee.Model.TenderStatusEntity", "TenderStatusEntity")
                         .WithMany()
-                        .HasForeignKey("Tender_Status_Id")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2893,7 +2794,7 @@ namespace MeroBolee.Migrations
 
                     b.HasOne("MeroBolee.Model.TenderEntity", null)
                         .WithMany("ExtraDocuments")
-                        .HasForeignKey("TenderEntityTender_Id");
+                        .HasForeignKey("TenderEntityId");
 
                     b.HasOne("MeroBolee.Model.TenderEntity", "Tender")
                         .WithMany()
@@ -3111,7 +3012,7 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.UserEntity", "User")
                         .WithMany()
-                        .HasForeignKey("User_id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3122,7 +3023,7 @@ namespace MeroBolee.Migrations
                 {
                     b.HasOne("MeroBolee.Model.DistrictEntity", "District")
                         .WithMany()
-                        .HasForeignKey("District_Id");
+                        .HasForeignKey("DistrictId");
 
                     b.Navigation("District");
                 });
