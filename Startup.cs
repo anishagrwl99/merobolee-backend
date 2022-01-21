@@ -322,7 +322,6 @@ namespace MeroBolee
                 DashboardTitle = "Merobolee Background Activities",
                 DisplayStorageConnectionString = false,
             });
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
