@@ -57,9 +57,6 @@ namespace MeroBolee.Dto
 
         public bool IsPostAuctionEmail { get; set; }
 
-
-        [JsonIgnore]
-        public bool IsTenderFound { get; set; }
     }
 
     public class TechnicalSupportEmailResponseDto

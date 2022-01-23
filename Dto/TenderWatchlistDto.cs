@@ -8,33 +8,20 @@ namespace MeroBolee.Dto
 {
     public class TenderWatchlistDto
     {
-        private long tenderId;
-        private string tenderCode;
-        private string tenderTitle;
-        private int categoryId;
-        private WatchCategoryDto category;
-        private string tenderDescription;
-        private DateTime liveStartDate;
-        private DateTime liveEndDate;
-        private int tenderDuration;
-        private string durationType;
-        private DateTime? publishDate;
-    //    private TimeSpan publish_Time;
-        private int statusid;
 
-        public long TenderId { get => tenderId; set => tenderId = value; }
-        public string TenderCode { get => tenderCode; set => tenderCode = value; }
-        public string TenderTitle { get => tenderTitle; set => tenderTitle = value; }
-        public int CategoryId { get => categoryId; set => categoryId = value; }
-        public WatchCategoryDto Category { get => category; set => category = value; }
-        public string TenderDescription { get => tenderDescription; set => tenderDescription = value; }
-       
-        public DateTime LiveStartDate { get => liveStartDate; set => liveStartDate = value; }
-        public DateTime LiveEndDate { get => liveEndDate; set => liveEndDate = value; }
-        public int TenderDuration { get => tenderDuration; set => tenderDuration = value; }
-        public string DurationType { get => durationType; set => durationType = value; }
-        public DateTime? PublishDate { get => publishDate; set => publishDate = value; }
-     //   public TimeSpan Publish_Time { get => publish_Time; set => publish_Time = value; }
-        public int StatusId { get => statusid; set => statusid = value; }
+
+        public long TenderId { get; set; }
+        public string TenderCode { get; set; }
+        public string TenderTitle { get; set; }
+        public int CategoryId { get; set; }
+        public WatchCategoryDto Category { get; set; }
+        public string TenderDescription { get; set; }
+
+        public DateTime LiveStartDate { get; set; }
+        public DateTime LiveEndDate { get; set; }
+        public int TenderDuration { get; set; }
+        public string DurationType { get; set; }
+        public DateTime? PublishDate { get; set; }
+        public int StatusId { get; set; }
     }
 }

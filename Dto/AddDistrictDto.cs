@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,14 +8,13 @@ namespace MeroBolee.Dto
 {
     public class AddDistrictDto
     {
-        private string district;
-        private int provinceId;
+        [Required(ErrorMessage = "District name is required")]
+        [MaxLength(100, ErrorMessage = "District name can be {1} character long")]
+        public string District { get; set; }
 
-
-        public string District { get => district; set => district = value; }
-
-        
-        public int ProvinceId { get => provinceId; set => provinceId = value; }
+        [Required(ErrorMessage = "Province Id is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid province Id")]
+        public int ProvinceId { get; set; }
 
     }
 }

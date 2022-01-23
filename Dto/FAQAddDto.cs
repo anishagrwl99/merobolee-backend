@@ -16,7 +16,7 @@ namespace MeroBolee.Dto
         /// A question of a FAQ section
         /// </summary>
         [Required(ErrorMessage = "FAQ question is required")]
-        [MaxLength(500, ErrorMessage = "FAQ question can be {1} character long")]
+        [MaxLength(1000, ErrorMessage = "FAQ question can be {1} character long")]
         public string Question { get; set; }
 
 
@@ -26,7 +26,7 @@ namespace MeroBolee.Dto
         /// An answer for a FAQ question
         /// </summary>
         [Required(ErrorMessage = "FAQ answer is required")]
-        [MaxLength(1000, ErrorMessage = "FAQ answer can be {1} character long")]
+        [MaxLength(5000, ErrorMessage = "FAQ answer can be {1} character long")]
         public string Answer { get; set; }
     }
 

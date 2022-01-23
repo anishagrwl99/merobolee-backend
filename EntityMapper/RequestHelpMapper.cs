@@ -118,7 +118,8 @@ namespace MeroBolee.EntityMapper
                     Email = requestHelpEntity.Email,
                     Name = requestHelpEntity.Name,
                     Description = requestHelpEntity.Description,
-                    UserId = requestHelpEntity.UserId
+                    UserId = requestHelpEntity.UserId,
+                    PhoneNumber = requestHelpEntity.PhoneNo
                 };
             }
 

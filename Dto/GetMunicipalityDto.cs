@@ -7,14 +7,9 @@ namespace MeroBolee.Dto
 {
     public class GetMunicipalityDto
     {
-        private int id;
-        private string municipality;
-        private int? districtId;
-        private string district;
-
-        public int Id { get => id; set => id = value; }
-        public string Municipality { get => municipality; set => municipality = value; }
-        public int? DistrictId { get => districtId; set => districtId = value; }
-        public string District { get => district; set => district = value; }
+        public int Id { get; set; }
+        public string Municipality { get; set; }
+        public int? DistrictId { get; set; }
+        public string District { get; set; }
     }
 }

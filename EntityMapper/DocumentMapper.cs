@@ -27,11 +27,12 @@ namespace MeroBolee.EntityMapper
         {
             return entities.Select(x => new DocumentResponseDto()
             {
+                DocumentId = x.Id,
                 DocumentStatusId = x.DocumentStatusId,
                 DocumentStatus = x.DocumentStatus.Status,
                 DocumentTypeId = x.DocumentTypeyId,
                 DocumentType = x.DocumentType.TypeName,
-                DocumentPath = $"{baseUrl}{x.DocumentPath.Replace('\\','/')}",
+                DocumentPath = String.IsNullOrEmpty(x.DocumentPath) ? "" : $"{baseUrl}{x.DocumentPath.Replace('\\','/')}",
                 UploadedBy = $"{x.UploadUserEntity.FirstName} {x.UploadUserEntity.LastName}",
                 StatusChangedBy = x.StatusChangedUserEntity != null? $"{x.StatusChangedUserEntity.FirstName} {x.StatusChangedUserEntity.LastName}" : "",
                 Remarks = x.Remarks

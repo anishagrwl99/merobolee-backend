@@ -25,6 +25,11 @@ namespace MeroBolee.Controllers
     public class AuthorizeController : Controller
     {
         internal string _baseUrl, _defaultPic;
+
+        /// <summary>
+        /// Called before the action method is invoked.
+        /// </summary>
+        /// <param name="context">The action executing context.</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             _baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
@@ -47,7 +52,7 @@ namespace MeroBolee.Controllers
             AuthenticateResponse user = HttpContext.Items["RequestUser"] as AuthenticateResponse;
             //return StatusCode(StatusCodes.Status401Unauthorized);
             bool NotExecuteAction = false;
-            if (user.UserStatusId != 1 || user.CompanyStatusId != 4)
+            if (user.UserStatusId != 1)
             {
                 context.HttpContext.Response.StatusCode = 403;
                 NotExecuteAction = true;

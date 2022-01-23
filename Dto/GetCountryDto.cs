@@ -7,16 +7,12 @@ namespace MeroBolee.Dto
 {
     public class GetCountryDto
     {
-        private int id;
-        public int Id { get => id; set => id = value; }
+        public int Id { get; set; }
          
-        private string country;
-        public string Country { get => country; set => country = value; }
+        public string Country { get; set; }
         
-        private string code;
-        public string Code { get => code; set => code = value; }
+        public string Code { get; set; }
         
-        private string abbre;
-        public string Abrre { get => abbre; set => abbre = value; }
+        public string Abrre { get; set; }
     }
 }

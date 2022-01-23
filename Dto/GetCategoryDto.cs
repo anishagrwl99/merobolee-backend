@@ -8,11 +8,8 @@ namespace MeroBolee.Dto
 {
     public class GetCategoryDto
     {
-        private int id;
-        private string category;
-
-        public int Id { get => id; set => id = value; }
-        public string Category { get => category; set => category = value; }
+        public int Id { get; set; }
+        public string Category { get; set; }
        
     }
 }

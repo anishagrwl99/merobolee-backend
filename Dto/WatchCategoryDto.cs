@@ -7,10 +7,7 @@ namespace MeroBolee.Dto
 {
     public class WatchCategoryDto
     {
-        private int id;
-        private string categgory;
-
-        public int Id { get => id; set => id = value; }
-        public string Categgory { get => categgory; set => categgory = value; }
+        public int Id { get; set; }
+        public string Categgory { get; set; }
     }
 }

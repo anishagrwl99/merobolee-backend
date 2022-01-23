@@ -15,6 +15,7 @@ namespace MeroBolee.Dto
        
         public long CompanyId { get; set; }
         public int CompanyStatusId { get; set; }
+        public string CompanyStatus { get; set; }
         public string CompanyName { get; set; }
         public string CompanyEmail { get; set; }
 

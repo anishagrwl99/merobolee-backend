@@ -53,6 +53,8 @@ namespace MeroBolee.Dto
         [Range(minimum:1, maximum: Int32.MaxValue, ErrorMessage = "Invalid province name provided")]
         public int ProvinceId { get; set; }
 
+        [Required(ErrorMessage = "City name is required")]
+        [MaxLength(100, ErrorMessage = "City name can be {1} character long")]
         public string City { get; set; }
 
         [Required(ErrorMessage = "Login user id is required.")]
@@ -68,9 +70,10 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Address line 2 is required")]
         [MaxLength(50, ErrorMessage = "Address line 2 can be {1} character long")]
         public string Address2 { get; set; }
+
         public string Address3 { get; set; }
 
-        [MaxLength(10, ErrorMessage = "Address line 2 can be {1} character long")]
+        [MaxLength(10, ErrorMessage = "Zip can be {1} character long")]
         public string Zip { get; set; }
 
 

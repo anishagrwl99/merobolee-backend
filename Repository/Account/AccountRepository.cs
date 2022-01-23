@@ -56,6 +56,7 @@ namespace MeroBolee.Repository
                 var user = from u in meroBoleeDbContexts.UserEntities
                            join uc in meroBoleeDbContexts.UserCompanies on u.Id equals uc.UserId
                            join c in meroBoleeDbContexts.CompanyEntities on uc.CompanyId equals c.CompanyId
+                           join cs in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals cs.Id
                            join r in meroBoleeDbContexts.RoleEntities on u.RoleId equals r.Id
                            where u.Email == request.Email && u.Password == request.Password && c.RegisteredAs.Contains(registeredAs.ToString())
                            select new AuthenticateResponse
@@ -72,7 +73,8 @@ namespace MeroBolee.Repository
                                CompanyId = c.CompanyId,
                                CompanyName = c.Name,
                                CompanyEmail = c.CompanyEmail,
-                               CompanyStatusId = c.CompanyStatusId == null ? 0 : c.CompanyStatusId.Value
+                               CompanyStatusId = c.CompanyStatusId == null ? 0 : c.CompanyStatusId.Value,
+                               CompanyStatus = cs.Status
                            };
 
                 return user.FirstOrDefault();

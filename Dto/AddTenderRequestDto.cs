@@ -50,7 +50,12 @@ namespace MeroBolee.Dto
 
         [Range(0, double.MaxValue, ErrorMessage = "Invalid max quotation")]
         public decimal MaxQuotation { get; set; }
+
+
+        [Required(ErrorMessage = "Tender title is requird")]
         public string TenderDocTitle { get; set; }
+
+
         public IFormFile TenderDetailDoc { get; set; }
         public IFormFile TenderTermsAndConditionDoc { get; set; }
 

@@ -31,9 +31,10 @@ namespace MeroBolee.EntityMapper
                 Password = obj.Password,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now,
-                RoleId = companyTypeEnum == CompanyTypeEnum.Bidder ? 3 : 2, //Bidder(Supplier) role
+                RoleId = companyTypeEnum == CompanyTypeEnum.Bidder ? 5 : 4, //Bidder(Supplier) role
                 StatusId = 1, //Registered status
-                IsEmailReceiver = true
+                IsEmailReceiver = true,
+                ProfilePicture = ""
             };
         }
 
@@ -122,7 +123,7 @@ namespace MeroBolee.EntityMapper
 
 
             getUser.UserId = userEntity.Id;
-            getUser.CompanyCode = userEntity.Code;
+            getUser.UserCode = userEntity.Code;
             getUser.FirstName = userEntity.FirstName;
             getUser.MiddleName = userEntity.MiddleName;
             getUser.LastName = userEntity.LastName;

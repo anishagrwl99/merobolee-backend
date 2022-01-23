@@ -24,7 +24,7 @@ namespace MeroBolee.Dto
 
 
         [Required(ErrorMessage = "Query is required")]
-        [MaxLength(1000, ErrorMessage = "Query can be {1} character long")]
+        [MaxLength(5000, ErrorMessage = "Query can be {1} character long")]
         public string Query { get; set; }
     }
 }

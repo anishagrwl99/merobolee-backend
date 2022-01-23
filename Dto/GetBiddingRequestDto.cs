@@ -16,11 +16,6 @@ namespace MeroBolee.Dto
 
     }
 
-    public class BidWinningDto
-    {
-        public long TenderId { get; set; }
-        public long CompanyId { get; set; }
-    }
     public class BidHistoryCardDto : BidCardDto
     {
         public bool IsWinner { get; set; }

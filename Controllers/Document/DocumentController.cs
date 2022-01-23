@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace MeroBolee.Controllers
     /// <summary>
     /// Document endpoint controller
     /// </summary>
-    public class DocumentController : BaseController
+    public class DocumentController : Controller
     {
         private readonly ICompanyDocumentService documentService;
         private readonly IDocumentTypeService docTypeService;
@@ -41,7 +42,8 @@ namespace MeroBolee.Controllers
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("Document/Type")]       
+        [HttpGet("Document/Type")]
+        [AllowAnonymous]
         public IActionResult GetDocumentType([FromQuery] PaginationQuery pagination)
         {
             try
@@ -57,11 +59,11 @@ namespace MeroBolee.Controllers
                 }
                 return Ok(ResultAfterPagination(docTypes, pagination, totalCount)); // To pass result in object along with paginatio
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -73,18 +75,16 @@ namespace MeroBolee.Controllers
         /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Document/List")]
+        [AllowAnonymous]
         public IActionResult GetCompanyDocument([FromQuery] PaginationQuery pagination, [FromQuery] int companyId)
 
         {
             try
             {
-                string url = Url.Action("GetCompanyDocument", null, null, Request.Scheme); //get url for current request
+                string url = Url.Action("GetCompanyDocument", null, new { companyId = companyId}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
-                string baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
-    //            string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority +
-    //Request.ApplicationPath.TrimEnd('/') + "/";
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<DocumentResponseDto> docs = documentService.GetAllDocument(companyId, baseUrl);
+                string _baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                IEnumerable<DocumentResponseDto> docs = documentService.GetAllDocument(companyId, _baseUrl);
                 int totalCount = docs.Count();
                 if (totalCount == 0)
                 {
@@ -92,35 +92,37 @@ namespace MeroBolee.Controllers
                 }
                 return Ok(ResultAfterPagination(docs, pagination, totalCount)); // To pass result in object along with paginatio
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
 
         /// <summary>
-        /// Upload a document by document type
+        /// Upload a document by document type (init var: document)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="document"></param>
         /// <returns></returns>
         /// 
         [HttpPost("Document/Upload")]
-        public async Task<IActionResult> Upload([FromForm] DocumentDto model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Upload([FromForm] DocumentDto document)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    DocumentDto doc = await documentService.AddDocument(model);
+                    DocumentDto doc = await documentService.AddDocument(document);
                     return Ok(new Responses<DocumentDto>(doc, "200", "Record is successfully added"));
                 }
                 else
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
@@ -140,7 +142,7 @@ namespace MeroBolee.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Document/ChangeStatus")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Admin, Tender Support, Customer Support")]
         public IActionResult ChangeStatus([FromBody] DocumentUpdateStatusDto dto)
 
         {
@@ -155,6 +157,7 @@ namespace MeroBolee.Controllers
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
@@ -162,7 +165,7 @@ namespace MeroBolee.Controllers
             catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;//"Something went wrong";
+                response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);//"Something went wrong";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

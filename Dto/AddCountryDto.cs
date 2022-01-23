@@ -17,7 +17,7 @@ namespace MeroBolee.Dto
         public string Code { get; set; }
 
         [Required(ErrorMessage = "Country code is required")]
-        [MaxLength(3, ErrorMessage = "Country code can be {1} character long")]
+        [MaxLength(5, ErrorMessage = "Country code can be {1} character long")]
         public string Abrre { get; set; }
     }
     

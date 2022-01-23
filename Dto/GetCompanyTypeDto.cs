@@ -7,9 +7,7 @@ namespace MeroBolee.Dto
 {
     public class GetCompanyTypeDto
     {
-        private int id;
-        private string companytype;
-        public int Id { get => id; set => id = value; }
-        public string CompanyType { get => companytype; set => companytype = value; }
+        public int Id { get; set; }
+        public string CompanyType { get; set; }
     }
 }

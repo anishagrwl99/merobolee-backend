@@ -54,6 +54,8 @@ namespace MeroBolee.Dto
 
     public class UpdateRegistrationForTenderDto : TenderRegistrationDto
     {
+        [Required(ErrorMessage = "Bid id is required")]
+        [Range(1, (double)int.MaxValue, ErrorMessage = "Invalid Bid id")]
         public long BidId { get; set; }
         public List<TenderSubmissionAdditionalDocumentResponseDto> Documents { get; set; }
     }
