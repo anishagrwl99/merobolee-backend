@@ -11,13 +11,13 @@ namespace MeroBolee.Repository
 {
     public interface ICompanyRepository : IRepositoryBase<CompanyEntity>
     {
-        CompanyEntity AddCompany(CompanyEntity companyEntity, long userId);
-        UserEntity AddUser(long companyId, UserEntity user);
+        Task<CompanyEntity> AddCompany(CompanyEntity companyEntity, long userId);
+        Task<UserEntity> AddUser(long companyId, UserEntity user);
         Task<List<CompanyEntity>> GetCompany(string search);
         Task<CompanyEntity> GetCompany(long companyId);
         Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
 
-        CompanyEntity UpdateCompany(CompanyEntity companyEntity);
+        Task<CompanyEntity> UpdateCompany(CompanyEntity companyEntity);
 
         Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent);
 
@@ -26,25 +26,38 @@ namespace MeroBolee.Repository
     public class CompanyRepository : RepositoryBase<CompanyEntity>, ICompanyRepository
     {
         private readonly IUnitOfWork unitOfWork;
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompanyRepository"/> class.
+        /// </summary>
+        /// <param name="dbFactory">The database factory.</param>
+        /// <param name="unitOfWork">The unit of work.</param>
         public CompanyRepository(IDbFactory dbFactory, IUnitOfWork unitOfWork) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
         }
 
-        public CompanyEntity AddCompany(CompanyEntity companyEntity, long userId)
+        /// <summary>
+        /// Adds the company.
+        /// </summary>
+        /// <param name="companyEntity">The company entity.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns></returns>
+        public async Task<CompanyEntity> AddCompany(CompanyEntity companyEntity, long userId)
         {
             try
             {
                 companyEntity.Date_created = companyEntity.Date_modified = DateTime.Now;
                 meroBoleeDbContexts.CompanyEntities.Add(companyEntity);
-                unitOfWork.SaveChange();
+                await unitOfWork.SaveChangesAsync();
                 UserCompany uc = new UserCompany
                 {
                     CompanyId = companyEntity.CompanyId,
                     UserId = userId
                 };
                 meroBoleeDbContexts.UserCompanies.Add(uc);
-                unitOfWork.SaveChange();
+                await unitOfWork.SaveChangesAsync();
                 return companyEntity;
             }
             catch (Exception)
@@ -53,19 +66,25 @@ namespace MeroBolee.Repository
             }
         }
 
-        public UserEntity AddUser(long companyId, UserEntity user)
+        /// <summary>
+        /// Adds the user.
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        public async Task<UserEntity> AddUser(long companyId, UserEntity user)
         {
             try
             {
                 meroBoleeDbContexts.UserEntities.Add(user);
-                unitOfWork.SaveChange();
+                await unitOfWork.SaveChangesAsync();
                 UserCompany uc = new UserCompany
                 {
                     CompanyId = companyId,
                     UserId = user.Id
                 };
                 meroBoleeDbContexts.UserCompanies.Add(uc);
-                unitOfWork.SaveChange();
+                await unitOfWork.SaveChangesAsync();
                 return user;
             }
             catch (Exception)
@@ -75,6 +94,11 @@ namespace MeroBolee.Repository
         }
 
 
+        /// <summary>
+        /// Gets the company detail.
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <returns></returns>
         public async Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId)
         {
             try
@@ -136,6 +160,12 @@ namespace MeroBolee.Repository
             }
         }
 
+
+        /// <summary>
+        /// Gets the company.
+        /// </summary>
+        /// <param name="search">The search.</param>
+        /// <returns></returns>
         public async Task<List<CompanyEntity>> GetCompany(string search)
         {
             try
@@ -163,7 +193,14 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
-        
+
+
+
+        /// <summary>
+        /// Gets the company.
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <returns></returns>
         public async Task<CompanyEntity> GetCompany(long companyId)
         {
             try
@@ -177,12 +214,20 @@ namespace MeroBolee.Repository
             }
         }
 
-        public CompanyEntity UpdateCompany(CompanyEntity obj)
+
+
+        /// <summary>
+        /// Updates the company.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
+        public async Task<CompanyEntity> UpdateCompany(CompanyEntity obj)
         {
             try
             {
                 meroBoleeDbContexts.CompanyEntities.Update(obj);
-                unitOfWork.SaveChange();
+                await unitOfWork.SaveChangesAsync();
 
                 return obj;
             }
@@ -194,6 +239,11 @@ namespace MeroBolee.Repository
         }
 
 
+        /// <summary>
+        /// Changes the company status.
+        /// </summary>
+        /// <param name="ent">The ent.</param>
+        /// <returns></returns>
         public async Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent)
         {
             try

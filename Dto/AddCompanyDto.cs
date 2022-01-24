@@ -108,7 +108,6 @@ namespace MeroBolee.Dto
         [Range(minimum:1, maximum: long.MaxValue, ErrorMessage = "Company id is outside of range. Acceptable range is {1} to {2}")]
         public long CompanyId { get; set; }
 
-        public string ReferenceCode { get; set; }
     }
 
     public class CompanyDetailResponse: CompanyDetailResponseDto

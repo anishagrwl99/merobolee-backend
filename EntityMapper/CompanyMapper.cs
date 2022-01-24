@@ -74,7 +74,6 @@ namespace MeroBolee.EntityMapper
                 CompanyId = entity.CompanyId,
                 CompanyName = entity.Name,
                 PANNumber = entity.PANNumber,
-                ReferenceCode = entity.ReferenceCode,
                 CountryId = entity.CountryId,
                 ProvinceId = entity.ProvinceId,
                 Address1 = entity.Address1,

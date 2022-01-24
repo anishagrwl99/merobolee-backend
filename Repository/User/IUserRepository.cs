@@ -12,7 +12,7 @@ namespace MeroBolee.Repository
     public interface IUserRepository : IRepositoryBase<UserEntity>
     {
         Task<UserEntity> AddUser(UserEntity user);
-        IEnumerable<UserEntity> GetAllUser(string search);
+        Task<IEnumerable<UserEntity>> GetAllUser(long companyId);
         Task<Tuple<UserEntity, List<CompanyEntity>>> GetUserDetail(long id);
         Task<UserEntity> GetUserInfoDetail(long id);
         Task<UserEntity> UpdateUser(UserEntity user);

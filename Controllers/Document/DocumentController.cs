@@ -16,7 +16,7 @@ namespace MeroBolee.Controllers
     /// <summary>
     /// Document endpoint controller
     /// </summary>
-    public class DocumentController : Controller
+    public class DocumentController : AuthorizeController
     {
         private readonly ICompanyDocumentService documentService;
         private readonly IDocumentTypeService docTypeService;
@@ -43,7 +43,6 @@ namespace MeroBolee.Controllers
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("Document/Type")]
-        [AllowAnonymous]
         public IActionResult GetDocumentType([FromQuery] PaginationQuery pagination)
         {
             try
@@ -75,7 +74,6 @@ namespace MeroBolee.Controllers
         /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Document/List")]
-        [AllowAnonymous]
         public IActionResult GetCompanyDocument([FromQuery] PaginationQuery pagination, [FromQuery] int companyId)
 
         {
@@ -108,7 +106,6 @@ namespace MeroBolee.Controllers
         /// <returns></returns>
         /// 
         [HttpPost("Document/Upload")]
-        [AllowAnonymous]
         public async Task<IActionResult> Upload([FromForm] DocumentDto document)
         {
             try

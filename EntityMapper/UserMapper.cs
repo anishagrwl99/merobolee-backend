@@ -1,4 +1,5 @@
 ﻿using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -130,7 +131,7 @@ namespace MeroBolee.EntityMapper
             getUser.Designation = userEntity.Designation;
             getUser.PersonEmail = userEntity.Email;
             getUser.Username = userEntity.Username;
-            getUser.Password = userEntity.Password;
+            getUser.Password = "";
             getUser.RoleId = userEntity.RoleId;
             getUser.StatusId = userEntity.StatusId;
             getUser.ActivateDate = userEntity.ActivateDate;
@@ -183,22 +184,32 @@ namespace MeroBolee.EntityMapper
         /// user entity to dto
         /// </summary>
         /// <param name="user"></param>
+        /// <param name="uploadFile"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="defaultImage"></param>
         /// <returns></returns>
-        public IEnumerable<GetUserDto> UserEntityListToDto(IEnumerable<UserEntity> user)
+        public IEnumerable<GetUserDto> UserEntityListToDto(IEnumerable<UserEntity> user, IUploadFile uploadFile, string baseUrl, string defaultImage)
         {
-
-            List<GetUserDto> getUsers = new();
             if (user == null)
             {
                 return null;
             }
 
+            List<GetUserDto> getUsers = new();
             foreach (UserEntity userEntity in user)
             {
-                getUsers.Add
-                (
-                    UserEntityToDto(userEntity)
-                );
+                GetUserDto userDto = UserEntityToDto(userEntity);
+                
+                bool fileExists = uploadFile.FileExists(userEntity.ProfilePicture).Result;
+                if (!fileExists)
+                {
+                    userDto.ProfilePicture = defaultImage;
+                }
+                else
+                {
+                    userDto.ProfilePicture = $"{baseUrl}{userEntity.ProfilePicture.Replace("\\", "/")}";
+                }
+                getUsers.Add(userDto);
             }
             return getUsers;
         }

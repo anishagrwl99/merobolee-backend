@@ -12,12 +12,48 @@ namespace MeroBolee.Service
 {
     public interface ICompanyService
     {
-        AddCompanyResponseDto AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs);
-        AddUserReponseDto AddUser(long companyId, AddUserDto user, int role);
+
+        /// <summary>
+        /// Adds the company.
+        /// </summary>
+        /// <param name="companyDto">The company dto.</param>
+        /// <param name="RegisteredAs">The registered as.</param>
+        /// <returns></returns>
+        Task<AddCompanyResponseDto> AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs);
+
+
+        /// <summary>
+        /// Adds the user.
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="user">The user.</param>
+        /// <param name="role">The role.</param>
+        /// <returns></returns>
+        Task<AddUserReponseDto> AddUser(long companyId, AddUserDto user, int role);
+
+        /// <summary>
+        /// Gets the company.
+        /// </summary>
+        /// <param name="search">The search.</param>
+        /// <returns></returns>
         Task<List<CompanyCardResponseDto>> GetCompany(string search);
+
+        /// <summary>
+        /// Gets the company detail.
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="baseUrl">The base URL.</param>
+        /// <param name="defaultPic">The default pic.</param>
+        /// <returns></returns>
         Task<CompanyDetailResponse> GetCompanyDetail(long companyId, string baseUrl, string defaultPic);
 
-        AddCompanyResponseDto UpdateCompany(long id, AddCompanyDto company, CompanyTypeEnum RegisteredAs);
+
+        /// <summary>
+        /// Updates the company.
+        /// </summary>
+        /// <param name="company">The company.</param>
+        /// <returns></returns>
+        Task<AddCompanyResponseDto> UpdateCompany(AddCompanyResponseDto company);
 
 
         /// <summary>
@@ -29,30 +65,51 @@ namespace MeroBolee.Service
 
     }
 
+
+    /// <summary>
+    /// CompanyService 
+    /// </summary>
+    /// <seealso cref="MeroBolee.EntityMapper.CompanyMapper" />
+    /// <seealso cref="MeroBolee.Service.ICompanyService" />
     public class CompanyService : CompanyMapper, ICompanyService
     {
-        private readonly ICompanyRepository CompanyRepository;
+        private readonly ICompanyRepository companyRepository;
         private readonly IReferenceCodeService referenceCodeService;
         private readonly ICryptoService cryptoService;
         private readonly IUploadFile fileService;
 
-        public CompanyService(ICompanyRepository CompanyRepository,
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompanyService"/> class.
+        /// </summary>
+        /// <param name="companyRepository">The company repository.</param>
+        /// <param name="referenceCodeService">The reference code service.</param>
+        /// <param name="cryptoService">The crypto service.</param>
+        /// <param name="fileService">The file service.</param>
+        public CompanyService(ICompanyRepository companyRepository,
                                 IReferenceCodeService referenceCodeService,
                                 ICryptoService cryptoService,
                                 IUploadFile fileService)
         {
-            this.CompanyRepository = CompanyRepository;
+            this.companyRepository = companyRepository;
             this.referenceCodeService = referenceCodeService;
             this.cryptoService = cryptoService;
             this.fileService = fileService;
         }
 
-        public AddCompanyResponseDto AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs)
+
+        /// <summary>
+        /// Adds the company.
+        /// </summary>
+        /// <param name="companyDto">The company dto.</param>
+        /// <param name="RegisteredAs">The registered as.</param>
+        /// <returns></returns>
+        public async Task<AddCompanyResponseDto> AddCompany(AddCompanyDto companyDto, CompanyTypeEnum RegisteredAs)
         {
             try
             {
                 CompanyEntity ent = AddCompanyDtoToEntity(companyDto, RegisteredAs);
-                ent = CompanyRepository.AddCompany(ent, companyDto.UserId);
+                ent = await companyRepository.AddCompany(ent, companyDto.UserId);
 
                 if (RegisteredAs == CompanyTypeEnum.Bidder)
                 {
@@ -63,7 +120,7 @@ namespace MeroBolee.Service
                     ent.ReferenceCode = referenceCodeService.GenerateCode(ReferenceEnum.BidInviter).Result + ent.CompanyId.ToString("D3");
                 }
                 ent.FolderName = ent.CompanyId.ToString("D3") + ent.Name.GetFirstCharString();
-                CompanyRepository.UpdateCompany(ent);
+                await companyRepository.UpdateCompany(ent);
 
                 return CompanyEntityToResponseDto(ent);
             }
@@ -74,7 +131,7 @@ namespace MeroBolee.Service
             }
         }
 
-        public AddUserReponseDto AddUser(long companyId, AddUserDto user, int role)
+        public async Task<AddUserReponseDto> AddUser(long companyId, AddUserDto user, int role)
         {
             UserEntity entity = UserDtoToEntity(user);
             if (entity != null)
@@ -83,7 +140,7 @@ namespace MeroBolee.Service
                 entity.RoleId = role;
                 entity.StatusId = 1;
                 entity.IsEmailReceiver = true;
-                entity = CompanyRepository.AddUser(companyId, entity);
+                entity = await companyRepository.AddUser(companyId, entity);
                 return UserEntityToResponse(entity);
             }
             return null;
@@ -94,7 +151,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                List<CompanyEntity> companies = await CompanyRepository.GetCompany(search);
+                List<CompanyEntity> companies = await companyRepository.GetCompany(search);
                 List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
                 foreach (CompanyEntity item in companies)
                 {
@@ -115,7 +172,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await CompanyRepository.GetCompanyDetail(companyId);
+                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await companyRepository.GetCompanyDetail(companyId);
                 if (resp != null)
                 {
                     CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
@@ -131,9 +188,43 @@ namespace MeroBolee.Service
             }
         }
 
-        public AddCompanyResponseDto UpdateCompany(long id, AddCompanyDto company, CompanyTypeEnum RegisteredAs)
+        /// <summary>
+        /// Updates the company.
+        /// </summary>
+        /// <param name="company">The company.</param>
+        /// <returns></returns>
+        public async Task< AddCompanyResponseDto> UpdateCompany(AddCompanyResponseDto company)
         {
-            throw new NotImplementedException();
+            try
+            {
+                CompanyEntity comp = await companyRepository.GetCompany(company.CompanyId);
+                if (comp != null)
+                {
+                    comp.Name = company.CompanyName;
+                    comp.PANNumber = company.PANNumber;
+                    comp.CountryId = company.CountryId;
+                    comp.ProvinceId = company.ProvinceId;
+                    comp.City = company.City;
+                    comp.Address1 = company.Address1;
+                    comp.Address2 = company.Address2;
+                    comp.Address3 = company.Address3;
+                    comp.Zip = company.Zip;
+                    comp.ContactPerson = company.ContactPerson;
+                    comp.CompanyEmail = company.CompanyEmail;
+                    comp.CompanyWebsite = company.CompanyWebsite;
+                    comp.Phone1 = company.Phone1;
+                    comp.Phone2 = company.Phone2;
+                    await companyRepository.UpdateCompany(comp);
+                    return company;
+                }
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
 
@@ -147,10 +238,10 @@ namespace MeroBolee.Service
         {
             try
             {
-                CompanyEntity ent = await CompanyRepository.GetCompany(dto.CompanyId);
+                CompanyEntity ent = await companyRepository.GetCompany(dto.CompanyId);
                 ent.Date_modified = DateTime.Now;
                 ent.CompanyStatusId = dto.StatusId;
-                ent = await CompanyRepository.ChangeCompanyStatus(ent);
+                ent = await companyRepository.ChangeCompanyStatus(ent);
                 return new ChangeCompanyStatusResponseDto
                 {
                     CompanyId = dto.CompanyId,

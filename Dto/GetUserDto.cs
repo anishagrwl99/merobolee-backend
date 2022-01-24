@@ -21,6 +21,7 @@ namespace MeroBolee.Dto
         public string PersonEmail { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string ProfilePicture { get; set; }
         public DateTime? ActivateDate { get; set; }
         public DateTime? ExpriedDate { get; set; }
     }

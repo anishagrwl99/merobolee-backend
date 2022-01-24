@@ -23,7 +23,7 @@ namespace MeroBolee.Service
             this.cryptoService = cryptoService;
             this.uploadImage = uploadFileService;
         }
-        public async Task<GetUserDto> AddUser(AddUserDto userDto/*, IFormFile frontCitizenship, IFormFile backCitizenship, IFormFile taxClearance, IFormFile PANRegistration, IFormFile companyRegistration, IFormFile experienceDoc, IFormFile bankCreditLetter*/)
+        public async Task<GetUserDto> AddUser(AddUserDto userDto)
         {
             UserEntity user = UserDtoEntity(userDto);
             user.Password = cryptoService.Encrypt(user.Password);
@@ -38,9 +38,10 @@ namespace MeroBolee.Service
             }
         }
 
-        public IEnumerable<GetUserDto> GetUser(string search)
+        public async Task< IEnumerable<GetUserDto>> GetUser(long companyId, string baseUrl, string defaultImage)
         {
-            return UserEntityListToDto(userRepository.GetAllUser(search));
+            IEnumerable<UserEntity> users = await userRepository.GetAllUser(companyId);
+            return UserEntityListToDto(users, uploadImage, baseUrl, defaultImage);
         }
 
         public async Task<UserDetailDto> GetUserDetail(long id, string baseUrl, string defaultPic)

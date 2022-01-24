@@ -14,6 +14,10 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.User
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="MeroBolee.Controllers.BaseController" />
     public class UserController : BaseController
     {
         private readonly IUserService userService;
@@ -22,34 +26,48 @@ namespace MeroBolee.Controllers.User
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
 
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="userService">The user service.</param>
+        /// <param name="defaultOption">The default option.</param>
         public UserController(IUserService userService, IOptions<AppDefaults> defaultOption)
         {
             this.userService = userService;
             this.defaultOption = defaultOption.Value;
         }
-        
+
 
         /// <summary>
         /// To display all user by Admin
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="search"></param>
+        /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("User")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> GetAll([FromQuery] PaginationQuery pagination, [FromQuery] long companyId)
         {
             try
             {
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetUserDto> user = userService.GetUser(search);
-                int totalCount = user.Count();
-                if (totalCount == 0)
+                if (companyId > 0)
                 {
-                    return NotFound(new Responses<IEnumerable<GetUserDto>>(user, "404", "Record not found"));
+                    string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    string _defaultPic = $"{_baseUrl}{defaultOption.DefaultProfilePicture}";
+                    IEnumerable<GetUserDto> user = await userService.GetUser(companyId, _baseUrl, _defaultPic);
+                    int totalCount = user.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<IEnumerable<GetUserDto>>(user, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(user, pagination, totalCount)); // To pass result in object along with pagination info
                 }
-                return Ok(ResultAfterPagination(user, pagination, totalCount)); // To pass result in object along with pagination info
+                else
+                {
+                    return NotFound(new Responses<IEnumerable<GetUserDto>>(null, "404", "Record not found"));
+                }
             }
             catch (Exception e)
             {

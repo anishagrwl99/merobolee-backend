@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.City
 {
+    /// <summary>
+    /// 
+    /// </summary>
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Bid Inviter, Bidder")]
     public class CompanyController : BaseController
     {
@@ -26,6 +29,11 @@ namespace MeroBolee.Controllers.City
         private readonly AppDefaults defaultOption;
         private IUriService uriService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompanyController"/> class.
+        /// </summary>
+        /// <param name="companyService">The company service.</param>
+        /// <param name="defaultOption">The default option.</param>
         public CompanyController(ICompanyService companyService, IOptions<AppDefaults> defaultOption)
         {
             this.companyService = companyService;
@@ -39,13 +47,13 @@ namespace MeroBolee.Controllers.City
         /// <returns></returns>
         [HttpPost("Company/BidInviter/Add")]
         [Authorize(Roles = "Bid Inviter")]
-        public IActionResult AddBidInviterCompany([FromBody] AddCompanyDto addCompany)
+        public async Task<IActionResult> AddBidInviterCompany([FromBody] AddCompanyDto addCompany)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AddCompanyResponseDto response = companyService.AddCompany(addCompany, CompanyTypeEnum.BidInviter);
+                    AddCompanyResponseDto response = await companyService.AddCompany(addCompany, CompanyTypeEnum.BidInviter);
                     //if (getCity.Id == 0)
                     //{
                     //    response.statusCode = "400";
@@ -66,15 +74,15 @@ namespace MeroBolee.Controllers.City
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
-                    
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -86,19 +94,13 @@ namespace MeroBolee.Controllers.City
         /// <returns></returns>
         [HttpPost("Company/Bidder/Add")]
         [Authorize(Roles = "Bidder")]
-        public IActionResult AddBidderCompany([FromBody] AddCompanyDto addCompany)
+        public async Task<IActionResult> AddBidderCompany([FromBody] AddCompanyDto addCompany)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AddCompanyResponseDto response = companyService.AddCompany(addCompany, CompanyTypeEnum.Bidder);
-                    //if (getCity.Id == 0)
-                    //{
-                    //    response.statusCode = "400";
-                    //    response.Message = "Invalid District";
-                    //    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    //}
+                    AddCompanyResponseDto response = await companyService.AddCompany(addCompany, CompanyTypeEnum.Bidder);
                     if (response != null)
                     {
                         return Ok(new Responses<AddCompanyResponseDto>(response, "200", "Record is successfully added"));
@@ -113,40 +115,40 @@ namespace MeroBolee.Controllers.City
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
-
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
 
         /// <summary>
-        /// To update bid inviter company
+        /// To update registered companies
         /// </summary>
         /// <param name="company">Request payload</param>
         /// <returns></returns>
-        [HttpPut("Company/BidInviter/Update")]
-        [Authorize(Roles = "Bid Inviter")]
-        public IActionResult UpdateBidInviterCompany([FromBody] AddCompanyResponseDto company)
+        [HttpPut("Company/Admin/Update")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> UpdateBidInviterCompany([FromBody] AddCompanyResponseDto company)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AddCompanyResponseDto response = companyService.UpdateCompany(company.CompanyId, company, CompanyTypeEnum.BidInviter);
-                    if (response != null)
+                    AddCompanyResponseDto resp = await companyService.UpdateCompany(company);
+                    if (resp != null)
                     {
-                        return Ok(new Responses<AddCompanyResponseDto>(response, "200", "Record is successfully added"));
+                        return Ok(new Responses<AddCompanyResponseDto>(resp, "200", "Record is successfully added"));
                     }
                     else
                     {
-                        return StatusCode(StatusCodes.Status500InternalServerError, new Responses<AddCompanyResponseDto>(null, "500", "Could not add company"));
+                        return StatusCode(StatusCodes.Status500InternalServerError, new Responses<AddCompanyResponseDto>(null, "500", "Could not update company"));
                     }
 
                 }
@@ -154,60 +156,17 @@ namespace MeroBolee.Controllers.City
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
-
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
-
-
-
-        /// <summary>
-        /// To update bidder (supplier) company
-        /// </summary>
-        /// <param name="company">Request payload</param>
-        /// <returns></returns>
-        [HttpPut("Company/Bidder/Update")]
-        [Authorize(Roles = "Bidder")]
-        public IActionResult UpdateBidderCompany([FromBody] AddCompanyResponseDto company)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    AddCompanyResponseDto response = companyService.UpdateCompany(company.CompanyId, company, CompanyTypeEnum.Bidder);
-                    if (response != null)
-                    {
-                        return Ok(new Responses<AddCompanyResponseDto>(response, "200", "Record is successfully added"));
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, new Responses<AddCompanyResponseDto>(null, "500", "Could not add company"));
-                    }
-
-                }
-                else
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-
-                    return StatusCode(StatusCodes.Status400BadRequest, ModelState);
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
 
 
         /// <summary>
@@ -217,13 +176,13 @@ namespace MeroBolee.Controllers.City
         /// <returns></returns>
         [HttpPost("Company/BidInviter/AddUser")]
         [Authorize(Roles = "Bid Inviter")]
-        public IActionResult AddBidInviterCompanyUser([FromBody] AddUserDto user)
+        public async Task<IActionResult> AddBidInviterCompanyUser([FromBody] AddUserDto user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AddUserReponseDto response = companyService.AddUser(user.CompanyId, user,2);
+                    AddUserReponseDto response = await companyService.AddUser(user.CompanyId, user,2);
                     if (response != null)
                     {
                         return Ok(new Responses<AddUserReponseDto>(response, "200", "Record is successfully added"));
@@ -238,14 +197,14 @@ namespace MeroBolee.Controllers.City
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
-
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -260,13 +219,13 @@ namespace MeroBolee.Controllers.City
         /// <returns></returns>
         [HttpPost("Company/Bidder/AddUser")]
         [Authorize(Roles = "Bidder")]
-        public IActionResult AddBidderCompanyUser([FromBody] AddUserDto user)
+        public async Task<IActionResult> AddBidderCompanyUser([FromBody] AddUserDto user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    AddUserReponseDto response = companyService.AddUser(user.CompanyId, user,3);
+                    AddUserReponseDto response = await companyService.AddUser(user.CompanyId, user,3);
                     if (response != null)
                     {
                         return Ok(new Responses<AddUserReponseDto>(response, "200", "Record is successfully added"));
@@ -281,14 +240,14 @@ namespace MeroBolee.Controllers.City
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
-
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -318,7 +277,7 @@ namespace MeroBolee.Controllers.City
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -357,7 +316,7 @@ namespace MeroBolee.Controllers.City
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }

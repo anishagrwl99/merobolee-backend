@@ -169,37 +169,64 @@ namespace MeroBolee
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<IReferenceCodeService, ReferenceCodeService>();
             services.AddScoped<IUploadFile, FileUpload>();
+            services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
+            //Database
             services.AddScoped<IDbFactory, DbFactory>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            //Role
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IRoleService, RoleService>();
+
+            //Country
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICountryService, CountryService>();
+
+            //Province
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
             services.AddScoped<IProvinceService, ProvinceService>();
+
+            //Category
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             
+            //Company Type
             services.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
             services.AddScoped<ICompanyTypeService, CompanyTypeService>();
+
+            //User
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            //Membership
             services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
             services.AddScoped<IMembershipTypeService, MembershipTypeService>();
+
+            //Favourite Category
             services.AddScoped<IFavouriteCategoryRepository, FavouriteCategoryRepository>();
             services.AddScoped<IFavouriteCategoryService, FavouriteCategoryService>();
+
+            //Tender 
             services.AddScoped<ITenderRepository, TenderRepository>();
             services.AddScoped<ITenderService, TenderService>();
+
+            //Watchlist
             services.AddScoped<IWatchListRepository, WatchListRepository>();
             services.AddScoped<IWatchListService, WatchListService>();
+
+            //Bidding
             services.AddScoped<IBiddingRequestService, BiddingRequestService>();
             services.AddScoped<IBidderRequestRepository, BidderRequestRepository>();
+
+            //FAQ
             services.AddScoped<IFAQRepository, FAQRepository>();
             services.AddScoped<IFAQService, FAQService>();
+
+            //Technical Support
             services.AddScoped<ITechnicalSupportRepository, TechnicalSupportRepository>();
             services.AddScoped<ITechnicalSupportService, TechnicalSupportService>();
-            services.AddScoped<ISMTPEmailService, SMTPEmailService>();
+            
 
             //status
             services.AddScoped<IStatusService, StatusService>();
@@ -267,7 +294,7 @@ namespace MeroBolee
                     DisableGlobalLocks = true
                 }));
 
-            // Add the processing server as IHostedService
+            // Add the Hangfire server
             services.AddHangfireServer();
             
             services.AddControllers();
@@ -307,8 +334,8 @@ namespace MeroBolee
             {
                 app.UseSwaggerUI(c =>
                 {
-                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
-                    c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
+                    //c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
                 });
             }
 
