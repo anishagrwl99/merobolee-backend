@@ -36,7 +36,6 @@ namespace MeroBolee.Repository
         /// <summary>
         /// Get a bid request only for checking if it exists or not
         /// </summary>
-        /// <param name="bidId"></param>
         /// <param name="tenderId"></param>
         /// <param name="companyId"></param>
         /// <returns></returns>

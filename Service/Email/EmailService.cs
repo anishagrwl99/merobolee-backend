@@ -53,8 +53,13 @@ namespace MeroBolee.Service
         private readonly IEmailRepository emailRepository;
         private readonly ITenderService tenderService;
         private readonly IUserService userService;
-        private long _adminUserId = 1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmailService"/> class.
+        /// </summary>
+        /// <param name="emailRepository">The email repository.</param>
+        /// <param name="tenderService">The tender service.</param>
+        /// <param name="userService">The user service.</param>
         public EmailService(IEmailRepository emailRepository, ITenderService tenderService, IUserService userService)
         {
             this.emailRepository = emailRepository;

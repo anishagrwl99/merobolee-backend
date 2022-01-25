@@ -41,8 +41,18 @@ namespace MeroBolee.Controllers.Signup
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await service.SignupCompany(data, CompanyTypeEnum.Bidder);
-                    return Ok(new Responses<long>(res.CompanyId, "200", "Signup successfully"));
+                    Tuple<long, string> res = await service.SignupCompany(data, CompanyTypeEnum.Bidder);
+                    if (res.Item1 > 0)
+                    {
+                        return Ok(new Responses<long>(res.Item1, "200", "Signup successfully"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = res.Item2;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
                 }
                 else
                 {
@@ -75,8 +85,18 @@ namespace MeroBolee.Controllers.Signup
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await service.SignupCompany(data, CompanyTypeEnum.BidInviter);
-                    return Ok(new Responses<long>(res.CompanyId, "200", "Signup successfully"));
+                    Tuple<long, string> res = await service.SignupCompany(data, CompanyTypeEnum.BidInviter);
+                    if (res.Item1 > 0)
+                    {
+                        return Ok(new Responses<long>(res.Item1, "200", "Signup successfully"));
+                    }
+                    else
+                    {
+                        response.statusCode = "400";
+                        response.Message = "Invalid Format";
+                        response.Data = res.Item2;
+                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                    }
                 }
                 else
                 {

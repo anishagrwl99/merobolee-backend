@@ -4,6 +4,7 @@ using MeroBolee.EntityMapper;
 using MeroBolee.Model;
 using MeroBolee.Repository;
 using System.Threading.Tasks;
+using System;
 
 namespace MeroBolee.Service
 {
@@ -19,7 +20,7 @@ namespace MeroBolee.Service
         /// <param name="data"></param>
         /// <param name="companyTypeEnum"></param>
         /// <returns></returns>
-        Task<CompanyEntity> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum);
+        Task<Tuple<long, string>> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum);
     }
 
     /// <summary>
@@ -50,31 +51,40 @@ namespace MeroBolee.Service
         /// <param name="data"></param>
         /// <param name="companyTypeEnum"></param>
         /// <returns></returns>
-        public async Task<CompanyEntity> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum)
+        public async Task<Tuple<long, string>> SignupCompany(UserSignUpDto data, CompanyTypeEnum companyTypeEnum)
         {
             try
             {
-                CompanyMapper mapper = new();
-                CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
-               
-                UserMapper userMapper = new();
-                UserEntity user = userMapper.SupplierSignUpDToUserEntity(data, companyTypeEnum);
-                user.Password = cryptoService.Encrypt(user.Password);
-                companyEntity = await signupRepo.SignupSupplier(companyEntity, user);
+                Tuple<bool, string> tuple = await signupRepo.ValidateCompany(data.Email.Trim(), data.PANNumber.Trim());
 
-                if(companyTypeEnum == CompanyTypeEnum.Bidder)
+                if (tuple.Item1 == true)
                 {
-                    companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.Bidder) + companyEntity.CompanyId.ToString("D3");
+                    CompanyMapper mapper = new();
+                    CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
+
+                    UserMapper userMapper = new();
+                    UserEntity user = userMapper.SupplierSignUpDToUserEntity(data, companyTypeEnum);
+                    user.Password = cryptoService.Encrypt(user.Password);
+                    companyEntity = await signupRepo.SignupSupplier(companyEntity, user);
+
+                    if (companyTypeEnum == CompanyTypeEnum.Bidder)
+                    {
+                        companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.Bidder) + companyEntity.CompanyId.ToString("D3");
+                    }
+                    else
+                    {
+                        companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.BidInviter) + companyEntity.CompanyId.ToString("D3");
+                    }
+
+                    companyEntity.FolderName = companyEntity.CompanyId.ToString("D3") + data.Name.GetFirstCharString();
+                    companyEntity = await signupRepo.UpdateCompany(companyEntity);
+
+                    return Tuple.Create<long, string>(companyEntity.CompanyId, "");
                 }
                 else
                 {
-                    companyEntity.ReferenceCode = await codeService.GenerateCode(ReferenceEnum.BidInviter) + companyEntity.CompanyId.ToString("D3");
+                    return Tuple.Create<long, string>(0, tuple.Item2);
                 }
-
-                companyEntity.FolderName = companyEntity.CompanyId.ToString("D3") +  data.Name.GetFirstCharString();
-                companyEntity = await signupRepo.UpdateCompany(companyEntity);
-                
-                return companyEntity;
 
             }
             catch (System.Exception)

@@ -591,7 +591,6 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <summary>
         /// To update BiddingRequest info and status is bid status
         /// </summary>
-        /// <param name="biID"></param>
         /// <param name="updateRequest"></param>
         /// <returns></returns>
         [HttpPut("Bidding/Admin/Registration/ApproveOrDisapprove")]

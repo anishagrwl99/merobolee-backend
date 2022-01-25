@@ -20,19 +20,19 @@ namespace MeroBolee.EntityMapper
 
             return new CompanyEntity
             {
-               Name = obj.Name,
-               PANNumber = obj.PANNumber,
+               Name = obj.Name.Trim(),
+               PANNumber = obj.PANNumber.Trim(),
                CountryId = obj.CountryId,
                CompanyStatusId = 1,//Registered
                ProvinceId = obj.ProvinceId,
-               City =obj.City,
-               Address1 = obj.Address1,
-               Address2 = obj.Address2,
-               Address3 = obj.Address3,
+               City =obj.City.Trim(),
+               Address1 = obj.Address1.Trim(),
+               Address2 = obj.Address2.Trim(),
+               Address3 = obj.Address3.Trim(),
                Zip = obj.Zip,
                RegisteredAs = companyTypeEnum == CompanyTypeEnum.Bidder ?  "Bidder" : "BidInviter",
                MembershipTypeId = 1, //Registration
-               CompanyEmail = obj.Email,
+               CompanyEmail = obj.Email.Trim(),
                Date_created = DateTime.Now,
                Date_modified = DateTime.Now
             };

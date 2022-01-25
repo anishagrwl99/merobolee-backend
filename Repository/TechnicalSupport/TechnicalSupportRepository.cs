@@ -47,7 +47,7 @@ namespace MeroBolee.Repository
                 await unitOfWork.SaveChangesAsync();
                 return requestHelp ;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw ;
             }

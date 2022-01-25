@@ -15,8 +15,6 @@ namespace MeroBolee.EntityMapper
         /// Convert dto to entity
         /// </summary>
         /// <param name="dto"></param>
-        /// <param name="companyFolder"></param>
-        /// <param name="file"></param>
         /// <returns></returns>
         public BidRequestEntity ToEntity(RegisterForTenderDto dto/*, string companyFolder, IUploadFile file*/)
         {

@@ -19,6 +19,7 @@ namespace MeroBolee.Service
         /// Initializes a new instance of the <see cref="TechnicalSupportService"/> class.
         /// </summary>
         /// <param name="requestHelpRepository">The request help repository.</param>
+        /// <param name="userService">The user service</param>
         public TechnicalSupportService (ITechnicalSupportRepository requestHelpRepository, IUserService userService)
         {
             this.requestHelpRepository = requestHelpRepository;
