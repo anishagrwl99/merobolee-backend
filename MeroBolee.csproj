@@ -21,6 +21,7 @@
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<StartupObject>MeroBolee.Program</StartupObject>
+		<UserSecretsId>20a3408a-afb3-4b78-92de-89e0267a1188</UserSecretsId>
 	</PropertyGroup>
 	
   <ItemGroup>

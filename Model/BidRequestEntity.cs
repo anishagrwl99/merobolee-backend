@@ -55,7 +55,7 @@ namespace MeroBolee.Model
         public virtual List<BiddingHistoryEntity> BiddingHistories { get; set; }
 
         public virtual UserEntity User { get; set; }
-        public virtual UserCompany Company { get; set; }
+        public virtual CompanyEntity Company { get; set; }
         public TenderEntity Tender { get; set; }
         public BidRequestStatusEntity BidRequestStatus { get; set; }
     }

@@ -51,7 +51,7 @@ namespace MeroBolee.Model
         public string Username { get; set; }
 
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(500)]
+        [MaxLength(5000)]
         public string Password { get; set; }
 
         

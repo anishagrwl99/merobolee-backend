@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeroBolee.Attribute;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace MeroBolee.Dto
         public string Name { get; set; }
 
         [Required(ErrorMessage = "PAN Number is required")]
-        [MaxLength(50, ErrorMessage = "PAN Number can be {1} characters long")]
+        [RegularExpression("^[0-9]{9}", ErrorMessage = "PAN Number should be 9 digit long")]
         public string PANNumber { get; set; }
 
         [Required(ErrorMessage = "Country id is required")]
@@ -35,13 +36,13 @@ namespace MeroBolee.Dto
         [MaxLength(300, ErrorMessage = "Address1 can be {1} characters long")]
         public string Address1 { get; set; }
 
-        [Required(ErrorMessage = "Address2 is required")]
         [MaxLength(300, ErrorMessage = "Address1 can be {1} characters long")]
         public string Address2 { get; set; }
+
+        [MaxLength(300, ErrorMessage = "Address1 can be {1} characters long")]
         public string Address3 { get; set; }
 
 
-        [Required(ErrorMessage = "Zip is required")]
         [MaxLength(30, ErrorMessage = "Zip can be {1} characters long")]
         public string Zip { get; set; }
 
@@ -59,18 +60,26 @@ namespace MeroBolee.Dto
 
         [Compare("ConfirmPassword", ErrorMessage = "Password and confirmation password should match")]
         [Required(ErrorMessage = "Password is required")]
-        [MaxLength(8, ErrorMessage = "Password can be {1} characters long")]
-        [MinLength(6, ErrorMessage = "Password should be {1} characters long")]
+        [MinLength(8, ErrorMessage = "Password should be {1} characters long")]
+        [Password(MinLength =8, MaxLength = 500, ErrorMessage = "Password must contain at least one upper case, lower case, number and special character")]
         public string Password { get; set; }
 
 
         [Compare("Password", ErrorMessage = "Password and confirmation password should match")]
         [Required(ErrorMessage = "Confirmation password is required")]
-        [MaxLength(8, ErrorMessage = "Confirmation password can be {1} characters long")]
-        [MinLength(6, ErrorMessage = "Confirmation password should be {1} characters long")]
+        [MinLength(8, ErrorMessage = "Confirmation password should be {1} characters long")]
+        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Password must contain at least one upper case, lower case, number and special character")]
         public string ConfirmPassword { get; set; }
 
-        [Range(typeof(bool), "true", "true")]
+
+        [Required(ErrorMessage = "Mobile number is required.")]
+        [RegularExpression("^[0-9]{10}", ErrorMessage = "Mobile number should be 10 digit long")]
+        public string MobileNo { get; set; }
+
+        [RegularExpression("^[0-9]", ErrorMessage = "Phone number should be numeric only")]
+        public string PhoneNo { get; set; }
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept terms and conditions")]
         public bool AgreeTermsAndCondition { get; set; }
     }
 }

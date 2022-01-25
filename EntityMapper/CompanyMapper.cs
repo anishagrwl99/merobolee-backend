@@ -34,7 +34,10 @@ namespace MeroBolee.EntityMapper
                MembershipTypeId = 1, //Registration
                CompanyEmail = obj.Email.Trim(),
                Date_created = DateTime.Now,
-               Date_modified = DateTime.Now
+               Date_modified = DateTime.Now,
+               MobileNumber = obj.MobileNo,
+               PhoneNumber = obj.PhoneNo,
+               ContactPerson = $"{obj.FirstName} {obj.LastName}"
             };
         }
 
@@ -58,8 +61,8 @@ namespace MeroBolee.EntityMapper
                 ContactPerson = dto.ContactPerson,
                 CompanyEmail = dto.CompanyEmail,
                 CompanyWebsite = dto.CompanyWebsite,
-                Phone1 = dto.Phone1,
-                Phone2 = dto.Phone2,
+                MobileNumber = dto.Phone1,
+                PhoneNumber = dto.Phone2,
                 MembershipTypeId = 2,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
@@ -83,8 +86,8 @@ namespace MeroBolee.EntityMapper
                 ContactPerson = entity.ContactPerson,
                 CompanyEmail = entity.CompanyEmail,
                 CompanyWebsite = entity.CompanyWebsite,
-                Phone1 = entity.Phone1,
-                Phone2 = entity.Phone2,
+                Phone1 = entity.MobileNumber,
+                Phone2 = entity.PhoneNumber,
                 City = entity.City
             };
         }
@@ -138,8 +141,8 @@ namespace MeroBolee.EntityMapper
                 ContactPerson = company.ContactPerson,
                 Email = company.CompanyEmail,
                 Website= company.CompanyWebsite,
-                Phone1 = company.Phone1,
-                Phone2 = company.Phone2,
+                Phone1 = company.MobileNumber,
+                Phone2 = company.PhoneNumber,
                 PANNumber = company.PANNumber,
                 Province = company.Province.Name,
                 Status = company.CompanyStatus.Status,

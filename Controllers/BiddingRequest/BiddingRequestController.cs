@@ -47,6 +47,14 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
+                if(!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to register in this tender.";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     long bidId = await biddingRequestService.RegisterInTenderBidding(registration);

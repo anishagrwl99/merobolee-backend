@@ -1,5 +1,6 @@
 ﻿using MeroBolee.Attribute;
 using MeroBolee.Dto;
+using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
 using MeroBolee.Utility;
@@ -11,10 +12,19 @@ using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MeroBolee.Controllers.Environment
 {
+    public class ABC
+    {
+        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Must contain at least one lower case, upper case, digit and special character")]
+        [MinLength(8, ErrorMessage = "Must must be at least 8 character long")]
+        public string PasswordTest { get; set; }
 
+        [RegularExpression("^[0-9]{9}", ErrorMessage = "9 digit number")]
+        public string PAN { get; set; }
+    }
     public class TestFile
     {
         /// <summary>
@@ -29,6 +39,7 @@ namespace MeroBolee.Controllers.Environment
     {
         private readonly IWebHostEnvironment environment;
         private readonly ICryptoService cryptoService;
+        private readonly ResponseMsg response = new ResponseMsg();
 
         public TestController(IWebHostEnvironment environment,  ICryptoService cryptoService)
         {
@@ -49,6 +60,20 @@ namespace MeroBolee.Controllers.Environment
             }
         }
         
+        [HttpPost("PasswordTest")]
+        public ActionResult TestPwd([FromBody] ABC abc)
+        {
+            if(ModelState.IsValid)
+            {
+                return Ok("Ok");
+
+            }
+            response.statusCode = "400";
+            response.Message = "Invalid";
+            response.Data = ModelState;
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+        }
+
         [Route("GetEnvironment")]
         [HttpGet]
         [AllowAnonymous]

@@ -212,8 +212,8 @@ namespace MeroBolee.Service
                     comp.ContactPerson = company.ContactPerson;
                     comp.CompanyEmail = company.CompanyEmail;
                     comp.CompanyWebsite = company.CompanyWebsite;
-                    comp.Phone1 = company.Phone1;
-                    comp.Phone2 = company.Phone2;
+                    comp.MobileNumber = company.Phone1;
+                    comp.PhoneNumber = company.Phone2;
                     await companyRepository.UpdateCompany(comp);
                     return company;
                 }

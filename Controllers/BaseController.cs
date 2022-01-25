@@ -42,6 +42,7 @@ namespace MeroBolee.Controllers
     /// </summary>   
     public class BaseController : AuthorizeController
     {
+        internal bool isCompanyVerified = false;
         /// <summary>
         /// Condition to check before executing action in each controller
         /// </summary>
@@ -62,7 +63,7 @@ namespace MeroBolee.Controllers
             {
                 context.Result = Forbid();
             }
-
+            isCompanyVerified = user.CompanyStatusId == 4;
             base.OnActionExecuting(context);
         }
 

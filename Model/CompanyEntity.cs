@@ -96,13 +96,13 @@ namespace MeroBolee.Model
 
 
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(15)]
-        public string Phone1 { get; set; }
+        [MaxLength(10)]
+        public string MobileNumber { get; set; }
 
 
         [Column(TypeName = "VARCHAR")]
-        [MaxLength(15)]
-        public string Phone2 { get; set; }
+        [MaxLength(2000)]
+        public string PhoneNumber { get; set; }
 
         [ForeignKey("MembershipType")]
         public int MembershipTypeId { get; set; }

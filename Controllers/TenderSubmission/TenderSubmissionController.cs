@@ -58,6 +58,14 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to invite a bid.";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     TenderSubmission res =  await submissionService.CreateTenderSubmissionByForm(tenderSubmission);
@@ -101,6 +109,14 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to invite a bid.";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     TenderSubmission res = await submissionService.UpdateTenderSubmissionByForm(tenderSubmission);
@@ -144,6 +160,14 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to invite a bid.";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     TenderSubmission res = await submissionService.CreateTenderSubmissionByDocument(tenderSubmission);
@@ -186,6 +210,14 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to invite a bid.";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     TenderSubmission res = await submissionService.UpdateTenderSubmissionByDocument(tenderSubmission);
