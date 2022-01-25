@@ -519,5 +519,25 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        public async Task<bool> IsSupplierRegistered(long companyId, long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities.AnyAsync(x => x.CompanyId == companyId && x.TenderId == tenderId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

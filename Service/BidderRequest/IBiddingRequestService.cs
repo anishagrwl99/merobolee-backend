@@ -26,6 +26,15 @@ namespace MeroBolee.Service
         /// <returns></returns>
         Task<long> SubmitDocumentForRegisteredTender(SubmitDocumentForRegisteredTender dto);
 
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        Task<bool> IsSupplierRegistered(long companyId, long tenderId);
+
         /// <summary>
         /// Update a tender registration
         /// </summary>

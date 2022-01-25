@@ -116,6 +116,40 @@ namespace MeroBolee.Controllers.BiddingRequest
 
 
         /// <summary>
+        /// Determines whether the bidder is registered in given tender
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        [HttpGet("Bidding/Registration/Check")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> IsBidderRegistered([FromQuery] long companyId, [FromQuery] long tenderId)
+        {
+            try
+            {
+                if(companyId > 0 && tenderId > 0)
+                {
+                    bool isRegistered = await biddingRequestService.IsSupplierRegistered(companyId, tenderId);
+                    response.statusCode = "200";
+                    response.Message = isRegistered ? "Supplier is registered" : "Supplier is not registered" ;
+                    response.Data = isRegistered;
+                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
+                }
+                response.statusCode = "400";
+                response.Message = "Invalid Format";
+                response.Data = ModelState;
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = "500";
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        /// <summary>
         /// Bid to a tender
         /// </summary>
         /// <param name="addBiddingRequest"></param>

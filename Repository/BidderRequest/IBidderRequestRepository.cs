@@ -128,5 +128,14 @@ namespace MeroBolee.Repository
         /// <param name="tenderId">A tender Id</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId);
+
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="companyId">The company identifier.</param>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        Task<bool> IsSupplierRegistered(long companyId, long tenderId);
     }
 }
