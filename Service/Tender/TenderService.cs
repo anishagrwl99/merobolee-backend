@@ -85,9 +85,9 @@ namespace MeroBolee.Service
             return await tenderRepository.GetBidIniviterTenderHistory(companyId, search);
         }
 
-        public async Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId, string search)
+        public async Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId)
         {
-            IEnumerable<TenderCard> tenders = await tenderRepository.GetBidIniviterTenderListing(companyId, search);
+            IEnumerable<TenderCard> tenders = await tenderRepository.GetBidIniviterTenderListing(companyId);
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
                 PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
@@ -135,9 +135,9 @@ namespace MeroBolee.Service
                 return null;
             }
         }
-        public async Task<IEnumerable<TenderCard>> UpcomingTender(string search)
+        public async Task<IEnumerable<TenderCard>> UpcomingTender(long companyId, bool isAlert)
         {
-            return await tenderRepository.UpcomingTender(search);
+            return await tenderRepository.UpcomingTender(companyId, isAlert);
         }
 
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)

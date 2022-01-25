@@ -149,16 +149,15 @@ namespace MeroBolee.Repository
         /// bid inivter tender active listing
         /// </summary>
         /// <param name="companyId"></param>
-        /// <param name="search"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, string search)
+        public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId)
         {
             try
             {
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
-                              where t.CompanyId == companyId && t.StatusId != 4 && (search == null || t.Title.Contains(search))
+                              where t.CompanyId == companyId && t.StatusId != 3
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -257,40 +256,75 @@ namespace MeroBolee.Repository
         /// <summary>
         /// upcoming tender within 7 days
         /// </summary>
-        /// <param name="search"></param>
+        /// <param name="companyId"></param>
+        /// <param name="isAlert"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TenderCard>> UpcomingTender(string search)
+        public async Task<IEnumerable<TenderCard>> UpcomingTender(long companyId, bool isAlert)
         {
             try
             {
-                return await (from t in meroBoleeDbContexts.TenderEntities
-                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                              join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
-                              where t.StatusId == 3 && (search == null || t.Title.Contains(search))
-                                  && (t.LiveStartDate >= DateTime.Now && t.LiveStartDate <= DateTime.Now.AddDays(7))
-                              select new TenderCard
-                              {
-                                  TenderId = t.Id,
-                                  TenderCode = t.Code,
-                                  TenderTitle = t.Title,
-                                  CategoryId = c.Id,
-                                  CategoryName = c.Category,
-                                  LiveStartDate = t.LiveStartDate,
-                                  LiveEndDate = t.LiveEndDate,
-                                  RegistrationTill = t.RegistrationTill,
-                                  StatusId = t.StatusId,
-                                  Status = s.Status,
-                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                              where tc.TenderId == t.Id
-                                              select new TenderCardInfo
-                                              {
-                                                  Id = tc.Id,
-                                                  Label = tc.Label,
-                                                  Value = tc.Value
-                                              }).ToList()
-                              }
-
-               ).ToListAsync();
+                if (isAlert)
+                {
+                    return await (from bd in meroBoleeDbContexts.BidRequestEntities
+                           join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
+                           join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                           join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
+                           where bd.CompanyId == companyId
+                                 && t.StatusId == 3 //Tender should be approved
+                                 && bd.BidRequestStatusId == 2 //Bid request should be approved
+                                 && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
+                           select new TenderCard
+                           {
+                               TenderId = t.Id,
+                               TenderCode = t.Code,
+                               TenderTitle = t.Title,
+                               CategoryId = c.Id,
+                               CategoryName = c.Category,
+                               LiveStartDate = t.LiveStartDate,
+                               LiveEndDate = t.LiveEndDate,
+                               RegistrationTill = t.RegistrationTill,
+                               StatusId = t.StatusId,
+                               Status = s.Status,
+                               CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                           where tc.TenderId == t.Id
+                                           select new TenderCardInfo
+                                           {
+                                               Id = tc.Id,
+                                               Label = tc.Label,
+                                               Value = tc.Value
+                                           }).ToList()
+                           }).ToListAsync();
+                }
+                else
+                {
+                   return await (from bd in meroBoleeDbContexts.BidRequestEntities
+                           join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
+                           join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                           join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
+                           where bd.CompanyId == companyId
+                                 && t.StatusId == 3 //Tender should be approved
+                                 select new TenderCard
+                           {
+                               TenderId = t.Id,
+                               TenderCode = t.Code,
+                               TenderTitle = t.Title,
+                               CategoryId = c.Id,
+                               CategoryName = c.Category,
+                               LiveStartDate = t.LiveStartDate,
+                               LiveEndDate = t.LiveEndDate,
+                               RegistrationTill = t.RegistrationTill,
+                               StatusId = t.StatusId,
+                               Status = s.Status,
+                               CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                           where tc.TenderId == t.Id
+                                           select new TenderCardInfo
+                                           {
+                                               Id = tc.Id,
+                                               Label = tc.Label,
+                                               Value = tc.Value
+                                           }).ToList()
+                           }).ToListAsync();
+                }
 
             }
             catch (Exception)

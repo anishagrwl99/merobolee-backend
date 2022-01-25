@@ -141,24 +141,27 @@ namespace MeroBolee.Controllers.Tender
         /// Gat a tender listing of a bid inviter company
         /// </summary>
         /// <param name="companyId"></param>
-        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string search = "")
+        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId)
         {
             try
             {
-                string url = Url.Action("GetBidInviterTenderListing", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                BidInviterTenderListing tenders = await tenderService.GetBidInviterTenderListing(companyId, search);
-                int totalCount = tenders.ActiveTenders.Count() + tenders.PendingTenders.Count();
-                if (totalCount == 0)
+                if (companyId > 0)
                 {
-                    return NotFound(new Responses<BidInviterTenderListing>(tenders, "404", "Record not found"));
+                    string url = Url.Action("GetBidInviterTenderListing", null, new { companyId = companyId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    BidInviterTenderListing tenders = await tenderService.GetBidInviterTenderListing(companyId);
+                    int totalCount = tenders.ActiveTenders.Count() + tenders.PendingTenders.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<BidInviterTenderListing>(tenders, "404", "Record not found"));
+                    }
+                    return Ok(new Responses<BidInviterTenderListing>(tenders, "200", "Record found"));
                 }
-                return Ok(new Responses<BidInviterTenderListing>(tenders, "200", "Record found"));
+                return NotFound(new Responses<BidInviterTenderListing>(null, "404", "Record not found"));
             }
             catch (Exception e)
             {
@@ -238,23 +241,28 @@ namespace MeroBolee.Controllers.Tender
         /// To display only upcoming tender by bidder
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="search"></param>
+        /// <param name="companyId"></param>
+        /// <param name="isAlert"></param>
         /// <returns></returns>
         [HttpGet("Tender/Upcoming")]
-        public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] bool isAlert = true)
         {
             try
             {
-                string url = Url.Action("GetUpCommingTender", null, new { search = search }, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = await tenderService.UpcomingTender(search);
-                int totalCount = tenders.Count();
-                if (totalCount == 0)
+                if (companyId > 0)
                 {
-                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                    string url = Url.Action("GetUpCommingTender", null, new { companyId = companyId, isAlert = isAlert }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingTender(companyId, isAlert);
+                    int totalCount = tenders.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
                 }
-                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+                return NotFound(new Responses<IEnumerable<TenderCard>>(null, "404", "Record not found"));
             }
             catch (Exception e)
             {
