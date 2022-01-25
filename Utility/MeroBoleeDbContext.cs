@@ -468,7 +468,7 @@ namespace MeroBolee.Utility
                     StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123"),
+                    Password = cryptoService.Encrypt("P@ssword1"),
                 },
                 new UserEntity
                 {
@@ -480,7 +480,7 @@ namespace MeroBolee.Utility
                     StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123"),
+                    Password = cryptoService.Encrypt("P@ssword1"),
                 },
                 new UserEntity
                 {
@@ -492,7 +492,7 @@ namespace MeroBolee.Utility
                     StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123"),
+                    Password = cryptoService.Encrypt("P@ssword1"),
                 },
                 new UserEntity
                 {
@@ -504,7 +504,7 @@ namespace MeroBolee.Utility
                     StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123")
+                    Password = cryptoService.Encrypt("P@ssword1")
                 },
                 new UserEntity
                 {
@@ -516,7 +516,7 @@ namespace MeroBolee.Utility
                     StatusId = 1,
                     Date_created = DateTime.Now,
                     Date_modified = DateTime.Now,
-                    Password = cryptoService.Encrypt("123123")
+                    Password = cryptoService.Encrypt("P@ssword1")
                 }
                 );
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MeroBolee.Attribute;
+using System.ComponentModel.DataAnnotations;
 
 namespace MeroBolee.Dto
 {
@@ -13,8 +14,7 @@ namespace MeroBolee.Dto
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        [MinLength(6, ErrorMessage = "Password should be {1} character long")]
-        [MaxLength (8, ErrorMessage = "Password can be {1} character long")]
+        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Password must contain at least one upper case, lower case, number and special character")]
         public string Password { get; set; }
     }
 }
