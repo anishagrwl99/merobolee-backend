@@ -51,7 +51,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "403";
                     response.Message = "You are forbidden to register in this tender.";
-                    response.Data = ModelState;
+                    response.Data = null;
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
 
@@ -94,6 +94,15 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to register in this tender.";
+                    response.Data = null;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
+
                 if (ModelState.IsValid)
                 {
                     long bidId = await biddingRequestService.SubmitDocumentForRegisteredTender(regDocument);
@@ -168,6 +177,15 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You can't enter a live bidding room";
+                    response.Data = null;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
+
                 if (ModelState.IsValid)
                 {
                     EnterLiveBiddingRoomResponseDto dto = await biddingRequestService.EnterLiveBiddingRoom(addBiddingRequest);
@@ -209,21 +227,30 @@ namespace MeroBolee.Controllers.BiddingRequest
         [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetBiddingPosition([FromQuery] PaginationQuery pagination, [FromQuery] long tenderId, [FromQuery] long supplierId)
         {
-            string url = Url.Action("GetBiddingPosition", null, null, Request.Scheme); //get url for current request
-            this.uriService = new UriService(url);
-            LiveBidResponse res = await biddingRequestService.TenderPosition(tenderId, supplierId);
-            //int totalCount = res.Count();
-            if (res != null && res.IsBidSuccess)
+            try
             {
-                return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+                string url = Url.Action("GetBiddingPosition", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                LiveBidResponse res = await biddingRequestService.TenderPosition(tenderId, supplierId);
+                //int totalCount = res.Count();
+                if (res != null && res.IsBidSuccess)
+                {
+                    return Ok(new Responses<LiveBidResponse>(res, "200", res.Message));
+                }
+                else if (res == null)
+                {
+                    return NotFound(new Responses<LiveBidResponse>(null, "404", "You must bid before calculating your position"));
+                }
+                else
+                {
+                    return NotFound(new Responses<LiveBidResponse>(null, "404", res.Message));
+                }
             }
-            else if (res == null)
+            catch (Exception e)
             {
-                return NotFound(new Responses<LiveBidResponse>(null, "404", "You must bid before calculating your position"));
-            }
-            else
-            {
-                return NotFound(new Responses<LiveBidResponse>(null, "404", res.Message));
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
@@ -241,6 +268,14 @@ namespace MeroBolee.Controllers.BiddingRequest
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are not allowed to bid in this tender.";
+                    response.Data = null;
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
                 if (ModelState.IsValid)
                 {
                     LiveBidResponse res = await biddingRequestService.LiveBid(bidRequest);
