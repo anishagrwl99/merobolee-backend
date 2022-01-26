@@ -40,12 +40,6 @@ namespace MeroBolee.Controllers.Tender
             {
                 if (ModelState.IsValid)
                 {
-                    if (tender.LiveStartDate <= DateTime.Today)
-                    {
-                        response.statusCode = "400";
-                        response.Message = "Start Date must be future date";
-                        return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                    }
                     var res = await tenderService.AddTender(tender);
                     return Ok(new Responses<long>(res.Id, "200", "Record is successfully added"));
                 }
@@ -60,7 +54,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -92,13 +86,14 @@ namespace MeroBolee.Controllers.Tender
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -132,7 +127,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -166,7 +161,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -230,7 +225,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -267,7 +262,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -304,7 +299,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -331,10 +326,10 @@ namespace MeroBolee.Controllers.Tender
                 }
                 return Ok(new Responses<TenderDocuments>(doc, "200", "Record found"));
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -360,10 +355,10 @@ namespace MeroBolee.Controllers.Tender
                 }
                 return Ok(new Responses<TenderDocuments>(doc, "200", "Record found"));
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

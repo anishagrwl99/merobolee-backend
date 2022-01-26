@@ -18,17 +18,24 @@ namespace MeroBolee.Controllers.Environment
 {
     public class ABC
     {
-        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Must contain at least one lower case, upper case, digit and special character")]
-        [MinLength(8, ErrorMessage = "Must must be at least 8 character long")]
-        public string PasswordTest { get; set; }
+        //[Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Must contain at least one lower case, upper case, digit and special character")]
+        //[MinLength(8, ErrorMessage = "Must must be at least 8 character long")]
+        //public string PasswordTest { get; set; }
 
 
-        [RegularExpression("^[0-9]{10}", ErrorMessage = "10 digit Only number")]
-        public string Mobile { get; set; }
+        //[RegularExpression("^[0-9]{10}", ErrorMessage = "10 digit Only number")]
+        //public string Mobile { get; set; }
 
 
-        [RegularExpression("^[0-9]{2}", ErrorMessage = "Only number")]
-        public string PAN { get; set; }
+        //[RegularExpression("^[0-9]{2}", ErrorMessage = "Only number")]
+        //public string PAN { get; set; }
+
+        [DateGreaterThan("Date2")]
+        [ShouldBeFutureDate]
+        public DateTime Date1 { get; set; }
+
+        [DateLessThan("Date1")]
+        public DateTime Date2 { get; set; }
     }
     public class TestFile
     {
@@ -52,6 +59,7 @@ namespace MeroBolee.Controllers.Environment
             this.cryptoService = cryptoService;
         }
 
+        /*
         [HttpPost("/FileTest")]
         public IActionResult TestFile([FromForm] TestFile test)
         {
@@ -65,6 +73,9 @@ namespace MeroBolee.Controllers.Environment
             }
         }
         
+        */
+
+        /*
         [HttpPost("PasswordTest")]
         public ActionResult TestPwd([FromBody] ABC abc)
         {
@@ -78,6 +89,8 @@ namespace MeroBolee.Controllers.Environment
             response.Data = ModelState;
             return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
         }
+
+        */
 
         [Route("GetEnvironment")]
         [HttpGet]

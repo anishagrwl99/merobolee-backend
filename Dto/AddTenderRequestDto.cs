@@ -1,4 +1,5 @@
-﻿using MeroBolee.Model;
+﻿using MeroBolee.Attribute;
+using MeroBolee.Model;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Threading.Tasks;
 namespace MeroBolee.Dto
 {
     public class TenderRequestBaseDto
-
     {
         [Required(ErrorMessage = "Company name is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
@@ -26,12 +26,18 @@ namespace MeroBolee.Dto
         public string TenderTitle { get; set; }
 
         [Required(ErrorMessage = "Date till supplier registration allowed is required")]
+        [DateLessThan("LiveStartDate")]
+        [ShouldBeFutureDate]
         public DateTime RegistrationTill { get; set; }
 
         [Required(ErrorMessage = "Tender live start date is required")]
+        [DateLessThan("LiveEndDate")]
+        [ShouldBeFutureDate]
         public DateTime LiveStartDate { get; set; }
 
         [Required(ErrorMessage = "Tender live end date is required")]
+        [DateGreaterThan("LiveStartDate")]
+        [ShouldBeFutureDate]
         public DateTime LiveEndDate { get; set; }
 
         [Required(ErrorMessage = "Tender created by is required")]
@@ -62,17 +68,29 @@ namespace MeroBolee.Dto
     }
     public class AddTenderRequestDto : TenderRequestBaseDto
     {
+        [Required(ErrorMessage = "At least one tender material is required")]
         public ICollection<TenderMaterialRequestDto> TenderMaterials { get; set; }
+
+        [Required(ErrorMessage = "At least one tender card information is required")]
         public ICollection<TenderCardRequestDto> TenderCards { get; set; }
+
         public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
 
     }
 
     public class UpdateTenderRequestDto : TenderRequestBaseDto
     {
+        [Required(ErrorMessage = "Tender id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
         public long TenderId { get; set; }
+
+        [Required(ErrorMessage = "At least one tender material is required")]
         public ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
+
+        [Required(ErrorMessage = "At least one tender card information is required")]
         public ICollection<UpdateTenderCardRequestDto> TenderCards { get; set; }
+
+
         public ICollection<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
     }
     public class TenderMaterialRequestDto
@@ -101,7 +119,11 @@ namespace MeroBolee.Dto
 
     public class TenderExtraDocDto
     {
+        [Required(ErrorMessage = "Document Title is required")]
         public string DocTitle { get; set; }
+
+        [Required(ErrorMessage = "Document is required")]
+        [AllowExtensions(ErrorMessage = "Invalid file extension. Supported extensions .png,.jpg,.jpeg,.pdf,.doc,.docx")]
         public IFormFile Document { get; set; }
     }
 
@@ -109,16 +131,22 @@ namespace MeroBolee.Dto
 
     public class UpdateMaterialRequestDto: TenderMaterialRequestDto
     {
+        [Required(ErrorMessage = "Material id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid material id")]
         public long Id { get; set; }
     }
 
     public class UpdateTenderCardRequestDto : TenderCardRequestDto
     {
+        [Required(ErrorMessage = "Tender card id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
         public long Id { get; set; }
     }
 
     public class UpdateTenderExtraDocRequestDto: TenderExtraDocDto
     {
+        [Required(ErrorMessage = "Document id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid document id")]
         public long Id { get; set; }
     }
 }
