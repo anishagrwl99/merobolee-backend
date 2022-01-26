@@ -52,9 +52,7 @@ namespace MeroBolee.Dto
         public decimal MaxQuotation { get; set; }
 
 
-        [Required(ErrorMessage = "Tender title is requird")]
         public string TenderDocTitle { get; set; }
-
 
         public IFormFile TenderDetailDoc { get; set; }
         public IFormFile TenderTermsAndConditionDoc { get; set; }

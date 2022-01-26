@@ -16,7 +16,7 @@ namespace MeroBolee.Controllers.Signup
     /// </summary>
     [Route("[controller]/[action]")]
     [ApiController]
-    public class SignupController : ControllerBase
+    public class SignupController : Controller
     {
         private readonly ISignupService service;
         private ResponseMsg response = new ResponseMsg();

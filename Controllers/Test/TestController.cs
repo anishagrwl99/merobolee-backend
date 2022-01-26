@@ -22,7 +22,12 @@ namespace MeroBolee.Controllers.Environment
         [MinLength(8, ErrorMessage = "Must must be at least 8 character long")]
         public string PasswordTest { get; set; }
 
-        [RegularExpression("^[0-9]{9}", ErrorMessage = "9 digit number")]
+
+        [RegularExpression("^[0-9]{10}", ErrorMessage = "10 digit Only number")]
+        public string Mobile { get; set; }
+
+
+        [RegularExpression("^[0-9]{2}", ErrorMessage = "Only number")]
         public string PAN { get; set; }
     }
     public class TestFile

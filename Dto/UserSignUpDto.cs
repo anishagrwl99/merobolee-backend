@@ -76,7 +76,8 @@ namespace MeroBolee.Dto
         [RegularExpression("^[0-9]{10}", ErrorMessage = "Mobile number should be 10 digit long")]
         public string MobileNo { get; set; }
 
-        [RegularExpression("^[0-9]", ErrorMessage = "Phone number should be numeric only")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number should be numeric only")]
+
         public string PhoneNo { get; set; }
 
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept terms and conditions")]
