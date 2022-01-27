@@ -114,7 +114,8 @@ namespace MeroBolee.EntityMapper
                     entity.TenderMaterialEntities.Add(new TenderMaterialEntity
                     {
                         Materials = item.Name,
-                        Quantity = item.Quantity
+                        Quantity = item.Quantity,
+                        TenderId = entity.Id
                     });
                 }
                 else
@@ -132,7 +133,8 @@ namespace MeroBolee.EntityMapper
                     entity.TenderCards.Add(new TenderCardEntity
                     {
                         Label = itm.Label,
-                        Value = itm.Value
+                        Value = itm.Value,
+                        TenderId = entity.Id
                     });
                 }
                 else
