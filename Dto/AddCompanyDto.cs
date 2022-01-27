@@ -36,13 +36,12 @@ namespace MeroBolee.Dto
 
     public class AddCompanyDto
     {
-
         [Required(ErrorMessage = "Company Name is required")]
-        [MaxLength(200, ErrorMessage = "Company name can be {1} character long")]
+        [MaxLength(1500, ErrorMessage = "Company name can be {1} characters long")]
         public string CompanyName { get; set; }
 
-        [Required(ErrorMessage = "PAN Number is requird")]
-        [MaxLength(50, ErrorMessage = "PAN Number can be {1} character long")]
+        [Required(ErrorMessage = "PAN Number is required")]
+        [RegularExpression("^[0-9]{9}", ErrorMessage = "PAN Number should be 9 digit long")]
         public string PANNumber { get; set; }
 
         [Required(ErrorMessage = "Country name is required")]
@@ -60,20 +59,18 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Login user id is required.")]
         [Range(minimum: 1, maximum: long.MaxValue, ErrorMessage = "Invalid user name provided")]
         public long UserId { get; set; }
-        
-    
-        [Required(ErrorMessage = "Address line 1 is required")]
-        [MaxLength(50, ErrorMessage = "Address line 1 can be {1} character long")]
+
+
+        [Required(ErrorMessage = "Address1 is required")]
+        [MaxLength(300, ErrorMessage = "Address1 can be {1} characters long")]
         public string Address1 { get; set; }
 
 
-        [Required(ErrorMessage = "Address line 2 is required")]
-        [MaxLength(50, ErrorMessage = "Address line 2 can be {1} character long")]
         public string Address2 { get; set; }
 
         public string Address3 { get; set; }
 
-        [MaxLength(10, ErrorMessage = "Zip can be {1} character long")]
+        [MaxLength(30, ErrorMessage = "Zip can be {1} characters long")]
         public string Zip { get; set; }
 
 
@@ -90,13 +87,13 @@ namespace MeroBolee.Dto
         [Url(ErrorMessage = "Website should be a valid web url address")]
         public string CompanyWebsite { get; set; }
 
-        [Required(ErrorMessage = "Company contact number is required")]
-        [MaxLength(10, ErrorMessage = "Contact number can be {1} digit long")]
-        public string Phone1 { get; set; }
+        [Required(ErrorMessage = "Mobile number is required.")]
+        [RegularExpression("^[0-9]{10}", ErrorMessage = "Mobile number should be 10 digit long")]
+        public string MobileNumber { get; set; }
 
 
-        [MaxLength(10, ErrorMessage = "Contact number can be {1} digit long")]
-        public string Phone2 { get; set; }
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number should be numeric only")]
+        public string PhoneNumber { get; set; }
 
     }
 

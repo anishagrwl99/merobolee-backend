@@ -61,8 +61,8 @@ namespace MeroBolee.EntityMapper
                 ContactPerson = dto.ContactPerson,
                 CompanyEmail = dto.CompanyEmail,
                 CompanyWebsite = dto.CompanyWebsite,
-                MobileNumber = dto.Phone1,
-                PhoneNumber = dto.Phone2,
+                MobileNumber = dto.MobileNumber,
+                PhoneNumber = dto.PhoneNumber,
                 MembershipTypeId = 2,
                 Date_created = DateTime.Now,
                 Date_modified = DateTime.Now
@@ -86,8 +86,8 @@ namespace MeroBolee.EntityMapper
                 ContactPerson = entity.ContactPerson,
                 CompanyEmail = entity.CompanyEmail,
                 CompanyWebsite = entity.CompanyWebsite,
-                Phone1 = entity.MobileNumber,
-                Phone2 = entity.PhoneNumber,
+                MobileNumber = entity.MobileNumber,
+                PhoneNumber = entity.PhoneNumber,
                 City = entity.City
             };
         }

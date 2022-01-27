@@ -141,6 +141,13 @@ namespace MeroBolee.Service
             }
         }
 
+        /// <summary>
+        /// Add new user in a company
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="user"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public async Task<AddUserReponseDto> AddUser(long companyId, AddUserDto user, int role)
         {
             UserEntity entity = UserDtoToEntity(user);
@@ -157,6 +164,14 @@ namespace MeroBolee.Service
 
         }
 
+
+
+        /// <summary>
+        /// Get all company
+        /// </summary>
+        /// <param name="companyType"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search)
         {
             try
@@ -179,6 +194,12 @@ namespace MeroBolee.Service
         }
 
 
+        /// <summary>
+        /// Get verified only company
+        /// </summary>
+        /// <param name="companyType"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<List<CompanyCardResponseDto>> GetVerifiedCompany(CompanyTypeEnum companyType, string search)
         {
             try
@@ -199,6 +220,14 @@ namespace MeroBolee.Service
             }
         }
 
+        
+        /// <summary>
+        /// Get company detail
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="defaultPic"></param>
+        /// <returns></returns>
         public async Task<CompanyDetailResponse> GetCompanyDetail(long companyId, string baseUrl, string defaultPic)
         {
             try
@@ -243,8 +272,8 @@ namespace MeroBolee.Service
                     comp.ContactPerson = company.ContactPerson;
                     comp.CompanyEmail = company.CompanyEmail;
                     comp.CompanyWebsite = company.CompanyWebsite;
-                    comp.MobileNumber = company.Phone1;
-                    comp.PhoneNumber = company.Phone2;
+                    comp.MobileNumber = company.MobileNumber;
+                    comp.PhoneNumber = company.PhoneNumber;
                     await companyRepository.UpdateCompany(comp);
                     return company;
                 }
