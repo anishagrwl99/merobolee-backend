@@ -104,42 +104,6 @@ namespace MeroBolee.Controllers.Role
 
 
         /// <summary>
-        /// To delete role record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteRole")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public IActionResult DeleteRole([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    roleService.DeleteRole(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
-
-
-        /// <summary>
         /// To display all role by Admin
         /// </summary>
         /// <param name="pagination"></param>

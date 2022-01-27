@@ -102,39 +102,6 @@ namespace MeroBolee.Controllers
             }
         }
 
-        /// <summary>
-        /// To delete category record (var: id)
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteCategory")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public IActionResult Delete([FromBody] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    categoryService.DeleteCategory(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return Ok(new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
-
 
         /// <summary>
         /// To display all category by Admin

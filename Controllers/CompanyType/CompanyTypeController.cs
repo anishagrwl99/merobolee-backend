@@ -55,44 +55,6 @@ namespace MeroBolee.Controllers.CompanyType
         }
 
 
-
-
-        /// <summary>
-        /// To delete CompanyType record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("DeleteCompanyType")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public IActionResult DeleteCompanyType([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    CompanyTypeService.DeleteCompanyType(id);
-                    response.statusCode = "200";
-                    response.Message = "Record is successfully deleted";
-                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
-
-
         /// <summary>
         /// To display all Company Type by Admin
         /// </summary>
