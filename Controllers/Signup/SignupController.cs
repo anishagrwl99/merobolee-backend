@@ -62,11 +62,10 @@ namespace MeroBolee.Controllers.Signup
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                response = ex.HandleException();
-                //response.statusCode = "500";
-                //response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -106,11 +105,10 @@ namespace MeroBolee.Controllers.Signup
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                //response.statusCode = "500";
-                //response.Message = ex.Message + (ex.InnerException == null ? "" : ex.InnerException.Message);
-                response = ex.HandleException();
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

@@ -45,21 +45,15 @@ namespace MeroBolee.Controllers
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
-
-            catch (SqlException)
+            catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = "Something went wrong";
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "400";
-                response.Message = e.Message;
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
@@ -89,14 +83,15 @@ namespace MeroBolee.Controllers
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -125,10 +120,10 @@ namespace MeroBolee.Controllers
                 }
                 return Ok(ResultAfterPagination(category, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -164,10 +159,10 @@ namespace MeroBolee.Controllers
                     return Ok(new Responses<GetCategoryDto>(getCategory, "200", "Record found"));
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }

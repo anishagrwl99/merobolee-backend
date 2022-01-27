@@ -51,7 +51,7 @@ namespace MeroBolee.Controllers.Membership
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -100,9 +100,8 @@ namespace MeroBolee.Controllers.Membership
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
             }
         }
 
@@ -121,7 +120,7 @@ namespace MeroBolee.Controllers.Membership
                 if (id == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid membrship id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -135,7 +134,7 @@ namespace MeroBolee.Controllers.Membership
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -162,22 +161,10 @@ namespace MeroBolee.Controllers.Membership
                 }
                 return Ok(ResultAfterPagination(membershipDtos, pagination, totalCount)); // To pass result in object along with pagination info
             }
-            catch (SqlException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-            catch (InvalidOperationException)
-            {
-                response.statusCode = "500";
-                response.Message = "Something went wrong";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
             catch (Exception e)
             {
                 response.statusCode = "400";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -215,7 +202,7 @@ namespace MeroBolee.Controllers.Membership
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

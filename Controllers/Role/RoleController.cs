@@ -50,7 +50,7 @@ namespace MeroBolee.Controllers.Role
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -70,7 +70,7 @@ namespace MeroBolee.Controllers.Role
                 if (id == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid role id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -96,7 +96,7 @@ namespace MeroBolee.Controllers.Role
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -128,7 +128,7 @@ namespace MeroBolee.Controllers.Role
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -164,7 +164,7 @@ namespace MeroBolee.Controllers.Role
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }

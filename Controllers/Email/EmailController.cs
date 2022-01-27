@@ -61,7 +61,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -105,7 +105,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -148,7 +148,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -189,7 +189,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -230,8 +230,8 @@ namespace MeroBolee.Controllers.Correspondence
             }
             catch (Exception e)
             {
-                response.statusCode = "500";
-                response.Message = e.Message;
+                response.statusCode = "500"; 
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -352,13 +352,14 @@ namespace MeroBolee.Controllers.Correspondence
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -393,13 +394,14 @@ namespace MeroBolee.Controllers.Correspondence
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -435,13 +437,14 @@ namespace MeroBolee.Controllers.Correspondence
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -477,13 +480,14 @@ namespace MeroBolee.Controllers.Correspondence
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -524,7 +528,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -566,7 +570,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -609,7 +613,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -647,13 +651,14 @@ namespace MeroBolee.Controllers.Correspondence
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Format";
+                    response.Data = ModelState;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -695,7 +700,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -737,7 +742,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -779,7 +784,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -810,7 +815,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -841,7 +846,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -874,7 +879,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -905,7 +910,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -938,7 +943,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -957,7 +962,7 @@ namespace MeroBolee.Controllers.Correspondence
                 if (emailId == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid email id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -973,7 +978,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -993,7 +998,7 @@ namespace MeroBolee.Controllers.Correspondence
                 if (emailId == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid email id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -1009,7 +1014,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -1031,7 +1036,7 @@ namespace MeroBolee.Controllers.Correspondence
                 if (emailId == 0 || userId == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid email id or user id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -1052,6 +1057,7 @@ namespace MeroBolee.Controllers.Correspondence
                     {
                         response.statusCode = "400";
                         response.Message = "Invalid Format";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
@@ -1059,7 +1065,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -1080,7 +1086,7 @@ namespace MeroBolee.Controllers.Correspondence
                 if (emailId == 0 || userId == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid email id or user id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else
@@ -1101,6 +1107,7 @@ namespace MeroBolee.Controllers.Correspondence
                     {
                         response.statusCode = "400";
                         response.Message = "Invalid Format";
+                        response.Data = ModelState;
                         return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                     }
                 }
@@ -1108,7 +1115,7 @@ namespace MeroBolee.Controllers.Correspondence
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }

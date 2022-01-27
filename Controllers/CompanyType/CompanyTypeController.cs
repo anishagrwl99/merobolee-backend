@@ -49,7 +49,7 @@ namespace MeroBolee.Controllers.CompanyType
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -80,7 +80,7 @@ namespace MeroBolee.Controllers.CompanyType
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
@@ -117,7 +117,7 @@ namespace MeroBolee.Controllers.CompanyType
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }
@@ -166,7 +166,7 @@ namespace MeroBolee.Controllers.CompanyType
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
             }

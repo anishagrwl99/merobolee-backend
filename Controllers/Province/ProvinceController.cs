@@ -76,7 +76,7 @@ namespace MeroBolee.Controllers.Province
                 if (id == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid province id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
 
                 }
@@ -169,9 +169,8 @@ namespace MeroBolee.Controllers.Province
                 if (id == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid province id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
                 }
                 else
                 {
@@ -192,49 +191,6 @@ namespace MeroBolee.Controllers.Province
             }
         }
 
-
-
-        /// <summary>
-        /// To get list of province for cascade dropdown by country_id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("CascadeProvince")]
-        [AllowAnonymous]
-        public IActionResult GetCascade([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-
-                }
-                else
-                {
-                    string url = Url.Action("GetCascade", null, new { id=id}, Request.Scheme); //get url for current request
-                    uriService = new UriService(url);
-                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    IEnumerable<GetProvinceDto> province = provinceService.CascadeProvince(id);
-                    int totalCount = province.Count();
-                    if (totalCount == 0)
-                    {
-                        return NotFound(new PagedResponse<GetProvinceDto>(province,totalCount));
-                    }
-                    return Ok(new PagedResponse<GetProvinceDto>(province,totalCount)); // To pass result in object along with pagination info
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-       
 
         private PagedResponse<GetProvinceDto> ResultAfterPagination(IEnumerable<GetProvinceDto> getProvinces, PaginationQuery pagination, int totalCount)
         {

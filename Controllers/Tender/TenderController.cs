@@ -320,7 +320,7 @@ namespace MeroBolee.Controllers.Tender
                 if (tenderId == 0)
                 {
                     response.statusCode = "400";
-                    response.Message = "Invalid Format";
+                    response.Message = "Invalid tender id";
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
                 }
                 else

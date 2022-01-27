@@ -365,10 +365,10 @@ namespace MeroBolee.Controllers
                     return Ok(new Responses<TenderResponseSubmissionDto>(res, "200", "Record found"));
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -490,10 +490,10 @@ namespace MeroBolee.Controllers
                     return Ok(new Responses<TenderResponseSubmissionDto>(res, "200", "Record found"));
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = ex.Message;
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

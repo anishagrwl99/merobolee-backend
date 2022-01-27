@@ -21,7 +21,7 @@ namespace MeroBolee.Controllers
         private readonly IAccountService accountService;
         private readonly AppDefaults defaultOptions;
         private string _defaultPic;
-
+        private readonly ResponseMsg response = new ResponseMsg();
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -45,24 +45,20 @@ namespace MeroBolee.Controllers
                 {
                     string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
                     _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
-                    AuthenticateResponse response =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, basePath, _defaultPic);
-                    if (response != null)
+                    AuthenticateResponse resp =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, basePath, _defaultPic);
+                    if (resp != null)
                     {
                         //setTokenCookie(response.RefreshToken);
-                        return Ok(response);
+                        return Ok(resp);
                     }                   
 
                 }
             }
             catch (Exception ex)
             {
-                ResponseMsg response = new ResponseMsg
-                {
-                    statusCode = StatusCodes.Status400BadRequest.ToString(),
-                    Message= ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
@@ -94,13 +90,9 @@ namespace MeroBolee.Controllers
             }
             catch (Exception ex)
             {
-                ResponseMsg response = new ResponseMsg
-                {
-                    statusCode = StatusCodes.Status400BadRequest.ToString(),
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                response.statusCode = "500";
+                response.Message = $"{ex.Message} Inner Message: {(ex.InnerException != null ? ex.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
