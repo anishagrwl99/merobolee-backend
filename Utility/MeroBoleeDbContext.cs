@@ -55,7 +55,6 @@ namespace MeroBolee.Utility
         public DbSet<VDCEntity> VDCEntities { get; set; }
         public DbSet<MembershipTypeEntity> MembershipTypeEntities { get; set; }
         public DbSet<CompanyTypeLookupEntity> CompanyTypeLookupEntities { get; set; }
-        public DbSet<FavouriteCategoryEntity> FavouriteCategoryEntities { get; set; }
 
         public DbSet<TenderEntity> TenderEntities { get; set; }
         public DbSet<PaymentStatusEntity> PaymentStatusEntities { get; set; }

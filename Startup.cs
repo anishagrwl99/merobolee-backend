@@ -203,10 +203,6 @@ namespace MeroBolee
             services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
             services.AddScoped<IMembershipTypeService, MembershipTypeService>();
 
-            //Favourite Category
-            services.AddScoped<IFavouriteCategoryRepository, FavouriteCategoryRepository>();
-            services.AddScoped<IFavouriteCategoryService, FavouriteCategoryService>();
-
             //Tender 
             services.AddScoped<ITenderRepository, TenderRepository>();
             services.AddScoped<ITenderService, TenderService>();
