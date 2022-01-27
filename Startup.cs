@@ -169,7 +169,6 @@ namespace MeroBolee
             services.AddScoped<ICryptoService, CryptoService>();
             services.AddScoped<IReferenceCodeService, ReferenceCodeService>();
             services.AddScoped<IUploadFile, FileUpload>();
-            services.AddScoped<ISMTPEmailService, SMTPEmailService>();
 
             //Database
             services.AddScoped<IDbFactory, DbFactory>();
@@ -251,8 +250,6 @@ namespace MeroBolee
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
 
-            //Support
-            services.AddScoped<ISupportService, SupportService>();
 
             //Tender Submission
             services.AddScoped<ITenderSubmissionRepository, TenderSubmissionRepository>();
