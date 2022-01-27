@@ -39,6 +39,14 @@ namespace MeroBolee.Service
         /// <returns></returns>
         Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search);
 
+
+        /// <summary>
+        /// Get verified bid inviter companies
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        Task<List<CompanyCardResponseDto>> GetVerifiedBidInviterCompany( string search);
+
         /// <summary>
         /// Gets the company detail.
         /// </summary>
@@ -167,6 +175,27 @@ namespace MeroBolee.Service
                 throw;
             }
 
+        }
+
+
+        public async Task<List<CompanyCardResponseDto>> GetVerifiedBidInviterCompany(string search)
+        {
+            try
+            {
+                List<CompanyEntity> companies = await companyRepository.GetBidInviterCompany(search);
+                List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
+                foreach (CompanyEntity item in companies)
+                {
+                    CompanyCardResponseDto dto = ToCard(item);
+                    reponseDtos.Add(dto);
+                }
+                return reponseDtos;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<CompanyDetailResponse> GetCompanyDetail(long companyId, string baseUrl, string defaultPic)

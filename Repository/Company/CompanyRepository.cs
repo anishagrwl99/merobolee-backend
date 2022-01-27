@@ -14,6 +14,9 @@ namespace MeroBolee.Repository
         Task<CompanyEntity> AddCompany(CompanyEntity companyEntity, long userId);
         Task<UserEntity> AddUser(long companyId, UserEntity user);
         Task<List<CompanyEntity>> GetCompany(CompanyTypeEnum companyType, string search);
+        Task<List<CompanyEntity>> GetBidInviterCompany( string search);
+
+
         Task<CompanyEntity> GetCompany(long companyId);
         Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
 
@@ -186,6 +189,40 @@ namespace MeroBolee.Repository
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
                                  && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString() //1 is merobolee company
+                    ).ToListAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get verified bid inviter company
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public async Task<List<CompanyEntity>> GetBidInviterCompany(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    return await meroBoleeDbContexts.CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.CompanyStatus)
+                        .Where(x => x.CompanyId != 1 && x.CompanyStatusId == 4 && x.RegisteredAs == CompanyTypeEnum.BidInviter.ToString()) //1 is merobolee company
+                        .ToListAsync();
+                }
+                else
+                {
+                    return await meroBoleeDbContexts.CompanyEntities
+                        .Include(x => x.Country)
+                        .Include(x => x.CompanyStatus)
+                        .Where(x => x.Name.ToLower().Contains(search.ToLower())
+                                 && x.CompanyId != 1 && x.CompanyStatusId == 4
+                                 && x.RegisteredAs == CompanyTypeEnum.BidInviter.ToString() //1 is merobolee company
                     ).ToListAsync();
                 }
             }

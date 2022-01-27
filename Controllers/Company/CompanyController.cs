@@ -286,6 +286,37 @@ namespace MeroBolee.Controllers.City
 
 
         /// <summary>
+        /// Get verified bid inviter to create a tender card
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpGet("Company/Verified/BidInviter")]
+        public async Task<IActionResult> GetVerifiedBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        {
+            try
+            {
+                string url = Url.Action("GetVerifiedBidInviter", null, new { search = search }, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetVerifiedBidInviterCompany(search);
+                int totalCount = companies.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<CompanyCardResponseDto>>(companies, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(companies, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
+        /// <summary>
         /// To get individual bid company detail
         /// </summary>
         /// <param name="companyId">Company Id of a company whose detail needs to fetch</param>
