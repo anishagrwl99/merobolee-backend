@@ -17,6 +17,13 @@ namespace MeroBolee.Repository
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
 
         /// <summary>
+        /// Adds the tender documents.
+        /// </summary>
+        /// <param name="entities">The entities.</param>
+        /// <returns></returns>
+        Task<List<TenderExtraDocumentEntity>> AddTenderDocuments(List<TenderExtraDocumentEntity> entities);
+
+        /// <summary>
         /// Upcoming tenders within 7 days
         /// </summary>
         /// <param name="companyId"></param>

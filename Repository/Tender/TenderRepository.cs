@@ -361,6 +361,21 @@ namespace MeroBolee.Repository
 
         }
 
+        public async Task<List<TenderExtraDocumentEntity>> AddTenderDocuments(List<TenderExtraDocumentEntity> entities)
+        {
+            try
+            {
+                await meroBoleeDbContexts.TenderExtraDocuments.AddRangeAsync(entities);
+                await unitOfWork.SaveChangesAsync();
+                return entities;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// Get a tender id from a tender code

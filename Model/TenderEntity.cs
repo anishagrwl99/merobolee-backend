@@ -57,20 +57,25 @@ namespace MeroBolee.Model
         [ForeignKey("Company")]
         public long CompanyId { get; set; }
 
-        [Column(TypeName = "VARCHAR(MAX)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(7000)]
         public string Location { get; set; }
 
 
-        [Column(TypeName = "VARCHAR(MAX)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(7000)]
         public string QualityRequest { get; set; }
 
-        [Column(TypeName = "VARCHAR(MAX)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(7000)]
         public string PerformanceRequest { get; set; }
 
-        [Column(TypeName = "VARCHAR(MAX)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(7000)]
         public string EligibilityCriteria { get; set; }
 
-        [Column(TypeName = "VARCHAR(MAX)")]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(7000)]
         public string AdditionalRequest { get; set; }
 
 
@@ -179,7 +184,6 @@ namespace MeroBolee.Model
         public long Id { get; set; }
 
         [ForeignKey("Tender")]
-        [Required]
         public long TenderId { get; set; }
 
         [ForeignKey("Company")]

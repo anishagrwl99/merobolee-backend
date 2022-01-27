@@ -117,7 +117,6 @@ namespace MeroBolee.Utility
             modelBuilder.HasDefaultSchema("dbo");
 
             modelBuilder.Entity<UserEntity>().Property(x => x.Code).HasDefaultValueSql("NEWID()");
-            modelBuilder.Entity<TenderEntity>().Property(x => x.Code).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(u => u.Username)
                 .IsUnique();

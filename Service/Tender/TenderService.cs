@@ -35,6 +35,7 @@ namespace MeroBolee.Service
         public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
         {
             TenderEntity entity = TenderDtoEntity(tenderDto);
+            entity = tenderRepository.AddTender(entity);
 
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
@@ -48,8 +49,9 @@ namespace MeroBolee.Service
             {
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
+           
 
-            entity.ExtraDocuments = new List<TenderExtraDocumentEntity>();
+            List<TenderExtraDocumentEntity> documentEntities = new List<TenderExtraDocumentEntity>();
 
             foreach (var item in tenderDto.ExtraDocuments)
             {
@@ -59,15 +61,15 @@ namespace MeroBolee.Service
                     {
                         CompanyId = tenderDto.CompanyId,
                         UserId = tenderDto.CreatedBy,
-                        TenderId = entity.Id,
                         DocTitle = item.DocTitle,
+                        TenderId = entity.Id,
                         DocPath = await uploadFileService.Upload(item.Document, docPath)
                     };
-                    entity.ExtraDocuments.Add(obj);
+                    documentEntities.Add(obj);
                 }
             }
+            await tenderRepository.AddTenderDocuments(documentEntities);
 
-            entity = tenderRepository.AddTender(entity);
             entity.Code = await referenceCodeService.GenerateCode(ReferenceEnum.Tender) + entity.Id.ToString("D3");
             await tenderRepository.UpdateTender(entity);
 
@@ -142,7 +144,7 @@ namespace MeroBolee.Service
 
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
-            TenderEntity entity = await tenderRepository.GetTenderEntityOnly (tenderDto.TenderId);
+            TenderEntity entity = await tenderRepository.GetTenderEntityOnly(tenderDto.TenderId);
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
@@ -250,7 +252,7 @@ namespace MeroBolee.Service
                 Tuple<decimal, DateTime, DateTime> tuple;
                 cache.TryGetValue<Tuple<decimal, DateTime, DateTime>>(key, out tuple);
 
-                if(tuple == null)
+                if (tuple == null)
                 {
                     tuple = tenderRepository.GetMaxQuotationAllowed(tenderId);
                     cache.Set(key, tuple);
