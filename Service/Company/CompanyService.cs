@@ -34,9 +34,10 @@ namespace MeroBolee.Service
         /// <summary>
         /// Gets the company.
         /// </summary>
+        /// <param name="companyType">The company type.</param>
         /// <param name="search">The search.</param>
         /// <returns></returns>
-        Task<List<CompanyCardResponseDto>> GetCompany(string search);
+        Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search);
 
         /// <summary>
         /// Gets the company detail.
@@ -147,11 +148,11 @@ namespace MeroBolee.Service
 
         }
 
-        public async Task<List<CompanyCardResponseDto>> GetCompany(string search)
+        public async Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search)
         {
             try
             {
-                List<CompanyEntity> companies = await companyRepository.GetCompany(search);
+                List<CompanyEntity> companies = await companyRepository.GetCompany(companyType, search);
                 List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
                 foreach (CompanyEntity item in companies)
                 {

@@ -256,17 +256,18 @@ namespace MeroBolee.Controllers.City
         /// To display all company by Admin
         /// </summary>
         /// <param name="pagination">Pagination info</param>
+        /// <param name="companyType">Company time info</param>
         /// <param name="search">Search text</param>
         /// <returns></returns>
         [HttpGet("Company")]
-        public async Task<IActionResult> GetAllCompany([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> GetAllCompany([FromQuery] PaginationQuery pagination, [FromQuery] CompanyTypeEnum companyType = CompanyTypeEnum.Bidder,  [FromQuery] string search = null)
         {
             try
             {
-                string url = Url.Action("GetAllCompany", null, new { search = search}, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAllCompany", null, new { companyType = companyType, search = search}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompany(search);
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompany(companyType, search);
                 int totalCount = companies.Count();
                 if (totalCount == 0)
                 {

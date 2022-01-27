@@ -13,7 +13,7 @@ namespace MeroBolee.Repository
     {
         Task<CompanyEntity> AddCompany(CompanyEntity companyEntity, long userId);
         Task<UserEntity> AddUser(long companyId, UserEntity user);
-        Task<List<CompanyEntity>> GetCompany(string search);
+        Task<List<CompanyEntity>> GetCompany(CompanyTypeEnum companyType, string search);
         Task<CompanyEntity> GetCompany(long companyId);
         Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
 
@@ -164,9 +164,10 @@ namespace MeroBolee.Repository
         /// <summary>
         /// Gets the company.
         /// </summary>
+        /// <param name="companyType">The company type.</param>
         /// <param name="search">The search.</param>
         /// <returns></returns>
-        public async Task<List<CompanyEntity>> GetCompany(string search)
+        public async Task<List<CompanyEntity>> GetCompany(CompanyTypeEnum companyType, string search)
         {
             try
             {
@@ -175,7 +176,7 @@ namespace MeroBolee.Repository
                     return await meroBoleeDbContexts.CompanyEntities
                         .Include(x=> x.Country)
                         .Include(x=> x.CompanyStatus)
-                        .Where(x => x.CompanyId != 1) //1 is merobolee company
+                        .Where(x => x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
                         .ToListAsync();
                 }
                 else
@@ -184,7 +185,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
-                                 && x.CompanyId != 1 //1 is merobolee company
+                                 && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString() //1 is merobolee company
                     ).ToListAsync();
                 }
             }
