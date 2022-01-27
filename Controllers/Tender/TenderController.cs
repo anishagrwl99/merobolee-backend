@@ -233,13 +233,14 @@ namespace MeroBolee.Controllers.Tender
 
 
         /// <summary>
-        /// To display only upcoming tender by bidder
+        /// To display only upcoming tender for bidder
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
-        [HttpGet("Tender/Upcoming")]
+        [HttpGet("Tender/Bidder/Upcoming")]
+        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] bool isAlert = true)
         {
             try
@@ -249,7 +250,7 @@ namespace MeroBolee.Controllers.Tender
                     string url = Url.Action("GetUpCommingTender", null, new { companyId = companyId, isAlert = isAlert }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingTender(companyId, isAlert);
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert);
                     int totalCount = tenders.Count();
                     if (totalCount == 0)
                     {
@@ -267,6 +268,44 @@ namespace MeroBolee.Controllers.Tender
             }
 
         }
+
+
+        /// <summary>
+        /// To display only upcoming tender alert for bid inviter
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/BidInviter/Upcoming")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> GetUpCommingTenderForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] long companyId)
+        {
+            try
+            {
+                if (companyId > 0)
+                {
+                    string url = Url.Action("GetUpCommingTenderForBidInviter", null, new { companyId = companyId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidInviterTender(companyId);
+                    int totalCount = tenders.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                return NotFound(new Responses<IEnumerable<TenderCard>>(null, "404", "Record not found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
 
         /// <summary>
         /// To individual detail of tender by tender id

@@ -29,7 +29,15 @@ namespace MeroBolee.Repository
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingTender(long companyId, bool isAlert);
+        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert);
+
+        /// <summary>
+        /// Get bid inviter upcoming tender
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+
 
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId );

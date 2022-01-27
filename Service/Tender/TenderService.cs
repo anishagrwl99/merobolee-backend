@@ -137,11 +137,15 @@ namespace MeroBolee.Service
                 return null;
             }
         }
-        public async Task<IEnumerable<TenderCard>> UpcomingTender(long companyId, bool isAlert)
+        public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert)
         {
-            return await tenderRepository.UpcomingTender(companyId, isAlert);
+            return await tenderRepository.UpcomingBidderTender(companyId, isAlert);
         }
 
+        public async Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId)
+        {
+            return await tenderRepository.UpcomingBidInviterTender(companyId);
+        }
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
             TenderEntity entity = await tenderRepository.GetTenderEntityOnly(tenderDto.TenderId);
