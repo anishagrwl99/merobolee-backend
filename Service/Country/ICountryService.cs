@@ -9,7 +9,7 @@ namespace MeroBolee.Service
    public interface ICountryService
    {
         GetCountryDto AddCountry(AddCountryDto addCountryDto);
-        IEnumerable<GetCountryDto> GetCountry(string search);
+        IEnumerable<GetCountryDto> GetCountry();
         GetCountryDto GetCountryDetail(int id);
         GetCountryDto UpdateCountry(int id, AddCountryDto addCountryDto);
         void DeleteCountry(int id);

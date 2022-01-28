@@ -235,7 +235,7 @@ namespace MeroBolee.Service
             try
             {
                 TenderEntity t = await tenderRepository.GetTenderEntityOnly(dto.TenderId);
-                t.StatusId = 2;//Approved
+                t.StatusId = 3;//Approved
                 t.Date_modified = DateTime.Now;
                 t.ApprovedBy = dto.UserId;
                 tenderRepository.ApproveTenderByBidInviter(t);

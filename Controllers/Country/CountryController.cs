@@ -110,18 +110,17 @@ namespace MeroBolee.Controllers.Country
         /// To display all country by Admin
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Country")]
         [AllowAnonymous]
-        public IActionResult GetAllCountry([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public IActionResult GetAllCountry([FromQuery] PaginationQuery pagination)
         {
             try
             {
                 string url = Url.Action("GetAllCountry", null, null, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetCountryDto> country = countryService.GetCountry(search);
+                IEnumerable<GetCountryDto> country = countryService.GetCountry();
                 int totalCount = country.Count();
                 if (totalCount == 0)
                 {

@@ -1,6 +1,8 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Model;
 using MeroBolee.Repository;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,12 @@ namespace MeroBolee.Service
     public class CountryService:CountryMapper ,ICountryService
     {
         private readonly ICountryRepository countryRepository;
-        public CountryService(ICountryRepository countryRepository)
+        private readonly IMemoryCache memoryCache;
+
+        public CountryService(ICountryRepository countryRepository, IMemoryCache memoryCache)
         {
             this.countryRepository = countryRepository;
+            this.memoryCache = memoryCache;
         }
         public GetCountryDto AddCountry(AddCountryDto addCountryDto)
         {
@@ -39,12 +44,19 @@ namespace MeroBolee.Service
             }
         }
 
-        public IEnumerable<GetCountryDto> GetCountry(string search)
+        public IEnumerable<GetCountryDto> GetCountry()
         {
             try
             {
-
-                return CountryEntityListToDto(countryRepository.GetCountry(search));
+                string key = "AllCountries";
+                IEnumerable<CountryEntity> countries = null;
+                memoryCache.TryGetValue <IEnumerable<CountryEntity>>(key, out countries);
+                if (countries == null)
+                {
+                    countries = countryRepository.GetCountry();
+                    memoryCache.Set(key, countries, DateTime.Now.AddDays(7));
+                }
+                return CountryEntityListToDto(countries);
         }
             catch(Exception)
             {

@@ -90,14 +90,12 @@ namespace MeroBolee.Repository
             }
         }
 
-        public IEnumerable<ProvinceEntity> GetProvinces(string search)
+        public IEnumerable<ProvinceEntity> GetProvinces()
         {
             try
             {
                 meroBoleeDbContexts.CountryEntities.ToList();
-                List<ProvinceEntity> provinces=  meroBoleeDbContexts.ProvinceEntities.Where(m => (search == null)
-                || (m.Name.ToLower().Contains(search.ToLower()))
-                ).ToList();
+                List<ProvinceEntity> provinces=  meroBoleeDbContexts.ProvinceEntities.ToList();
                 return provinces;
             }
             catch (InvalidOperationException)

@@ -1,6 +1,8 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.EntityMapper;
+using MeroBolee.Model;
 using MeroBolee.Repository;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,12 @@ namespace MeroBolee.Service
     public class ProvinceService:ProvinceMapper ,IProvinceService
     {
         private readonly IProvinceRepository provinceRepository;
-        public ProvinceService(IProvinceRepository provinceRepository)
+        private readonly IMemoryCache memoryCache;
+
+        public ProvinceService(IProvinceRepository provinceRepository, IMemoryCache memoryCache)
         {
             this.provinceRepository = provinceRepository;
+            this.memoryCache = memoryCache;
         }
 
         public GetProvinceDto AddProvince(AddProvinceDto provinceDto)
@@ -36,9 +41,18 @@ namespace MeroBolee.Service
                 return ProvinceEntityToDto(provinceRepository.GetProvinceDetail(id));
         }
 
-        public IEnumerable<GetProvinceDto> GetProvinces(string search)
+        public IEnumerable<GetProvinceDto> GetProvinces()
         {
-                return ProvinceEntityListToDto(provinceRepository.GetProvinces(search));
+            string key = "AllProvince";
+            IEnumerable<ProvinceEntity> provinces = null;
+            memoryCache.TryGetValue<IEnumerable<ProvinceEntity>>(key, out provinces);
+            if (provinces == null)
+            {
+                provinces = provinceRepository.GetProvinces();
+                memoryCache.Set(key, provinces, DateTime.Now.AddDays(7));
+            }
+
+            return ProvinceEntityListToDto(provinces);
         }
 
         public GetProvinceDto UpdateProvince(int id, AddProvinceDto provinceDto)

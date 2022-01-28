@@ -9,7 +9,7 @@ namespace MeroBolee.Service
     public interface IProvinceService
     {
         GetProvinceDto AddProvince(AddProvinceDto provinceDto);
-        IEnumerable<GetProvinceDto> GetProvinces(string search);
+        IEnumerable<GetProvinceDto> GetProvinces();
         GetProvinceDto GetProvinceDetail(int id);
 
         GetProvinceDto UpdateProvince(int id, AddProvinceDto provinceDto);

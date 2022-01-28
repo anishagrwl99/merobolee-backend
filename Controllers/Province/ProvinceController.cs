@@ -125,18 +125,17 @@ namespace MeroBolee.Controllers.Province
         /// To display all province by Admin
         /// </summary>
         /// <param name="pagination"></param>
-        /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Province")]
         [AllowAnonymous]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination)
         {
             try
             {
-                string url = Url.Action("GetAll", null, new { search = search}, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<GetProvinceDto> province = provinceService.GetProvinces(search);
+                IEnumerable<GetProvinceDto> province = provinceService.GetProvinces();
                 int totalCount = province.Count();
                 if (totalCount == 0)
                 {

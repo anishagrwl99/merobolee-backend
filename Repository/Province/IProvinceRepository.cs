@@ -10,7 +10,7 @@ namespace MeroBolee.Repository
     public interface IProvinceRepository: IRepositoryBase<ProvinceEntity>
     {
         ProvinceEntity AddProvince(ProvinceEntity provinceEntity);
-        IEnumerable<ProvinceEntity> GetProvinces(string search);
+        IEnumerable<ProvinceEntity> GetProvinces();
         ProvinceEntity GetProvinceDetail(int id);
 
         ProvinceEntity UpdateProvince(int id, ProvinceEntity provinceEntity);

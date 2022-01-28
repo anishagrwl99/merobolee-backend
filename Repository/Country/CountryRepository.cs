@@ -55,15 +55,11 @@ namespace MeroBolee.Repository
             
         }
 
-        public IEnumerable<CountryEntity> GetCountry(string search)
+        public IEnumerable<CountryEntity> GetCountry()
         {
             try
             {
-                return meroBoleeDbContexts.CountryEntities.Where(m => (search == null)
-                || ((m.Name.ToLower().Contains(search.ToLower()))
-                || (m.Code.ToLower().Contains(search.ToLower()))
-                || (m.Abbre.ToLower().Contains(search.ToLower()))
-                )).ToList();
+                return meroBoleeDbContexts.CountryEntities.ToList();
             }
             catch (InvalidOperationException)
             {

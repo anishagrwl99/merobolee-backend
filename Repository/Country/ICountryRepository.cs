@@ -11,7 +11,7 @@ namespace MeroBolee.Repository
     {
         CountryEntity AddCountry(CountryEntity country);
         CountryEntity GetCountryDetail(int id);
-        IEnumerable<CountryEntity> GetCountry(string search);
+        IEnumerable<CountryEntity> GetCountry();
         CountryEntity UpdateCountry(int id, CountryEntity country);
         void DeleteCountry(int id);
     }
