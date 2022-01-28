@@ -24,6 +24,7 @@ namespace MeroBolee.Service
         {
             try
             {
+                memoryCache.Remove("AllCountries");
                 return CountryEntityToDto(countryRepository.AddCountry(CountryDtoToEntity(addCountryDto)));
             }
             catch(Exception)
@@ -80,7 +81,7 @@ namespace MeroBolee.Service
         {
             try
             {
-
+                memoryCache.Remove("AllCountries");
                 return CountryEntityToDto(countryRepository.UpdateCountry(id, CountryDtoToEntity(addCountryDto)));
             }
             catch (Exception)

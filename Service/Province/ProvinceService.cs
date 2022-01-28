@@ -23,6 +23,7 @@ namespace MeroBolee.Service
 
         public GetProvinceDto AddProvince(AddProvinceDto provinceDto)
         {
+            memoryCache.Remove("AllProvince");
             return ProvinceEntityToDto(provinceRepository.AddProvince(ProvinceDtoEntity(provinceDto)));
         }
 
@@ -57,7 +58,8 @@ namespace MeroBolee.Service
 
         public GetProvinceDto UpdateProvince(int id, AddProvinceDto provinceDto)
         {
-                return ProvinceEntityToDto(provinceRepository.UpdateProvince(id, ProvinceDtoEntity(provinceDto) ));
+            memoryCache.Remove("AllProvince");
+            return ProvinceEntityToDto(provinceRepository.UpdateProvince(id, ProvinceDtoEntity(provinceDto) ));
         }
     }
 }
