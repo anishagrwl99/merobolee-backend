@@ -51,7 +51,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "403";
                     response.Message = "You are forbidden to register in this tender.";
-                    response.Data = null;
+                    response.Data = "Company not verified";
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
 
@@ -98,7 +98,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "403";
                     response.Message = "You are forbidden to register in this tender.";
-                    response.Data = null;
+                    response.Data = "Company not verified";
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
 
@@ -181,7 +181,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "403";
                     response.Message = "You can't enter a live bidding room";
-                    response.Data = null;
+                    response.Data = "Company not verified";
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
 
@@ -272,7 +272,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 {
                     response.statusCode = "403";
                     response.Message = "You are not allowed to bid in this tender.";
-                    response.Data = null;
+                    response.Data = "Company not verified";
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
 

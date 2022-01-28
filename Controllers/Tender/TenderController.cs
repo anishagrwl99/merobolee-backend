@@ -178,6 +178,13 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are forbidden to approve this tender.";
+                    response.Data = "Company not verified";
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
                 if (ModelState.IsValid)
                 {
                     TenderApproveDto res = await tenderService.ApproveTenderByBidInviter(dto);
