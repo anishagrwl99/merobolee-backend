@@ -37,6 +37,7 @@ namespace MeroBolee.Repository
         /// <param name="companyId"></param>
         /// <returns></returns>
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId);
 
 
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);

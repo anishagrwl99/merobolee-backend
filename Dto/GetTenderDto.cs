@@ -47,6 +47,7 @@ namespace MeroBolee.Dto
 
         public List<TenderCardInfo> CardInfo { get; set; }
 
+
         [JsonIgnore]
         public int StatusId { get; set; }
 
@@ -58,6 +59,7 @@ namespace MeroBolee.Dto
         public string Label { get; set; }
         public string Value { get; set; }
     }
+
 
     public class TenderExtraDocumentResponseDto
     {

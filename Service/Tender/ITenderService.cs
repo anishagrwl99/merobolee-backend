@@ -17,7 +17,7 @@ namespace MeroBolee.Service
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert);
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
-
+        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
         Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);
 

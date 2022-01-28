@@ -54,7 +54,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
@@ -99,6 +99,39 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+
+        /// <summary>
+        /// To get tenders created on behalf of a company. (send companyId = null to load all companies tender)
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/Admin/List")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] long? companyId = null)
+        {
+            try
+            {
+                string url = Url.Action("GetTenderList", null, new { companyId = companyId }, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<TenderCard> tenders = await tenderService.CompanyTendersForAdmin(companyId);
+                int totalCount = tenders.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
 
         /// <summary>
         /// Get a tender history of a bid inviter company
@@ -201,7 +234,7 @@ namespace MeroBolee.Controllers.Tender
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null? "" : e.InnerException.Message);
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }

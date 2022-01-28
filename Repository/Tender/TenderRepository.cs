@@ -268,7 +268,7 @@ namespace MeroBolee.Repository
                     return await (from bd in meroBoleeDbContexts.BidRequestEntities
                                   join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                                  join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
+                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
@@ -284,7 +284,7 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = s.Status,
+                                      Status = ts.Status,
                                       CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                                   where tc.TenderId == t.Id
                                                   select new TenderCardInfo
@@ -300,7 +300,7 @@ namespace MeroBolee.Repository
                     return await (from bd in meroBoleeDbContexts.BidRequestEntities
                                   join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                                  join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
+                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                   select new TenderCard
@@ -314,7 +314,7 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = s.Status,
+                                      Status = ts.Status,
                                       CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                                   where tc.TenderId == t.Id
                                                   select new TenderCardInfo
@@ -346,7 +346,7 @@ namespace MeroBolee.Repository
             {
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                              join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
+                              join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                               where t.CompanyId == companyId
                                     && t.StatusId == 3 //Tender should be approved
                                     && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
@@ -361,7 +361,7 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   StatusId = t.StatusId,
-                                  Status = s.Status,
+                                  Status = ts.Status,
                                   CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                               where tc.TenderId == t.Id
                                               select new TenderCardInfo
@@ -371,6 +371,82 @@ namespace MeroBolee.Repository
                                                   Value = tc.Value
                                               }).ToList()
                               }).ToListAsync();
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+        /// <summary>
+        /// upcoming tender within 7 days for bid inviter
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId)
+
+        {
+            try
+            {
+                if (companyId.HasValue)
+                {
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  where t.CompanyId == companyId.Value
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      StatusId = t.StatusId,
+                                      Status = ts.Status,
+                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                                  where tc.TenderId == t.Id
+                                                  select new TenderCardInfo
+                                                  {
+                                                      Id = tc.Id,
+                                                      Label = tc.Label,
+                                                      Value = tc.Value
+                                                  }).ToList()
+                                  }).ToListAsync();
+                }
+                else
+                {
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      StatusId = t.StatusId,
+                                      Status = ts.Status,
+                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                                  where tc.TenderId == t.Id
+                                                  select new TenderCardInfo
+                                                  {
+                                                      Id = tc.Id,
+                                                      Label = tc.Label,
+                                                      Value = tc.Value
+                                                  }).ToList()
+                                  }).ToListAsync();
+                }
 
 
             }
