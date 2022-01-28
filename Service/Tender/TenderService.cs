@@ -93,7 +93,7 @@ namespace MeroBolee.Service
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
                 PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
-                ActiveTenders = tenders.Where(x => x.StatusId == 3 && x.LiveEndDate < DateTime.Now).ToList()
+                ActiveTenders = tenders.Where(x => x.StatusId == 3 && x.LiveEndDate > DateTime.Now).ToList()
             };
             return listing;
         }
