@@ -18,6 +18,8 @@ namespace MeroBolee.Repository
     public interface ISearchEngineRepository : IRepositoryBase<CommonStatus>
     {
         Task<List<CompanyEntity>> GetCompanies(AdvanceSearch searchParams);
+
+        Task<AdvanceSearchDto> Search(string searchText);
     }
 
 
@@ -87,6 +89,110 @@ namespace MeroBolee.Repository
                         .Include(x => x.CompanyStatus)
                         .ToListAsync();
                 }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<AdvanceSearchDto> Search(string searchText)
+        {
+            try
+            {
+                AdvanceSearchDto dto = new AdvanceSearchDto();
+                dto.Tenders = await (from t in meroBoleeDbContexts.TenderEntities
+                                     join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                     join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                     where t.Title.Contains(searchText)
+                                            || t.Code.Contains(searchText)
+                                            || c.Category.Contains(searchText)
+                                            || s.Status.Contains(searchText)
+                                            || t.PerformanceRequest.Contains(searchText)
+                                            || t.QualityRequest.Contains(searchText)
+                                            || t.AdditionalRequest.Contains(searchText)
+                                            || t.EligibilityCriteria.Contains(searchText)
+                                            || t.Location.Contains(searchText)
+                                     select new TenderCard
+                                     {
+                                         TenderId = t.Id,
+                                         TenderCode = t.Code,
+                                         TenderTitle = t.Title,
+                                         CategoryId = c.Id,
+                                         CategoryName = c.Category,
+                                         LiveStartDate = t.LiveStartDate,
+                                         LiveEndDate = t.LiveEndDate,
+                                         RegistrationTill = t.RegistrationTill,
+                                         Status = s.Status,
+                                         CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                                     where tc.TenderId == t.Id
+                                                     select new TenderCardInfo
+                                                     {
+                                                         Id = tc.Id,
+                                                         Label = tc.Label,
+                                                         Value = tc.Value
+                                                     }).ToList()
+                                     }
+                               ).ToListAsync();
+
+                dto.Users = await (from u in meroBoleeDbContexts.UserEntities
+                                   where u.FirstName.Contains(searchText)
+                                        || u.MiddleName.Contains(searchText)
+                                        || u.LastName.Contains(searchText)
+                                        || u.Email.Contains(searchText)
+                                        || u.Username.Contains(searchText)
+                                   select new UserResponseDto
+                                   {
+                                       Id = u.Id,
+                                       Designation = u.Designation,
+                                       FirstName = u.FirstName,
+                                       MiddleName = u.MiddleName,
+                                       LastName = u.LastName,
+                                       Email = u.Email,
+                                       UserName = u.Username,
+                                       ProfilePic = u.ProfilePicture
+                                   }
+                                   ).ToListAsync();
+
+                dto.Companies = await (from c in meroBoleeDbContexts.CompanyEntities
+                                       join ctry in meroBoleeDbContexts.CountryEntities on c.CountryId equals ctry.Id
+                                       join prov in meroBoleeDbContexts.ProvinceEntities on c.ProvinceId equals prov.Id
+                                       join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                       where c.ReferenceCode.Contains(searchText)
+                                            || c.Name.Contains(searchText)
+                                            || ctry.Name.Contains(searchText)
+                                            || prov.Name.Contains(searchText)
+                                            || c.City.Contains(searchText)
+                                            || c.Address1.Contains(searchText)
+                                            || c.Address2.Contains(searchText)
+                                            || c.Address3.Contains(searchText)
+                                            || c.Zip.Contains(searchText)
+                                            || c.CompanyEmail.Contains(searchText)
+                                            || c.CompanyWebsite.Contains(searchText)
+                                            || c.MobileNumber.Contains(searchText)
+                                            || c.PhoneNumber.Contains(searchText)
+                                       select new CompanyDto
+                                       {
+                                           Id = c.CompanyId,
+                                           Code = c.ReferenceCode,
+                                           Name = c.Name,
+                                           Country = ctry.Name,
+                                           Province = prov.Name,
+                                           City = c.City,
+                                           Address1 = c.Address1,
+                                           Address2 = c.Address2,
+                                           Address3 = c.Address3,
+                                           Zip = c.Zip,
+                                           Email = c.CompanyEmail,
+                                           Website = c.CompanyWebsite,
+                                           MobileNumber = c.MobileNumber,
+                                           PhoneNumber = c.PhoneNumber,
+                                           Status = s.Status,
+                                           RegisteredDate = c.Date_created
+                                       }).ToListAsync();
+
+                return dto;
             }
             catch (Exception)
             {

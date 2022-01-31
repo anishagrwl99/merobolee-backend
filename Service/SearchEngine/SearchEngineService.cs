@@ -20,7 +20,7 @@ namespace MeroBolee.Service
     /// </summary>
     public interface ISearchEngineService
     {
-        Task<List<CompanyDetailResponse>> Search(AdvanceSearch searchParams, string baseUrl, string defaultPic);
+        Task<AdvanceSearchDto> Search(string search, string baseUrl, string defaultPic);
     }
 
     /// <summary>
@@ -45,17 +45,34 @@ namespace MeroBolee.Service
             this.userService = userService;
         }
 
-        public async Task<List<CompanyDetailResponse>> Search(AdvanceSearch searchParams, string baseUrl, string defaultPic)
-        {
-            List<CompanyEntity> companies = await searchEngineRepository.GetCompanies(searchParams);
-            if (companies != null && companies.Count > 0)
-            {
-                //CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
-                List<CompanyDetailResponse> resp = await ToDetailResponse(companies,  userService, fileService, baseUrl, defaultPic);
-                return resp;
-            }
 
-            return null;
+        public async Task<AdvanceSearchDto> Search(string search, string baseUrl, string defaultPic)
+        {
+            try
+            {
+                AdvanceSearchDto dto = await searchEngineRepository.Search(search);
+                if(dto.Users.Count> 0 )
+                {
+                    foreach (var user in dto.Users)
+                    {
+                        bool dpExists = await fileService.FileExists(user.ProfilePic);
+                        if(dpExists)
+                        {
+                            user.ProfilePic = $"{baseUrl}{user.ProfilePic.Replace("\\", "/")}";
+                        }
+                        else
+                        {
+                            user.ProfilePic = defaultPic;
+                        }
+                    }
+                }
+                return dto;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

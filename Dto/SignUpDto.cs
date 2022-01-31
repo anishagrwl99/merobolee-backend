@@ -77,8 +77,8 @@ namespace MeroBolee.Dto
         public string Zip { get; set; }
         public string Email { get; set; }
         public string Website { get; set; }
-        public string Phone1 { get; set; }
-        public string Phone2 { get; set; }
+        public string MobileNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string Status { get; set; }
         public DateTime RegisteredDate { get; set; }
 
