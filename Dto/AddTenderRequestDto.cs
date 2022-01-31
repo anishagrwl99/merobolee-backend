@@ -6,11 +6,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Ganss.XSS;
 
 namespace MeroBolee.Dto
 {
     public class TenderRequestBaseDto
     {
+        private string _location;
+        private string _qualityRequest;
+        private string _eligibilityCriteria;
+        private string _performanceRequest;
+        private string _additionalRequest;
+
+
         [Required(ErrorMessage = "Company name is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
         public long CompanyId { get; set; }
@@ -44,12 +52,38 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user")]
         public long CreatedBy { get; set; }
 
+        
 
-        public string Location { get; set; }
-        public string QualityRequest { get; set; }
-        public string PerformanceRequest { get; set; }
-        public string EligibilityCriteria { get; set; }
-        public string AdditionalRequest { get; set; }
+        public string Location 
+        {
+            get => _location;
+            set => _location = new HtmlSanitizer().Sanitize(value);
+        }
+
+        
+        public string QualityRequest
+        {
+            get => _qualityRequest;
+            set => _qualityRequest = new HtmlSanitizer().Sanitize(value);
+        }
+        public string PerformanceRequest
+        {
+            get => _performanceRequest;
+            set => _performanceRequest = new HtmlSanitizer().Sanitize(value);
+        }
+
+
+        public string EligibilityCriteria
+        {
+            get => _eligibilityCriteria;
+            set => _eligibilityCriteria = new HtmlSanitizer().Sanitize(value);
+        }
+
+        public string AdditionalRequest
+        {
+            get => _additionalRequest;
+            set => _additionalRequest = new HtmlSanitizer().Sanitize(value);
+        }
 
         [Range(0, double.MaxValue, ErrorMessage = "Invalid price")]
         public decimal Price { get; set; }
@@ -63,9 +97,9 @@ namespace MeroBolee.Dto
         public IFormFile TenderDetailDoc { get; set; }
         public IFormFile TenderTermsAndConditionDoc { get; set; }
 
-
-
     }
+
+
     public class AddTenderRequestDto : TenderRequestBaseDto
     {
         [Required(ErrorMessage = "At least one tender material is required")]

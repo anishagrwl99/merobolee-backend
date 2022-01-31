@@ -4,11 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Ganss.XSS;
+
 
 namespace MeroBolee.Dto
 {
     public class SendEmailDto
     {
+        private string _body;
+
         [Required(ErrorMessage = "User company id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
         public long CompanyId { get; set; }
@@ -29,7 +33,11 @@ namespace MeroBolee.Dto
 
 
         [Required(ErrorMessage = "Email body is required.")]
-        public string Body { get; set; }
+        public string Body
+        {
+            get => _body;
+            set => _body = new HtmlSanitizer().Sanitize(value);
+        }
     }
 
     public class ReplyEmailDto: SendEmailDto

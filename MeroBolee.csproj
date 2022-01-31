@@ -26,6 +26,7 @@
 	
   <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.7.25" />
+    <PackageReference Include="HtmlSanitizer" Version="7.1.475" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
