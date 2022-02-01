@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MeroBolee.Attribute;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,10 +21,12 @@ namespace MeroBolee.Dto
 
         [Required(ErrorMessage = "Password is required")]
         [Compare("ConfirmationPassword", ErrorMessage = "Password and confirmation password didn't matched")]
+        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Password must contain at least one upper case, lower case, number and special character")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Confirmation password is required")]
         [Compare("Password", ErrorMessage = "Password and confirmation password didn't matched")]
+        [Password(MinLength = 8, MaxLength = 500, ErrorMessage = "Password must contain at least one upper case, lower case, number and special character")]
         public string ConfirmationPassword { get; set; }
     }
     public class ProfilePictureDto

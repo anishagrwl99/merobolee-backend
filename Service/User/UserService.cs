@@ -40,7 +40,13 @@ namespace MeroBolee.Service
 
         public async Task< IEnumerable<GetUserDto>> GetUser(long companyId, string baseUrl, string defaultImage)
         {
-            IEnumerable<UserEntity> users = await userRepository.GetAllUser(companyId);
+            IEnumerable<UserEntity> users = await userRepository.GetAllUserByCompany(companyId);
+            return UserEntityListToDto(users, uploadImage, baseUrl, defaultImage);
+        }
+
+        public async Task<IEnumerable<GetUserDto>> GetAllUser(string baseUrl, string defaultImage)
+        {
+            IEnumerable<UserEntity> users = await userRepository.GetAllUser();
             return UserEntityListToDto(users, uploadImage, baseUrl, defaultImage);
         }
 
@@ -196,11 +202,18 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<List<UserEntity>> GetCompanyUsers(long companyId)
+        public async Task<long> ChangeUserStatus(ChangeUserStatusDto dto)
         {
             try
             {
-                return await userRepository.GetCompanyUsers(companyId);
+                UserEntity user = await userRepository.GetUserInfoDetail(dto.UserId);
+                if(user != null)
+                {
+                    user.StatusId = dto.StatusId;
+                    await userRepository.UpdateUser(user);
+                    return user.Id;
+                }
+                return 0;
             }
             catch (Exception)
             {
@@ -208,6 +221,7 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
         private async Task<string> GetUserProfilePicture(string profilePic, string basePath, string defaultPic)
         {
             if (!string.IsNullOrEmpty(profilePic))

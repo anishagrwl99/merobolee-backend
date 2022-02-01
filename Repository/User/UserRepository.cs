@@ -96,7 +96,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="companyId">The company identifier.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<UserEntity>> GetAllUser(long companyId)
+        public async Task<IEnumerable<UserEntity>> GetAllUserByCompany(long companyId)
         {
             try
             {
@@ -113,6 +113,46 @@ namespace MeroBolee.Repository
                                   RoleId = u.RoleId,
                                   Date_created = u.Date_created,
                                   CompanyName  = "",
+                                  Date_modified = u.Date_modified,
+                                  Designation = u.Designation,
+                                  Email = u.Email,
+                                  ExpriedDate = u.ExpriedDate,
+                                  FirstName = u.FirstName,
+                                  IsEmailReceiver = u.IsEmailReceiver,
+                                  LastName = u.LastName,
+                                  MiddleName = u.MiddleName,
+                                  Password = null,
+                                  ProfilePicture = u.ProfilePicture,
+                                  Username = u.Username,
+                                  StatusId = u.StatusId,
+                                  Role = r,
+                                  UserStatus = us
+                              }
+                 ).ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<IEnumerable<UserEntity>> GetAllUser()
+        {
+            try
+            {
+                return await (from uc in meroBoleeDbContexts.UserCompanies
+                              join u in meroBoleeDbContexts.UserEntities on uc.UserId equals u.Id
+                              join us in meroBoleeDbContexts.UserStatusEntities on u.StatusId equals us.Id
+                              join r in meroBoleeDbContexts.RoleEntities on u.RoleId equals r.Id
+                              select new UserEntity
+                              {
+                                  Id = u.Id,
+                                  ActivateDate = u.ActivateDate,
+                                  Code = u.Code,
+                                  RoleId = u.RoleId,
+                                  Date_created = u.Date_created,
+                                  CompanyName = "",
                                   Date_modified = u.Date_modified,
                                   Designation = u.Designation,
                                   Email = u.Email,
@@ -231,24 +271,6 @@ namespace MeroBolee.Repository
             }
         }
 
-
-        public string GetUserCompany(long id)
-        {
-            try
-            {
-                string userCompany = meroBoleeDbContexts.UserEntities
-                                .Where(x => x.Id == id)
-                                .Select(x => x.CompanyName)
-                                .DefaultIfEmpty("")
-                                .FirstOrDefault();
-
-                return userCompany;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
         public async Task<UserProfileDto> GetUserProfile(long userId, long companyId)
         {

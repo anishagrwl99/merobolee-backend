@@ -209,19 +209,6 @@ namespace MeroBolee.EntityMapper
         }
 
 
-        public async Task<List<CompanyDetailResponse>> ToDetailResponse(List<CompanyEntity> companies, IUserService userservice, IUploadFile fileService, string baseUrl, string defaultPic)
-        {
-            List<CompanyDetailResponse> response = new List<CompanyDetailResponse>();
-
-            foreach (CompanyEntity company in companies)
-            {
-                List<UserEntity> users = await userservice.GetCompanyUsers(company.CompanyId);
-                CompanyDetailResponse resp = ToDetailResponse(company, users, null, fileService, baseUrl, defaultPic);
-                response.Add(resp);
-            }
-
-            return response;
-        }
         public CompanyCardResponseDto ToCard(CompanyEntity company)
         {
             return new CompanyCardResponseDto
