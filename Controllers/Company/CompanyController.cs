@@ -253,21 +253,21 @@ namespace MeroBolee.Controllers.City
         }
 
         /// <summary>
-        /// To display all company by Admin
+        /// To get all companies by type (0: Bid Inviter, 1: Bidder or Supplier)
         /// </summary>
         /// <param name="pagination">Pagination info</param>
-        /// <param name="companyType">Company time info</param>
+        /// <param name="companyType">Company type info (0 for Bid Inviter, 1 For Supplier)</param>
         /// <param name="search">Search text</param>
         /// <returns></returns>
-        [HttpGet("Company")]
-        public async Task<IActionResult> GetAllCompany([FromQuery] PaginationQuery pagination, [FromQuery] CompanyTypeEnum companyType = CompanyTypeEnum.Bidder,  [FromQuery] string search = null)
+        [HttpGet("Company/ByType")]
+        public async Task<IActionResult> GetAllCompanyByType([FromQuery] PaginationQuery pagination, [FromQuery] CompanyTypeEnum companyType = CompanyTypeEnum.Bidder,  [FromQuery] string search = null)
         {
             try
             {
-                string url = Url.Action("GetAllCompany", null, new { companyType = companyType, search = search}, Request.Scheme); //get url for current request
+                string url = Url.Action("GetAllCompanyByType", null, new { companyType = companyType, search = search}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompany(companyType, search);
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompanyByType(companyType, search);
                 int totalCount = companies.Count();
                 if (totalCount == 0)
                 {
@@ -284,6 +284,38 @@ namespace MeroBolee.Controllers.City
 
         }
 
+
+
+        /// <summary>
+        /// Gets all company.
+        /// </summary>
+        /// <param name="pagination">The pagination.</param>
+        /// <param name="search">The search.</param>
+        /// <returns></returns>
+        [HttpGet("Company/All")]
+        public async Task<IActionResult> GetAllCompany([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+
+        {
+            try
+            {
+                string url = Url.Action("GetAllCompany", null, new {  search = search }, Request.Scheme); //get url for current request
+                uriService = new UriService(url);
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetAllCompany(search);
+                int totalCount = companies.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<CompanyCardResponseDto>>(companies, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(companies, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
 
         /// <summary>
         /// Get verified bid inviter to create a tender card

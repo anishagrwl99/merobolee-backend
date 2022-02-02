@@ -37,7 +37,18 @@ namespace MeroBolee.Service
         /// <param name="companyType">The company type.</param>
         /// <param name="search">The search.</param>
         /// <returns></returns>
-        Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search);
+        Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search);
+
+
+
+        /// <summary>
+        /// Gets all company.
+        /// </summary>
+        /// <param name="search">The search.</param>
+        /// <returns></returns>
+        Task<List<CompanyCardResponseDto>> GetAllCompany( string search);
+
+
 
 
         /// <summary>
@@ -172,11 +183,32 @@ namespace MeroBolee.Service
         /// <param name="companyType"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public async Task<List<CompanyCardResponseDto>> GetCompany(CompanyTypeEnum companyType, string search)
+        public async Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search)
         {
             try
             {
-                List<CompanyEntity> companies = await companyRepository.GetCompany(companyType, search);
+                List<CompanyEntity> companies = await companyRepository.GetCompanyByType(companyType, search);
+                List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
+                foreach (CompanyEntity item in companies)
+                {
+                    CompanyCardResponseDto dto = ToCard(item);
+                    reponseDtos.Add(dto);
+                }
+                return reponseDtos;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task<List<CompanyCardResponseDto>> GetAllCompany(string search)
+        {
+            try
+            {
+                List<CompanyEntity> companies = await companyRepository.GetAllCompany(search);
                 List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
                 foreach (CompanyEntity item in companies)
                 {
