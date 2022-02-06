@@ -33,6 +33,11 @@ namespace MeroBolee.Dto
         [MaxLength(500, ErrorMessage = "Tender title can be {1} character long")]
         public string TenderTitle { get; set; }
 
+        [Required(ErrorMessage = "Tender time interval is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid time interval value")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Time interval should be numeric only")]
+        public int TimeInterval { get; set; }
+
         [Required(ErrorMessage = "Date till supplier registration allowed is required")]
         [DateLessThan("LiveStartDate")]
         [ShouldBeFutureDate]

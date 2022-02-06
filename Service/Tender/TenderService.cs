@@ -53,23 +53,26 @@ namespace MeroBolee.Service
 
             List<TenderExtraDocumentEntity> documentEntities = new List<TenderExtraDocumentEntity>();
 
-            foreach (var item in tenderDto.ExtraDocuments)
+            if (tenderDto.ExtraDocuments != null)
             {
-                if (item.Document != null)
+                foreach (var item in tenderDto.ExtraDocuments)
                 {
-                    TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                    if (item.Document != null)
                     {
-                        CompanyId = tenderDto.CompanyId,
-                        UserId = tenderDto.CreatedBy,
-                        DocTitle = item.DocTitle,
-                        TenderId = entity.Id,
-                        DocPath = await uploadFileService.Upload(item.Document, docPath)
-                    };
-                    documentEntities.Add(obj);
+                        TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                        {
+                            CompanyId = tenderDto.CompanyId,
+                            UserId = tenderDto.CreatedBy,
+                            DocTitle = item.DocTitle,
+                            TenderId = entity.Id,
+                            DocPath = await uploadFileService.Upload(item.Document, docPath)
+                        };
+                        documentEntities.Add(obj);
+                    }
                 }
-            }
-            await tenderRepository.AddTenderDocuments(documentEntities);
+                await tenderRepository.AddTenderDocuments(documentEntities);
 
+            }
             entity.Code = await referenceCodeService.GenerateCode(ReferenceEnum.Tender) + entity.Id.ToString("D3");
             await tenderRepository.UpdateTender(entity);
 
@@ -170,30 +173,32 @@ namespace MeroBolee.Service
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
 
-
-            foreach (var item in tenderDto.ExtraDocuments)
+            if (tenderDto.ExtraDocuments != null)
             {
-                var itm = entity.ExtraDocuments.Where(x => x.Id == item.Id).FirstOrDefault();
-                if (itm == null && item.Document != null)
+                foreach (var item in tenderDto.ExtraDocuments)
                 {
-                    TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                    var itm = entity.ExtraDocuments.Where(x => x.Id == item.Id).FirstOrDefault();
+                    if (itm == null && item.Document != null)
                     {
-                        CompanyId = tenderDto.CompanyId,
-                        UserId = tenderDto.CreatedBy,
-                        TenderId = entity.Id,
-                        DocTitle = item.DocTitle,
-                        DocPath = await uploadFileService.Upload(item.Document, docPath)
-                    };
-                    entity.ExtraDocuments.Add(obj);
-                }
-                else
-                {
-                    if (item.Document != null)
-                    {
-                        await uploadFileService.DeleteFile(itm.DocPath);
-                        itm.DocPath = await uploadFileService.Upload(item.Document, docPath);
+                        TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
+                        {
+                            CompanyId = tenderDto.CompanyId,
+                            UserId = tenderDto.CreatedBy,
+                            TenderId = entity.Id,
+                            DocTitle = item.DocTitle,
+                            DocPath = await uploadFileService.Upload(item.Document, docPath)
+                        };
+                        entity.ExtraDocuments.Add(obj);
                     }
-                    itm.DocTitle = item.DocTitle;
+                    else
+                    {
+                        if (item.Document != null)
+                        {
+                            await uploadFileService.DeleteFile(itm.DocPath);
+                            itm.DocPath = await uploadFileService.Upload(item.Document, docPath);
+                        }
+                        itm.DocTitle = item.DocTitle;
+                    }
                 }
             }
 

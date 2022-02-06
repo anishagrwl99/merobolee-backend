@@ -50,6 +50,7 @@ namespace MeroBolee.EntityMapper
                 CompanyId = tenderDto.CompanyId,
                 Title = tenderDto.TenderTitle,
                 CategoryId = tenderDto.CategoryId,
+                LiveInterval = tenderDto.TimeInterval,
                 LiveStartDate = tenderDto.LiveStartDate,
                 LiveEndDate = tenderDto.LiveEndDate,
                 StatusId = 1,
@@ -93,6 +94,7 @@ namespace MeroBolee.EntityMapper
         {
             entity.Title = dto.TenderTitle;
             entity.CategoryId = dto.CategoryId;
+            entity.LiveInterval = dto.TimeInterval;
             entity.PerformanceRequest = dto.PerformanceRequest;
             entity.RegistrationTill = dto.RegistrationTill;
             entity.LiveStartDate = dto.LiveStartDate;
@@ -106,41 +108,47 @@ namespace MeroBolee.EntityMapper
             entity.Price = dto.Price;
             entity.MaxQuotation = dto.MaxQuotation;
 
-            foreach (var item in dto.TenderMaterials)
+            if (dto.TenderMaterials != null)
             {
-                var itm = entity.TenderMaterialEntities.Where(x => x.Id == item.Id).FirstOrDefault();
-                if (itm == null)
+                foreach (var item in dto.TenderMaterials)
                 {
-                    entity.TenderMaterialEntities.Add(new TenderMaterialEntity
+                    var itm = entity.TenderMaterialEntities.Where(x => x.Id == item.Id).FirstOrDefault();
+                    if (itm == null)
                     {
-                        Materials = item.Name,
-                        Quantity = item.Quantity,
-                        TenderId = entity.Id
-                    });
-                }
-                else
-                {
-                    itm.Materials = item.Name;
-                    itm.Quantity = item.Quantity;
+                        entity.TenderMaterialEntities.Add(new TenderMaterialEntity
+                        {
+                            Materials = item.Name,
+                            Quantity = item.Quantity,
+                            TenderId = entity.Id
+                        });
+                    }
+                    else
+                    {
+                        itm.Materials = item.Name;
+                        itm.Quantity = item.Quantity;
+                    }
                 }
             }
 
-            foreach (var item in dto.TenderCards)
+            if (dto.TenderCards != null)
             {
-                var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
-                if (itm != null)
+                foreach (var item in dto.TenderCards)
                 {
-                    entity.TenderCards.Add(new TenderCardEntity
+                    var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
+                    if (itm != null)
                     {
-                        Label = itm.Label,
-                        Value = itm.Value,
-                        TenderId = entity.Id
-                    });
-                }
-                else
-                {
-                    itm.Label = item.Label;
-                    itm.Value = itm.Value;
+                        entity.TenderCards.Add(new TenderCardEntity
+                        {
+                            Label = itm.Label,
+                            Value = itm.Value,
+                            TenderId = entity.Id
+                        });
+                    }
+                    else
+                    {
+                        itm.Label = item.Label;
+                        itm.Value = itm.Value;
+                    }
                 }
             }
 
