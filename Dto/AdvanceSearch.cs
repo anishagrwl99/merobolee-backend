@@ -8,6 +8,7 @@ namespace MeroBolee.Dto
     {
         public List<SearchField> CompanyFields { get; set; }
         public List<SearchField> UserFields { get; set; }
+        public List<SearchField> TenderFields { get; set; }
     }
 
 

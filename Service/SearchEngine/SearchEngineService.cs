@@ -20,6 +20,7 @@ namespace MeroBolee.Service
     /// </summary>
     public interface ISearchEngineService
     {
+        Task<AdvanceSearchDto> Search(AdvanceSearch search, string baseUrl, string defaultPic);
         Task<AdvanceSearchDto> Search(string search, string baseUrl, string defaultPic);
     }
 
@@ -57,6 +58,36 @@ namespace MeroBolee.Service
                     {
                         bool dpExists = await fileService.FileExists(user.ProfilePic);
                         if(dpExists)
+                        {
+                            user.ProfilePic = $"{baseUrl}{user.ProfilePic.Replace("\\", "/")}";
+                        }
+                        else
+                        {
+                            user.ProfilePic = defaultPic;
+                        }
+                    }
+                }
+                return dto;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<AdvanceSearchDto> Search(AdvanceSearch search, string baseUrl, string defaultPic)
+
+        {
+            try
+            {
+                AdvanceSearchDto dto = await searchEngineRepository.Search(search);
+                if (dto.Users != null &&  dto.Users.Count > 0)
+                {
+                    foreach (var user in dto.Users)
+                    {
+                        bool dpExists = await fileService.FileExists(user.ProfilePic);
+                        if (dpExists)
                         {
                             user.ProfilePic = $"{baseUrl}{user.ProfilePic.Replace("\\", "/")}";
                         }

@@ -17,7 +17,7 @@ namespace MeroBolee.Repository
     /// </summary>
     public interface ISearchEngineRepository : IRepositoryBase<CommonStatus>
     {
-        Task<List<CompanyEntity>> GetCompanies(AdvanceSearch searchParams);
+        Task<AdvanceSearchDto> Search(AdvanceSearch searchParams);
 
         Task<AdvanceSearchDto> Search(string searchText);
     }
@@ -42,10 +42,108 @@ namespace MeroBolee.Repository
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<List<CompanyEntity>> GetCompanies(AdvanceSearch searchParams)
+        public async Task<AdvanceSearchDto> Search(AdvanceSearch searchParams)
         {
             try
             {
+                AdvanceSearchDto search = new AdvanceSearchDto()
+                {
+                    Companies = new List<CompanyDto>(),
+                    Tenders = new List<TenderCard>(),
+                    Users = new List<UserResponseDto>()
+                };
+
+                if (searchParams.CompanyFields != null && searchParams.CompanyFields.Count > 0)
+                {
+                    List<CompanyEntity> companies = await meroBoleeDbContexts
+                                                        .CompanyEntities
+                                                        .Include(x => x.Country)
+                                                        .Include(x => x.Province)
+                                                        .Include(x => x.CompanyStatus)
+                                                        .Where(FilterLinq<CompanyEntity>.GetWherePredicate(searchParams.CompanyFields.ToArray()))
+                                                        .ToListAsync();
+
+                    search.Companies = (from c in companies
+                                        select new CompanyDto
+                                        {
+                                            Id = c.CompanyId,
+                                            Code = c.ReferenceCode,
+                                            Name = c.Name,
+                                            Country = c.Country.Name,
+                                            Province = c.Province.Name,
+                                            City = c.City,
+                                            Address1 = c.Address1,
+                                            Address2 = c.Address2,
+                                            Address3 = c.Address3,
+                                            Zip = c.Zip,
+                                            Email = c.CompanyEmail,
+                                            Website = c.CompanyWebsite,
+                                            MobileNumber = c.MobileNumber,
+                                            PhoneNumber = c.PhoneNumber,
+                                            Status = c.CompanyStatus.Status,
+                                            RegisteredDate = c.Date_created
+                                        }).ToList();
+                }
+
+                if (searchParams.UserFields != null && searchParams.UserFields.Count > 0)
+                {
+                    List<UserEntity> users = await meroBoleeDbContexts
+                                                    .UserEntities
+                                                    .Include(x => x.UserStatus)
+                                                    .Include(x => x.Role)
+                                                    .Where(FilterLinq<UserEntity>.GetWherePredicate(searchParams.UserFields.ToArray()))
+                                                    .ToListAsync();
+
+                    search.Users = (from u in users
+                                    select new UserResponseDto
+                                    {
+                                        Id = u.Id,
+                                        Designation = u.Designation,
+                                        FirstName = u.FirstName,
+                                        MiddleName = u.MiddleName,
+                                        LastName = u.LastName,
+                                        Email = u.Email,
+                                        UserName = u.Username,
+                                        ProfilePic = u.ProfilePicture
+                                    }
+                                   ).ToList();
+                }
+
+                if (searchParams.TenderFields != null && searchParams.TenderFields.Count > 0)
+                {
+                    List<TenderEntity> tenders = await meroBoleeDbContexts
+                                                    .TenderEntities
+                                                    .Include(x => x.TenderStatusEntity)
+                                                    .Include(x => x.TenderMaterialEntities)
+                                                    .Include(x => x.TenderCards)
+                                                    .Include(x => x.CategoryEntity)
+                                                    .Where(FilterLinq<TenderEntity>.GetWherePredicate(searchParams.TenderFields.ToArray()))
+                                                    .ToListAsync();
+
+                    search.Tenders = (from t in tenders
+                                      select new TenderCard
+                                      {
+                                          TenderId = t.Id,
+                                          TenderCode = t.Code,
+                                          TenderTitle = t.Title,
+                                          CategoryId = t.CategoryId,
+                                          CategoryName = t.CategoryEntity.Category,
+                                          LiveStartDate = t.LiveStartDate,
+                                          LiveEndDate = t.LiveEndDate,
+                                          RegistrationTill = t.RegistrationTill,
+                                          Status = t.TenderStatusEntity.Status,
+                                          CardInfo = (from tc in t.TenderCards
+                                                      where tc.TenderId == t.Id
+                                                      select new TenderCardInfo
+                                                      {
+                                                          Id = tc.Id,
+                                                          Label = tc.Label,
+                                                          Value = tc.Value
+                                                      }).ToList()
+                                      }).ToList();
+                }
+                /*
+
                 List<long> companyIds = new List<long>();
                 if (searchParams.UserFields != null && searchParams.UserFields.Count > 0)
                 {
@@ -89,6 +187,9 @@ namespace MeroBolee.Repository
                         .Include(x => x.CompanyStatus)
                         .ToListAsync();
                 }
+                */
+
+                return search;
             }
             catch (Exception)
             {
