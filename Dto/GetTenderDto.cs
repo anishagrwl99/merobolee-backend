@@ -35,6 +35,8 @@ namespace MeroBolee.Dto
     public class TenderCard
     {
         public long TenderId { get; set; }
+        public long CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public string TenderTitle { get; set; }
         public string TenderCode { get; set; }
         public int CategoryId { get; set; }
@@ -42,14 +44,10 @@ namespace MeroBolee.Dto
         public DateTime LiveStartDate { get; set; }
         public DateTime LiveEndDate { get; set; }
         public DateTime RegistrationTill { get; set; }
+        public int StatusId { get; set; }
         public string Status { get; set; }
         
-
         public List<TenderCardInfo> CardInfo { get; set; }
-
-
-        [JsonIgnore]
-        public int StatusId { get; set; }
 
     }
 

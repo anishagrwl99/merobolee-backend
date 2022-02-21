@@ -332,6 +332,8 @@ namespace MeroBolee.EntityMapper
                 TenderSubmissionCard c = new TenderSubmissionCard
                 {
                     SubmissionId = ts.SubmissionId,
+                    CompanyId = ts.Company.CompanyId,
+                    CompanyName = ts.Company.Name,
                     Status = ts.TenderSubmissionStatus.Status,
                     CreatedDate = ts.Date_created,
                     Title = ts.Title

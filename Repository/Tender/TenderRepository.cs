@@ -63,10 +63,13 @@ namespace MeroBolee.Repository
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                              join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where t.StatusId == 3 && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
                                   TenderId = t.Id,
+                                  CompanyId = c1.CompanyId,
+                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -109,11 +112,14 @@ namespace MeroBolee.Repository
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                              join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where t.CompanyId == companyId && t.StatusId == 3 && t.LiveEndDate < DateTime.Now
                                           && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
                                   TenderId = t.Id,
+                                  CompanyId = c1.CompanyId,
+                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -157,10 +163,13 @@ namespace MeroBolee.Repository
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                              join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where t.CompanyId == companyId /*&& t.StatusId != 3 */ && t.LiveEndDate > DateTime.Now
                               select new TenderCard
                               {
                                   TenderId = t.Id,
+                                  CompanyId = c1.CompanyId,
+                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -269,6 +278,7 @@ namespace MeroBolee.Repository
                                   join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
@@ -276,6 +286,8 @@ namespace MeroBolee.Repository
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
+                                      CompanyId = c1.CompanyId,
+                                      CompanyName = c1.Name,
                                       TenderCode = t.Code,
                                       TenderTitle = t.Title,
                                       CategoryId = c.Id,
@@ -301,11 +313,14 @@ namespace MeroBolee.Repository
                                   join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
+                                      CompanyId = c1.CompanyId,
+                                      CompanyName = c1.Name,
                                       TenderCode = t.Code,
                                       TenderTitle = t.Title,
                                       CategoryId = c.Id,
@@ -347,12 +362,15 @@ namespace MeroBolee.Repository
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                              join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where t.CompanyId == companyId
                                     && t.StatusId == 3 //Tender should be approved
                                     && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
                               select new TenderCard
                               {
                                   TenderId = t.Id,
+                                  CompanyId = c1.CompanyId,
+                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -397,10 +415,13 @@ namespace MeroBolee.Repository
                     return await (from t in meroBoleeDbContexts.TenderEntities
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                                   where t.CompanyId == companyId.Value
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
+                                      CompanyId = c1.CompanyId,
+                                      CompanyName = c1.Name,
                                       TenderCode = t.Code,
                                       TenderTitle = t.Title,
                                       CategoryId = c.Id,
@@ -425,9 +446,12 @@ namespace MeroBolee.Repository
                     return await (from t in meroBoleeDbContexts.TenderEntities
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
+                                      CompanyId = c1.CompanyId,
+                                      CompanyName = c1.Name,
                                       TenderCode = t.Code,
                                       TenderTitle = t.Title,
                                       CategoryId = c.Id,

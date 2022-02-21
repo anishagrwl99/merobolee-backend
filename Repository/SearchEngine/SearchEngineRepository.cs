@@ -117,6 +117,7 @@ namespace MeroBolee.Repository
                                                     .Include(x => x.TenderMaterialEntities)
                                                     .Include(x => x.TenderCards)
                                                     .Include(x => x.CategoryEntity)
+                                                    .Include(x => x.Company)
                                                     .Where(FilterLinq<TenderEntity>.GetWherePredicate(searchParams.TenderFields.ToArray()))
                                                     .ToListAsync();
 
@@ -124,6 +125,8 @@ namespace MeroBolee.Repository
                                       select new TenderCard
                                       {
                                           TenderId = t.Id,
+                                          CompanyId = t.Company.CompanyId,
+                                          CompanyName = t.Company.Name,
                                           TenderCode = t.Code,
                                           TenderTitle = t.Title,
                                           CategoryId = t.CategoryId,
@@ -206,6 +209,7 @@ namespace MeroBolee.Repository
                 dto.Tenders = await (from t in meroBoleeDbContexts.TenderEntities
                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                      join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                     join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                                      where t.Title.Contains(searchText)
                                             || t.Code.Contains(searchText)
                                             || c.Category.Contains(searchText)
@@ -218,6 +222,8 @@ namespace MeroBolee.Repository
                                      select new TenderCard
                                      {
                                          TenderId = t.Id,
+                                         CompanyId = c1.CompanyId,
+                                         CompanyName = c1.Name,
                                          TenderCode = t.Code,
                                          TenderTitle = t.Title,
                                          CategoryId = c.Id,

@@ -238,6 +238,7 @@ namespace MeroBolee.Repository
                     return meroBoleeDbContexts.TenderSubmissions
                     .Where(x => x.StatusId != 1) //Pending payment status submission is not visible to admin
                     .Include(x => x.TenderSubmissionStatus)
+                    .Include(x => x.Company)
                     .ToList();
 
                 });

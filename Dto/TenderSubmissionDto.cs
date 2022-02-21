@@ -24,6 +24,8 @@ namespace MeroBolee.Dto
     public class TenderSubmissionCard
     {
         public long SubmissionId { get; set; }
+        public long CompanyId { get; set; }
+        public string CompanyName { get; set; }
         public string Title { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Status { get; set; }
