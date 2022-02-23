@@ -60,6 +60,7 @@ namespace MeroBolee.Repository
                     return meroBoleeDbContexts.TenderSubmissions
                     .Where(x => x.SubmissionId == submissionId)
                     .Include(x => x.TenderSubmissionStatus)
+                    .Include(x => x.Company)
                     .FirstOrDefault();
                 });
             }
@@ -208,6 +209,7 @@ namespace MeroBolee.Repository
                     return meroBoleeDbContexts.TenderSubmissions
                     .Where(x => x.CompanyId == companyId)
                     .Include(x => x.TenderSubmissionStatus)
+                    .Include(x => x.Company)
                     .ToList();
 
                 });
