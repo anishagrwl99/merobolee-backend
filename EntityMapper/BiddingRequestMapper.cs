@@ -109,6 +109,10 @@ namespace MeroBolee.EntityMapper
                 {
                     BidId = entity.Id,
                     TenderId = entity.Tender.Id,
+                    CompanyId = entity.CompanyId,
+                    CompanyName = entity.Company.Name,
+                    UserId = entity.UserId,
+                    UserName = $"{entity.User.FirstName} {entity.User.LastName}",
                     Amount = entity.Amount,
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
@@ -116,7 +120,8 @@ namespace MeroBolee.EntityMapper
                     TenderCategory = entity.Tender.CategoryEntity.Category,
                     TenderLiveDate = entity.Tender.LiveEndDate,
                     TenderTitle = entity.Tender.Title,
-                    TenderCode = entity.Tender.Code
+                    TenderCode = entity.Tender.Code,
+                    PaymentReferenceCode = entity.PaymentReferenceCode,
                 };
             }
 
@@ -218,14 +223,23 @@ namespace MeroBolee.EntityMapper
 
             BidDetailDto dto = new BidDetailDto
             {
-                Id = entity.Id,
+                BidId = entity.Id,
                 RegisterDate = entity.Date_created,
                 Remarks = entity.Remark,
                 TenderId = entity.TenderId,
-                Status = entity.BidRequestStatus.Status,
+                BidStatus = entity.BidRequestStatus.Status,
                 Amount = entity.Amount,
                 PaymentProvider = entity.PaymentProvider,
-                PaymentReferenceCode = entity.PaymentReferenceCode
+                PaymentReferenceCode = entity.PaymentReferenceCode,
+                BidDate = entity.Date_created,
+                CompanyId = entity.CompanyId,
+                CompanyName = entity.Company.Name,
+                TenderCategory = entity.Tender.CategoryEntity.Category,
+                TenderCode = entity.Tender.Code,
+                TenderLiveDate = entity.Tender.LiveStartDate,
+                TenderTitle = entity.Tender.Title,
+                UserId = entity.UserId,
+                UserName = $"{entity.User.FirstName} {entity.User.LastName}"
             };
 
             dto.Documents = (from d in entity.BidderRequestDocs

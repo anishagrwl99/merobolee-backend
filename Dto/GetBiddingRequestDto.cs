@@ -25,25 +25,25 @@ namespace MeroBolee.Dto
     {
         public long BidId { get; set; }
         public long TenderId { get; set; }
+        public long CompanyId { get; set; }
+        public long UserId { get; set; }
+        public string UserName { get; set; }
+        public string CompanyName { get; set; }
         public string TenderTitle { get; set; }
         public string TenderCategory { get; set; }
         public DateTime BidDate { get; set; }
         public string BidStatus { get; set; }
         public string PaymentProvider { get; set; }
+        public string PaymentReferenceCode { get; set; }
         public decimal Amount { get; set; }
         public DateTime TenderLiveDate { get; set; }
         public string TenderCode { get; set; }
+
     }
 
-    public class BidDetailDto
+    public class BidDetailDto : BidCardDto
     {
-        public long Id { get; set; }
-        public long TenderId { get; set; }
-        public string Status { get; set; }
         public string Remarks { get; set; }
-        public string PaymentProvider { get; set; }
-        public string PaymentReferenceCode { get; set; }
-        public decimal Amount { get; set; }
         public DateTime RegisterDate { get; set; }
 
         public List<DocResponseDto> Documents { get; set; }

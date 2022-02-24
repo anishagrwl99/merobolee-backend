@@ -162,6 +162,8 @@ namespace MeroBolee.EntityMapper
 
             GetTenderDto getTender = new GetTenderDto();
             getTender.TenderId = tenderEntity.Id;
+            getTender.CompanyId = tenderEntity.CompanyId;
+            getTender.CompanyName = tenderEntity.Company.Name;
             getTender.TenderCode = tenderEntity.Code;
             getTender.TenderTitle = tenderEntity.Title;
             getTender.CategoryId = tenderEntity.CategoryId;

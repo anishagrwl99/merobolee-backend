@@ -217,6 +217,7 @@ namespace MeroBolee.Repository
                     .Include(x => x.CategoryEntity)
                     .Include(x => x.CreatedByUser)
                     .Include(x => x.TenderStatusEntity)
+                    .Include( x=> x.Company)
                     .FirstOrDefaultAsync();
 
                 return ent;

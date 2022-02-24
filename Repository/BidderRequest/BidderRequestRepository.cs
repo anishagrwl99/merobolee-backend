@@ -65,7 +65,9 @@ namespace MeroBolee.Repository
                     .Include(x => x.BidderRequestDocs)
                     .Include(x => x.BidRequestStatus)
                     .Include(x => x.Tender)
-                    .Include(x=> x.Tender.CategoryEntity)
+                    .Include(x => x.Tender.CategoryEntity)
+                    .Include(x => x.Company)
+                    .Include(x => x.User)
                     .Where(x =>  x.Id == bidId)
                     .FirstOrDefaultAsync();
             }
@@ -293,6 +295,8 @@ namespace MeroBolee.Repository
                            .Include(x => x.Tender)
                            .Include(x => x.Tender.CategoryEntity)
                            .Include(x => x.BidRequestStatus)
+                           .Include(x => x.Company)
+                           .Include(x => x.User)
                            .Where(x => x.TenderId == tenderId)
                            .ToListAsync();
             }
@@ -320,6 +324,9 @@ namespace MeroBolee.Repository
                         .Include(x => x.BidderRequestDocs)
                         .Include(x => x.BiddingHistories)
                         .Include(x => x.Tender)
+                        .Include(x => x.Tender.CategoryEntity)
+                        .Include(x => x.Company)
+                        .Include(x => x.User)
                         .Include(x => x.Tender.TenderMaterialEntities)
                         .Where(x => x.Id == bidId && x.CompanyId == companyId && x.TenderId == tenderId)
                         .FirstOrDefaultAsync();
