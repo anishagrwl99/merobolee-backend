@@ -90,6 +90,10 @@ namespace MeroBolee.Repository
             {
                 meroBoleeDbContexts.BidRequestEntities.Update(entity);
                 await unitOfWork.SaveChangesAsync();
+
+                entity.BidRequestStatus = await meroBoleeDbContexts.BidRequestStatusEntities
+                                .Where(x => x.StatusId == entity.BidRequestStatusId)
+                                .FirstOrDefaultAsync();
                 return entity;
             }
             catch (Exception)

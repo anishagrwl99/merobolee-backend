@@ -124,6 +124,7 @@ namespace MeroBolee.EntityMapper
                     }
                     else
                     {
+                        itm = new TenderMaterialEntity();
                         itm.Materials = item.Name;
                         itm.Quantity = item.Quantity;
                     }
@@ -146,6 +147,7 @@ namespace MeroBolee.EntityMapper
                     }
                     else
                     {
+                        itm = new TenderCardEntity();
                         itm.Label = item.Label;
                         itm.Value = itm.Value;
                     }

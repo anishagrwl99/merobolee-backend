@@ -235,6 +235,9 @@ namespace MeroBolee.Repository
             try
             {
                 return await meroBoleeDbContexts.TenderEntities
+                    .Include(x => x.ExtraDocuments)
+                    .Include(x => x.TenderMaterialEntities)
+                    .Include(x => x.TenderCards)
                     .Where(x => x.Id == tenderId)
                     .FirstOrDefaultAsync();
             }
@@ -493,13 +496,13 @@ namespace MeroBolee.Repository
                 meroBoleeDbContexts.TenderEntities.Update(tenderEntity);
                 await unitOfWork.SaveChangesAsync();
 
-                meroBoleeDbContexts.TenderStatus.ToList();
-                meroBoleeDbContexts.PaymentStatusEntities.ToList();
-                meroBoleeDbContexts.TenderTermsConditionEntities.ToList();
-                meroBoleeDbContexts.TenderMaterialEntities.ToList();
-                meroBoleeDbContexts.MaterialFeatureEntities.ToList();
-                meroBoleeDbContexts.CategoryEntities.ToList();
-                meroBoleeDbContexts.UserEntities.ToList();
+                tenderEntity.TenderStatusEntity = meroBoleeDbContexts.TenderStatus.Where(x => x.StatusId == tenderEntity.StatusId).FirstOrDefault();
+                tenderEntity.TenderTermsConditionEntities = meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderEntity.Id).FirstOrDefault();
+                tenderEntity.TenderMaterialEntities = meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == tenderEntity.Id).ToList();
+                tenderEntity.CategoryEntity = meroBoleeDbContexts.CategoryEntities.Where(x => x.Id == tenderEntity.CategoryId).FirstOrDefault();
+                tenderEntity.ApprovedByUser = meroBoleeDbContexts.UserEntities.Where(x => x.Id == tenderEntity.ApprovedBy).FirstOrDefault();
+                tenderEntity.CreatedByUser = meroBoleeDbContexts.UserEntities.Where(x => x.Id == tenderEntity.CreatedBy).FirstOrDefault();
+
                 return tenderEntity;
             }
             catch (Exception)

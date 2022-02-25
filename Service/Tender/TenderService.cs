@@ -192,6 +192,7 @@ namespace MeroBolee.Service
                     }
                     else
                     {
+                        itm = new TenderExtraDocumentEntity();
                         if (item.Document != null)
                         {
                             await uploadFileService.DeleteFile(itm.DocPath);
