@@ -473,7 +473,7 @@ namespace MeroBolee.Utility
                     Id = 2,
                     FirstName = "Tender",
                     LastName = "Support",
-                    Email = "tender.suport@test.com",
+                    Email = "tender.support@test.com",
                     RoleId = 2,
                     StatusId = 1,
                     Date_created = DateTime.Now,
