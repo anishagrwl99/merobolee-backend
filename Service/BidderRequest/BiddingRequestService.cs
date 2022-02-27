@@ -872,7 +872,7 @@ namespace MeroBolee.Service
             string key = $"SuppReg_{dto.TenderId}_{dto.SupplierId}";
             memoryCache.TryGetValue<bool?>(key, out isSupplierRegistered);
 
-            if (isSupplierRegistered == null)
+            if (isSupplierRegistered == null || !isSupplierRegistered.Value)
             {
                 isSupplierRegistered = await bidRequestRepository.IsBidderRegistered(dto.CompanyId, dto.TenderId, dto.BiddingId);
             }

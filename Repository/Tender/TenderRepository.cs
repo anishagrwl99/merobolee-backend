@@ -286,7 +286,8 @@ namespace MeroBolee.Repository
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
-                                        && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
+                                        && (t.LiveStartDate.AddDays(-7) <= DateTime.Now)//Tender live date should be within next 7 days
+                                        && (t.LiveEndDate >= DateTime.Now )//Tender live end date should be future date
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
