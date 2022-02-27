@@ -168,7 +168,8 @@ namespace MeroBolee.Repository
                                   Role = r,
                                   UserStatus = us
                               }
-                 ).ToListAsync();
+                 ).OrderByDescending(x => x.Id)
+                 .ToListAsync();
             }
             catch (Exception)
             {

@@ -443,7 +443,8 @@ namespace MeroBolee.Repository
                                                       Label = tc.Label,
                                                       Value = tc.Value
                                                   }).ToList()
-                                  }).ToListAsync();
+                                  }).OrderByDescending(x=> x.TenderId)
+                                  .ToListAsync();
                 }
                 else
                 {
@@ -473,7 +474,8 @@ namespace MeroBolee.Repository
                                                       Label = tc.Label,
                                                       Value = tc.Value
                                                   }).ToList()
-                                  }).ToListAsync();
+                                  }).OrderByDescending(x=> x.TenderId)
+                                  .ToListAsync();
                 }
 
 

@@ -181,6 +181,7 @@ namespace MeroBolee.Repository
                         .Include(x=> x.Country)
                         .Include(x=> x.CompanyStatus)
                         .Where(x => x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
                 }
                 else
@@ -189,8 +190,9 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
-                                 && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString() //1 is merobolee company
-                    ).ToListAsync();
+                                 && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
+                        .ToListAsync();
                 }
             }
             catch (Exception)
@@ -210,6 +212,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.CompanyId != 1) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
                 }
                 else
@@ -218,8 +221,9 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower())
-                                 && x.CompanyId != 1 //1 is merobolee company
-                    ).ToListAsync();
+                                 && x.CompanyId != 1) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
+                        .ToListAsync();
                 }
             }
             catch (Exception)
@@ -244,6 +248,7 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.CompanyId != 1 && x.CompanyStatusId == 4 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
                 }
                 else
@@ -253,8 +258,9 @@ namespace MeroBolee.Repository
                         .Include(x => x.CompanyStatus)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower())
                                  && x.CompanyId != 1 && x.CompanyStatusId == 4
-                                 && x.RegisteredAs == companyType.ToString() //1 is merobolee company
-                    ).ToListAsync();
+                                 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
+                        .OrderByDescending(x => x.CompanyId)
+                        .ToListAsync();
                 }
             }
             catch (Exception)
