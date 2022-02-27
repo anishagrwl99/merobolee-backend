@@ -312,6 +312,31 @@ namespace MeroBolee.Repository
         }
 
 
+        public async Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId)
+        {
+            try
+            {
+                List<OnlineSuppliers> suppliers = await (from br in meroBoleeDbContexts.BidRequestEntities
+                        join c in meroBoleeDbContexts.CompanyEntities on br.CompanyId equals c.CompanyId
+                        join lb in meroBoleeDbContexts.LiveBiddingEntities on br.TenderId equals lb.TenderId into live
+                        from sub in live.DefaultIfEmpty()
+                        where br.TenderId == tenderId
+                        select new OnlineSuppliers
+                        {
+                            CompanyId = br.CompanyId,
+                            CompanyName = c.Name,
+                            Status = sub.TenderId > 0? "Online" : "Offline"
+                        }).ToListAsync();
+
+                return suppliers;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         /// <summary>
         /// Return bid detail
         /// </summary>

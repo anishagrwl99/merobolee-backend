@@ -295,5 +295,25 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<bool> DeleteTender(long tenderId)
+        {
+            try
+            {
+                TenderEntity t = await tenderRepository.GetTenderDetail(tenderId);
+                if (t != null)
+                {
+                    t.Feedbacks = await tenderRepository.GetTenderCardFeedback(tenderId);
+                    return await tenderRepository.DeleteTender(t);
+                }
+                return false;
+                
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
     }
 }

@@ -59,6 +59,7 @@ namespace MeroBolee.Service
         Task<BidDetailDto> BidDetail(long bidId, long companyId, long tenderId, string baseUrl);
 
         Task<IEnumerable<BidCardDto>> ShowAllRegistration(long tenderId);
+        Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId);
 
         Task<IEnumerable<BidHistoryCardDto>> SupplierBidHistory(long supplierCompanyId);
 

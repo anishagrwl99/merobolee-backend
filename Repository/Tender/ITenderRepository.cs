@@ -15,7 +15,7 @@ namespace MeroBolee.Repository
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         Task<TenderEntity> GetTenderDetail(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
-
+        Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId);
         /// <summary>
         /// Adds the tender documents.
         /// </summary>
@@ -66,6 +66,8 @@ namespace MeroBolee.Repository
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
 
         Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
+
+        Task<bool> DeleteTender(TenderEntity entity);
 
     }
 }

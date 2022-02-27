@@ -657,5 +657,61 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+
+        public async Task<bool> DeleteTender(TenderEntity entity)
+        {
+            try
+            {
+                if(entity.TenderTermsConditionEntities != null)
+                {
+                    meroBoleeDbContexts.TenderTermsConditionEntities.Remove(entity.TenderTermsConditionEntities);
+                }
+
+                if (entity.TenderMaterialEntities != null && entity.TenderMaterialEntities.Count > 0)
+                {
+                    meroBoleeDbContexts.TenderMaterialEntities.RemoveRange(entity.TenderMaterialEntities);
+                }
+
+                if (entity.TenderCards != null && entity.TenderCards.Count > 0)
+                {
+                    meroBoleeDbContexts.TenderCards.RemoveRange(entity.TenderCards);
+                }
+
+                if (entity.Feedbacks != null && entity.Feedbacks.Count > 0)
+                {
+                    meroBoleeDbContexts.TenderCardFeedbacks.RemoveRange(entity.Feedbacks);
+                }
+
+                if (entity.ExtraDocuments != null && entity.ExtraDocuments.Count > 0)
+                {
+                    meroBoleeDbContexts.TenderExtraDocuments.RemoveRange(entity.ExtraDocuments);
+                }
+
+
+                meroBoleeDbContexts.TenderEntities.Remove(entity);
+
+                await unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderCardFeedbacks.Where(x => x.TenderId == tenderId).ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

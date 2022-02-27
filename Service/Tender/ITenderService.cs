@@ -55,5 +55,7 @@ namespace MeroBolee.Service
         Tuple<decimal, DateTime, DateTime> GetMaxQuotationAllowed(long tenderId);
 
         Task UpdateTenderMaxQuotation(decimal maxQuotation, long tenderId);
+
+        Task<bool> DeleteTender(long tenderId);
     }
 }

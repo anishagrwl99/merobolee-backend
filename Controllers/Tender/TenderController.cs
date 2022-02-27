@@ -133,6 +133,49 @@ namespace MeroBolee.Controllers.Tender
 
         }
 
+
+
+        /// <summary>
+        /// Deletes the specific tender by admin.
+        /// </summary>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("Tender/Admin/Delete")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> DeleteTender([FromBody] long tenderId)
+        {
+            try
+            {
+                if (tenderId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid watchlist id";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    bool isDeleted =  await tenderService.DeleteTender(tenderId);
+                    if (isDeleted)
+                    {
+                        response.statusCode = "200";
+                        response.Message = "Record is successfully deleted";
+                        return Ok(new ErrorResponse<ResponseMsg>(response));
+                    }
+                    else
+                    {
+                        return NotFound(new Responses<int>(0, "404", "Record not found to delete"));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
         /// <summary>
         /// Get a tender history of a bid inviter company
         /// </summary>

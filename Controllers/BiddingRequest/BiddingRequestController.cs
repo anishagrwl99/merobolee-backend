@@ -659,11 +659,42 @@ namespace MeroBolee.Controllers.BiddingRequest
             {
                 response.statusCode = "500";
                 response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
         }
 
+
+        /// <summary>
+        /// Gets all suppliers who are online for bidding
+        /// </summary>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+        [HttpGet("Bidding/Admin/LiveBid/Online")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> GetOnlineCompanies([FromQuery] long tenderId)
+        {
+            try
+            {
+                string url = Url.Action("GetOnlineCompanies", null, new { tenderId = tenderId }, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<OnlineSuppliers> onlineSuppliers = await biddingRequestService.ShowAllOnlineSuppliers(tenderId);
+                int totalCount = onlineSuppliers.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<OnlineSuppliers>>(onlineSuppliers, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<OnlineSuppliers>>(onlineSuppliers, "200", "Online supplier list"));
+               
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
         /// <summary>
         /// To update BiddingRequest info and status is bid status

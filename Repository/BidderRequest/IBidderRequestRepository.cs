@@ -102,6 +102,8 @@ namespace MeroBolee.Repository
 
         Task<IEnumerable<BidRequestEntity>> ShowAllRegistration(long tenderId);
 
+        Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId);
+
         Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId);
         Task<IEnumerable<TenderWinnerEntity>> GetSupplierWinningBids(long supplierCompanyId);
 

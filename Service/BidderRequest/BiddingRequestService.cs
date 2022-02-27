@@ -444,6 +444,12 @@ namespace MeroBolee.Service
             return BidderRequestToDto(requests);
         }
 
+        public async Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId)
+        {
+            IEnumerable<OnlineSuppliers> suppliers = await bidRequestRepository.ShowAllOnlineSuppliers(tenderId);
+            return suppliers;
+        }
+
         public async Task<IEnumerable<BidHistoryCardDto>> SupplierBidHistory(long supplierCompanyId)
         {
             IEnumerable<BidRequestEntity> requests = await bidRequestRepository.SupplierBidHistory(supplierCompanyId);
