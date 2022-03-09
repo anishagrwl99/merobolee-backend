@@ -149,7 +149,7 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        //[ForeignKey("Tender")]
+        [ForeignKey("Tender")]
         [Required]
         public long TenderId { get; set; }
 
@@ -183,7 +183,7 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-       // [ForeignKey("Tender")]
+        [ForeignKey("Tender")]
         public long TenderId { get; set; }
 
         [ForeignKey("Company")]
