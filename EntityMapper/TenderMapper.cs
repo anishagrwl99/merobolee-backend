@@ -64,8 +64,8 @@ namespace MeroBolee.EntityMapper
                 MaxQuotation = tenderDto.MaxQuotation,
                 TenderDetailDocTitle = tenderDto.TenderDocTitle,
                 RegistrationTill = tenderDto.RegistrationTill,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -101,7 +101,7 @@ namespace MeroBolee.EntityMapper
             entity.LiveEndDate = dto.LiveEndDate;
             entity.QualityRequest = dto.QualityRequest;
             entity.CompanyId = dto.CompanyId;
-            entity.Date_modified = DateTime.Now;
+            entity.Date_modified = DateTimeNPT.Now;
             entity.AdditionalRequest = dto.AdditionalRequest;
             entity.EligibilityCriteria = dto.EligibilityCriteria;
             entity.Location = dto.Location;
@@ -168,6 +168,7 @@ namespace MeroBolee.EntityMapper
             getTender.CompanyName = tenderEntity.Company.Name;
             getTender.TenderCode = tenderEntity.Code;
             getTender.TenderTitle = tenderEntity.Title;
+            getTender.RegistrationTill = tenderEntity.RegistrationTill;
             getTender.CategoryId = tenderEntity.CategoryId;
             getTender.CategoryName = tenderEntity.CategoryEntity.Category;
             getTender.TenderLiveInterval = tenderEntity.LiveInterval;

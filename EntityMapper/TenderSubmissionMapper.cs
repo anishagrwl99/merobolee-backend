@@ -23,8 +23,8 @@ namespace MeroBolee.EntityMapper
                 Amount = dto.Amount,
                 Title = dto.Title,
                 IsFormSubmission = true,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now,
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now,
                 StatusId = string.IsNullOrEmpty(dto.PaymentReferenceCode) ? 1 : 2
             };
             tenderSubmission.ProductSpecifications = (from ps in dto.ProductSpecifications
@@ -80,8 +80,8 @@ namespace MeroBolee.EntityMapper
                 IsFormSubmission = false,
                 PriceScheduleDocName = null,
                 PriceScheduleDocPath = null,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now,
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now,
                 StatusId = string.IsNullOrEmpty(dto.PaymentReferenceCode) ? 1 : 2
             };
             tenderSubmission.TenderSubmissionDocuments = (from d in doc
@@ -101,7 +101,7 @@ namespace MeroBolee.EntityMapper
             ent.PaymentReferenceCode = dto.PaymentReferenceCode;
             ent.Amount = dto.Amount;
             ent.Title = dto.Title;
-            ent.Date_modified = DateTime.Now;
+            ent.Date_modified = DateTimeNPT.Now;
 
             foreach (var ps in dto.ProductSpecifications)
             {

@@ -30,8 +30,8 @@ namespace MeroBolee.EntityMapper
                 LastName = obj.LastName,
                 Email = obj.Email,
                 Password = obj.Password,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now,
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now,
                 RoleId = companyTypeEnum == CompanyTypeEnum.Bidder ? 5 : 4, //Bidder(Supplier) role
                 StatusId = 1, //Registered status
                 IsEmailReceiver = true,

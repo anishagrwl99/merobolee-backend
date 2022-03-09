@@ -16,8 +16,8 @@ namespace MeroBolee.EntityMapper
                 CompanyId = dto.CompanyId,
                 TenderId = dto.TenderId,
                 UserId = dto.UserId,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now,
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now,
                 Feeback = dto.Feedback
             };
         }

@@ -33,8 +33,8 @@ namespace MeroBolee.EntityMapper
                RegisteredAs = companyTypeEnum == CompanyTypeEnum.Bidder ?  "Bidder" : "BidInviter",
                MembershipTypeId = 1, //Registration
                CompanyEmail = obj.Email.Trim(),
-               Date_created = DateTime.Now,
-               Date_modified = DateTime.Now,
+               Date_created = DateTimeNPT.Now,
+               Date_modified = DateTimeNPT.Now,
                MobileNumber = obj.MobileNo,
                PhoneNumber = obj.PhoneNo,
                ContactPerson = $"{obj.FirstName} {obj.LastName}"
@@ -64,8 +64,8 @@ namespace MeroBolee.EntityMapper
                 MobileNumber = dto.MobileNumber,
                 PhoneNumber = dto.PhoneNumber,
                 MembershipTypeId = 2,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
         }
 
@@ -105,8 +105,8 @@ namespace MeroBolee.EntityMapper
                 LastName = dto.LastName,
                 Designation = dto.Designation,
                 Email = dto.PersonEmail,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
         }
 
