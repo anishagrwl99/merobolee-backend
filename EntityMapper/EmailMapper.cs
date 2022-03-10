@@ -21,8 +21,8 @@ namespace MeroBolee.EntityMapper
                 CompanyId = dto.CompanyId,
                 IsDraft = isDraft,
                 IsPostAuctionEmail = isPostAuctionEmail,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
         }
 

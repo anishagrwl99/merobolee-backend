@@ -13,14 +13,13 @@ namespace MeroBolee.Model
     {
         private DateTime? date_created;
         private DateTime? date_modified;
-
         /// <summary>
         /// Date time on which record is created
         /// </summary>
         [Column("Date_Created", TypeName = "datetime")]
         public DateTime Date_created
         {
-            get => date_created ?? DateTime.Now;
+            get => date_created ?? DateTimeNPT.Now;
             set => date_created = value;
         }
 
@@ -31,7 +30,7 @@ namespace MeroBolee.Model
         [Column("Date_Modified", TypeName = "datetime")]
         public DateTime Date_modified
         {
-            get => date_modified ?? DateTime.Now;
+            get => date_modified ?? DateTimeNPT.Now;
             set => date_modified = value;
         }
     }

@@ -18,8 +18,8 @@ namespace MeroBolee.EntityMapper
             return new CategoryEntity
             {
                 Category = addCategoryDto.Category,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
 
         }

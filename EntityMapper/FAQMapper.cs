@@ -25,8 +25,8 @@ namespace MeroBolee.EntityMapper
             {
                 Question = dto.Question,
                 Answer = dto.Answer,
-                Date_created = DateTime.Now,
-                Date_modified = DateTime.Now
+                Date_created = DateTimeNPT.Now,
+                Date_modified = DateTimeNPT.Now
             };
         }
 

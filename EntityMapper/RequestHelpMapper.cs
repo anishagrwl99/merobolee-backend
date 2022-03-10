@@ -27,8 +27,8 @@ namespace MeroBolee.EntityMapper
                     Description = postRequestHelpDto.Description,
                     UserId = postRequestHelpDto.UserId.HasValue? postRequestHelpDto.UserId.Value : null,
                     PhoneNo = postRequestHelpDto.PhoneNumber,
-                    Date_created = DateTime.Now,
-                    Date_modified = DateTime.Now
+                    Date_created = DateTimeNPT.Now,
+                    Date_modified = DateTimeNPT.Now
                 };
                 technicalSupportEntity.Receivers = new List<TechnicalSupportReceiver>();
                 foreach (var receiver in receivers)
@@ -62,8 +62,8 @@ namespace MeroBolee.EntityMapper
                     Description = postRequestHelpDto.Body,
                     UserId = postRequestHelpDto.ReplyUserId,
                     PhoneNo = null,
-                    Date_created = DateTime.Now,
-                    Date_modified = DateTime.Now
+                    Date_created = DateTimeNPT.Now,
+                    Date_modified = DateTimeNPT.Now
                 };
                 technicalSupportEntity.Receivers = new List<TechnicalSupportReceiver>();
                 foreach (var receiver in receivers)
