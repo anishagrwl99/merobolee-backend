@@ -223,7 +223,7 @@ namespace MeroBolee.Service
                             AuctionLog log = new AuctionLog
                             {
                                 Amount = currentQuotation,
-                                LogDate = DateTime.Now,
+                                LogDate = DateTimeNPT.Now,
                                 Position = response.Position,
                                 TenderId = materialDto.TenderId,
                                 UserId = materialDto.SupplierId,
@@ -352,7 +352,7 @@ namespace MeroBolee.Service
 
                 if (dto != null)
                 {
-                    long totalElapsedSeconds = (long)(DateTime.Now - dto.MinQuotationRecivedAt).TotalSeconds;
+                    long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
                     long totalIntervalInSec = dto.Interval * 60;
                     long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
@@ -360,8 +360,8 @@ namespace MeroBolee.Service
                     //if tender live end date is about to end
                     if (DateTime.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
                     {
-                        dto.RemainingMinute = (dto.TenderLiveEndDate - DateTime.Now).Minutes;
-                        dto.RemainingSecond = (dto.TenderLiveEndDate - DateTime.Now).Seconds;
+                        dto.RemainingMinute = (dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes;
+                        dto.RemainingSecond = (dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds;
                     }
                     else //there is still time left for tender live end
                     {
@@ -372,7 +372,7 @@ namespace MeroBolee.Service
                     if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false && dto.RemainingSecond < 1)
                     {
                         dto.RemainingMinute = (int)dto.Interval;
-                        dto.MinQuotationRecivedAt = DateTime.Now;
+                        dto.MinQuotationRecivedAt = DateTimeNPT.Now;
                         dto.FullIntervalCountWithoutReceivingBid++;
 
                         if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
@@ -395,7 +395,7 @@ namespace MeroBolee.Service
                     {
                         dto = new ResetBidDto
                         {
-                            MinQuotationRecivedAt = DateTime.Now,
+                            MinQuotationRecivedAt = DateTimeNPT.Now,
                             RemainingMinute = e.LiveInterval,
                             RemainingSecond = 0,
                             Interval = e.LiveInterval,
@@ -411,7 +411,7 @@ namespace MeroBolee.Service
                 //check if bidding expired
                 if (dto != null
                         && (dto.FullIntervalCountWithoutReceivingBid >= 2
-                            || dto.TenderLiveEndDate < DateTime.Now
+                            || dto.TenderLiveEndDate < DateTimeNPT.Now
                            )
                         )
                 {
@@ -883,7 +883,7 @@ namespace MeroBolee.Service
                 isSupplierRegistered = await bidRequestRepository.IsBidderRegistered(dto.CompanyId, dto.TenderId, dto.BiddingId);
             }
 
-            memoryCache.Set<bool>(key, isSupplierRegistered.Value, DateTime.Now.AddDays(1));
+            memoryCache.Set<bool>(key, isSupplierRegistered.Value, DateTimeNPT.Now.AddDays(1));
             return isSupplierRegistered.Value;
         }
     }
