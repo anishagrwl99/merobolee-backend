@@ -14,6 +14,7 @@ namespace MeroBolee.Repository
         Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
       //  IEnumerable<TenderEntity> GetTenderByBidder();
         Task<TenderEntity> GetTenderDetail(long id);
+        Task<TenderEntity> GetTenderDetailNew(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
         Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId);
         /// <summary>

@@ -16,6 +16,7 @@ namespace MeroBolee.Dto
         public string City { get; set; }
         public string Email { get; set; }
         public string Status { get; set; }
+        public long UserId { get; set; }
     }
 
     public class CompanyDetailResponseDto : CompanyCardResponseDto

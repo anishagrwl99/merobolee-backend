@@ -229,7 +229,32 @@ namespace MeroBolee.Repository
             }
         }
 
+        public async Task<TenderEntity> GetTenderDetailNew(long tenderId)
+        {
+            try
+            {
+                //TenderEntity ent = new TenderEntity();
+                TenderEntity ent = await meroBoleeDbContexts.TenderEntities
+                    .Where(m => m.Id == tenderId)
+                    .Include(x => x.CategoryEntity)
+                    .Include(x => x.CreatedByUser)
+                    .Include(x => x.TenderStatusEntity)
+                    .Include(x => x.Company)
+                    .FirstOrDefaultAsync();
+                ent.TenderTermsConditionEntities = await meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).FirstOrDefaultAsync();
+                ent.TenderMaterialEntities = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.TenderCards = await meroBoleeDbContexts.TenderCards.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.ExtraDocuments = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.Feedbacks = await GetTenderCardFeedback(tenderId);
 
+                return ent;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<TenderEntity> GetTenderEntityOnly(long tenderId)
         {
             try

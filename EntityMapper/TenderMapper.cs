@@ -131,28 +131,28 @@ namespace MeroBolee.EntityMapper
                 }
             }
 
-            if (dto.TenderCards != null)
-            {
-                foreach (var item in dto.TenderCards)
-                {
-                    var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
-                    if (itm != null)
-                    {
-                        entity.TenderCards.Add(new TenderCardEntity
-                        {
-                            Label = itm.Label,
-                            Value = itm.Value,
-                            TenderId = entity.Id
-                        });
-                    }
-                    else
-                    {
-                        itm = new TenderCardEntity();
-                        itm.Label = item.Label;
-                        itm.Value = itm.Value;
-                    }
-                }
-            }
+            //if (dto.TenderCards != null)
+            //{
+            //    foreach (var item in dto.TenderCards)
+            //    {
+            //        var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
+            //        if (itm != null)
+            //        {
+            //            entity.TenderCards.Add(new TenderCardEntity
+            //            {
+            //                Label = itm.Label,
+            //                Value = itm.Value,
+            //                TenderId = entity.Id
+            //            });
+            //        }
+            //        else
+            //        {
+            //            itm = new TenderCardEntity();
+            //            itm.Label = item.Label;
+            //            itm.Value = itm.Value;
+            //        }
+            //    }
+            //}
 
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl)

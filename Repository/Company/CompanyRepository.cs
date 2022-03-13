@@ -180,6 +180,7 @@ namespace MeroBolee.Repository
                     return await meroBoleeDbContexts.CompanyEntities
                         .Include(x=> x.Country)
                         .Include(x=> x.CompanyStatus)
+                        .Include(x=>x.CompanyUsers)
                         .Where(x => x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
                         .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
@@ -189,6 +190,7 @@ namespace MeroBolee.Repository
                     return await meroBoleeDbContexts.CompanyEntities
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
+                        .Include(x => x.CompanyUsers)
                         .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
                                  && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
                         .OrderByDescending(x => x.CompanyId)
