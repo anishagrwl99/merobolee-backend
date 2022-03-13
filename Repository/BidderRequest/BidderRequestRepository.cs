@@ -482,7 +482,7 @@ namespace MeroBolee.Repository
                         .FirstOrDefaultAsync();
 
                     //if bidding time is in future don't allow bidding
-                    if (bidTimeRange.LiveStartDate > DateTime.Now || bidTimeRange.LiveEndDate < DateTime.Now) isRegistered = false;
+                    if (bidTimeRange.LiveStartDate > DateTimeNPT.Now || bidTimeRange.LiveEndDate < DateTimeNPT.Now) isRegistered = false;
 
                     //user is using different bid id to bid 
                     if (biddingId != info.Id) isRegistered = false; 
