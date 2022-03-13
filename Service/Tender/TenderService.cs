@@ -172,7 +172,29 @@ namespace MeroBolee.Service
                 await uploadFileService.DeleteFile(entity.TermsAndConditionDocPath);
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
-
+            if (tenderDto.TenderCards != null)
+            {
+                foreach (var item in tenderDto.TenderCards)
+                {
+                    var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
+                    if (itm == null)
+                    {
+                        TenderCardEntity obj = new TenderCardEntity
+                        {
+                            TenderId = entity.Id,
+                            Label = item.Label,
+                            Value = item.Value
+                        };
+                        entity.TenderCards.Add(obj);
+                    }
+                    else
+                    {
+                        itm.Label = item.Label;
+                        itm.Value = item.Value;
+                    }
+                }
+            }
+        
             if (tenderDto.ExtraDocuments != null)
             {
                 foreach (var item in tenderDto.ExtraDocuments)
@@ -299,14 +321,23 @@ namespace MeroBolee.Service
         {
             try
             {
-                TenderEntity t = await tenderRepository.GetTenderDetail(tenderId);
-                if (t != null)
-                {
-                    t.Feedbacks = await tenderRepository.GetTenderCardFeedback(tenderId);
-                    return await tenderRepository.DeleteTender(t);
-                }
-                return false;
-                
+                TenderEntity t = await tenderRepository.GetTenderDetailNew(tenderId);          
+                //if (t != null)
+                //{
+                //    t.Feedbacks = await tenderRepository.GetTenderCardFeedback(tenderId);
+                //    return await tenderRepository.DeleteTender(t);
+                //}
+                //return false;
+
+                //.Include(x => x.TenderMaterialEntities)
+                //    .Include(x => x.TenderCards)
+                //    .Include(x => x.ExtraDocuments)
+                //    .Include(x => x.CategoryEntity)
+                //    .Include(x => x.CreatedByUser)
+                //    .Include(x => x.TenderStatusEntity)
+                //t.Feedbacks = await tenderRepository.GetTenderCardFeedback(tenderId);
+                return await tenderRepository.DeleteTender(t);
+
             }
             catch
             {

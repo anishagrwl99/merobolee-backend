@@ -108,10 +108,10 @@ namespace MeroBolee.Dto
     public class AddTenderRequestDto : TenderRequestBaseDto
     {
         [Required(ErrorMessage = "At least one tender material is required")]
-        public ICollection<TenderMaterialRequestDto> TenderMaterials { get; set; }
+        public List<TenderMaterialRequestDto> TenderMaterials { get; set; }
 
         [Required(ErrorMessage = "At least one tender card information is required")]
-        public ICollection<TenderCardRequestDto> TenderCards { get; set; }
+        public List<TenderCardRequestDto> TenderCards { get; set; }
 
         public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
 
@@ -124,13 +124,13 @@ namespace MeroBolee.Dto
         public long TenderId { get; set; }
 
         [Required(ErrorMessage = "At least one tender material is required")]
-        public ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
+        public List<UpdateMaterialRequestDto> TenderMaterials { get; set; }
 
         [Required(ErrorMessage = "At least one tender card information is required")]
-        public ICollection<UpdateTenderCardRequestDto> TenderCards { get; set; }
+        public List<UpdateTenderCardRequestDto> TenderCards { get; set; }
 
 
-        public ICollection<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
+        public List<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
     }
     public class TenderMaterialRequestDto
     {
@@ -170,15 +170,15 @@ namespace MeroBolee.Dto
 
     public class UpdateMaterialRequestDto: TenderMaterialRequestDto
     {
-        [Required(ErrorMessage = "Material id is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid material id")]
+        //[Required(ErrorMessage = "Material id is required")]
+        //[Range(1, long.MaxValue, ErrorMessage = "Invalid material id")]
         public long Id { get; set; }
     }
 
     public class UpdateTenderCardRequestDto : TenderCardRequestDto
     {
-        [Required(ErrorMessage = "Tender card id is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
+        //[Required(ErrorMessage = "Tender card id is required")]
+       // [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
         public long Id { get; set; }
     }
 

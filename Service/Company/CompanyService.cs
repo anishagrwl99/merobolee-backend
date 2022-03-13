@@ -191,8 +191,24 @@ namespace MeroBolee.Service
                 List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
                 foreach (CompanyEntity item in companies)
                 {
-                    CompanyCardResponseDto dto = ToCard(item);
-                    reponseDtos.Add(dto);
+
+                    foreach (var item1 in item.CompanyUsers)
+                    {
+                        CompanyCardResponseDto dto = new CompanyCardResponseDto
+                        {
+                            Id = item.CompanyId,
+                            Name = item.Name,
+                            ReferenceCode = item.ReferenceCode,
+                            City = item.City,
+                            Email = item.CompanyEmail,
+                            Status = item.CompanyStatus.Status,
+                            Country = item.Country.Name,
+                            UserId = item1.UserId
+                        };
+                        reponseDtos.Add(dto);
+
+                    }
+
                 }
                 return reponseDtos;
             }
