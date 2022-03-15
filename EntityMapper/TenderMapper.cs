@@ -73,19 +73,20 @@ namespace MeroBolee.EntityMapper
                 TenderMaterialEntity obj = new TenderMaterialEntity
                 {
                     Materials = item.Name,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+                    Units = item.Units
                 };
                 entity.TenderMaterialEntities.Add(obj);
             }
-            entity.TenderCards = new List<TenderCardEntity>();
-            foreach (var item in tenderDto.TenderCards)
-            {
-                entity.TenderCards.Add(new TenderCardEntity
-                {
-                    Label = item.Label,
-                    Value = item.Value
-                });
-            }
+            //entity.TenderCards = new List<TenderCardEntity>();
+            //foreach (var item in tenderDto.TenderCards)
+            //{
+            //    entity.TenderCards.Add(new TenderCardEntity
+            //    {
+            //        Label = item.Label,
+            //        Value = item.Value
+            //    });
+            //}
 
             return entity;
         }
@@ -119,7 +120,8 @@ namespace MeroBolee.EntityMapper
                         {
                             Materials = item.Name,
                             Quantity = item.Quantity,
-                            TenderId = entity.Id
+                            TenderId = entity.Id,
+                            Units = item.Units
                         });
                     }
                     else
@@ -127,6 +129,8 @@ namespace MeroBolee.EntityMapper
                         itm = new TenderMaterialEntity();
                         itm.Materials = item.Name;
                         itm.Quantity = item.Quantity;
+                        itm.Units = item.Units;
+
                     }
                 }
             }
@@ -191,16 +195,18 @@ namespace MeroBolee.EntityMapper
                                          {
                                              Id = me.Id,
                                              MaterialName = me.Materials,
-                                             Quantity = me.Quantity
+                                             Quantity = me.Quantity,
+                                             Units = me.Units
+                                             
                                          }).ToList();
 
-            getTender.CardInfo = (from tc in tenderEntity.TenderCards
-                                  select new TenderCardInfo
-                                  {
-                                      Id = tc.Id,
-                                      Label = tc.Label,
-                                      Value = tc.Value
-                                  }).ToList();
+            //getTender.CardInfo = (from tc in tenderEntity.TenderCards
+            //                      select new TenderCardInfo
+            //                      {
+            //                          Id = tc.Id,
+            //                          Label = tc.Label,
+            //                          Value = tc.Value
+            //                      }).ToList();
 
             getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
                                         select new TenderExtraDocumentResponseDto
