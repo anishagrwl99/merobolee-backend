@@ -131,7 +131,7 @@ namespace MeroBolee.Repository
                                 .TenderEntities
                                 .Include(x => x.CategoryEntity)
                                 .Include(x => x.TenderStatusEntity)
-                                .Include(x => x.TenderCards)
+                               // .Include(x => x.TenderCards)
                                 .Where(x => x.CompanyId == companyId)
                             .ToListAsync();
 
@@ -145,7 +145,7 @@ namespace MeroBolee.Repository
                                      )
                                      .Include(t => t.CategoryEntity)
                                      .Include(t => t.TenderStatusEntity)
-                                     .Include(t => t.TenderCards)
+                                    // .Include(t => t.TenderCards)
                                      .ToListAsync<TenderEntity>();
                     }
 

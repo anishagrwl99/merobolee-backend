@@ -19,7 +19,7 @@ namespace MeroBolee.Dto
     public class BidHistoryCardDto : BidCardDto
     {
         public bool IsWinner { get; set; }
-        public List<TenderCardInfo> CardInfo { get; set; }
+        //public List<TenderCardInfo> CardInfo { get; set; }
     }
     public class BidCardDto
     {

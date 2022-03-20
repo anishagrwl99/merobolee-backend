@@ -105,8 +105,8 @@ namespace MeroBolee.Model
         public virtual UserEntity ApprovedByUser { get; set; }
         public virtual CategoryEntity CategoryEntity { get; set; }
 
-        [JsonIgnore]
-        public virtual ICollection<TenderCardEntity> TenderCards { get; set; }
+        //[JsonIgnore]
+        //public virtual ICollection<TenderCardEntity> TenderCards { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<TenderCardFeedbackEntity> Feedbacks { get; set; }
@@ -117,30 +117,30 @@ namespace MeroBolee.Model
     }
 
 
-    [Table("mb_TenderCard")]
-    public class TenderCardEntity
-    {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+    //[Table("mb_TenderCard")]
+    //public class TenderCardEntity
+    //{
+    //    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    //    public long Id { get; set; }
 
-        [ForeignKey("Tender")]
-        public long TenderId { get; set; }
+    //    [ForeignKey("Tender")]
+    //    public long TenderId { get; set; }
 
-        [Required]
-        [Column(TypeName = "VARCHAR")]
-        [MaxLength(200)]
-        public string Label { get; set; }
-
-
-        [Required]
-        [Column(TypeName = "VARCHAR")]
-        [MaxLength(500)]
-        public string Value { get; set; }
+    //    [Required]
+    //    [Column(TypeName = "VARCHAR")]
+    //    [MaxLength(200)]
+    //    public string Label { get; set; }
 
 
-        [JsonIgnore]
-        public virtual TenderEntity Tender { get; set; }
-    }
+    //    [Required]
+    //    [Column(TypeName = "VARCHAR")]
+    //    [MaxLength(500)]
+    //    public string Value { get; set; }
+
+
+    //    [JsonIgnore]
+    //    public virtual TenderEntity Tender { get; set; }
+    //}
 
 
     [Table("mb_Tender_Card_Feeback")]

@@ -17,7 +17,7 @@ namespace MeroBolee.Utility
         public DbSet<TechnicalSupportReceiver> TechnicalSupportReceivers { get; set; }
         public DbSet<TenderExtraDocumentEntity> TenderExtraDocuments { get; set; }
         public DbSet<TenderCardFeedbackEntity> TenderCardFeedbacks { get; set; }
-        public DbSet<TenderCardEntity> TenderCards { get; set; }
+       // public DbSet<TenderCardEntity> TenderCards { get; set; }
 
         public DbSet<TenderStatusEntity> TenderStatus { get; set; }
         public DbSet<AuctionLog> AuctionLogs { get; set; }

@@ -172,28 +172,28 @@ namespace MeroBolee.Service
                 await uploadFileService.DeleteFile(entity.TermsAndConditionDocPath);
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
-            if (tenderDto.TenderCards != null)
-            {
-                foreach (var item in tenderDto.TenderCards)
-                {
-                    var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
-                    if (itm == null)
-                    {
-                        TenderCardEntity obj = new TenderCardEntity
-                        {
-                            TenderId = entity.Id,
-                            Label = item.Label,
-                            Value = item.Value
-                        };
-                        entity.TenderCards.Add(obj);
-                    }
-                    else
-                    {
-                        itm.Label = item.Label;
-                        itm.Value = item.Value;
-                    }
-                }
-            }
+            //if (tenderDto.TenderCards != null)
+            //{
+            //    foreach (var item in tenderDto.TenderCards)
+            //    {
+            //        var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
+            //        if (itm == null)
+            //        {
+            //            TenderCardEntity obj = new TenderCardEntity
+            //            {
+            //                TenderId = entity.Id,
+            //                Label = item.Label,
+            //                Value = item.Value
+            //            };
+            //            entity.TenderCards.Add(obj);
+            //        }
+            //        else
+            //        {
+            //            itm.Label = item.Label;
+            //            itm.Value = item.Value;
+            //        }
+            //    }
+            //}
         
             if (tenderDto.ExtraDocuments != null)
             {

@@ -48,15 +48,15 @@ namespace MeroBolee.Repository
                             CategoryName = c.Category,
                             LiveStartDate = t.LiveStartDate,
                             StatusId = s.StatusId,
-                            Status = s.Status,
-                            CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                        where tc.TenderId == t.Id
-                                        select new TenderCardInfo
-                                        {
-                                            Id = tc.Id,
-                                            Label = tc.Label,
-                                            Value = tc.Value
-                                        }).ToList()
+                            Status = s.Status
+                            //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                            //            where tc.TenderId == t.Id
+                            //            select new TenderCardInfo
+                            //            {
+                            //                Id = tc.Id,
+                            //                Label = tc.Label,
+                            //                Value = tc.Value
+                            //            }).ToList()
                         }
 
                     ).ToList();

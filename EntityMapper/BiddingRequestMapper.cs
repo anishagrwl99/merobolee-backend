@@ -152,13 +152,13 @@ namespace MeroBolee.EntityMapper
                     TenderLiveDate = entity.Tender.LiveEndDate,
                     TenderTitle = entity.Tender.Title,
                     TenderCode = entity.Tender.Code,
-                    CardInfo = (from tc in entity.Tender.TenderCards
-                                select new TenderCardInfo
-                                {
-                                    Id = tc.Id,
-                                    Label = tc.Label,
-                                    Value = tc.Value
-                                }).ToList()
+                    //CardInfo = (from tc in entity.Tender.TenderCards
+                    //            select new TenderCardInfo
+                    //            {
+                    //                Id = tc.Id,
+                    //                Label = tc.Label,
+                    //                Value = tc.Value
+                    //            }).ToList()
                 };
             }
 

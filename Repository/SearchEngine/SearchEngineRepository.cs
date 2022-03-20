@@ -115,7 +115,7 @@ namespace MeroBolee.Repository
                                                     .TenderEntities
                                                     .Include(x => x.TenderStatusEntity)
                                                     .Include(x => x.TenderMaterialEntities)
-                                                    .Include(x => x.TenderCards)
+                                                    //.Include(x => x.TenderCards)
                                                     .Include(x => x.CategoryEntity)
                                                     .Include(x => x.Company)
                                                     .Where(FilterLinq<TenderEntity>.GetWherePredicate(searchParams.TenderFields.ToArray()))
@@ -134,15 +134,15 @@ namespace MeroBolee.Repository
                                           LiveStartDate = t.LiveStartDate,
                                           LiveEndDate = t.LiveEndDate,
                                           RegistrationTill = t.RegistrationTill,
-                                          Status = t.TenderStatusEntity.Status,
-                                          CardInfo = (from tc in t.TenderCards
-                                                      where tc.TenderId == t.Id
-                                                      select new TenderCardInfo
-                                                      {
-                                                          Id = tc.Id,
-                                                          Label = tc.Label,
-                                                          Value = tc.Value
-                                                      }).ToList()
+                                          Status = t.TenderStatusEntity.Status
+                                          //CardInfo = (from tc in t.TenderCards
+                                          //            where tc.TenderId == t.Id
+                                          //            select new TenderCardInfo
+                                          //            {
+                                          //                Id = tc.Id,
+                                          //                Label = tc.Label,
+                                          //                Value = tc.Value
+                                          //            }).ToList()
                                       }).ToList();
                 }
                 /*
@@ -231,15 +231,15 @@ namespace MeroBolee.Repository
                                          LiveStartDate = t.LiveStartDate,
                                          LiveEndDate = t.LiveEndDate,
                                          RegistrationTill = t.RegistrationTill,
-                                         Status = s.Status,
-                                         CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                                     where tc.TenderId == t.Id
-                                                     select new TenderCardInfo
-                                                     {
-                                                         Id = tc.Id,
-                                                         Label = tc.Label,
-                                                         Value = tc.Value
-                                                     }).ToList()
+                                         Status = s.Status
+                                         //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                         //            where tc.TenderId == t.Id
+                                         //            select new TenderCardInfo
+                                         //            {
+                                         //                Id = tc.Id,
+                                         //                Label = tc.Label,
+                                         //                Value = tc.Value
+                                         //            }).ToList()
                                      }
                                ).ToListAsync();
 

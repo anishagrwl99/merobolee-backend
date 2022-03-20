@@ -47,16 +47,16 @@ namespace MeroBolee.Dto
         public int StatusId { get; set; }
         public string Status { get; set; }
         
-        public List<TenderCardInfo> CardInfo { get; set; }
+        //public List<TenderCardInfo> CardInfo { get; set; }
 
     }
 
-    public class TenderCardInfo
-    {
-        public long Id { get; set; }
-        public string Label { get; set; }
-        public string Value { get; set; }
-    }
+    //public class TenderCardInfo
+    //{
+    //    public long Id { get; set; }
+    //    public string Label { get; set; }
+    //    public string Value { get; set; }
+    //}
 
 
     public class TenderExtraDocumentResponseDto
@@ -71,6 +71,7 @@ namespace MeroBolee.Dto
         public long Id { get; set; }
         public string MaterialName { get; set; }
         public int Quantity { get; set; }
+        public string Units { get; set; }
     }
 
     public class TenderWatchListCard: TenderCard

@@ -77,15 +77,15 @@ namespace MeroBolee.Repository
                                   LiveStartDate = t.LiveStartDate,
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
-                                  Status = s.Status,
-                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                              where tc.TenderId == t.Id
-                                              select new TenderCardInfo
-                                              {
-                                                  Id = tc.Id,
-                                                  Label = tc.Label,
-                                                  Value = tc.Value
-                                              }).ToList()
+                                  Status = s.Status
+                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                  //            where tc.TenderId == t.Id
+                                  //            select new TenderCardInfo
+                                  //            {
+                                  //                Id = tc.Id,
+                                  //                Label = tc.Label,
+                                  //                Value = tc.Value
+                                  //            }).ToList()
                               }
 
                 ).ToListAsync();
@@ -128,15 +128,15 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   StatusId = t.StatusId,
-                                  Status = s.Status,
-                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                              where tc.TenderId == t.Id
-                                              select new TenderCardInfo
-                                              {
-                                                  Id = tc.Id,
-                                                  Label = tc.Label,
-                                                  Value = tc.Value
-                                              }).ToList()
+                                  Status = s.Status
+                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                  //            where tc.TenderId == t.Id
+                                  //            select new TenderCardInfo
+                                  //            {
+                                  //                Id = tc.Id,
+                                  //                Label = tc.Label,
+                                  //                Value = tc.Value
+                                  //            }).ToList()
                               }
 
                     ).ToListAsync();
@@ -178,15 +178,15 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   Status = s.Status,
-                                  StatusId = t.StatusId,
-                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                              where tc.TenderId == t.Id
-                                              select new TenderCardInfo
-                                              {
-                                                  Id = tc.Id,
-                                                  Label = tc.Label,
-                                                  Value = tc.Value
-                                              }).ToList()
+                                  StatusId = t.StatusId
+                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                  //            where tc.TenderId == t.Id
+                                  //            select new TenderCardInfo
+                                  //            {
+                                  //                Id = tc.Id,
+                                  //                Label = tc.Label,
+                                  //                Value = tc.Value
+                                  //            }).ToList()
                               }
 
                     ).ToListAsync();
@@ -212,7 +212,7 @@ namespace MeroBolee.Repository
                 TenderEntity ent = await meroBoleeDbContexts.TenderEntities
                     .Where(m => m.Id == tenderId)
                     .Include(x => x.TenderMaterialEntities)
-                    .Include(x => x.TenderCards)
+                    //.Include(x => x.TenderCards)
                     .Include(x => x.ExtraDocuments)
                     .Include(x => x.CategoryEntity)
                     .Include(x => x.CreatedByUser)
@@ -243,7 +243,7 @@ namespace MeroBolee.Repository
                     .FirstOrDefaultAsync();
                 ent.TenderTermsConditionEntities = await meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == tenderId).FirstOrDefaultAsync();
                 ent.TenderMaterialEntities = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == tenderId).ToListAsync();
-                ent.TenderCards = await meroBoleeDbContexts.TenderCards.Where(x => x.TenderId == tenderId).ToListAsync();
+              //  ent.TenderCards = await meroBoleeDbContexts.TenderCards.Where(x => x.TenderId == tenderId).ToListAsync();
                 ent.ExtraDocuments = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == tenderId).ToListAsync();
                 ent.Feedbacks = await GetTenderCardFeedback(tenderId);
 
@@ -262,7 +262,7 @@ namespace MeroBolee.Repository
                 return await meroBoleeDbContexts.TenderEntities
                     .Include(x => x.ExtraDocuments)
                     .Include(x => x.TenderMaterialEntities)
-                    .Include(x => x.TenderCards)
+                    //.Include(x => x.TenderCards)
                     .Where(x => x.Id == tenderId)
                     .FirstOrDefaultAsync();
             }
@@ -326,15 +326,15 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = ts.Status,
-                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                                  where tc.TenderId == t.Id
-                                                  select new TenderCardInfo
-                                                  {
-                                                      Id = tc.Id,
-                                                      Label = tc.Label,
-                                                      Value = tc.Value
-                                                  }).ToList()
+                                      Status = ts.Status
+                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                      //            where tc.TenderId == t.Id
+                                      //            select new TenderCardInfo
+                                      //            {
+                                      //                Id = tc.Id,
+                                      //                Label = tc.Label,
+                                      //                Value = tc.Value
+                                      //            }).ToList()
                                   }).ToListAsync();
                 }
                 else
@@ -359,15 +359,15 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = ts.Status,
-                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                                  where tc.TenderId == t.Id
-                                                  select new TenderCardInfo
-                                                  {
-                                                      Id = tc.Id,
-                                                      Label = tc.Label,
-                                                      Value = tc.Value
-                                                  }).ToList()
+                                      Status = ts.Status
+                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                      //            where tc.TenderId == t.Id
+                                      //            select new TenderCardInfo
+                                      //            {
+                                      //                Id = tc.Id,
+                                      //                Label = tc.Label,
+                                      //                Value = tc.Value
+                                      //            }).ToList()
                                   }).ToListAsync();
                 }
 
@@ -409,15 +409,15 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   StatusId = t.StatusId,
-                                  Status = ts.Status,
-                                  CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                              where tc.TenderId == t.Id
-                                              select new TenderCardInfo
-                                              {
-                                                  Id = tc.Id,
-                                                  Label = tc.Label,
-                                                  Value = tc.Value
-                                              }).ToList()
+                                  Status = ts.Status
+                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                  //            where tc.TenderId == t.Id
+                                  //            select new TenderCardInfo
+                                  //            {
+                                  //                Id = tc.Id,
+                                  //                Label = tc.Label,
+                                  //                Value = tc.Value
+                                  //            }).ToList()
                               }).ToListAsync();
 
 
@@ -461,14 +461,14 @@ namespace MeroBolee.Repository
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
                                       Status = ts.Status,
-                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                                  where tc.TenderId == t.Id
-                                                  select new TenderCardInfo
-                                                  {
-                                                      Id = tc.Id,
-                                                      Label = tc.Label,
-                                                      Value = tc.Value
-                                                  }).ToList()
+                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                      //            where tc.TenderId == t.Id
+                                      //            select new TenderCardInfo
+                                      //            {
+                                      //                Id = tc.Id,
+                                      //                Label = tc.Label,
+                                      //                Value = tc.Value
+                                      //            }).ToList()
                                   }).OrderByDescending(x=> x.TenderId)
                                   .ToListAsync();
                 }
@@ -492,14 +492,14 @@ namespace MeroBolee.Repository
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
                                       Status = ts.Status,
-                                      CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                                  where tc.TenderId == t.Id
-                                                  select new TenderCardInfo
-                                                  {
-                                                      Id = tc.Id,
-                                                      Label = tc.Label,
-                                                      Value = tc.Value
-                                                  }).ToList()
+                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                      //            where tc.TenderId == t.Id
+                                      //            select new TenderCardInfo
+                                      //            {
+                                      //                Id = tc.Id,
+                                      //                Label = tc.Label,
+                                      //                Value = tc.Value
+                                      //            }).ToList()
                                   }).OrderByDescending(x=> x.TenderId)
                                   .ToListAsync();
                 }
@@ -698,10 +698,10 @@ namespace MeroBolee.Repository
                     meroBoleeDbContexts.TenderMaterialEntities.RemoveRange(entity.TenderMaterialEntities);
                 }
 
-                if (entity.TenderCards != null && entity.TenderCards.Count > 0)
-                {
-                    meroBoleeDbContexts.TenderCards.RemoveRange(entity.TenderCards);
-                }
+                //if (entity.TenderCards != null && entity.TenderCards.Count > 0)
+                //{
+                //    meroBoleeDbContexts.TenderCards.RemoveRange(entity.TenderCards);
+                //}
 
                 if (entity.Feedbacks != null && entity.Feedbacks.Count > 0)
                 {

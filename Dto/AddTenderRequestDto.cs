@@ -110,8 +110,8 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "At least one tender material is required")]
         public List<TenderMaterialRequestDto> TenderMaterials { get; set; }
 
-        [Required(ErrorMessage = "At least one tender card information is required")]
-        public List<TenderCardRequestDto> TenderCards { get; set; }
+        //[Required(ErrorMessage = "At least one tender card information is required")]
+        //public List<TenderCardRequestDto> TenderCards { get; set; }
 
         public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
 
@@ -126,8 +126,8 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "At least one tender material is required")]
         public List<UpdateMaterialRequestDto> TenderMaterials { get; set; }
 
-        [Required(ErrorMessage = "At least one tender card information is required")]
-        public List<UpdateTenderCardRequestDto> TenderCards { get; set; }
+        //[Required(ErrorMessage = "At least one tender card information is required")]
+        //public List<UpdateTenderCardRequestDto> TenderCards { get; set; }
 
 
         public List<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
@@ -143,18 +143,21 @@ namespace MeroBolee.Dto
         [Range(1,int.MaxValue, ErrorMessage = "Tender material quantity is invalid")]
         public int Quantity { get; set; }
 
+        [Required(ErrorMessage = "Tender material Units is required")]
+        [MaxLength(500, ErrorMessage = "Tender material Units can be {1} character long")]
+        public string Units { get; set; }
     }
 
-    public class TenderCardRequestDto
-    {
-        [Required(ErrorMessage = "Tender card label is required")]
-        [MaxLength(200, ErrorMessage = "Tender card label can be {1} character long")]
-        public string Label { get; set; }
+    //public class TenderCardRequestDto
+    //{
+    //    [Required(ErrorMessage = "Tender card label is required")]
+    //    [MaxLength(200, ErrorMessage = "Tender card label can be {1} character long")]
+    //    public string Label { get; set; }
 
-        [Required(ErrorMessage = "Tender card value is required")]
-        [MaxLength(500, ErrorMessage = "Tender card value can be {1} character long")]
-        public string Value { get; set; }
-    }
+    //    [Required(ErrorMessage = "Tender card value is required")]
+    //    [MaxLength(500, ErrorMessage = "Tender card value can be {1} character long")]
+    //    public string Value { get; set; }
+    //}
 
     public class TenderExtraDocDto
     {
@@ -175,12 +178,12 @@ namespace MeroBolee.Dto
         public long Id { get; set; }
     }
 
-    public class UpdateTenderCardRequestDto : TenderCardRequestDto
-    {
-        //[Required(ErrorMessage = "Tender card id is required")]
-       // [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
-        public long Id { get; set; }
-    }
+    //public class UpdateTenderCardRequestDto : TenderCardRequestDto
+    //{
+    //    //[Required(ErrorMessage = "Tender card id is required")]
+    //   // [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
+    //    public long Id { get; set; }
+    //}
 
     public class UpdateTenderExtraDocRequestDto: TenderExtraDocDto
     {

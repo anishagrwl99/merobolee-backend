@@ -23,6 +23,8 @@ namespace MeroBolee.Model
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
 
+        public string Units { get; set; }
+
         public virtual ICollection<MaterialFeatureEntity> MaterialFeatures { get; set; }
 
         [JsonIgnore]
