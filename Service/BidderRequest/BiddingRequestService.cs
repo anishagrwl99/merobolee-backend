@@ -746,6 +746,10 @@ namespace MeroBolee.Service
                     .OrderBy(x => x.Quotation)
                     .ToList();
                 int ind = a.FindIndex(x => x.SupplierId == supplierId) + 1;
+                if (ind >= 6)
+                {
+                    ind = 6;
+                }
                 var b = a.Where(x => x.SupplierId == supplierId).FirstOrDefault();
                 if (b != null)
                 {
