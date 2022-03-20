@@ -7,9 +7,9 @@ namespace MeroBolee.Dto
 {
     public class EmailRequestdto
     {
-        public string toEmailId {get; set;};
+        public string toEmailId {get; set;}
 
-        public string token {get; set;};
-        public string id {get; set;};
+        public string token {get; set;}
+        public string id {get; set;}
     }
 }
