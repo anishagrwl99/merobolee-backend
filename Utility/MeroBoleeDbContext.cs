@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MeroBolee.Utility
 {
-    public class MeroBoleeDbContext : DbContext
+    public class MeroBoleeDbContext : IdentityDbContext
     {
         public DbSet<TechnicalSupportReceiver> TechnicalSupportReceivers { get; set; }
         public DbSet<TenderExtraDocumentEntity> TenderExtraDocuments { get; set; }
