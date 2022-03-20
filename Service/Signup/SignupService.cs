@@ -5,6 +5,11 @@ using MeroBolee.Model;
 using MeroBolee.Repository;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.Identity;
+using MeroBolee.Controllers.EmailService;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Server;
 
 namespace MeroBolee.Service
 {
@@ -31,6 +36,8 @@ namespace MeroBolee.Service
         private readonly ICryptoService cryptoService;
         private readonly IReferenceCodeService codeService;
         private readonly ISignupRepository signupRepo;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         /// <summary>
         /// Default constructor
@@ -38,11 +45,13 @@ namespace MeroBolee.Service
         /// <param name="cryptoService"></param>
         /// <param name="codeService"></param>
         /// <param name="signupRepo"></param>
-        public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo)
+        public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             this.cryptoService = cryptoService;
             this.codeService = codeService;
             this.signupRepo = signupRepo;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         /// <summary>
@@ -59,6 +68,26 @@ namespace MeroBolee.Service
 
                 if (tuple.Item1 == true)
                 {
+                    var applicationUser = new IdentityUser
+                    {
+                        UserName = data.Email,
+                        Email = data.Email,
+                };  
+                    var result = await userManager.CreateAsync(applicationUser, data.Password);
+                    if (result.Succeeded)
+                    {
+                         var token = await userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
+
+                        EmailServiceController emailServiceController = new EmailServiceController();
+                        EmailRequestdto emailRequestdto = new EmailRequestdto();
+                        emailRequestdto.toEmailId = data.Email;
+                        emailRequestdto.token = token;
+                        emailRequestdto.id = applicationUser.Id;
+                        emailServiceController.sendEmail(emailRequestdto);
+
+                    } else {
+                        return Tuple.Create<long, String>(0, "false");
+                    }
                     CompanyMapper mapper = new();
                     CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
 

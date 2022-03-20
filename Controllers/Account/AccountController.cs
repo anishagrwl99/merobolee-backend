@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using MeroBolee.Utility;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers
 {
@@ -22,13 +25,20 @@ namespace MeroBolee.Controllers
         private readonly AppDefaults defaultOptions;
         private string _defaultPic;
         private readonly ResponseMsg response = new ResponseMsg();
+
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AccountController(IAccountService accountService, IOptions<AppDefaults> defaultOptions)
+        public AccountController(IAccountService accountService, IOptions<AppDefaults> defaultOptions, UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             this.accountService = accountService;
             this.defaultOptions = defaultOptions.Value;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         /// <summary>
@@ -41,6 +51,12 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                var context = new MeroBoleeDbContext();
+                var isEmailConfirmed = context.Users.Where(x => x.Email == model.Email).Select(x => x.EmailConfirmed).SingleOrDefault();
+                if (isEmailConfirmed != true) {
+                     return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
+                }
+
                 if (ModelState.IsValid)
                 {
                     string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
@@ -75,6 +91,12 @@ namespace MeroBolee.Controllers
         {
             try
             {
+                var context = new MeroBoleeDbContext();
+                var isEmailConfirmed = context.Users.Where(x => x.Email == model.Email).Select(x => x.EmailConfirmed).SingleOrDefault();
+                if (isEmailConfirmed != true) {
+                     return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
+                }
+                
                 if (ModelState.IsValid)
                 {
                     string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
@@ -134,6 +156,66 @@ namespace MeroBolee.Controllers
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
+        [HttpPost("/register")]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+             if (ModelState.IsValid)
+            {
+                // Copy data from RegisterViewModel to IdentityUser
+                var user = new IdentityUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email
+                };
+
+                // Store user data in AspNetUsers database table
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                // If user is successfully created, sign-in the user using
+                // SignInManager and redirect to index action of HomeController
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("index", "home");
+                }
+
+                // If there are any errors, add them to the ModelState object
+                // which will be displayed by the validation summary tag helper
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return null;
+        }
+
+    [HttpGet("/Account/ConfirmEmail")]
+    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    {
+        if (userId == null || token == null)
+        {
+            return RedirectToAction("index", "home");
+        }
+
+        // var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
+          {
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+        {
+            return Ok(result);
+
+        }
+
+        return NotFound(new Responses<ResponseMsg>(null, "404", "Email Could Not be Confirmed"));
+
+    }
 
         private void setTokenCookie(AuthenticateResponse token)
         {
