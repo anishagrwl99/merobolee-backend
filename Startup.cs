@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace MeroBolee
 {
@@ -76,6 +77,7 @@ namespace MeroBolee
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MeroBoleeDbContext>().AddDefaultTokenProviders();
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
             //Enabling Cross Origin Requests from merobolee ui 
@@ -162,8 +164,7 @@ namespace MeroBolee
                     ValidAudience = Configuration["JWTSettings:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTSettings:Secret"])) //Configuration["JwtToken:SecretKey"]  
                 };
-            })
-            ;
+            });
 
             // Dependency Injection
             services.AddScoped<ICryptoService, CryptoService>();

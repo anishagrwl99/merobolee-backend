@@ -50,7 +50,7 @@ namespace MeroBolee.Service
     public class EmailService : EmailMapper, IEmailService
     {
 
-        private readonly IEmailRepository emailRepository;
+        private readonly IEmailRepository emailRepository; 
         private readonly ITenderService tenderService;
         private readonly IUserService userService;
 
