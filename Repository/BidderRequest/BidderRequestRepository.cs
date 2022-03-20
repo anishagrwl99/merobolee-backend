@@ -271,7 +271,9 @@ namespace MeroBolee.Repository
                  * 
                  * 
                  * */
-
+                var tenderEntity = meroBoleeDbContexts.TenderEntities
+               .Where(x => x.Id == tenderId)
+               .FirstOrDefault();
                 List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
                     .Select(g => new LiveBiddingEntity
                     {
@@ -279,7 +281,8 @@ namespace MeroBolee.Repository
                         TenderId = g.TenderId,
                         MaterialId = g.MaterialId,
                         Quotation = g.Quotation,
-                        BatchNo = g.BatchNo
+                        BatchNo = g.BatchNo,
+                        TenderEntity = tenderEntity
                     }).ToListAsync();
                 return bids;
 
