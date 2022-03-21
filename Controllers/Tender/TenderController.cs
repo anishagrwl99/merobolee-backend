@@ -34,7 +34,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpPost("Tender/Admin/Create")]
         [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public async Task<IActionResult> Add(AddTenderRequestDto tender)
+        public async Task<IActionResult> Add([FromForm]  AddTenderRequestDto tender)
         {
             try
             {
