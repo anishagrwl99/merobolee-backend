@@ -65,6 +65,7 @@ namespace MeroBolee.Service
                             UserId = tenderDto.CreatedBy,
                             DocTitle = item.DocTitle,
                             TenderId = entity.Id,
+                            IsDeleted= false,
                             DocPath = await uploadFileService.Upload(item.Document, docPath)
                         };
                         documentEntities.Add(obj);
@@ -208,6 +209,7 @@ namespace MeroBolee.Service
                             UserId = tenderDto.CreatedBy,
                             TenderId = entity.Id,
                             DocTitle = item.DocTitle,
+                            IsDeleted = entity.IsDeleted,
                             DocPath = await uploadFileService.Upload(item.Document, docPath)
                         };
                         entity.ExtraDocuments.Add(obj);

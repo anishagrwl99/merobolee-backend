@@ -35,7 +35,7 @@ namespace MeroBolee.Model
 
         public DateTime BidDate { get; set; }
 
-
+        public bool IsDeleted { get; set; }
         public virtual UserEntity UserEntity { get; set; }
         public virtual TenderEntity TenderEntity { get; set; }
         public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }
@@ -78,7 +78,7 @@ namespace MeroBolee.Model
 
         public DateTime BidDate { get; set; }
 
-
+        public bool IsDeleted { get; set; }
         public virtual UserEntity UserEntity { get; set; }
         public virtual TenderEntity TenderEntity { get; set; }
         public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }

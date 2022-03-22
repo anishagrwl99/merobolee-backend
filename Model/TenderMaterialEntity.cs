@@ -24,7 +24,7 @@ namespace MeroBolee.Model
         public int Quantity { get; set; }
 
         public string Units { get; set; }
-
+        public bool IsDeleted { get; set; }
         public virtual ICollection<MaterialFeatureEntity> MaterialFeatures { get; set; }
 
         [JsonIgnore]

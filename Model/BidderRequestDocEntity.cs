@@ -29,7 +29,7 @@ namespace MeroBolee.Model
 
         [ForeignKey("BidderRequest")]
         public long BidRequestId { get; set; }
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual BidRequestEntity BidderRequest { get; set; }
     }

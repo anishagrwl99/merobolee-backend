@@ -272,8 +272,8 @@ namespace MeroBolee.Repository
                  * 
                  * */
                 var tenderEntity = meroBoleeDbContexts.TenderEntities
-               .Where(x => x.Id == tenderId)
-               .FirstOrDefault();
+                   .Where(x => x.Id == tenderId)
+                   .FirstOrDefault();
                 List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
                     .Select(g => new LiveBiddingEntity
                     {
@@ -282,8 +282,10 @@ namespace MeroBolee.Repository
                         MaterialId = g.MaterialId,
                         Quotation = g.Quotation,
                         BatchNo = g.BatchNo,
-                        TenderEntity = tenderEntity
+                        TenderEntity= tenderEntity
+
                     }).ToListAsync();
+                
                 return bids;
 
             }
@@ -442,7 +444,16 @@ namespace MeroBolee.Repository
                 .Where(x => x.Id == tenderId)
                 .FirstOrDefault();
         }
+        public TenderEntity UpdateLiveEndDate(long tenderId,DateTime liveEndDate)
+        {
+            var tender = meroBoleeDbContexts.TenderEntities
+               .Where(x => x.Id == tenderId)
+               .FirstOrDefault();
+            tender.LiveEndDate = liveEndDate;
+            unitOfWork.SaveChange();
 
+            return tender;
+        }
         public void WriteAutionLogEntry(AuctionLog log)
         {
             try

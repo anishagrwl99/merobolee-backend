@@ -19,7 +19,7 @@ namespace MeroBolee.Model
 
         [Column(TypeName = "VARCHAR(MAX)")]
         public string TermCondition { get; set; }
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual TenderEntity TenderEntity { get; set; }
     }

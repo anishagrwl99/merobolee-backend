@@ -64,7 +64,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.StatusId == 3 && (search == null || t.Title.Contains(search))
+                              where t.StatusId == 3 && t.IsDeleted==false && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -113,7 +113,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.CompanyId == companyId && t.StatusId == 3 && t.LiveEndDate < DateTime.Now
+                              where t.CompanyId == companyId && t.StatusId == 3 && t.LiveEndDate < DateTime.Now && t.IsDeleted==false
                                           && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
@@ -164,7 +164,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.CompanyId == companyId /*&& t.StatusId != 3 */ && t.LiveEndDate > DateTime.Now
+                              where t.CompanyId == companyId /*&& t.StatusId != 3 */ && t.LiveEndDate > DateTime.Now && t.IsDeleted==false
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -246,7 +246,10 @@ namespace MeroBolee.Repository
               //  ent.TenderCards = await meroBoleeDbContexts.TenderCards.Where(x => x.TenderId == tenderId).ToListAsync();
                 ent.ExtraDocuments = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == tenderId).ToListAsync();
                 ent.Feedbacks = await GetTenderCardFeedback(tenderId);
-
+                ent.AuctionLogs = await meroBoleeDbContexts.AuctionLogs.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.BiddingHistories = await meroBoleeDbContexts.BiddingHistoryEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.BidRequests = await meroBoleeDbContexts.BidRequestEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+                ent.LiveBiddings = await meroBoleeDbContexts.LiveBiddingEntities.Where(x => x.TenderId == tenderId).ToListAsync();
                 return ent;
 
             }
@@ -309,6 +312,7 @@ namespace MeroBolee.Repository
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
                                   where bd.CompanyId == companyId
+                                        && t.IsDeleted==false
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
                                         && (t.LiveStartDate.AddDays(-7) <= DateTime.Now)//Tender live date should be within next 7 days
@@ -346,6 +350,7 @@ namespace MeroBolee.Repository
                                   join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
+                                        && t.IsDeleted == false
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -394,6 +399,7 @@ namespace MeroBolee.Repository
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where t.CompanyId == companyId
+                                    && t.IsDeleted == false
                                     && t.StatusId == 3 //Tender should be approved
                                     && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
                               select new TenderCard
@@ -446,7 +452,7 @@ namespace MeroBolee.Repository
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                                  where t.CompanyId == companyId.Value
+                                  where t.CompanyId == companyId.Value && t.IsDeleted==false
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -478,6 +484,8 @@ namespace MeroBolee.Repository
                                   join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                  where t.IsDeleted == false
+
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -690,12 +698,23 @@ namespace MeroBolee.Repository
             {
                 if(entity.TenderTermsConditionEntities != null)
                 {
-                    meroBoleeDbContexts.TenderTermsConditionEntities.Remove(entity.TenderTermsConditionEntities);
+                    //meroBoleeDbContexts.TenderTermsConditionEntities.Remove(entity.TenderTermsConditionEntities);
+                    var tenderTermsConditionEntity = await meroBoleeDbContexts.TenderTermsConditionEntities.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    entity.TenderTermsConditionEntities.IsDeleted = true;
+
                 }
 
                 if (entity.TenderMaterialEntities != null && entity.TenderMaterialEntities.Count > 0)
                 {
-                    meroBoleeDbContexts.TenderMaterialEntities.RemoveRange(entity.TenderMaterialEntities);
+                    //meroBoleeDbContexts.TenderMaterialEntities.RemoveRange(entity.TenderMaterialEntities);
+                   List<TenderMaterialEntity> tenderMaterialEntity = new List<TenderMaterialEntity>();
+
+                     tenderMaterialEntity = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in tenderMaterialEntity)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.TenderMaterialEntities = tenderMaterialEntity;
                 }
 
                 //if (entity.TenderCards != null && entity.TenderCards.Count > 0)
@@ -705,17 +724,76 @@ namespace MeroBolee.Repository
 
                 if (entity.Feedbacks != null && entity.Feedbacks.Count > 0)
                 {
-                    meroBoleeDbContexts.TenderCardFeedbacks.RemoveRange(entity.Feedbacks);
+                    //meroBoleeDbContexts.TenderCardFeedbacks.RemoveRange(entity.Feedbacks);
+                    List<TenderCardFeedbackEntity> tenderCardFeedbackEntities = new List<TenderCardFeedbackEntity>();
+
+                    tenderCardFeedbackEntities = await meroBoleeDbContexts.TenderCardFeedbacks.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in tenderCardFeedbackEntities)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.Feedbacks = tenderCardFeedbackEntities;
+
                 }
 
                 if (entity.ExtraDocuments != null && entity.ExtraDocuments.Count > 0)
                 {
-                    meroBoleeDbContexts.TenderExtraDocuments.RemoveRange(entity.ExtraDocuments);
+                   // meroBoleeDbContexts.TenderExtraDocuments.RemoveRange(entity.ExtraDocuments);
+                    List<TenderExtraDocumentEntity> tenderExtraDocumentEntities = new List<TenderExtraDocumentEntity>();
+
+                    tenderExtraDocumentEntities = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in tenderExtraDocumentEntities)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.ExtraDocuments = tenderExtraDocumentEntities;
                 }
+                if (entity.AuctionLogs != null && entity.AuctionLogs.Count > 0)
+                {
+                    List<AuctionLog> auctionLogs = new List<AuctionLog>();
 
+                    auctionLogs = await meroBoleeDbContexts.AuctionLogs.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in auctionLogs)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.AuctionLogs = auctionLogs;
+                }
+                if (entity.BiddingHistories != null && entity.BiddingHistories.Count > 0)
+                {
+                    List<BiddingHistoryEntity> biddingHistories = new List<BiddingHistoryEntity>();
 
-                meroBoleeDbContexts.TenderEntities.Remove(entity);
+                    biddingHistories = await meroBoleeDbContexts.BiddingHistoryEntities.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in biddingHistories)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.BiddingHistories = biddingHistories;
+                }
+                if (entity.BidRequests != null && entity.BidRequests.Count > 0)
+                {
+                    List<BidRequestEntity> bidRequests = new List<BidRequestEntity>();
 
+                    bidRequests = await meroBoleeDbContexts.BidRequestEntities.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in bidRequests)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.BidRequests = bidRequests;
+                }
+                if (entity.LiveBiddings != null && entity.LiveBiddings.Count > 0)
+                {
+                    List<LiveBiddingEntity> liveBiddings = new List<LiveBiddingEntity>();
+
+                    liveBiddings = await meroBoleeDbContexts.LiveBiddingEntities.Where(x => x.TenderId == entity.Id).ToListAsync();
+                    foreach (var item in liveBiddings)
+                    {
+                        item.IsDeleted = true;
+                    }
+                    entity.LiveBiddings = liveBiddings;
+                }
+                // meroBoleeDbContexts.TenderEntities.Remove(entity);
+                entity.IsDeleted = true;
                 await unitOfWork.SaveChangesAsync();
                 return true;
             }
