@@ -94,6 +94,7 @@ namespace MeroBolee.Model
         [MaxLength(1500)]
         public string TermsAndConditionDocPath { get; set; }
 
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual CompanyEntity Company { get; set; }
         public virtual TenderStatusEntity TenderStatusEntity { get; set; }
@@ -107,7 +108,19 @@ namespace MeroBolee.Model
 
         //[JsonIgnore]
         //public virtual ICollection<TenderCardEntity> TenderCards { get; set; }
-
+        [JsonIgnore]
+        [NotMapped]
+        public virtual ICollection<AuctionLog> AuctionLogs { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public virtual ICollection<BiddingHistoryEntity> BiddingHistories { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public virtual ICollection<BidRequestEntity> BidRequests { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public virtual ICollection<LiveBiddingEntity> LiveBiddings { get; set; }
+        //
         [JsonIgnore]
         public virtual ICollection<TenderCardFeedbackEntity> Feedbacks { get; set; }
 
@@ -165,7 +178,7 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(1500)]
         public string Feeback { get; set; }
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual TenderEntity Tender { get; set; }
 
@@ -204,7 +217,7 @@ namespace MeroBolee.Model
         [MaxLength(1500)]
         public string DocPath { get; set; }
 
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual TenderEntity Tender { get; set; }
 

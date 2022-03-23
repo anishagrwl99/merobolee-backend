@@ -65,7 +65,8 @@ namespace MeroBolee.EntityMapper
                 TenderDetailDocTitle = tenderDto.TenderDocTitle,
                 RegistrationTill = tenderDto.RegistrationTill,
                 Date_created = DateTimeNPT.Now,
-                Date_modified = DateTimeNPT.Now
+                Date_modified = DateTimeNPT.Now,
+                IsDeleted=false
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -74,7 +75,9 @@ namespace MeroBolee.EntityMapper
                 {
                     Materials = item.Name,
                     Quantity = item.Quantity,
-                    Units = item.Units
+                    Units = item.Units,
+                    IsDeleted = false
+
                 };
                 entity.TenderMaterialEntities.Add(obj);
             }
@@ -108,6 +111,7 @@ namespace MeroBolee.EntityMapper
             entity.Location = dto.Location;
             entity.Price = dto.Price;
             entity.MaxQuotation = dto.MaxQuotation;
+            entity.IsDeleted = dto.IsDeleted;
 
             if (dto.TenderMaterials != null)
             {
@@ -121,7 +125,8 @@ namespace MeroBolee.EntityMapper
                             Materials = item.Name,
                             Quantity = item.Quantity,
                             TenderId = entity.Id,
-                            Units = item.Units
+                            Units = item.Units,
+                            IsDeleted = false
                         });
                     }
                     else
@@ -130,6 +135,7 @@ namespace MeroBolee.EntityMapper
                         itm.Materials = item.Name;
                         itm.Quantity = item.Quantity;
                         itm.Units = item.Units;
+                        itm.IsDeleted = false;
 
                     }
                 }

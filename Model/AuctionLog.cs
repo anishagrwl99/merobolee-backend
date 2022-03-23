@@ -50,7 +50,7 @@ namespace MeroBolee.Model
         [Required(ErrorMessage = "Log date is required")]
         public DateTime LogDate { get; set; }
 
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual UserEntity User { get; set; }
 

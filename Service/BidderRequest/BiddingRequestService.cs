@@ -354,11 +354,32 @@ namespace MeroBolee.Service
                 {
                     long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
                     long totalIntervalInSec = dto.Interval * 60;
-                    long remainingSec = totalIntervalInSec - totalElapsedSeconds;
+                    //long remainingSec = totalElapsedSeconds - totalIntervalInSec;
 
+                     long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
+                    //if ((DateTimeNPT.Now-dto.MinQuotationRecivedAt)>= DateTimeNPT.Now.AddMinutes(dto.Interval))
+                    //{
+
+                    //}
+                    //if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.MinQuotationRecivedAt)
+                    //{
+                    //    dto.TenderLiveEndDate = DateTimeNPT.Now.AddMinutes(dto.Interval);
+                    //    TenderEntity e = bidRequestRepository.UpdateLiveEndDate(tenderId, DateTimeNPT.Now.AddMinutes(dto.Interval));
+
+                    //}
+                    if((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes== dto.Interval || dto.Interval==0)
+                    {
+                        {
+                            dto.IsTenderExpired = true;
+                            dto.RemainingMinute = 0;
+                            dto.RemainingSecond = 0;
+                        }
+                        memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
+                        return dto;
+                    }
                     //if tender live end date is about to end
-                    if (DateTime.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
+                    if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
                     {
                         dto.RemainingMinute = (dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes;
                         dto.RemainingSecond = (dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds;

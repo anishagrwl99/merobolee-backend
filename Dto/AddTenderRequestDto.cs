@@ -57,7 +57,7 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user")]
         public long CreatedBy { get; set; }
 
-        
+        public bool IsDeleted { get; set; }
 
         public string Location 
         {
@@ -146,6 +146,8 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Tender material Units is required")]
         [MaxLength(500, ErrorMessage = "Tender material Units can be {1} character long")]
         public string Units { get; set; }
+        public bool IsDeleted { get; set; }
+
     }
 
     //public class TenderCardRequestDto
@@ -163,6 +165,7 @@ namespace MeroBolee.Dto
     {
         [Required(ErrorMessage = "Document Title is required")]
         public string DocTitle { get; set; }
+        public bool IsDeleted { get; set; }
 
         [Required(ErrorMessage = "Document is required")]
         [AllowExtensions(ErrorMessage = "Invalid file extension. Supported extensions .png,.jpg,.jpeg,.pdf,.doc,.docx")]

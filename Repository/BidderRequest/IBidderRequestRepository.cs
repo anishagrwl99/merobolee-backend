@@ -114,6 +114,7 @@ namespace MeroBolee.Repository
         TenderEntity GetTenderDetail(long tenderId);
         Task<bool> IsBidderRegistered(long companyId, long tenderId, long biddingId);
         void WriteAutionLogEntry(AuctionLog log);
+        TenderEntity UpdateLiveEndDate(long tenderId,DateTime liveEndDate);
 
         /// <summary>
         /// Get all logs associated with a tender auction for a company

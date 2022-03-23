@@ -23,7 +23,7 @@ namespace MeroBolee.Model
         [MaxLength(300)]
         public string FeatureValue { get; set; }
 
-
+        public bool IsDeleted { get; set; }
         [JsonIgnore]
         public virtual TenderMaterialEntity TenderMaterialEntity { get; set; }
     }
