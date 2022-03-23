@@ -46,7 +46,9 @@ namespace MeroBolee.Dto
         public DateTime RegistrationTill { get; set; }
         public int StatusId { get; set; }
         public string Status { get; set; }
-        
+
+        public string Product { get; set; }
+        public DateTime DateOfExecution { get; set; }
         //public List<TenderCardInfo> CardInfo { get; set; }
 
     }

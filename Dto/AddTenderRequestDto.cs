@@ -59,6 +59,11 @@ namespace MeroBolee.Dto
 
         public bool IsDeleted { get; set; }
 
+        [Required(ErrorMessage = "Product is required")]
+        [MaxLength(500, ErrorMessage = "Product can be {1} character long")]
+        public string Product { get; set; }
+        [Required(ErrorMessage = "Date Of Execution is required")]
+        public DateTime DateOfExecution { get; set; }
         public string Location 
         {
             get => _location;
@@ -108,7 +113,7 @@ namespace MeroBolee.Dto
     public class AddTenderRequestDto : TenderRequestBaseDto
     {
         [Required(ErrorMessage = "At least one tender material is required")]
-        public List<TenderMaterialRequestDto> TenderMaterials { get; set; }
+        public ICollection<TenderMaterialRequestDto> TenderMaterials { get; set; }
 
         //[Required(ErrorMessage = "At least one tender card information is required")]
         //public List<TenderCardRequestDto> TenderCards { get; set; }
@@ -124,7 +129,7 @@ namespace MeroBolee.Dto
         public long TenderId { get; set; }
 
         [Required(ErrorMessage = "At least one tender material is required")]
-        public List<UpdateMaterialRequestDto> TenderMaterials { get; set; }
+        public ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
 
         //[Required(ErrorMessage = "At least one tender card information is required")]
         //public List<UpdateTenderCardRequestDto> TenderCards { get; set; }
