@@ -66,7 +66,9 @@ namespace MeroBolee.EntityMapper
                 RegistrationTill = tenderDto.RegistrationTill,
                 Date_created = DateTimeNPT.Now,
                 Date_modified = DateTimeNPT.Now,
-                IsDeleted=false
+                IsDeleted=false,
+                DateOfExecution=tenderDto.DateOfExecution,
+                Product = tenderDto.Product
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -112,7 +114,8 @@ namespace MeroBolee.EntityMapper
             entity.Price = dto.Price;
             entity.MaxQuotation = dto.MaxQuotation;
             entity.IsDeleted = dto.IsDeleted;
-
+            entity.Product = dto.Product;
+            entity.DateOfExecution = dto.DateOfExecution;
             if (dto.TenderMaterials != null)
             {
                 foreach (var item in dto.TenderMaterials)
@@ -194,6 +197,8 @@ namespace MeroBolee.EntityMapper
             getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
             getTender.Price = tenderEntity.Price;
             getTender.MaxQuotation = tenderEntity.MaxQuotation;
+            getTender.Product = tenderEntity.Product;
+            getTender.DateOfExecution = tenderEntity.DateOfExecution;
 
             getTender.CreatedDate = tenderEntity.Date_created;
             getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities

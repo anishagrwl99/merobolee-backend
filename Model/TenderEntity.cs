@@ -95,6 +95,13 @@ namespace MeroBolee.Model
         public string TermsAndConditionDocPath { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(150)]
+        public string Product { get; set; }
+
+        public DateTime DateOfExecution { get; set; }
+
         [JsonIgnore]
         public virtual CompanyEntity Company { get; set; }
         public virtual TenderStatusEntity TenderStatusEntity { get; set; }

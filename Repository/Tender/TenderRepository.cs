@@ -77,7 +77,9 @@ namespace MeroBolee.Repository
                                   LiveStartDate = t.LiveStartDate,
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
-                                  Status = s.Status
+                                  Status = s.Status,
+                                  Product = t.Product,
+                                  DateOfExecution = t.DateOfExecution
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
                                   //            select new TenderCardInfo
@@ -128,7 +130,9 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   StatusId = t.StatusId,
-                                  Status = s.Status
+                                  Status = s.Status,
+                                  Product = t.Product,
+                                  DateOfExecution = t.DateOfExecution
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
                                   //            select new TenderCardInfo
@@ -178,7 +182,9 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   Status = s.Status,
-                                  StatusId = t.StatusId
+                                  StatusId = t.StatusId,
+                                  Product = t.Product,
+                                  DateOfExecution = t.DateOfExecution
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
                                   //            select new TenderCardInfo
@@ -330,7 +336,9 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = ts.Status
+                                      Status = ts.Status,
+                                      Product = t.Product,
+                                      DateOfExecution = t.DateOfExecution
                                       //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                       //            where tc.TenderId == t.Id
                                       //            select new TenderCardInfo
@@ -364,7 +372,9 @@ namespace MeroBolee.Repository
                                       LiveEndDate = t.LiveEndDate,
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
-                                      Status = ts.Status
+                                      Status = ts.Status,
+                                      Product = t.Product,
+                                      DateOfExecution = t.DateOfExecution
                                       //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                       //            where tc.TenderId == t.Id
                                       //            select new TenderCardInfo
@@ -415,7 +425,9 @@ namespace MeroBolee.Repository
                                   LiveEndDate = t.LiveEndDate,
                                   RegistrationTill = t.RegistrationTill,
                                   StatusId = t.StatusId,
-                                  Status = ts.Status
+                                  Status = ts.Status,
+                                  Product = t.Product,
+                                  DateOfExecution = t.DateOfExecution
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
                                   //            select new TenderCardInfo
@@ -467,6 +479,8 @@ namespace MeroBolee.Repository
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
                                       Status = ts.Status,
+                                      Product = t.Product,
+                                      DateOfExecution = t.DateOfExecution
                                       //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                       //            where tc.TenderId == t.Id
                                       //            select new TenderCardInfo
@@ -500,6 +514,8 @@ namespace MeroBolee.Repository
                                       RegistrationTill = t.RegistrationTill,
                                       StatusId = t.StatusId,
                                       Status = ts.Status,
+                                      Product = t.Product,
+                                      DateOfExecution = t.DateOfExecution
                                       //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                       //            where tc.TenderId == t.Id
                                       //            select new TenderCardInfo
