@@ -59,7 +59,7 @@ namespace MeroBolee.Dto
 
         public bool IsDeleted { get; set; }
 
-        [Required(ErrorMessage = "Product is required")]
+        // [Required(ErrorMessage = "Product is required")]
         [MaxLength(500, ErrorMessage = "Product can be {1} character long")]
         public string Product { get; set; }
         [Required(ErrorMessage = "Date Of Execution is required")]
