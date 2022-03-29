@@ -631,6 +631,110 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
         }
 
+        [HttpGet("Bidding/Admin/AuctionLog")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> GetAuctionLogForAdmin([FromQuery] PaginationQuery pagination,long tenderId)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    string url = Url.Action("GetAuctionLog", null, new {  TenderId = tenderId }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    List<AuctionLog> logs = await biddingRequestService.GetAuctionLogForAdmin(tenderId);
+                    int totalCount = logs.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+       
+        [HttpPost("Bidding/Admin/LogActivity")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult>LogActivityForAdmin(long tenderId,long logId)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                  AuctionLog resp = await biddingRequestService.LogActivityForAdmin(tenderId, logId);
+                    if (resp == null)
+                    {
+                        response.statusCode = "404";
+                        response.Message = "Record not Found";
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<long>(resp.LogId, "200", "Record is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Bidding/Admin/SuspendUserFromBidding")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> SuspendUserFromBiddingByAdmin(long tenderId,long userId,long companyId)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    List<BidRequestEntity> resp = await biddingRequestService.SuspendUserFromBiddingByAdmin(tenderId, userId, companyId);
+                    if (resp == null)
+                    {
+                        response.statusCode = "404";
+                        response.Message = "Record not Found";
+                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<long>(1, "200", "Record is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid request data";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+        
 
         /// <summary>
         /// List all suppliers who registered for a tender bidding 

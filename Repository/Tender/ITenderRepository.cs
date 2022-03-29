@@ -12,8 +12,11 @@ namespace MeroBolee.Repository
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
         Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
-      //  IEnumerable<TenderEntity> GetTenderByBidder();
-        Task<TenderEntity> GetTenderDetail(long id);
+        
+        Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
+        
+         //  IEnumerable<TenderEntity> GetTenderByBidder();
+         Task<TenderEntity> GetTenderDetail(long id);
         Task<TenderEntity> GetTenderDetailNew(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
         Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId);
@@ -39,6 +42,7 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId);
+        Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
 
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);

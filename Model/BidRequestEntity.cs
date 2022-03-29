@@ -46,7 +46,7 @@ namespace MeroBolee.Model
         public decimal Amount { get; set; }
 
         public bool IsDeleted { get; set; }
-
+        public bool IsSuspended { get; set; }
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get; set; }
 
         [JsonIgnore]

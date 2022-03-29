@@ -13,6 +13,7 @@ namespace MeroBolee.Dto
         public long CompanyId { get; set; }
         public long TenderId { get; set; }
         public string BidRequestStatus { get; set; }
+        public bool IsSuspended { get; set; }
 
     }
 

@@ -84,7 +84,10 @@ namespace MeroBolee.Service
         {
             return tenderRepository.GetMarketplaceTender(search);
         }
-
+        public Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search)
+        {
+            return tenderRepository.GetLiveBidMarketplaceTenderForAdmin(search);
+        }
 
         public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search)
         {
@@ -150,7 +153,10 @@ namespace MeroBolee.Service
         {
             return await tenderRepository.UpcomingBidInviterTender(companyId);
         }
-
+        public async Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin()
+        {
+            return await tenderRepository.UpcomingTenderForAdmin();
+        }
         public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId)
         {
             return await tenderRepository.CompanyTendersForAdmin(companyId);

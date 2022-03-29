@@ -49,6 +49,8 @@ namespace MeroBolee.Dto
 
         public string Product { get; set; }
         public DateTime DateOfExecution { get; set; }
+        public DateTime DateCreated { get; set; }
+
         //public List<TenderCardInfo> CardInfo { get; set; }
 
     }

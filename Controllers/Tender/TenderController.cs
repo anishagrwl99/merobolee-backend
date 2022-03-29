@@ -390,6 +390,59 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
+
+        [HttpGet("Tender/Admin/Upcoming")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> GetUpCommingTenderForAdmin([FromQuery] PaginationQuery pagination)
+        {
+            try
+            {
+                string url = Url.Action("GetUpCommingTenderForAdmin", null,null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<TenderCard> tenders = await tenderService.UpcomingTenderForAdmin();
+                int totalCount = tenders.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
+        [HttpGet("Tender/Admin/LiveBids")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        public async Task<IActionResult> LiveMarketplaceForAdmin([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        {
+            try
+            {
+                string url = Url.Action("LiveMarketplaceForAdmin", null, new { search = search }, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                IEnumerable<TenderCard> tenders = await tenderService.GetLiveBidMarketplaceTenderForAdmin(search);
+                int totalCount = tenders.Count();
+                if (totalCount == 0)
+                {
+                    return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                }
+                return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
         /// <summary>
         /// To individual detail of tender by tender id
         /// </summary>

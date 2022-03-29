@@ -81,8 +81,12 @@ namespace MeroBolee.Service
         /// <param name="tenderId">A tender number</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
+        
+        Task<List<AuctionLog>> GetAuctionLogForAdmin(long tenderId);
+        Task<AuctionLog> LogActivityForAdmin(long tenderId, long logId);
+        Task<List<BidRequestEntity>> SuspendUserFromBiddingByAdmin(long tenderId, long UserId, long companyId);
 
-
+        
         /// <summary>
         /// Get all logs associated with a tender auction for a company
         /// </summary>
