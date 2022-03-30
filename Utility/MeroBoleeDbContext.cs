@@ -269,7 +269,9 @@ namespace MeroBolee.Utility
                 new TenderStatusEntity() { StatusId = 1, Status = "Pending Approval" },
                 new TenderStatusEntity() { StatusId = 2, Status = "Change Requested" },
                 new TenderStatusEntity() { StatusId = 3, Status = "Approved" },
-                new TenderStatusEntity() { StatusId = 4, Status = "Cancelled" }
+                new TenderStatusEntity() { StatusId = 4, Status = "Live" },
+                new TenderStatusEntity() { StatusId = 5, Status = "Completed" }
+
                 );
 
 

@@ -115,7 +115,7 @@ namespace MeroBolee.Repository
         Task<bool> IsBidderRegistered(long companyId, long tenderId, long biddingId);
         void WriteAutionLogEntry(AuctionLog log);
         TenderEntity UpdateLiveEndDate(long tenderId,DateTime liveEndDate);
-
+        
         /// <summary>
         /// Get all logs associated with a tender auction for a company
         /// </summary>
@@ -123,15 +123,21 @@ namespace MeroBolee.Repository
         /// <param name="tenderId">A tender Id</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId);
+        Task<List<AuctionLog>> GetAuctionLogForAdmin(long tenderId);
 
-
+        
         /// <summary>
         /// Get all logs associated with a tender auction for a company
         /// </summary>
         /// <param name="tenderId">A tender Id</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId);
+        
+        Task<AuctionLog> LogActivityForAdmin(long tenderId,long logId);
+        Task<AuctionLog> UpdateAuctionLog(AuctionLog auctionLogEntity, BidRequestEntity bidRequestEntity);
 
+        Task<BidRequestEntity> UpdateSuspendStatusBidRequest( BidRequestEntity bidRequestEntity);
+        Task<List<BidRequestEntity>> GetBidRequestEntity(long tenderId, long userId, long companyId);
 
         /// <summary>
         /// Determines whether [is supplier registered] [the specified company identifier].

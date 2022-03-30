@@ -11,12 +11,16 @@ namespace MeroBolee.Service
     {
         Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto);
         Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
+
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert);
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
+
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
         Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);

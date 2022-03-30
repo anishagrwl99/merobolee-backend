@@ -525,7 +525,65 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+        public async Task<List<AuctionLog>> GetAuctionLogForAdmin(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.AuctionLogs
+                    .Where(x =>x.TenderId == tenderId && !x.IsDeleted)
+                    .Include(x => x.Company)
+                    .Include(x=>x.User)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<AuctionLog> LogActivityForAdmin(long tenderId,long logId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.AuctionLogs
+                    .Where(x => x.TenderId == tenderId && !x.IsDeleted && x.LogId==logId)
+                    .Include(x => x.Company)
+                    .Include(x => x.User)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
+        public async Task<BidRequestEntity> UpdateSuspendStatusBidRequest(BidRequestEntity entity)
+        {
+            try
+            {             
+                meroBoleeDbContexts.BidRequestEntities.Update(entity);
+                await unitOfWork.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<List<BidRequestEntity>> GetBidRequestEntity(long tenderId,long userId, long companyId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.BidRequestEntities
+                    .Where(x => x.CompanyId == companyId && x.TenderId == tenderId && x.UserId==userId)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public async Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
         {
             try
@@ -540,7 +598,23 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+        public async Task<AuctionLog> UpdateAuctionLog(AuctionLog auctionLogEntity, BidRequestEntity bidRequestEntity)
+        {
+            try
+            {
+                meroBoleeDbContexts.AuctionLogs.Update(auctionLogEntity);
+                meroBoleeDbContexts.BidRequestEntities.Update(bidRequestEntity);
 
+                await unitOfWork.SaveChangesAsync();               
+
+                return auctionLogEntity;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+
+        }
         public async Task<bool> CheckTenderWinner(long tenderId)
         {
             try

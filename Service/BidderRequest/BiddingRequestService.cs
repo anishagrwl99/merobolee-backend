@@ -165,7 +165,8 @@ namespace MeroBolee.Service
                         BidId = entity.BidRequestStatusId == 2 ? entity.Id : -1,
                         CompanyId = entity.CompanyId,
                         TenderId = entity.TenderId,
-                        BidRequestStatus = entity.BidRequestStatus.Status
+                        BidRequestStatus = entity.BidRequestStatus.Status,
+                        IsSuspended = entity.IsSuspended
                     };
                 }
                 return null;
@@ -354,9 +355,9 @@ namespace MeroBolee.Service
                 {
                     long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
                     long totalIntervalInSec = dto.Interval * 60;
-                    //long remainingSec = totalElapsedSeconds - totalIntervalInSec;
+                    long remainingSec = totalElapsedSeconds - totalIntervalInSec;
 
-                     long remainingSec = totalIntervalInSec - totalElapsedSeconds;
+                    // long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
                     //if ((DateTimeNPT.Now-dto.MinQuotationRecivedAt)>= DateTimeNPT.Now.AddMinutes(dto.Interval))
                     //{
@@ -368,16 +369,19 @@ namespace MeroBolee.Service
                     //    TenderEntity e = bidRequestRepository.UpdateLiveEndDate(tenderId, DateTimeNPT.Now.AddMinutes(dto.Interval));
 
                     //}
-                    if((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes== dto.Interval || dto.Interval==0)
+                    if((dto.TenderLiveEndDate - DateTimeNPT.Now).TotalSeconds== (dto.Interval * 60))
                     {
+                        TenderEntity e = bidRequestRepository.GetTenderDetail(tenderId);
+
                         {
                             dto.IsTenderExpired = true;
                             dto.RemainingMinute = 0;
                             dto.RemainingSecond = 0;
                         }
-                        memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
+                        memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(e.LiveInterval));
                         return dto;
                     }
+                    
                     //if tender live end date is about to end
                     if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
                     {
@@ -595,6 +599,60 @@ namespace MeroBolee.Service
             {
                 List<AuctionLog> logs = await bidRequestRepository.GetTenderAuctionLog(companyId, tenderId);
                 return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<List<AuctionLog>> GetAuctionLogForAdmin(long tenderId)
+        {
+            try
+            {
+                List<AuctionLog> logs = await bidRequestRepository.GetAuctionLogForAdmin(tenderId);
+                return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<AuctionLog> LogActivityForAdmin(long tenderId,long logId)
+        {
+            try
+            {
+                AuctionLog entity = await bidRequestRepository.LogActivityForAdmin(tenderId,logId);
+                BidRequestEntity bidRequestEntity = await bidRequestRepository.GetBidRequestEntityOnly(entity.BiddingId);
+                entity.IsDeleted = true;
+                bidRequestEntity.IsDeleted = true;
+                //UpdateTenderEntity(ref entity, tenderDto);
+                await bidRequestRepository.UpdateAuctionLog(entity, bidRequestEntity);
+                return entity;
+               // return logs;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<BidRequestEntity>> SuspendUserFromBiddingByAdmin(long tenderId, long userId, long companyId)
+        {
+            try
+            {
+                List<BidRequestEntity> entity = await bidRequestRepository.GetBidRequestEntity(tenderId, userId,companyId);
+                foreach (var item in entity)
+                {
+                    item.IsSuspended = true;
+                    await bidRequestRepository.UpdateSuspendStatusBidRequest(item);
+
+                }
+
+                return entity;
+                // return logs;
             }
             catch (Exception)
             {

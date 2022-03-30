@@ -18,26 +18,26 @@ namespace MeroBolee.Model
         [Required(ErrorMessage = "User id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
         [ForeignKey("User")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public long UserId { get; set; }
 
 
         [Required(ErrorMessage = "Tender id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid tender id")]
         [ForeignKey("Tender")]
-        [JsonIgnore]
+       // [JsonIgnore]
         public long TenderId { get; set; }
 
         [Required(ErrorMessage = "Company id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company id")]
         [ForeignKey("Company")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public long CompanyId { get; set; }
 
         [Required(ErrorMessage = "Bid request id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid bid request id")]
         [ForeignKey("BidRequest")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public long BiddingId { get; set; }
 
         [Required(ErrorMessage = "Auction amount is required")]
@@ -51,13 +51,13 @@ namespace MeroBolee.Model
         public DateTime LogDate { get; set; }
 
         public bool IsDeleted { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual UserEntity User { get; set; }
 
         [JsonIgnore]
         public virtual TenderEntity Tender { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual CompanyEntity Company { get; set; }
 
         public virtual BidRequestEntity BidRequest { get; set; }
