@@ -535,90 +535,164 @@ namespace MeroBolee.Repository
             }
         }
 
-
         /// <summary>
         /// upcoming tender within 7 days for bid inviter
         /// </summary>
         /// <param name="companyId"></param>
+        ///   /// <param name="statusId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId)
+        public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId)
 
         {
             try
             {
-                if (companyId.HasValue)
+                if (statusId == 4 || statusId == 5)
                 {
-                    return await (from t in meroBoleeDbContexts.TenderEntities
-                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
-                                  join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                                  where t.CompanyId == companyId.Value && t.IsDeleted==false
-                                  select new TenderCard
-                                  {
-                                      TenderId = t.Id,
-                                      CompanyId = c1.CompanyId,
-                                      CompanyName = c1.Name,
-                                      TenderCode = t.Code,
-                                      TenderTitle = t.Title,
-                                      CategoryId = c.Id,
-                                      CategoryName = c.Category,
-                                      LiveStartDate = t.LiveStartDate,
-                                      LiveEndDate = t.LiveEndDate,
-                                      RegistrationTill = t.RegistrationTill,
-                                      StatusId = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? 4 : t.StatusId,
-                                      Status = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? "Live" : ts.Status,
-                                      Product = t.Product,
-                                      DateOfExecution = t.DateOfExecution,
-                                      DateCreated=t.Date_created
-                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                      //            where tc.TenderId == t.Id
-                                      //            select new TenderCardInfo
-                                      //            {
-                                      //                Id = tc.Id,
-                                      //                Label = tc.Label,
-                                      //                Value = tc.Value
-                                      //            }).ToList()
-                                  }).OrderByDescending(x=> x.DateCreated)
-                                  .ToListAsync();
+                    if (statusId == 4)
+                    {
+                        return await (from t in meroBoleeDbContexts.TenderEntities
+                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                      join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                      where t.IsDeleted == false && (DateTimeNPT.Now >= t.LiveStartDate) && (t.LiveEndDate >= DateTimeNPT.Now) && t.StatusId==3
+                                      //(GETDATE()>=LiveStartDate) and (LiveEndDate >= GETDATE())
+                                      select new TenderCard
+                                      {
+                                          TenderId = t.Id,
+                                          CompanyId = c1.CompanyId,
+                                          CompanyName = c1.Name,
+                                          TenderCode = t.Code,
+                                          TenderTitle = t.Title,
+                                          CategoryId = c.Id,
+                                          CategoryName = c.Category,
+                                          LiveStartDate = t.LiveStartDate,
+                                          LiveEndDate = t.LiveEndDate,
+                                          RegistrationTill = t.RegistrationTill,
+                                          StatusId = 4,
+                                          Status = "Live",
+                                          // StatusId = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? 4 : t.StatusId,
+                                          // Status = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? "Live" : ts.Status,
+                                          Product = t.Product,
+                                          DateOfExecution = t.DateOfExecution,
+                                          DateCreated = t.Date_created
+                                          //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                          //            where tc.TenderId == t.Id
+                                          //            select new TenderCardInfo
+                                          //            {
+                                          //                Id = tc.Id,
+                                          //                Label = tc.Label,
+                                          //                Value = tc.Value
+                                          //            }).ToList()
+                                      }).OrderByDescending(x => x.DateCreated)
+                                                          .ToListAsync();
+                    }
+                    else
+                    {
+                        return await (from t in meroBoleeDbContexts.TenderEntities
+                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                      join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                      where t.IsDeleted == false && (t.LiveEndDate < DateTimeNPT.Now) && t.StatusId == 3
+                                      select new TenderCard
+                                      {
+                                          TenderId = t.Id,
+                                          CompanyId = c1.CompanyId,
+                                          CompanyName = c1.Name,
+                                          TenderCode = t.Code,
+                                          TenderTitle = t.Title,
+                                          CategoryId = c.Id,
+                                          CategoryName = c.Category,
+                                          LiveStartDate = t.LiveStartDate,
+                                          LiveEndDate = t.LiveEndDate,
+                                          RegistrationTill = t.RegistrationTill,
+                                          StatusId = 5,
+                                          Status = "Completed",
+                           
+                                          Product = t.Product,
+                                          DateOfExecution = t.DateOfExecution,
+                                          DateCreated = t.Date_created                                     
+                                      }).OrderByDescending(x => x.DateCreated)
+                                                     .ToListAsync();
+                    }
                 }
                 else
                 {
-                    return await (from t in meroBoleeDbContexts.TenderEntities
-                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
-                                  join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                                  where t.IsDeleted == false
+                    if (companyId.HasValue)
+                    {
+                        return await (from t in meroBoleeDbContexts.TenderEntities
+                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                      join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                      where t.CompanyId == companyId.Value && t.IsDeleted == false && t.StatusId == statusId
+                                      select new TenderCard
+                                      {
+                                          TenderId = t.Id,
+                                          CompanyId = c1.CompanyId,
+                                          CompanyName = c1.Name,
+                                          TenderCode = t.Code,
+                                          TenderTitle = t.Title,
+                                          CategoryId = c.Id,
+                                          CategoryName = c.Category,
+                                          LiveStartDate = t.LiveStartDate,
+                                          LiveEndDate = t.LiveEndDate,
+                                          RegistrationTill = t.RegistrationTill,
+                                          //StatusId = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? 4 : t.StatusId,
+                                          //Status = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? "Live" : ts.Status,
+                                          StatusId = t.StatusId,
+                                          Status = ts.Status,
+                                          Product = t.Product,
+                                          DateOfExecution = t.DateOfExecution,
+                                          DateCreated = t.Date_created
+                                          //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                          //            where tc.TenderId == t.Id
+                                          //            select new TenderCardInfo
+                                          //            {
+                                          //                Id = tc.Id,
+                                          //                Label = tc.Label,
+                                          //                Value = tc.Value
+                                          //            }).ToList()
+                                      }).OrderByDescending(x => x.DateCreated)
+                                      .ToListAsync();
+                    }
+                    else
+                    {
+                        return await (from t in meroBoleeDbContexts.TenderEntities
+                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                      join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                      where t.IsDeleted == false
 
-                                  select new TenderCard
-                                  {
-                                      TenderId = t.Id,
-                                      CompanyId = c1.CompanyId,
-                                      CompanyName = c1.Name,
-                                      TenderCode = t.Code,
-                                      TenderTitle = t.Title,
-                                      CategoryId = c.Id,
-                                      CategoryName = c.Category,
-                                      LiveStartDate = t.LiveStartDate,
-                                      LiveEndDate = t.LiveEndDate,
-                                      RegistrationTill = t.RegistrationTill,
-                                      StatusId = ((DateTime.Now>= t.LiveStartDate) && (t.LiveEndDate <= DateTime.Now))?4:t.StatusId,
-                                      Status = ((DateTime.Now>= t.LiveStartDate) && (t.LiveEndDate <= DateTime.Now)) ? "Live" : ts.Status,
-                                      Product = t.Product,
-                                      DateOfExecution = t.DateOfExecution,
-                                      DateCreated=t.Date_created
-                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                      //            where tc.TenderId == t.Id
-                                      //            select new TenderCardInfo
-                                      //            {
-                                      //                Id = tc.Id,
-                                      //                Label = tc.Label,
-                                      //                Value = tc.Value
-                                      //            }).ToList()
-                                  }).OrderByDescending(x=> x.DateCreated)
-                                  .ToListAsync();
+                                      select new TenderCard
+                                      {
+                                          TenderId = t.Id,
+                                          CompanyId = c1.CompanyId,
+                                          CompanyName = c1.Name,
+                                          TenderCode = t.Code,
+                                          TenderTitle = t.Title,
+                                          CategoryId = c.Id,
+                                          CategoryName = c.Category,
+                                          LiveStartDate = t.LiveStartDate,
+                                          LiveEndDate = t.LiveEndDate,
+                                          RegistrationTill = t.RegistrationTill,
+                                          StatusId = t.StatusId,
+                                          Status = ts.Status,
+                                          //StatusId = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? 4 : t.StatusId,
+                                          //Status = ((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) ? "Live" : ts.Status,
+                                          Product = t.Product,
+                                          DateOfExecution = t.DateOfExecution,
+                                          DateCreated = t.Date_created
+                                          //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                          //            where tc.TenderId == t.Id
+                                          //            select new TenderCardInfo
+                                          //            {
+                                          //                Id = tc.Id,
+                                          //                Label = tc.Label,
+                                          //                Value = tc.Value
+                                          //            }).ToList()
+                                      }).OrderByDescending(x => x.DateCreated)
+                                      .ToListAsync();
+                    }
                 }
-
-
             }
             catch (Exception)
             {

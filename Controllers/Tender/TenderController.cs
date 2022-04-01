@@ -105,17 +105,18 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// /// <param name="statusId"></param>
         /// <returns></returns>
         [HttpPost("Tender/Admin/List")]
         [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] long? companyId = null)
+        public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] int statusId, [FromQuery] long? companyId = null)
         {
             try
             {
-                string url = Url.Action("GetTenderList", null, new { companyId = companyId }, Request.Scheme); //get url for current request
+                string url = Url.Action("GetTenderList", null, new { companyId = companyId ,status=statusId}, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = await tenderService.CompanyTendersForAdmin(companyId);
+                IEnumerable<TenderCard> tenders = await tenderService.CompanyTendersForAdmin(statusId,companyId);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {

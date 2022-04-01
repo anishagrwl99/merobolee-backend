@@ -21,10 +21,9 @@ namespace MeroBolee.Service
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
-        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId);
+        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
         Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);
-
 
         /// <summary>
         /// 

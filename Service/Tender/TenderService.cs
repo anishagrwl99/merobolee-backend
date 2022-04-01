@@ -157,9 +157,9 @@ namespace MeroBolee.Service
         {
             return await tenderRepository.UpcomingTenderForAdmin();
         }
-        public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(long? companyId)
+        public async Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId, long? companyId)
         {
-            return await tenderRepository.CompanyTendersForAdmin(companyId);
+            return await tenderRepository.CompanyTendersForAdmin(statusId, companyId);
         }
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
