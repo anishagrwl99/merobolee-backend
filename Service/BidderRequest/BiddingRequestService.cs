@@ -353,9 +353,9 @@ namespace MeroBolee.Service
 
                 if (dto != null)
                 {
-                    long totalElapsedSeconds = Math.Abs((long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds);
+                    long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
                     long totalIntervalInSec = Math.Abs(dto.Interval * 60);
-                    long remainingSec = Math.Abs(totalElapsedSeconds - totalIntervalInSec);
+                    long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
                     // long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
@@ -388,28 +388,33 @@ namespace MeroBolee.Service
                         dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
                         dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
                     }
-                    else //there is still time left for tender live end
+                    else  //there is still time left for tender live end
                     {
-                        dto.RemainingMinute = Math.Abs((int)(remainingSec / 60));
-                        dto.RemainingSecond = Math.Abs((int)(remainingSec % 60));
+                        dto.RemainingMinute = (int)(remainingSec / 60);
+                        dto.RemainingSecond = (int)(remainingSec % 60);
                     }
+                    
+                    // else if(remainingSec < 0) {
+                    //     dto.RemainingMinute = 0;
+                    //     dto.RemainingSecond = 1;
+                    // }
 
-                    if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false && dto.RemainingSecond < 1)
+                    if (dto.RemainingMinute < 1 && dto.RemainingSecond < 5)
                     {
                         dto.RemainingMinute = Math.Abs((int)dto.Interval);
                         dto.MinQuotationRecivedAt = DateTimeNPT.Now;
                         dto.FullIntervalCountWithoutReceivingBid++;
 
-                        if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
-                        {
-                            int sec = Math.Abs(dto.RemainingSecond);
-                            dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec)) / 60) - 1);
-                            dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
-                        }
-                        else
-                        {
+                        // if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
+                        // {
+                        //     int sec = Math.Abs(dto.RemainingSecond);
+                        //     dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1);
+                        //     dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
+                        // }
+                        // else
+                        // {
                             dto.RemainingSecond = 0;
-                        }
+                        // }
 
                     }
                 }
@@ -435,7 +440,7 @@ namespace MeroBolee.Service
 
                 //check if bidding expired
                 if (dto != null
-                        && (dto.FullIntervalCountWithoutReceivingBid >= 2
+                        && (dto.FullIntervalCountWithoutReceivingBid >= 1
                             || dto.TenderLiveEndDate < DateTimeNPT.Now
                            )
                         )

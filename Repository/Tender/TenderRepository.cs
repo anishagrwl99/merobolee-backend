@@ -364,11 +364,11 @@ namespace MeroBolee.Repository
                                   join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                   join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
                                   where bd.CompanyId == companyId
-                                        && t.IsDeleted==false
+                                        && t.IsDeleted == false
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
                                         && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
-                                        && (t.LiveEndDate >= DateTimeNPT.Now )//Tender live end date should be future date
+                                        && (t.LiveEndDate >= DateTimeNPT.Now)//Tender live end date should be future date
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -385,16 +385,19 @@ namespace MeroBolee.Repository
                                       Status = ts.Status,
                                       Product = t.Product,
                                       DateOfExecution = t.DateOfExecution,
-                                      DateCreated=t.Date_created
-                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                      //            where tc.TenderId == t.Id
-                                      //            select new TenderCardInfo
-                                      //            {
-                                      //                Id = tc.Id,
-                                      //                Label = tc.Label,
-                                      //                Value = tc.Value
-                                      //            }).ToList()
-                                  }).OrderByDescending(x => x.DateCreated).ToListAsync();
+                                      DateCreated = t.Date_created,
+                                      Price = t.Price,
+                                      Location = t.Location
+
+                    //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                    //            where tc.TenderId == t.Id
+                    //            select new TenderCardInfo
+                    //            {
+                    //                Id = tc.Id,
+                    //                Label = tc.Label,
+                    //                Value = tc.Value
+                    //            }).ToList()
+                }).OrderByDescending(x => x.DateCreated).ToListAsync();
                 }
                 else
                 {
@@ -476,16 +479,18 @@ namespace MeroBolee.Repository
                                   Status = ts.Status,
                                   Product = t.Product,
                                   DateOfExecution = t.DateOfExecution,
-                                  DateCreated=t.Date_created
-                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                  //            where tc.TenderId == t.Id
-                                  //            select new TenderCardInfo
-                                  //            {
-                                  //                Id = tc.Id,
-                                  //                Label = tc.Label,
-                                  //                Value = tc.Value
-                                  //            }).ToList()
-                              }).OrderByDescending(x => x.DateCreated).ToListAsync();
+                                  DateCreated = t.Date_created,
+                                  Price = t.Price,
+                                  Location = t.Location
+                //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                //            where tc.TenderId == t.Id
+                //            select new TenderCardInfo
+                //            {
+                //                Id = tc.Id,
+                //                Label = tc.Label,
+                //                Value = tc.Value
+                //            }).ToList()
+            }).OrderByDescending(x => x.DateCreated).ToListAsync();
 
 
             }
@@ -525,7 +530,9 @@ namespace MeroBolee.Repository
                                   Status = ts.Status,
                                   Product = t.Product,
                                   DateOfExecution = t.DateOfExecution,
-                                  DateCreated = t.Date_created
+                                  DateCreated = t.Date_created,
+                                  Price = t.Price, 
+                                  Location = t.Location
 
                               }).OrderByDescending(x => x.DateCreated).ToListAsync();
 
