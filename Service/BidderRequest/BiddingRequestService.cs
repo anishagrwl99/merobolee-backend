@@ -353,9 +353,9 @@ namespace MeroBolee.Service
 
                 if (dto != null)
                 {
-                    long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
-                    long totalIntervalInSec = dto.Interval * 60;
-                    long remainingSec = totalElapsedSeconds - totalIntervalInSec;
+                    long totalElapsedSeconds = Math.Abs((long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds);
+                    long totalIntervalInSec = Math.Abs(dto.Interval * 60);
+                    long remainingSec = Math.Abs(totalElapsedSeconds - totalIntervalInSec);
 
                     // long remainingSec = totalIntervalInSec - totalElapsedSeconds;
 
@@ -385,26 +385,26 @@ namespace MeroBolee.Service
                     //if tender live end date is about to end
                     if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
                     {
-                        dto.RemainingMinute = (dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes;
-                        dto.RemainingSecond = (dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds;
+                        dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
+                        dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
                     }
                     else //there is still time left for tender live end
                     {
-                        dto.RemainingMinute = (int)(remainingSec / 60);
-                        dto.RemainingSecond = (int)(remainingSec % 60);
+                        dto.RemainingMinute = Math.Abs((int)(remainingSec / 60));
+                        dto.RemainingSecond = Math.Abs((int)(remainingSec % 60));
                     }
 
                     if (dto.RemainingMinute < 1 && dto.IsQuotationReceived == false && dto.RemainingSecond < 1)
                     {
-                        dto.RemainingMinute = (int)dto.Interval;
+                        dto.RemainingMinute = Math.Abs((int)dto.Interval);
                         dto.MinQuotationRecivedAt = DateTimeNPT.Now;
                         dto.FullIntervalCountWithoutReceivingBid++;
 
                         if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
                         {
                             int sec = Math.Abs(dto.RemainingSecond);
-                            dto.RemainingMinute = (int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1;
-                            dto.RemainingSecond = 60 - (int)(sec % 60);
+                            dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec)) / 60) - 1);
+                            dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
                         }
                         else
                         {
@@ -850,7 +850,7 @@ namespace MeroBolee.Service
                         //Quotation = b.Quotation,
                         Message = "Bidding position is calculated",
                         IsLowestBidReceived = false,
-                        LowestBidRecievedTime = dto == null ? DateTime.Now : dto.MinQuotationRecivedAt
+                        LowestBidRecievedTime = dto == null ? DateTimeNPT.Now : dto.MinQuotationRecivedAt
                     };
 
                     if (currentQuotation > 0)
@@ -859,11 +859,11 @@ namespace MeroBolee.Service
                         if (currentQuotation <= c.Quotation && c.SupplierId == supplierId)
                         {
                             resp.IsLowestBidReceived = true;
-                            resp.LowestBidRecievedTime = DateTime.Now;
+                            resp.LowestBidRecievedTime = DateTimeNPT.Now;
 
                             dto = new ResetBidDto
                             {
-                                MinQuotationRecivedAt = DateTime.Now,
+                                MinQuotationRecivedAt = DateTimeNPT.Now,
                                 RemainingMinute = c.Interval,
                                 RemainingSecond = 0,
                                 Interval = c.Interval,

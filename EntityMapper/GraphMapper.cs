@@ -22,7 +22,7 @@ namespace MeroBolee.EntityMapper
                 };
 
                 dto.PendingByMonth = (from t in tenders
-                                      where t.LiveStartDate >= DateTime.Now && DateTime.Now <= t.LiveEndDate
+                                      where t.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.LiveEndDate
                                       group t by new { t.Date_created.Year, t.Date_created.Month } into g
                                       select new GraphPoint
                                       {
@@ -32,7 +32,7 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.CompletedByMonth = (from t in tenders
-                                        where t.LiveEndDate < DateTime.Now
+                                        where t.LiveEndDate < DateTimeNPT.Now
                                         group t by new { t.Date_created.Year, t.Date_created.Month } into g
                                         select new GraphPoint
                                         {
@@ -42,7 +42,7 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.PendingByCategory = (from t in tenders
-                                         where t.LiveStartDate >= DateTime.Now && DateTime.Now <= t.LiveEndDate
+                                         where t.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.LiveEndDate
                                          group t by new { t.CategoryEntity.Category } into g
                                          select new GraphPoint
                                          {
@@ -52,7 +52,7 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.CompletedByCategory = (from t in tenders
-                                           where t.LiveEndDate < DateTime.Now
+                                           where t.LiveEndDate < DateTimeNPT.Now
                                            group t by new { t.CategoryEntity.Category } into g
                                            select new GraphPoint
                                            {

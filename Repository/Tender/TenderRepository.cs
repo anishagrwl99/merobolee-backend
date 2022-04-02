@@ -64,7 +64,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.StatusId == 3 && t.IsDeleted==false && (search == null || t.Title.Contains(search))
+                              where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -79,6 +79,8 @@ namespace MeroBolee.Repository
                                   RegistrationTill = t.RegistrationTill,
                                   Status = s.Status,
                                   Product = t.Product,
+                                  Price = t.Price,
+                                  Location = t.Location,
                                   DateOfExecution = t.DateOfExecution,
                                   DateCreated=t.Date_created
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
@@ -111,7 +113,7 @@ namespace MeroBolee.Repository
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
                               where
                               //((t.LiveStartDate >= DateTime.Now) && (t.LiveEndDate <= DateTime.Now)) 
-                              (( DateTime.Now>= t.LiveStartDate) && (t.LiveEndDate <= DateTime.Now))
+                              (( DateTimeNPT.Now>= t.LiveStartDate) && (t.LiveEndDate <= DateTimeNPT.Now))
                               && t.IsDeleted == false && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
@@ -155,7 +157,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.CompanyId == companyId && t.StatusId == 3 && t.LiveEndDate < DateTime.Now && t.IsDeleted==false
+                              where t.CompanyId == companyId && t.StatusId == 3 && t.LiveEndDate < DateTimeNPT.Now && t.IsDeleted==false
                                           && (search == null || t.Title.Contains(search))
                               select new TenderCard
                               {
@@ -210,7 +212,7 @@ namespace MeroBolee.Repository
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.CompanyId == companyId /*&& t.StatusId != 3 */ && t.LiveEndDate > DateTime.Now && t.IsDeleted==false
+                              where t.CompanyId == companyId /*&& t.StatusId != 3 */ && t.LiveEndDate > DateTimeNPT.Now && t.IsDeleted==false
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -365,8 +367,8 @@ namespace MeroBolee.Repository
                                         && t.IsDeleted==false
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
-                                        && (t.LiveStartDate.AddDays(-7) <= DateTime.Now)//Tender live date should be within next 7 days
-                                        && (t.LiveEndDate >= DateTime.Now )//Tender live end date should be future date
+                                        && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
+                                        && (t.LiveEndDate >= DateTimeNPT.Now )//Tender live end date should be future date
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -457,7 +459,7 @@ namespace MeroBolee.Repository
                               where t.CompanyId == companyId
                                     && t.IsDeleted == false
                                     && t.StatusId == 3 //Tender should be approved
-                                    && (t.LiveStartDate.AddDays(-7) <= DateTime.Now) //Tender live date should be within next 7 days
+                                    && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now) //Tender live date should be within next 7 days
                               select new TenderCard
                               {
                                   TenderId = t.Id,
@@ -504,8 +506,8 @@ namespace MeroBolee.Repository
                               where t.IsDeleted == false
                                     && t.StatusId == 3 //Tender should be approved
                                    // && (t.LiveEndDate <= DateTime.Now.AddDays(3))
-                                    && (t.LiveStartDate.AddDays(-7) <= DateTime.Now)//Tender live date should be within next 7 days
-                                        && (t.LiveEndDate >= DateTime.Now)//Tender live end date should be future date
+                                    && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
+                                        && (t.LiveEndDate >= DateTimeNPT.Now)//Tender live end date should be future date
                             
                               select new TenderCard
                               {
@@ -807,7 +809,7 @@ namespace MeroBolee.Repository
                 TenderEntity te = meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).FirstOrDefault();
                 if (te != null)
                 {
-                    te.LiveEndDate = DateTime.Now;
+                    te.LiveEndDate = DateTimeNPT.Now;
                     te.CancelRemarks = "Bidding not received";
                     meroBoleeDbContexts.TenderEntities.Update(te);
                     unitOfWork.SaveChange();
