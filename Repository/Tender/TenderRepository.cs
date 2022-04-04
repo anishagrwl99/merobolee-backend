@@ -60,11 +60,12 @@ namespace MeroBolee.Repository
         {
             try
             {
+                var timeNow = DateTimeNPT.Now;
                 return await (from t in meroBoleeDbContexts.TenderEntities
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                               join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
-                              where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search))
+                              where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
                               select new TenderCard
                               {
                                   TenderId = t.Id,

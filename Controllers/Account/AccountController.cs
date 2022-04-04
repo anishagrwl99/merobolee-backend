@@ -12,6 +12,7 @@ using MeroBolee.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using MeroBolee.Controllers.EmailService;
 
 namespace MeroBolee.Controllers
 {
@@ -28,17 +29,19 @@ namespace MeroBolee.Controllers
 
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly ICryptoService cryptoService;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public AccountController(IAccountService accountService, IOptions<AppDefaults> defaultOptions, UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager, ICryptoService cryptoService)
         {
             this.accountService = accountService;
             this.defaultOptions = defaultOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.cryptoService = cryptoService;
         }
 
         /// <summary>
@@ -53,20 +56,21 @@ namespace MeroBolee.Controllers
             {
                 var context = new MeroBoleeDbContext();
                 var isEmailConfirmed = context.Users.Where(x => x.Email == model.Email).Select(x => x.EmailConfirmed).SingleOrDefault();
-                if (isEmailConfirmed != true) {
-                     return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
+                if (isEmailConfirmed != true)
+                {
+                    return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
                 }
 
                 if (ModelState.IsValid)
                 {
                     string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
                     _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
-                    AuthenticateResponse resp =  await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, basePath, _defaultPic);
+                    AuthenticateResponse resp = await accountService.AuthenticateAsync(model, CompanyTypeEnum.Bidder, basePath, _defaultPic);
                     if (resp != null)
                     {
                         //setTokenCookie(response.RefreshToken);
                         return Ok(resp);
-                    }                   
+                    }
 
                 }
             }
@@ -93,10 +97,11 @@ namespace MeroBolee.Controllers
             {
                 var context = new MeroBoleeDbContext();
                 var isEmailConfirmed = context.Users.Where(x => x.Email == model.Email).Select(x => x.EmailConfirmed).SingleOrDefault();
-                if (isEmailConfirmed != true) {
-                     return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
+                if (isEmailConfirmed != true)
+                {
+                    return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found or email is not confirmed."));
                 }
-                
+
                 if (ModelState.IsValid)
                 {
                     string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
@@ -159,7 +164,7 @@ namespace MeroBolee.Controllers
         [HttpPost("/register")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-             if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Copy data from RegisterViewModel to IdentityUser
                 var user = new IdentityUser
@@ -189,33 +194,116 @@ namespace MeroBolee.Controllers
             return null;
         }
 
-    [HttpGet("/Account/ConfirmEmail")]
-    public async Task<IActionResult> ConfirmEmail(string userId, string token)
-    {
-        if (userId == null || token == null)
+        [HttpGet("/Account/ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            return RedirectToAction("index", "home");
-        }
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
 
-        // var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            // var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
-        var user = await userManager.FindByIdAsync(userId);
-        if (user == null)
-          {
-            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
 
             }
 
             var result = await userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
-        {
-            return Ok(result);
+            {
+                return Ok(result);
+
+            }
+
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Email Could Not be Confirmed"));
 
         }
 
-        return NotFound(new Responses<ResponseMsg>(null, "404", "Email Could Not be Confirmed"));
 
-    }
+        [HttpPost("/forgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = await userManager.FindByEmailAsync(model.Email);
+                // If the user is found AND Email is confirmed
+                if (user != null && await userManager.IsEmailConfirmedAsync(user))
+                {
+                    // Generate the reset password token
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Build the password reset link
+                    var passwordResetLink = Url.Action("ResetPassword", "Account",
+                            new { email = model.Email, token = token }, Request.Scheme);
+
+                    // Log the password reset link
+                    EmailServiceController emailServiceController = new EmailServiceController();
+                    EmailRequestdto emailRequestdto = new EmailRequestdto();
+                    emailRequestdto.toEmailId = model.Email;
+                    emailRequestdto.confirmationLink = passwordResetLink;
+                    emailServiceController.sendEmailForgotPassword(emailRequestdto);
+                    return Ok("SUCCESSFULLY SENT EMAIL");
+                    // Send the user to Forgot Password Confirmation view
+                }
+
+                // To avoid account enumeration and brute force attacks, don't
+                // reveal that the user does not exist or is not confirmed
+                return NotFound(new Responses<ResponseMsg>(null, "404", "Email Not Confirmed / Email Not Registered"));
+
+            }
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Email Not Confirmed / Email Not Registered"));
+
+        }
+
+        [HttpGet("/ResetPassword")]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            // If password reset token or email is null, most likely the
+            // user tried to tamper the password reset link
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError("", "Invalid password reset token");
+            }
+            return Ok();
+        }
+
+        [HttpPost("/ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    // reset the user password
+                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                        meroBoleeDbContext.UserEntities.Where(x => x.Email == model.Email).ToList().ForEach(x => x.Password = cryptoService.Encrypt(model.Password));
+                        meroBoleeDbContext.SaveChanges();
+                        return Ok();
+                    }
+                    // Display validation errors. For example, password reset token already
+                    // used to change the password or password complexity rules not met
+
+                    return NotFound(new Responses<ResponseMsg>(null, "404", "Unable to Reset Password, Please try again"));
+                }
+
+                // To avoid account enumeration and brute force attacks, don't
+                // reveal that the user does not exist
+                return NotFound(new Responses<ResponseMsg>(null, "404", "Unable to Reset Password, Please try again"));
+            }
+            // Display validation errors if model state is not valid
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Unable to Reset Password, Please try again"));
+        }
+
 
         private void setTokenCookie(AuthenticateResponse token)
         {
@@ -226,7 +314,7 @@ namespace MeroBolee.Controllers
                 Path = "/",
                 Secure = true,
                 IsEssential = true
-                
+
             };
             Response.Cookies.Append("RequestToken", token.JwtToken, cookieOptions);
         }
