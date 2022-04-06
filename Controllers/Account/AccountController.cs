@@ -194,27 +194,29 @@ namespace MeroBolee.Controllers
             return null;
         }
 
-        [HttpGet("/Account/ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        [HttpPost("/Account/ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
         {
-            if (userId == null || token == null)
+            if (confirmEmailRequestDto.userId == null || confirmEmailRequestDto.token == null)
             {
                 return RedirectToAction("index", "home");
             }
 
             // var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(confirmEmailRequestDto.userId);
             if (user == null)
             {
                 return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
 
             }
 
-            var result = await userManager.ConfirmEmailAsync(user, token);
+            var result = await userManager.ConfirmEmailAsync(user, confirmEmailRequestDto.token);
             if (result.Succeeded)
             {
-                return Ok(result);
+                EmailResDto emailResDto = new EmailResDto();
+                emailResDto.responseMessage = "Email has been confirmed Successfully";
+                return Ok(new Responses<EmailResDto>(emailResDto, "200", "Email has been confirmed Successfully"));
 
             }
 
@@ -237,8 +239,11 @@ namespace MeroBolee.Controllers
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
                     // Build the password reset link
-                    var passwordResetLink = Url.Action("ResetPassword", "Account",
-                            new { email = model.Email, token = token }, Request.Scheme);
+                    // var passwordResetLink = Url.Action("ResetPassword", "Account",
+                    //         new { email = model.Email, token = token }, Request.Scheme);
+
+                    var passwordResetLink = string.Format("{0}/?emailId={1}&token={2}", "https://www.merobolee.com", model.Email, token);
+
 
                     // Log the password reset link
                     EmailServiceController emailServiceController = new EmailServiceController();
@@ -246,7 +251,9 @@ namespace MeroBolee.Controllers
                     emailRequestdto.toEmailId = model.Email;
                     emailRequestdto.confirmationLink = passwordResetLink;
                     emailServiceController.sendEmailForgotPassword(emailRequestdto);
-                    return Ok("SUCCESSFULLY SENT EMAIL");
+                    EmailResDto emailResDto = new EmailResDto();
+                    emailResDto.responseMessage = "Forgot password email has been sent successfully";
+                    return Ok(new Responses<EmailResDto>(emailResDto, "200", "Forgot Password Email has been sent"));
                     // Send the user to Forgot Password Confirmation view
                 }
 
@@ -288,7 +295,9 @@ namespace MeroBolee.Controllers
                         MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                         meroBoleeDbContext.UserEntities.Where(x => x.Email == model.Email).ToList().ForEach(x => x.Password = cryptoService.Encrypt(model.Password));
                         meroBoleeDbContext.SaveChanges();
-                        return Ok();
+                        EmailResDto emailResDto = new EmailResDto();
+                        emailResDto.responseMessage = "Password has been reset successfully";
+                        return Ok(new Responses<EmailResDto>(emailResDto, "200", "Password has been reset successfully"));
                     }
                     // Display validation errors. For example, password reset token already
                     // used to change the password or password complexity rules not met

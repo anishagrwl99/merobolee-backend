@@ -33,7 +33,7 @@ namespace MeroBolee.Controllers.EmailService
             SendSmtpEmailTo smtpEmailTo = new SendSmtpEmailTo(ToEmail, ToName);
             List<SendSmtpEmailTo> To = new List<SendSmtpEmailTo>();
             To.Add(smtpEmailTo);
-            var confirmationLink = string.Format("{0}/Account/ConfirmEmail?userId={1}&token={2}", "https://office.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token));
+            var confirmationLink = string.Format("{0}/?userId={1}&token={2}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token));
             string HtmlContent = string.Concat("<html><body>Please click on the link below to confirm your email</body></html>", confirmationLink);
             string TextContent = null;
             string Subject = "Email Confirmation";
