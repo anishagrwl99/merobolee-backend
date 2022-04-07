@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using MeroBolee.Controllers.EmailService;
+using System.Web;
+
 
 namespace MeroBolee.Controllers
 {
@@ -251,7 +253,7 @@ namespace MeroBolee.Controllers
                         role = "BidInviter";
                     }
 
-                    var passwordResetLink = string.Format("{0}/resetpassword?emailId={1}&token={2}&role={3}", "https://www.merobolee.com", model.Email, token, role);
+                    var passwordResetLink = string.Format("{0}/resetpassword?emailId={1}&token={2}", "https://www.merobolee.com", model.Email, HttpUtility.UrlEncode(token));
 
                     // Log the password reset link
                     EmailServiceController emailServiceController = new EmailServiceController();
