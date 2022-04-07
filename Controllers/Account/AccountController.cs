@@ -241,9 +241,17 @@ namespace MeroBolee.Controllers
                     // Build the password reset link
                     // var passwordResetLink = Url.Action("ResetPassword", "Account",
                     //         new { email = model.Email, token = token }, Request.Scheme);
+                    MeroBoleeDbContext context = new MeroBoleeDbContext();
 
-                    var passwordResetLink = string.Format("{0}/?emailId={1}&token={2}", "https://www.merobolee.com", model.Email, token);
+                    var roleId = context.UserEntities.Where(x => x.Email == model.Email).Select(x => x.RoleId).SingleOrDefault();
+                    String role = null;
+                    if(roleId == 5) {
+                        role = "Supplier";
+                    } else if (roleId == 4) {
+                        role = "BidInviter";
+                    }
 
+                    var passwordResetLink = string.Format("{0}/resetpassword?emailId={1}&token={2}&role={3}", "https://www.merobolee.com", model.Email, token, role);
 
                     // Log the password reset link
                     EmailServiceController emailServiceController = new EmailServiceController();

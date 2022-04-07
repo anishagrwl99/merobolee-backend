@@ -10,7 +10,8 @@ using sib_api_v3_sdk.Model;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-
+using MeroBolee.Utility;
+using System.Linq;
 
 
 namespace MeroBolee.Controllers.EmailService
@@ -33,10 +34,26 @@ namespace MeroBolee.Controllers.EmailService
             SendSmtpEmailTo smtpEmailTo = new SendSmtpEmailTo(ToEmail, ToName);
             List<SendSmtpEmailTo> To = new List<SendSmtpEmailTo>();
             To.Add(smtpEmailTo);
-            var confirmationLink = string.Format("{0}/?userId={1}&token={2}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token));
+
+            MeroBoleeDbContext context = new MeroBoleeDbContext();
+
+            var roleId = context.UserEntities.Where(x => x.Email == emailRequestdto.toEmailId).Select(x => x.RoleId).SingleOrDefault();
+
+            String role = null;
+            if (roleId == 5)
+            {
+                role = "Supplier";
+            }
+            else if (roleId == 4)
+            {
+                role = "BidInviter";
+            }
+
+            var confirmationLink = string.Format("{0}/?userId={1}&token={2}&role={3}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), role);
             string HtmlContent = string.Concat("<html><body>Please click on the link below to confirm your email</body></html>", confirmationLink);
             string TextContent = null;
             string Subject = "Email Confirmation";
+            Console.Write(confirmationLink);
             // SendSmtpEmailReplyTo ReplyTo = new SendSmtpEmailReplyTo(ReplyToEmail, ReplyToName);
             // string AttachmentUrl = null;
             // string stringInBase64 = "aGVsbG8gdGhpcyBpcyB0ZXN0";
@@ -66,7 +83,7 @@ namespace MeroBolee.Controllers.EmailService
                 sendEmailResponseDto.response = "SUCESSFULLY SENT EMAIL";
                 return Ok(new Responses<SendEmailResponseDto>(sendEmailResponseDto, "200", "Sucessfully Sent Email"));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -120,7 +137,7 @@ namespace MeroBolee.Controllers.EmailService
                 sendEmailResponseDto.response = "SUCESSFULLY SENT EMAIL";
                 return Ok(new Responses<SendEmailResponseDto>(sendEmailResponseDto, "200", "Sucessfully Sent Email"));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw ex;
             }
