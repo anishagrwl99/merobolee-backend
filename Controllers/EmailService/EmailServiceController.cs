@@ -35,21 +35,7 @@ namespace MeroBolee.Controllers.EmailService
             List<SendSmtpEmailTo> To = new List<SendSmtpEmailTo>();
             To.Add(smtpEmailTo);
 
-            MeroBoleeDbContext context = new MeroBoleeDbContext();
-
-            var roleId = context.UserEntities.Where(x => x.Email == emailRequestdto.toEmailId).Select(x => x.RoleId).SingleOrDefault();
-
-            String role = null;
-            if (roleId == 5)
-            {
-                role = "Supplier";
-            }
-            else if (roleId == 4)
-            {
-                role = "BidInviter";
-            }
-
-            var confirmationLink = string.Format("{0}/signin?userId={1}&token={2}&role={3}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), role);
+            var confirmationLink = string.Format("{0}/signin?userId={1}&token={2}&role={3}", "https://merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), emailRequestdto.role);
             string HtmlContent = string.Concat("<html><body>Please click on the link below to confirm your email</body></html>", confirmationLink);
             string TextContent = null;
             string Subject = "Email Confirmation";

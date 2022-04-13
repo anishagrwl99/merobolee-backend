@@ -13,5 +13,7 @@ namespace MeroBolee.Dto
         public string id {get; set;}
 
         public string confirmationLink { get; set; }
+
+        public string role { get; set;}
     }
 }

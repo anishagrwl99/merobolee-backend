@@ -83,6 +83,11 @@ namespace MeroBolee.Service
                         emailRequestdto.toEmailId = data.Email;
                         emailRequestdto.token = token;
                         emailRequestdto.id = applicationUser.Id;
+                        if(companyTypeEnum == CompanyTypeEnum.Bidder) {
+                            emailRequestdto.role = "Supplier";
+                        } else {
+                            emailRequestdto.role = "BidInviter";
+                        }
                         emailServiceController.sendEmail(emailRequestdto);
                     } else {
                         return Tuple.Create<long, String>(0, "false");
