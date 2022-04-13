@@ -84,7 +84,6 @@ namespace MeroBolee.Service
                         emailRequestdto.token = token;
                         emailRequestdto.id = applicationUser.Id;
                         emailServiceController.sendEmail(emailRequestdto);
-
                     } else {
                         return Tuple.Create<long, String>(0, "false");
                     }

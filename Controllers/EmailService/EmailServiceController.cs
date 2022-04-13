@@ -49,7 +49,7 @@ namespace MeroBolee.Controllers.EmailService
                 role = "BidInviter";
             }
 
-            var confirmationLink = string.Format("{0}/?userId={1}&token={2}&role={3}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), role);
+            var confirmationLink = string.Format("{0}/signin?userId={1}&token={2}&role={3}", "https://www.merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), role);
             string HtmlContent = string.Concat("<html><body>Please click on the link below to confirm your email</body></html>", confirmationLink);
             string TextContent = null;
             string Subject = "Email Confirmation";
