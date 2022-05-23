@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MeroBolee.Utility;
 
 namespace MeroBolee.Service
 {
@@ -335,7 +336,7 @@ namespace MeroBolee.Service
             }
         }
 
-        public Task<ResetBidDto> CheckBiddingTime(long tenderId)
+         public Task<ResetBidDto> CheckBiddingTime(long tenderId)
         {
             return Task.Run(() =>
             {
@@ -356,19 +357,6 @@ namespace MeroBolee.Service
                     long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
                     long totalIntervalInSec = Math.Abs(dto.Interval * 60);
                     long remainingSec = totalIntervalInSec - totalElapsedSeconds;
-
-                    // long remainingSec = totalIntervalInSec - totalElapsedSeconds;
-
-                    //if ((DateTimeNPT.Now-dto.MinQuotationRecivedAt)>= DateTimeNPT.Now.AddMinutes(dto.Interval))
-                    //{
-
-                    //}
-                    //if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.MinQuotationRecivedAt)
-                    //{
-                    //    dto.TenderLiveEndDate = DateTimeNPT.Now.AddMinutes(dto.Interval);
-                    //    TenderEntity e = bidRequestRepository.UpdateLiveEndDate(tenderId, DateTimeNPT.Now.AddMinutes(dto.Interval));
-
-                    //}
                     if((dto.TenderLiveEndDate - DateTimeNPT.Now).TotalSeconds== (dto.Interval * 60))
                     {
                         TenderEntity e = bidRequestRepository.GetTenderDetail(tenderId);
@@ -377,21 +365,37 @@ namespace MeroBolee.Service
                             dto.IsTenderExpired = true;
                             dto.RemainingMinute = 0;
                             dto.RemainingSecond = 0;
+                            dto.RoundNumber = 5;
                         }
-                        memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(e.LiveInterval));
+                        // memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(e.LiveInterval));
+                        memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate);
                         return dto;
                     }
                     
                     //if tender live end date is about to end
-                    if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate)
+                    // if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate && (dto.FullIntervalCountWithoutReceivingBid <= 1
+                    //         || dto.TenderLiveEndDate < DateTimeNPT.Now
+                    //        ))
+                    // {
+                    //     dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
+                    //     dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
+                    // }
+                    else if ((dto.TenderLiveEndDate > DateTimeNPT.Now))  //there is still time left for tender live end
                     {
-                        dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
-                        dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
-                    }
-                    else  //there is still time left for tender live end
-                    {
-                        dto.RemainingMinute = (int)(remainingSec / 60);
-                        dto.RemainingSecond = (int)(remainingSec % 60);
+                        if(remainingSec < 0 && dto.RoundNumber < 5) 
+                        {
+                            dto.RemainingMinute = (int)dto.Interval;
+                            dto.RemainingSecond = 0;
+                            dto.MinQuotationRecivedAt = DateTimeNPT.Now;
+                            int roundNumber = dto.RoundNumber;
+                            dto.RoundNumber = ++roundNumber;
+                        }
+                        else
+                        {
+                            dto.RemainingMinute = (int)(remainingSec / 60);
+                            dto.RemainingSecond = (int)(remainingSec % 60);
+                        }
+
                     }
                     
                     // else if(remainingSec < 0) {
@@ -399,24 +403,24 @@ namespace MeroBolee.Service
                     //     dto.RemainingSecond = 1;
                     // }
 
-                    if (dto.RemainingMinute < 1 && dto.RemainingSecond < 5)
-                    {
-                        dto.RemainingMinute = Math.Abs((int)dto.Interval);
-                        dto.MinQuotationRecivedAt = DateTimeNPT.Now;
-                        dto.FullIntervalCountWithoutReceivingBid++;
+                    // if (dto.RemainingMinute < 1 && dto.RemainingSecond < 5)
+                    // {
+                    //     dto.RemainingMinute = Math.Abs((int)dto.Interval);
+                    //     dto.MinQuotationRecivedAt = DateTimeNPT.Now;
+                    //     dto.FullIntervalCountWithoutReceivingBid++;
 
-                        // if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
-                        // {
-                        //     int sec = Math.Abs(dto.RemainingSecond);
-                        //     dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1);
-                        //     dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
-                        // }
-                        // else
-                        // {
-                            dto.RemainingSecond = 0;
-                        // }
+                    //     // if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
+                    //     // {
+                    //     //     int sec = Math.Abs(dto.RemainingSecond);
+                    //     //     dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1);
+                    //     //     dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
+                    //     // }
+                    //     // else
+                    //     // {
+                    //         dto.RemainingSecond = 0;
+                    //     // }
 
-                    }
+                    // }
                 }
                 else
                 {
@@ -432,27 +436,149 @@ namespace MeroBolee.Service
                             IsTenderExpired = false,
                             IsQuotationReceived = false,
                             FullIntervalCountWithoutReceivingBid = 0,
-                            TenderLiveEndDate = e.LiveEndDate
-                        };
+                            TenderLiveEndDate = e.LiveEndDate,
+                            RoundNumber = 1
+                    };
 
                     }
                 }
 
                 //check if bidding expired
                 if (dto != null
-                        && (dto.FullIntervalCountWithoutReceivingBid >= 1
-                            || dto.TenderLiveEndDate < DateTimeNPT.Now
-                           )
-                        )
+                        && ( ( dto.TenderLiveEndDate < DateTimeNPT.Now) || dto.RoundNumber > 5))
                 {
                     dto.IsTenderExpired = true;
                     dto.RemainingMinute = 0;
                     dto.RemainingSecond = 0;
                 }
-                memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
+                // memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
+                memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate);
                 return dto;
             });
         }
+
+        // public Task<ResetBidDto> CheckBiddingTimeOLD(long tenderId)
+        // {
+        //     return Task.Run(() =>
+        //     {
+        //         string timeKey = $"{tenderId}_Lowest_Bid_Time";
+        //         ResetBidDto dto = null;
+        //         memoryCache.TryGetValue<ResetBidDto>(timeKey, out dto);
+
+        //         if (dto != null && dto.IsTenderExpired)
+        //         {
+        //             memoryCache.Remove(timeKey);
+        //             memoryCache.Remove($"TenderInfo_{tenderId}");
+        //             return dto;
+        //         }
+
+
+        //         if (dto != null)
+        //         {
+        //             long totalElapsedSeconds = (long)(DateTimeNPT.Now - dto.MinQuotationRecivedAt).TotalSeconds;
+        //             long totalIntervalInSec = Math.Abs(dto.Interval * 60);
+        //             long remainingSec = totalIntervalInSec - totalElapsedSeconds;
+
+        //             // long remainingSec = totalIntervalInSec - totalElapsedSeconds;
+
+        //             //if ((DateTimeNPT.Now-dto.MinQuotationRecivedAt)>= DateTimeNPT.Now.AddMinutes(dto.Interval))
+        //             //{
+
+        //             //}
+        //             //if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.MinQuotationRecivedAt)
+        //             //{
+        //             //    dto.TenderLiveEndDate = DateTimeNPT.Now.AddMinutes(dto.Interval);
+        //             //    TenderEntity e = bidRequestRepository.UpdateLiveEndDate(tenderId, DateTimeNPT.Now.AddMinutes(dto.Interval));
+
+        //             //}
+        //             if((dto.TenderLiveEndDate - DateTimeNPT.Now).TotalSeconds== (dto.Interval * 60))
+        //             {
+        //                 TenderEntity e = bidRequestRepository.GetTenderDetail(tenderId);
+
+        //                 {
+        //                     dto.IsTenderExpired = true;
+        //                     dto.RemainingMinute = 0;
+        //                     dto.RemainingSecond = 0;
+        //                 }
+        //                 memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(e.LiveInterval));
+        //                 return dto;
+        //             }
+                    
+        //             //if tender live end date is about to end
+        //             if (DateTimeNPT.Now.AddMinutes(dto.Interval) >= dto.TenderLiveEndDate && (dto.FullIntervalCountWithoutReceivingBid <= 1
+        //                     || dto.TenderLiveEndDate < DateTimeNPT.Now
+        //                    ))
+        //             {
+        //                 dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
+        //                 dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
+        //             }
+        //             else if ((dto.FullIntervalCountWithoutReceivingBid <= 1
+        //                     || dto.TenderLiveEndDate < DateTimeNPT.Now
+        //                    )) //there is still time left for tender live end
+        //             {
+        //                 dto.RemainingMinute = (int)(remainingSec / 60);
+        //                 dto.RemainingSecond = (int)(remainingSec % 60);
+        //             }
+                    
+        //             // else if(remainingSec < 0) {
+        //             //     dto.RemainingMinute = 0;
+        //             //     dto.RemainingSecond = 1;
+        //             // }
+
+        //             if (dto.RemainingMinute < 1 && dto.RemainingSecond < 5)
+        //             {
+        //                 dto.RemainingMinute = Math.Abs((int)dto.Interval);
+        //                 dto.MinQuotationRecivedAt = DateTimeNPT.Now;
+        //                 dto.FullIntervalCountWithoutReceivingBid++;
+
+        //                 // if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
+        //                 // {
+        //                 //     int sec = Math.Abs(dto.RemainingSecond);
+        //                 //     dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1);
+        //                 //     dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
+        //                 // }
+        //                 // else
+        //                 // {
+        //                     dto.RemainingSecond = 0;
+        //                 // }
+
+        //             }
+        //         }
+        //         else
+        //         {
+        //             TenderEntity e = bidRequestRepository.GetTenderDetail(tenderId);
+        //             if (e != null)
+        //             {
+        //                 dto = new ResetBidDto
+        //                 {
+        //                     MinQuotationRecivedAt = DateTimeNPT.Now,
+        //                     RemainingMinute = e.LiveInterval,
+        //                     RemainingSecond = 0,
+        //                     Interval = e.LiveInterval,
+        //                     IsTenderExpired = false,
+        //                     IsQuotationReceived = false,
+        //                     FullIntervalCountWithoutReceivingBid = 0,
+        //                     TenderLiveEndDate = e.LiveEndDate
+        //                 };
+
+        //             }
+        //         }
+
+        //         //check if bidding expired
+        //         if (dto != null
+        //                 && (dto.FullIntervalCountWithoutReceivingBid >= 1
+        //                     || dto.TenderLiveEndDate < DateTimeNPT.Now
+        //                    )
+        //                 )
+        //         {
+        //             dto.IsTenderExpired = true;
+        //             dto.RemainingMinute = 0;
+        //             dto.RemainingSecond = 0;
+        //         }
+        //         memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
+        //         return dto;
+        //     });
+        // }
 
         /// <summary>
         /// Return bid detail response
@@ -816,18 +942,20 @@ namespace MeroBolee.Service
         {
             try
             {
+                MeroBoleeDbContext context = new MeroBoleeDbContext();
                 if (livebids == null || livebids.Count < 1) return null;
-                DateTime tenderEndDate = livebids.FirstOrDefault().TenderEntity.LiveEndDate;
+                DateTime tenderEndDate = livebids.First().TenderEntity.LiveEndDate;
                 var a = livebids
                     .GroupBy(x => new { x.TenderId, x.UserId })
                     .Select(x => new
                     {
                         SupplierId = x.Key.UserId,
                         TenderId = x.Key.TenderId,
-                        Quotation = x.Sum(o => cryptoService.Decrypt<decimal>(o.Quotation)),
-                        Interval = x.Min(o => o.TenderEntity.LiveInterval)
-                    })
-                    .OrderBy(x => x.Quotation)
+                        Quotation = x.Min(o => cryptoService.Decrypt<decimal>(o.Quotation)),
+                        Interval = x.Min(o => o.TenderEntity.LiveInterval),
+                        TotalAmount = x.Min(o => o.TotalAmount)
+            })
+                    .OrderBy(x => x.TotalAmount)
                     .ToList();
                 int ind = a.FindIndex(x => x.SupplierId == supplierId) + 1;
                 if (ind >= 6)

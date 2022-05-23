@@ -110,6 +110,8 @@ namespace MeroBolee.Dto
 
         public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
         public DateTime BiddingDate { get; set; }
+
+        public int totalAmount { get; set;}
     }
 
     public class TenderAutoBidDto : TenderMaterialBiddingDto

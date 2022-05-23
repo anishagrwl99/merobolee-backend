@@ -121,8 +121,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = u
@@ -133,8 +133,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -164,8 +164,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -194,8 +194,8 @@ namespace MeroBolee.Service
                                             //User who sent an email
                                             new UserEmailEntity
                                             {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
+                                                Date_created = DateTimeNPT.Now,
+                                                Date_modified = DateTimeNPT.Now,
                                                 Email = entity,
                                                 IsRead = false,
                                                 UserId = parentEmail_Tender_Author.Item2
@@ -206,8 +206,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -237,8 +237,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -269,8 +269,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = winnerUser
@@ -282,8 +282,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -313,8 +313,8 @@ namespace MeroBolee.Service
                         entity.UserEmails.Add(//Bid Inviter 
                                             new UserEmailEntity
                                             {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
+                                                Date_created = DateTimeNPT.Now,
+                                                Date_modified = DateTimeNPT.Now,
                                                 Email = entity,
                                                 IsRead = false,
                                                 UserId = winnerUser
@@ -325,8 +325,8 @@ namespace MeroBolee.Service
                         entity.UserEmails.Add(//Bid Inviter 
                                             new UserEmailEntity
                                             {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
+                                                Date_created = DateTimeNPT.Now,
+                                                Date_modified = DateTimeNPT.Now,
                                                 Email = entity,
                                                 IsRead = false,
                                                 UserId = companyUser
@@ -338,8 +338,8 @@ namespace MeroBolee.Service
                         entity.UserEmails.Add(//Bid Inviter 
                                             new UserEmailEntity
                                             {
-                                                Date_created = DateTime.Now,
-                                                Date_modified = DateTime.Now,
+                                                Date_created = DateTimeNPT.Now,
+                                                Date_modified = DateTimeNPT.Now,
                                                 Email = entity,
                                                 IsRead = false,
                                                 UserId = user
@@ -385,8 +385,8 @@ namespace MeroBolee.Service
                     {
                         entity.UserEmails.Add(new UserEmailEntity
                         {
-                            Date_created = DateTime.Now,
-                            Date_modified = DateTime.Now,
+                            Date_created = DateTimeNPT.Now,
+                            Date_modified = DateTimeNPT.Now,
                             Email = entity,
                             IsRead = false,
                             UserId = user
@@ -397,8 +397,8 @@ namespace MeroBolee.Service
                     //                        //Merobolee default user
                     //                        new UserEmailEntity
                     //                        {
-                    //                            Date_created = DateTime.Now,
-                    //                            Date_modified = DateTime.Now,
+                    //                            Date_created = DateTimeNPT.Now,
+                    //                            Date_modified = DateTimeNPT.Now,
                     //                            Email = entity,
                     //                            IsRead = false,
                     //                            UserId = tender_user.Item2
@@ -442,8 +442,8 @@ namespace MeroBolee.Service
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {
-                                Date_created = DateTime.Now,
-                                Date_modified = DateTime.Now,
+                                Date_created = DateTimeNPT.Now,
+                                Date_modified = DateTimeNPT.Now,
                                 Email = entity,
                                 IsRead = false,
                                 UserId = winnerUser
@@ -455,8 +455,8 @@ namespace MeroBolee.Service
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {
-                                Date_created = DateTime.Now,
-                                Date_modified = DateTime.Now,
+                                Date_created = DateTimeNPT.Now,
+                                Date_modified = DateTimeNPT.Now,
                                 Email = entity,
                                 IsRead = false,
                                 UserId = user
@@ -502,8 +502,8 @@ namespace MeroBolee.Service
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {
-                                Date_created = DateTime.Now,
-                                Date_modified = DateTime.Now,
+                                Date_created = DateTimeNPT.Now,
+                                Date_modified = DateTimeNPT.Now,
                                 Email = entity,
                                 IsRead = false,
                                 UserId = winnerUser
@@ -513,8 +513,8 @@ namespace MeroBolee.Service
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {
-                                Date_created = DateTime.Now,
-                                Date_modified = DateTime.Now,
+                                Date_created = DateTimeNPT.Now,
+                                Date_modified = DateTimeNPT.Now,
                                 Email = entity,
                                 IsRead = false,
                                 UserId = companyUser
@@ -525,8 +525,8 @@ namespace MeroBolee.Service
                         {
                             entity.UserEmails.Add(new UserEmailEntity
                             {
-                                Date_created = DateTime.Now,
-                                Date_modified = DateTime.Now,
+                                Date_created = DateTimeNPT.Now,
+                                Date_modified = DateTimeNPT.Now,
                                 Email = entity,
                                 IsRead = false,
                                 UserId = user

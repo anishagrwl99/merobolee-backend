@@ -117,7 +117,7 @@ namespace MeroBolee.Repository
                         //.Include(x => x.Tender.TenderCards)
                         .Include(x => x.Tender.CategoryEntity)
                         .Include(x => x.BidRequestStatus)
-                        .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTime.Now)
+                        .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTimeNPT.Now)
                         .ToListAsync();
             }
             catch (Exception)
@@ -274,7 +274,7 @@ namespace MeroBolee.Repository
                 var tenderEntity = meroBoleeDbContexts.TenderEntities
                    .Where(x => x.Id == tenderId)
                    .FirstOrDefault();
-                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities
+                List<LiveBiddingEntity> bids = await meroBoleeDbContexts.LiveBiddingEntities.Where(x => x.TenderId == tenderId)
                     .Select(g => new LiveBiddingEntity
                     {
                         UserId = g.UserId,
@@ -282,9 +282,10 @@ namespace MeroBolee.Repository
                         MaterialId = g.MaterialId,
                         Quotation = g.Quotation,
                         BatchNo = g.BatchNo,
-                        TenderEntity= tenderEntity
+                        TenderEntity = tenderEntity,
+                        TotalAmount = g.TotalAmount
 
-                    }).ToListAsync();
+            }).ToListAsync();
                 
                 return bids;
 

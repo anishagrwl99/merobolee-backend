@@ -410,6 +410,7 @@ namespace MeroBolee.Repository
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && t.IsDeleted == false
+                                        && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -426,7 +427,9 @@ namespace MeroBolee.Repository
                                       Status = ts.Status,
                                       Product = t.Product,
                                       DateOfExecution = t.DateOfExecution,
-                                      DateCreated = t.Date_created
+                                      DateCreated = t.Date_created,
+                                      Price = t.Price,
+                                      Location = t.Location
                                       //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                       //            where tc.TenderId == t.Id
                                       //            select new TenderCardInfo

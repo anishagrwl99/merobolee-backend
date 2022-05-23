@@ -55,6 +55,8 @@ namespace MeroBolee.Dto
 
         public string Location { get; set;}
 
+        public string Size { get; set; }
+
         //public List<TenderCardInfo> CardInfo { get; set; }
 
     }

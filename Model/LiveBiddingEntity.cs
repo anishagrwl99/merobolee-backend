@@ -23,6 +23,8 @@ namespace MeroBolee.Model
         [ForeignKey("TenderEntity")]
         public long TenderId { get; set; }
 
+        public int TotalAmount { get; set; }
+
 
         [ForeignKey("TenderMaterialEntity")]
         public long MaterialId { get; set; }

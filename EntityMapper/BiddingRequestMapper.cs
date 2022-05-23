@@ -82,10 +82,12 @@ namespace MeroBolee.EntityMapper
                     UserId = dto.SupplierId,
                     TenderId = dto.TenderId,
                     MaterialId = item.MaterialId,
+                    // Quotation = item.Quotation.ToString(),
                     Quotation = cryptoService.Encrypt(item.Quotation.ToString()),
                     BidDate = dto.BiddingDate,
-                    BatchNo = batchNo
-                });
+                    BatchNo = batchNo,
+                    TotalAmount = dto.totalAmount
+            });
             }
             return entities;
 

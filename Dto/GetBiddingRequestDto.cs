@@ -71,6 +71,8 @@ namespace MeroBolee.Dto
         public int RemainingSecond { get; set; }
         public DateTime MinQuotationRecivedAt { get; set; }
 
+        public int RoundNumber { get; set; }
+
         [JsonIgnore]
         public DateTime TenderLiveEndDate { get; set; }
 
