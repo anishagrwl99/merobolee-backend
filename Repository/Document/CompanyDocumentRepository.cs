@@ -14,6 +14,8 @@ namespace MeroBolee.Repository
         public CompanyDocumentEntity ChangeStatus(int userId, long documentId, int statusId, string remarks);
         public List<CompanyDocumentEntity> GetAllDocument(int companyId);
         public string GetCompanyFolder(long companyId);
+
+        public Task<bool> DeleteDocument(long documentId);
     }
 
 
@@ -69,11 +71,12 @@ namespace MeroBolee.Repository
             try
             {
                 return meroBoleeDbContexts.CompanyDocumentEntities
-                    .Include(d=> d.DocumentType)
-                    .Include(st=> st.DocumentStatus)
+                    .Include(d => d.DocumentType)
+                    .Include(st => st.DocumentStatus)
                     .Include(u => u.UploadUserEntity)
                     .Include(s => s.StatusChangedUserEntity)
                     .Where(x => x.CompanyID == companyId)
+                    .Where(X => X.IsDeleted == false)
                     .ToList();
             }
             catch (Exception)
@@ -99,5 +102,23 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+        public async Task<bool> DeleteDocument(long documentId) {
+            try
+            {
+                var deleteQuery = meroBoleeDbContexts.CompanyDocumentEntities
+                    .Where(x => x.Id == documentId)
+                    .FirstOrDefault();
+                deleteQuery.IsDeleted = true;
+                await unitOfWork.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }

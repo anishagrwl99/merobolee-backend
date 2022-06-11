@@ -70,6 +70,7 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(300)]
         public string DocumentPath { get; set; }
+        public bool IsDeleted{ get; set; }
 
 
         [Column(TypeName = "VARCHAR")]

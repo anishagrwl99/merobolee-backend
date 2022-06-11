@@ -368,7 +368,7 @@ namespace MeroBolee.Repository
                                         && t.IsDeleted == false
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
-                                        && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
+                                        && (t.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
                                         && (t.LiveEndDate >= DateTimeNPT.Now)//Tender live end date should be future date
                                   select new TenderCard
                                   {
@@ -410,7 +410,7 @@ namespace MeroBolee.Repository
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && t.IsDeleted == false
-                                        && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
+                                        && DateTime.Compare(t.LiveStartDate, DateTimeNPT.Now) > 0
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -466,7 +466,8 @@ namespace MeroBolee.Repository
                               where t.CompanyId == companyId
                                     && t.IsDeleted == false
                                     && t.StatusId == 3 //Tender should be approved
-                                    && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now) //Tender live date should be within next 7 days
+                                    && (t.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)
+                                    && (t.LiveEndDate >= DateTimeNPT.Now) //Tender live date should be within next 7 days
                               select new TenderCard
                               {
                                   TenderId = t.Id,

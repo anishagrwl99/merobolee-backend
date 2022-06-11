@@ -335,7 +335,8 @@ namespace MeroBolee.Service
                 };
             }
         }
-
+        
+        
          public Task<ResetBidDto> CheckBiddingTime(long tenderId)
         {
             return Task.Run(() =>
@@ -380,9 +381,16 @@ namespace MeroBolee.Service
                     //     dto.RemainingMinute = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Minutes);
                     //     dto.RemainingSecond = Math.Abs((dto.TenderLiveEndDate - DateTimeNPT.Now).Seconds);
                     // }
-                    else if ((dto.TenderLiveEndDate > DateTimeNPT.Now))  //there is still time left for tender live end
+
+                    if ((dto.TenderLiveEndDate > DateTimeNPT.Now))  //there is still time left for tender live end
                     {
-                        if(remainingSec < 0 && dto.RoundNumber < 5) 
+                        // // long totalIntervalInSec = dto.Interval*60;
+                        // long totalRemainingSec = dto.Interval*60 - (int)((DateTimeNPT.Now - dto.TenderLiveStartDate).TotalSeconds) % dto.Interval * 60;
+                        // long remainingMinute = dto.Interval - (int)((DateTimeNPT.Now - dto.TenderLiveStartDate).TotalMinutes) % dto.Interval;
+                        // dto.RemainingMinute = (int)remainingMinute;
+                        // dto.RemainingSecond = (int)totalRemainingSec;
+                        // dto.RoundNumber = (int)(((DateTimeNPT.Now - dto.TenderLiveStartDate).TotalMinutes) / dto.Interval);
+                        if(remainingSec < 0 && dto.RoundNumber <= 5) 
                         {
                             dto.RemainingMinute = (int)dto.Interval;
                             dto.RemainingSecond = 0;
@@ -397,30 +405,6 @@ namespace MeroBolee.Service
                         }
 
                     }
-                    
-                    // else if(remainingSec < 0) {
-                    //     dto.RemainingMinute = 0;
-                    //     dto.RemainingSecond = 1;
-                    // }
-
-                    // if (dto.RemainingMinute < 1 && dto.RemainingSecond < 5)
-                    // {
-                    //     dto.RemainingMinute = Math.Abs((int)dto.Interval);
-                    //     dto.MinQuotationRecivedAt = DateTimeNPT.Now;
-                    //     dto.FullIntervalCountWithoutReceivingBid++;
-
-                    //     // if (dto.RemainingSecond < 0) //if request is not receive and second moves to negative
-                    //     // {
-                    //     //     int sec = Math.Abs(dto.RemainingSecond);
-                    //     //     dto.RemainingMinute = Math.Abs((int)((dto.Interval * 60 - (int)(sec / 60)) / 60) - 1);
-                    //     //     dto.RemainingSecond = Math.Abs(60 - (int)(sec % 60));
-                    //     // }
-                    //     // else
-                    //     // {
-                    //         dto.RemainingSecond = 0;
-                    //     // }
-
-                    // }
                 }
                 else
                 {
@@ -429,15 +413,15 @@ namespace MeroBolee.Service
                     {
                         dto = new ResetBidDto
                         {
-                            MinQuotationRecivedAt = DateTimeNPT.Now,
-                            RemainingMinute = e.LiveInterval,
-                            RemainingSecond = 0,
+                        
+                            RemainingMinute = e.LiveInterval - (int)((DateTimeNPT.Now - e.LiveStartDate).TotalMinutes) % e.LiveInterval,
+                            RemainingSecond = e.LiveInterval*60 - (int)((DateTimeNPT.Now - e.LiveStartDate).TotalSeconds) % e.LiveInterval * 60,
                             Interval = e.LiveInterval,
                             IsTenderExpired = false,
                             IsQuotationReceived = false,
                             FullIntervalCountWithoutReceivingBid = 0,
                             TenderLiveEndDate = e.LiveEndDate,
-                            RoundNumber = 1
+                            RoundNumber = (int)((DateTimeNPT.Now - e.LiveStartDate).TotalMinutes) / e.LiveInterval == 0 ? 1 : 2
                     };
 
                     }
@@ -450,6 +434,10 @@ namespace MeroBolee.Service
                     dto.IsTenderExpired = true;
                     dto.RemainingMinute = 0;
                     dto.RemainingSecond = 0;
+                    memoryCache.Remove(timeKey);
+                    memoryCache.Remove($"TenderInfo_{tenderId}");
+                    return dto;
+
                 }
                 // memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate.AddMinutes(5));
                 memoryCache.Set<ResetBidDto>(timeKey, dto, dto.TenderLiveEndDate);

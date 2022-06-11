@@ -167,6 +167,43 @@ namespace MeroBolee.Controllers
             }
         }
 
+        [HttpDelete("Document/Delete")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Admin, Bidder, Bid Inviter")]
+        public async Task<IActionResult> DeleteDocument([FromBody] long documentId)
+        {
+            try
+            {
+                if (documentId == 0 || documentId == null)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Document Id or Document Not found";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    bool isDeleted =  await documentService.DeleteDocument(documentId);
+                    if (isDeleted)
+                    {
+                        response.statusCode = "200";
+                        response.Message = "Record is successfully deleted";
+                        return Ok(new ErrorResponse<ResponseMsg>(response));
+                    }
+                    else
+                    {
+                        return NotFound(new Responses<int>(0, "404", "Record not found to delete"));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+
+        }
+
 
 
         private PagedResponse<DocumentResponseDto> ResultAfterPagination(IEnumerable<DocumentResponseDto> docs, PaginationQuery pagination, int totalCount)

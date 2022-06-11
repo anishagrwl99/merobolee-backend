@@ -8,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace MeroBolee.Service
 {
@@ -16,6 +20,8 @@ namespace MeroBolee.Service
         public Task<DocumentDto> AddDocument(DocumentDto obj);
         public DocumentUpdateStatusDto ChangeStatus(DocumentUpdateStatusDto obj);
         public List<DocumentResponseDto> GetAllDocument(int companyId , string baseUrl);
+
+        Task<bool> DeleteDocument(long documentId);
     }
 
     public class CompanyDocumentService : DocumentMapper, ICompanyDocumentService
@@ -40,6 +46,7 @@ namespace MeroBolee.Service
                     path = await docUpload.Upload(obj.Document, folder);
                 }
                 CompanyDocumentEntity entity = ToEntity(obj);
+                entity.IsDeleted = false;
                 entity.DocumentPath = path;
                 var ent =  companyDocRepository.AddDocument(entity);
                 if (ent != null) return obj;
@@ -72,6 +79,17 @@ namespace MeroBolee.Service
             try
             {
                 return ToListDto(companyDocRepository.GetAllDocument(companyId), baseUrl);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteDocument([FromBody] long documentId) {
+            try
+            {
+                return await companyDocRepository.DeleteDocument(documentId);
             }
             catch (Exception)
             {
