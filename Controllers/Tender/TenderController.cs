@@ -448,9 +448,12 @@ namespace MeroBolee.Controllers.Tender
         /// To individual detail of tender by tender id
         /// </summary>
         /// <param name="tenderId"></param>
+        /// <param name = "userId"></param>
+        /// <param name = "companyId"></param>
+        /// <param name = "userRole"></param>
         /// <returns></returns>
         [HttpGet("Tender/TenderDetail")]
-        public async Task<IActionResult> GetById([FromQuery] long tenderId)
+        public async Task<IActionResult> GetById([FromQuery] long tenderId, [FromQuery] long userId, [FromQuery]  long companyId, [FromQuery] string userRole)
         {
             try
             {
@@ -462,14 +465,30 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    GetTenderDto tenderEntity = await tenderService.GetTenderDetail(tenderId, _baseUrl);
-                    if (tenderEntity == null)
-                    {
-                        response.statusCode = "404";
-                        response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                    if(userRole.Equals("Supplier")) {
+                         bool isRegistered = await tenderService.isSupplierRegistered(tenderId, userId, companyId);
+                         
+                        GetTenderDto tenderEntity = await tenderService.GetTenderDetail(tenderId, _baseUrl, isRegistered, userRole);
+                        if (tenderEntity == null)
+                        {
+                            response.statusCode = "404";
+                            response.Message = "Record not found";
+                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                        }
+                        return Ok(new Responses<GetTenderDto>(tenderEntity, "200", "Record found"));
+
                     }
-                    return Ok(new Responses<GetTenderDto>(tenderEntity, "200", "Record found"));
+                    else
+                    {
+                        GetTenderDto tenderEntity = await tenderService.GetTenderDetail(tenderId, _baseUrl, true, userRole);
+                        if (tenderEntity == null)
+                        {
+                            response.statusCode = "404";
+                            response.Message = "Record not found";
+                            return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                        }
+                        return Ok(new Responses<GetTenderDto>(tenderEntity, "200", "Record found"));
+                    }
                 }
             }
             catch (Exception e)

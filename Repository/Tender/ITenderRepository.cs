@@ -73,5 +73,7 @@ namespace MeroBolee.Repository
 
         Task<bool> DeleteTender(TenderEntity entity);
 
+        Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
+
     }
 }

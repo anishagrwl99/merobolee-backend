@@ -106,12 +106,12 @@ namespace MeroBolee.Service
         }
 
 
-        public async Task<GetTenderDto> GetTenderDetail(long tenderId, string baseUrl)
+        public async Task<GetTenderDto> GetTenderDetail(long tenderId, string baseUrl, bool isRegistered, string userRole)
         {
             TenderEntity te = await tenderRepository.GetTenderDetail(tenderId);
             if (te != null)
             {
-                return TenderEntityToDto(te, baseUrl);
+                return TenderEntityToDto(te, baseUrl, isRegistered, userRole);
             }
             else
             {
@@ -345,6 +345,21 @@ namespace MeroBolee.Service
                 //    .Include(x => x.TenderStatusEntity)
                 //t.Feedbacks = await tenderRepository.GetTenderCardFeedback(tenderId);
                 return await tenderRepository.DeleteTender(t);
+
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId) {
+             try
+            {
+                bool isSupplier = await tenderRepository.isSupplierRegistered(tenderId, userId, companyId);
+
+                return isSupplier;
 
             }
             catch

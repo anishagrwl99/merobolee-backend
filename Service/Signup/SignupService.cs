@@ -1,5 +1,4 @@
 ﻿using MeroBolee.Dto;
-using MeroBolee.Infrastructure;
 using MeroBolee.EntityMapper;
 using MeroBolee.Model;
 using MeroBolee.Repository;
@@ -7,9 +6,6 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Identity;
 using MeroBolee.Controllers.EmailService;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Server;
 
 namespace MeroBolee.Service
 {

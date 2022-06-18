@@ -13,7 +13,7 @@ namespace MeroBolee.Service
         Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
 
-        Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath);
+        Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
@@ -24,6 +24,8 @@ namespace MeroBolee.Service
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
         Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);
+
+        Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
 
         /// <summary>
         /// 

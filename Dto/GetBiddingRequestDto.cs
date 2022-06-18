@@ -69,6 +69,7 @@ namespace MeroBolee.Dto
         public long Interval { get; set; }
         public int RemainingMinute { get; set; }
         public int RemainingSecond { get; set; }
+    
         public DateTime MinQuotationRecivedAt { get; set; }
 
         public int RoundNumber { get; set; }

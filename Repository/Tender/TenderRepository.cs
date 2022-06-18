@@ -230,7 +230,9 @@ namespace MeroBolee.Repository
                                   StatusId = t.StatusId,
                                   Product = t.Product,
                                   DateOfExecution = t.DateOfExecution,
-                                  DateCreated = t.Date_created
+                                  DateCreated = t.Date_created,
+                                  Price = t.Price,
+                                  Location = t.Location
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
                                   //            select new TenderCardInfo
@@ -410,7 +412,7 @@ namespace MeroBolee.Repository
                                   where bd.CompanyId == companyId
                                         && t.StatusId == 3 //Tender should be approved
                                         && t.IsDeleted == false
-                                        && DateTime.Compare(t.LiveStartDate, DateTimeNPT.Now) > 0
+                                        && DateTime.Compare(t.LiveEndDate, DateTimeNPT.Now) > 0
                                   select new TenderCard
                                   {
                                       TenderId = t.Id,
@@ -1003,6 +1005,21 @@ namespace MeroBolee.Repository
             try
             {
                 return await meroBoleeDbContexts.TenderCardFeedbacks.Where(x => x.TenderId == tenderId).ToListAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId)
+        {
+            try
+            {
+                int isSupplierRegistered = await meroBoleeDbContexts.BidRequestEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).Where(x => x.CompanyId == companyId).Select(x => x.BidRequestStatusId).FirstOrDefaultAsync();
+                if(isSupplierRegistered == 1  || isSupplierRegistered == 2) return true;
+                else return false;
             }
             catch
             {

@@ -66,8 +66,8 @@ namespace MeroBolee.EntityMapper
                 RegistrationTill = tenderDto.RegistrationTill,
                 Date_created = DateTimeNPT.Now,
                 Date_modified = DateTimeNPT.Now,
-                IsDeleted=false,
-                DateOfExecution=tenderDto.DateOfExecution,
+                IsDeleted = false,
+                DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
@@ -168,71 +168,195 @@ namespace MeroBolee.EntityMapper
             //}
 
         }
-        public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl)
+        public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl, bool isRegistered, string userRole)
         {
-            if (tenderEntity == null)
+            if (userRole.Equals("BidInviter"))
             {
-                return null;
+                if (tenderEntity == null)
+                {
+                    return null;
+                }
+
+                GetTenderDto getTender = new GetTenderDto();
+                getTender.TenderId = tenderEntity.Id;
+                getTender.CompanyId = tenderEntity.CompanyId;
+                getTender.CompanyName = tenderEntity.Company.Name;
+                getTender.TenderCode = tenderEntity.Code;
+                getTender.TenderTitle = tenderEntity.Title;
+                getTender.RegistrationTill = tenderEntity.RegistrationTill;
+                getTender.CategoryId = tenderEntity.CategoryId;
+                getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                getTender.TenderLiveInterval = tenderEntity.LiveInterval;
+                getTender.LiveStartDate = tenderEntity.LiveStartDate;
+                getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+                getTender.StatusId = tenderEntity.StatusId;
+                getTender.Status = tenderEntity.TenderStatusEntity.Status;
+                getTender.CancelRemarks = tenderEntity.CancelRemarks;
+                getTender.Location = tenderEntity.Location;
+                getTender.QualityRequest = tenderEntity.QualityRequest;
+                getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
+                getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
+                getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
+                getTender.Price = tenderEntity.Price;
+                getTender.MaxQuotation = tenderEntity.MaxQuotation;
+                getTender.Product = tenderEntity.Product;
+                getTender.DateOfExecution = tenderEntity.DateOfExecution;
+
+                getTender.CreatedDate = tenderEntity.Date_created;
+                getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                                             select new TenderMaterialResponseDto
+                                             {
+                                                 Id = me.Id,
+                                                 MaterialName = me.Materials,
+                                                 Quantity = me.Quantity,
+                                                 Units = me.Units
+
+                                             }).ToList();
+
+                //getTender.CardInfo = (from tc in tenderEntity.TenderCards
+                //                      select new TenderCardInfo
+                //                      {
+                //                          Id = tc.Id,
+                //                          Label = tc.Label,
+                //                          Value = tc.Value
+                //                      }).ToList();
+
+                getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
+                                            select new TenderExtraDocumentResponseDto
+                                            {
+                                                Id = txd.Id,
+                                                DocTitle = txd.DocTitle,
+                                                DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
+                                                            $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
+                                            }).ToList();
+
+                return getTender;
             }
+            else if (userRole.Equals("Supplier"))
+            {
+                if (isRegistered == true)
+                {
 
-            GetTenderDto getTender = new GetTenderDto();
-            getTender.TenderId = tenderEntity.Id;
-            getTender.CompanyId = tenderEntity.CompanyId;
-            getTender.CompanyName = tenderEntity.Company.Name;
-            getTender.TenderCode = tenderEntity.Code;
-            getTender.TenderTitle = tenderEntity.Title;
-            getTender.RegistrationTill = tenderEntity.RegistrationTill;
-            getTender.CategoryId = tenderEntity.CategoryId;
-            getTender.CategoryName = tenderEntity.CategoryEntity.Category;
-            getTender.TenderLiveInterval = tenderEntity.LiveInterval;
-            getTender.LiveStartDate = tenderEntity.LiveStartDate;
-            getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
-            getTender.StatusId = tenderEntity.StatusId;
-            getTender.Status = tenderEntity.TenderStatusEntity.Status;
-            getTender.CancelRemarks = tenderEntity.CancelRemarks;
-            getTender.Location = tenderEntity.Location;
-            getTender.QualityRequest = tenderEntity.QualityRequest;
-            getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
-            getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
-            getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
-            getTender.Price = tenderEntity.Price;
-            getTender.MaxQuotation = tenderEntity.MaxQuotation;
-            getTender.Product = tenderEntity.Product;
-            getTender.DateOfExecution = tenderEntity.DateOfExecution;
+                    if (tenderEntity == null)
+                    {
+                        return null;
+                    }
 
-            getTender.CreatedDate = tenderEntity.Date_created;
-            getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
-                                         select new TenderMaterialResponseDto
-                                         {
-                                             Id = me.Id,
-                                             MaterialName = me.Materials,
-                                             Quantity = me.Quantity,
-                                             Units = me.Units
-                                             
-                                         }).ToList();
+                    GetTenderDto getTender = new GetTenderDto();
+                    getTender.TenderId = tenderEntity.Id;
+                    getTender.CompanyId = tenderEntity.CompanyId;
+                    getTender.CompanyName = tenderEntity.Company.Name;
+                    getTender.TenderCode = tenderEntity.Code;
+                    getTender.TenderTitle = tenderEntity.Title;
+                    getTender.RegistrationTill = tenderEntity.RegistrationTill;
+                    getTender.CategoryId = tenderEntity.CategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.TenderLiveInterval = tenderEntity.LiveInterval;
+                    getTender.LiveStartDate = tenderEntity.LiveStartDate;
+                    getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+                    getTender.StatusId = tenderEntity.StatusId;
+                    getTender.Status = tenderEntity.TenderStatusEntity.Status;
+                    getTender.CancelRemarks = tenderEntity.CancelRemarks;
+                    getTender.Location = tenderEntity.Location;
+                    getTender.QualityRequest = tenderEntity.QualityRequest;
+                    getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
+                    getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
+                    getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
+                    getTender.Price = tenderEntity.Price;
+                    getTender.MaxQuotation = tenderEntity.MaxQuotation;
+                    getTender.Product = tenderEntity.Product;
+                    getTender.DateOfExecution = tenderEntity.DateOfExecution;
 
-            //getTender.CardInfo = (from tc in tenderEntity.TenderCards
-            //                      select new TenderCardInfo
-            //                      {
-            //                          Id = tc.Id,
-            //                          Label = tc.Label,
-            //                          Value = tc.Value
-            //                      }).ToList();
+                    getTender.CreatedDate = tenderEntity.Date_created;
+                    getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                                                 select new TenderMaterialResponseDto
+                                                 {
+                                                     Id = me.Id,
+                                                     MaterialName = me.Materials,
+                                                     Quantity = me.Quantity,
+                                                     Units = me.Units
 
-            getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
-                                        select new TenderExtraDocumentResponseDto
-                                        {
-                                            Id = txd.Id,
-                                            DocTitle = txd.DocTitle,
-                                            DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
-                                                        $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
-                                        }).ToList();
+                                                 }).ToList();
 
-            return getTender;
+                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
+                    //                      select new TenderCardInfo
+                    //                      {
+                    //                          Id = tc.Id,
+                    //                          Label = tc.Label,
+                    //                          Value = tc.Value
+                    //                      }).ToList();
 
+                    getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
+                                                select new TenderExtraDocumentResponseDto
+                                                {
+                                                    Id = txd.Id,
+                                                    DocTitle = txd.DocTitle,
+                                                    DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
+                                                                $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
+                                                }).ToList();
+
+                    return getTender;
+                }
+                else
+                {
+                    if (tenderEntity == null)
+                    {
+                        return null;
+                    }
+
+                    GetTenderDto getTender = new GetTenderDto();
+                    getTender.TenderId = tenderEntity.Id;
+                    getTender.CompanyId = tenderEntity.CompanyId;
+                    getTender.CompanyName = tenderEntity.Company.Name;
+                    getTender.TenderCode = tenderEntity.Code;
+                    getTender.TenderTitle = tenderEntity.Title;
+                    getTender.RegistrationTill = tenderEntity.RegistrationTill;
+                    getTender.CategoryId = tenderEntity.CategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.TenderLiveInterval = tenderEntity.LiveInterval;
+                    getTender.LiveStartDate = tenderEntity.LiveStartDate;
+                    getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+                    getTender.StatusId = tenderEntity.StatusId;
+                    getTender.Status = tenderEntity.TenderStatusEntity.Status;
+                    getTender.CancelRemarks = tenderEntity.CancelRemarks;
+                    getTender.Location = tenderEntity.Location;
+                    getTender.QualityRequest = tenderEntity.QualityRequest;
+                    getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
+                    getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
+                    getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
+                    getTender.Price = tenderEntity.Price;
+                    getTender.MaxQuotation = tenderEntity.MaxQuotation;
+                    getTender.Product = tenderEntity.Product;
+                    getTender.DateOfExecution = tenderEntity.DateOfExecution;
+
+                    getTender.CreatedDate = tenderEntity.Date_created;
+                    getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                                                 select new TenderMaterialResponseDto
+                                                 {
+                                                     Id = me.Id,
+                                                     MaterialName = me.Materials,
+                                                     Quantity = me.Quantity,
+                                                     Units = me.Units
+
+                                                 }).ToList();
+
+                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
+                    //                      select new TenderCardInfo
+                    //                      {
+                    //                          Id = tc.Id,
+                    //                          Label = tc.Label,
+                    //                          Value = tc.Value
+                    //                      }).ToList();
+
+                    getTender.ExtraDocuments = null;
+
+                    return getTender;
+                }
+            }
+            return null;
         }
 
-        public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
+    public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
         {
             TenderDocuments doc = new TenderDocuments
             {
