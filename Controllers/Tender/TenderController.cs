@@ -465,7 +465,7 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    if(userRole.Equals("Supplier")) {
+                    if(userRole.Equals("Bidder")) {
                          bool isRegistered = await tenderService.isSupplierRegistered(tenderId, userId, companyId);
                          
                         GetTenderDto tenderEntity = await tenderService.GetTenderDetail(tenderId, _baseUrl, isRegistered, userRole);
@@ -558,7 +558,29 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        [HttpGet("Tender/Bidder/TenderStatus")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> GetTenderStatus([FromQuery] long tenderId, [FromQuery] long userId)
+        {
+            try
+            {
+                string status = await tenderService.GetTenderStatus(tenderId, userId);
+                if (status == null)
+                {
+                    response.statusCode = "404";
+                    response.Message = "Record not found";
+                    return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                }
 
+                return Ok(new Responses<string>(status, "200", "Record found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

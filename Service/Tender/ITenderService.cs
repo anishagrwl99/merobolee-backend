@@ -27,6 +27,8 @@ namespace MeroBolee.Service
 
         Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
 
+        Task<string> GetTenderStatus(long tenderId, long userId);
+
         /// <summary>
         /// 
         /// </summary>

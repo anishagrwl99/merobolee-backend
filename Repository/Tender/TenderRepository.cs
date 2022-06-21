@@ -176,7 +176,9 @@ namespace MeroBolee.Repository
                                   Status = s.Status,
                                   Product = t.Product,
                                   DateOfExecution = t.DateOfExecution,
-                                  DateCreated = t.Date_created
+                                  DateCreated = t.Date_created,
+                                  Price = t.Price,
+                                  Location = t.Location
 
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
@@ -1018,8 +1020,23 @@ namespace MeroBolee.Repository
             try
             {
                 int isSupplierRegistered = await meroBoleeDbContexts.BidRequestEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).Where(x => x.CompanyId == companyId).Select(x => x.BidRequestStatusId).FirstOrDefaultAsync();
-                if(isSupplierRegistered == 1  || isSupplierRegistered == 2) return true;
+                if(isSupplierRegistered == 1 || isSupplierRegistered == 2) return true;
                 else return false;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<int> GetTenderStatus(long tenderId, long userId)
+        {
+            try
+            {
+                int tenderStatus = await meroBoleeDbContexts.BidRequestEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).Select(x => x.BidRequestStatusId).FirstOrDefaultAsync();
+               
+                return tenderStatus;
             }
             catch
             {

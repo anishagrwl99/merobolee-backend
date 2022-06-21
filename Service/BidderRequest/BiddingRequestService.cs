@@ -214,7 +214,9 @@ namespace MeroBolee.Service
 
                         AddQuotationToCache(entities, materialDto.TenderId, materialDto.SupplierId);
                         decimal currentQuotation = Math.Round(materialDto.MaterialQuotation.Sum(x => x.Quotation), 2);
-                        LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
+                        LiveBidResponse response = await TenderPosition(materialDto.TenderId, materialDto.SupplierId);
+
+                        // LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                         if (response != null)
                         {
                             response.MaterialQuotation = materialDto.MaterialQuotation;
@@ -255,7 +257,9 @@ namespace MeroBolee.Service
                 else
                 {
                     decimal currentQuotation = materialDto.MaterialQuotation.Sum(x => x.Quotation);
-                    LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
+                    LiveBidResponse response = await TenderPosition(materialDto.TenderId, materialDto.SupplierId);
+
+                    // LiveBidResponse response = GetPositionFromCache(materialDto.TenderId, materialDto.SupplierId, currentQuotation);
                     if (response != null)
                     {
                         response.IsBidSuccess = false;
@@ -278,7 +282,7 @@ namespace MeroBolee.Service
             }
 
         }
-        public LiveBidResponse AutoBid(TenderAutoBidDto bidDto)
+        public async Task<LiveBidResponse> AutoBid(TenderAutoBidDto bidDto)
         {
             string key = $"Tender_Bidding_{bidDto.TenderId}";
             List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
@@ -309,7 +313,9 @@ namespace MeroBolee.Service
                 var entities = bidRequestRepository.AutoBid(autoBidEntities);
                 AddQuotationToCache(entities, bidDto.TenderId, bidDto.SupplierId);
                 decimal currentQuotation = entities.Sum(x => cryptoService.Decrypt<decimal>(x.Quotation));
-                LiveBidResponse response = GetPositionFromCache(bidDto.TenderId, bidDto.SupplierId, currentQuotation);
+                LiveBidResponse response = await TenderPosition(bidDto.TenderId, bidDto.SupplierId);
+
+                // LiveBidResponse response = GetPositionFromCache(bidDto.TenderId, bidDto.SupplierId, currentQuotation);
                 response.MaterialQuotation = entities.Select(x => new TenderMaterialQuotationDto
                 {
                     MaterialId = x.MaterialId,
@@ -525,6 +531,7 @@ namespace MeroBolee.Service
         {
             IEnumerable<BidRequestEntity> requests = await bidRequestRepository.SupplierBidHistory(supplierCompanyId);
             IEnumerable<TenderWinnerEntity> winingTenders = await bidRequestRepository.GetSupplierWinningBids(supplierCompanyId);
+            // IEnumerable<TenderEntity> tenderEntities = await bidRequestRepository.GetTenderDetail(tenderId);
             return ToBidHistory(requests, winingTenders);
         }
 
@@ -1017,5 +1024,41 @@ namespace MeroBolee.Service
             memoryCache.Set<bool>(key, isSupplierRegistered.Value, DateTimeNPT.Now.AddDays(1));
             return isSupplierRegistered.Value;
         }
+
+        public async Task<List<FinalPositionResponseDto>> GetFinalBiddingPosition(long tenderId)
+        {
+            try {
+
+                List<PositionAmountDto> positionAmountList = await bidRequestRepository.GetFinalBiddingPosition(tenderId);
+                List<FinalPositionResponseDto> getFinalBiddingPoisitionList = new List<FinalPositionResponseDto>();
+                int size = positionAmountList.Count;
+                for (int i=0;i<size;i++) {
+                    PositionAmountDto positionAmountDto = positionAmountList[i];
+                    FinalPositionResponseDto finalPositionResponseDto = new FinalPositionResponseDto();
+                    finalPositionResponseDto.Amount = positionAmountDto.Amount;
+                    finalPositionResponseDto.userId = positionAmountDto.UserId;
+                    finalPositionResponseDto.position = $"L{i + 1}";
+                    finalPositionResponseDto.companyName = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                    getFinalBiddingPoisitionList.Add(finalPositionResponseDto);
+                }
+                return getFinalBiddingPoisitionList;
+            } catch {
+                throw;
+            }
+        }
+
+        public async Task<FinalPositionResponseDto> GetFinalBiddingPositionForBidder(long tenderId, long userId)
+        {
+            try {
+
+                List<FinalPositionResponseDto> getFinalBiddingPoisitionList = await GetFinalBiddingPosition(tenderId);
+                FinalPositionResponseDto finalPositionResponseDto = getFinalBiddingPoisitionList.Where(x => x.userId == userId).FirstOrDefault();
+                return finalPositionResponseDto;
+            } catch {
+                throw;
+            }
+        }
+
+        
     }
 }

@@ -72,7 +72,7 @@ namespace MeroBolee.Service
         Task MoveBidToHistory();
 
         Task<ResetBidDto> CheckBiddingTime(long tenderId);
-        LiveBidResponse AutoBid(TenderAutoBidDto bidDto);
+        Task<LiveBidResponse> AutoBid(TenderAutoBidDto bidDto);
 
         /// <summary>
         /// Get all logs associated with a tender auction for a company
@@ -93,6 +93,10 @@ namespace MeroBolee.Service
         /// <param name="tenderId">A tender number</param>
         /// <returns></returns>
         Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter( long tenderId);
+
+        Task<List<FinalPositionResponseDto>> GetFinalBiddingPosition(long tenderId);
+
+        Task<FinalPositionResponseDto> GetFinalBiddingPositionForBidder(long tenderId, long userId);
 
     }
 }

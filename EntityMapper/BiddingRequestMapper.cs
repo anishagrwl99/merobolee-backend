@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MeroBolee.Utility;
+
 
 namespace MeroBolee.EntityMapper
 {
@@ -115,7 +117,7 @@ namespace MeroBolee.EntityMapper
                     CompanyName = entity.Company.Name,
                     UserId = entity.UserId,
                     UserName = $"{entity.User.FirstName} {entity.User.LastName}",
-                    Amount = entity.Amount,
+                    Price = entity.Amount,
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
@@ -146,7 +148,7 @@ namespace MeroBolee.EntityMapper
                 {
                     BidId = entity.Id,
                     TenderId = entity.Tender.Id,
-                    Amount = entity.Amount,
+                    Price = entity.Amount,
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
@@ -205,6 +207,13 @@ namespace MeroBolee.EntityMapper
                 {
                     BidHistoryCardDto c = BidEntityToHistoryCard(requestEntity);
                     c.IsWinner = winbids.Any(x => x.TenderId == requestEntity.TenderId);
+                    MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                    TenderEntity e = meroBoleeDbContext.TenderEntities.Where(x => x.Id == c.TenderId).FirstOrDefault();
+                    c.Product = e.Product;
+                    c.LiveEndDate = e.LiveEndDate;
+                    c.LiveStartDate = e.LiveStartDate;
+                    c.RegistrationTill = e.RegistrationTill;
+                    c.Location = e.Location;
                     getBiddings.Add(c);
                 };
                 return getBiddings;
@@ -230,7 +239,7 @@ namespace MeroBolee.EntityMapper
                 Remarks = entity.Remark,
                 TenderId = entity.TenderId,
                 BidStatus = entity.BidRequestStatus.Status,
-                Amount = entity.Amount,
+                Price = entity.Amount,
                 PaymentProvider = entity.PaymentProvider,
                 PaymentReferenceCode = entity.PaymentReferenceCode,
                 BidDate = entity.Date_created,

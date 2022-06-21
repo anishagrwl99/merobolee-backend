@@ -255,6 +255,65 @@ namespace MeroBolee.Controllers.BiddingRequest
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
 
+        [HttpGet("Admin/Bidding/FinalPosition")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> GetFinaliddingPosition([FromQuery] long tenderId)
+        {
+            try
+            {
+                List<FinalPositionResponseDto> res = await biddingRequestService.GetFinalBiddingPosition(tenderId);
+                int totalCount = res.Count();
+                if (res != null && totalCount > 0)
+                {
+                    return Ok(new Responses<List<FinalPositionResponseDto>>(res, "200", "Caculated Final Bidding Position for " + tenderId));
+                }
+                else if (res == null)
+                {
+                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "Final position for this tender could not be calculated"));
+                }
+                else
+                {
+                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "Could not calculate position"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        
+        [HttpGet("Bidder/Bidding/FinalPosition")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> GetFinaliddingPosition([FromQuery] long tenderId, long userId)
+        {
+            try
+            {
+                FinalPositionResponseDto res = await biddingRequestService.GetFinalBiddingPositionForBidder(tenderId, userId);
+                if (res != null)
+                {
+                    return Ok(new Responses<FinalPositionResponseDto>(res, "200", "Caculated Final Bidding Position for " + res.companyName));
+                }
+                else if (res == null)
+                {
+                    return NotFound(new Responses<FinalPositionResponseDto>(null, "404", "Final position for this tender could not be calculated"));
+                }
+                else
+                {
+                    return NotFound(new Responses<FinalPositionResponseDto>(null, "404", "Could not calculate position"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
 
 
         /// <summary>
@@ -353,13 +412,13 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <returns></returns>
         [HttpPost("Bidding/AutoBid")]
         [Authorize(Roles = "Bidder")]
-        public IActionResult AutoBid([FromBody] TenderAutoBidDto autoBidDto)
+        public async Task<IActionResult> AutoBid([FromBody] TenderAutoBidDto autoBidDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    LiveBidResponse response = biddingRequestService.AutoBid(autoBidDto);
+                    LiveBidResponse response = await biddingRequestService.AutoBid(autoBidDto);
                     if (response != null && response.IsBidSuccess)
                     {
                         return Ok(new Responses<LiveBidResponse>(response, "200", response.Message));

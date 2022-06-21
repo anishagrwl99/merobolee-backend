@@ -1,10 +1,8 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
@@ -146,5 +144,9 @@ namespace MeroBolee.Repository
         /// <param name="tenderId">The tender identifier.</param>
         /// <returns></returns>
         Task<bool> IsSupplierRegistered(long companyId, long tenderId);
+
+        Task<List<PositionAmountDto>> GetFinalBiddingPosition(long tenderId);
+
+        Task<string> FindCompanyName(long userId);
     }
 }

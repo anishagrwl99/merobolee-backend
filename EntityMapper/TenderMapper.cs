@@ -170,7 +170,7 @@ namespace MeroBolee.EntityMapper
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl, bool isRegistered, string userRole)
         {
-            if (userRole.Equals("BidInviter"))
+            if (userRole.Equals("Bid Inviter"))
             {
                 if (tenderEntity == null)
                 {
@@ -232,7 +232,7 @@ namespace MeroBolee.EntityMapper
 
                 return getTender;
             }
-            else if (userRole.Equals("Supplier"))
+            else if (userRole.Equals("Bidder"))
             {
                 if (isRegistered == true)
                 {
@@ -352,8 +352,60 @@ namespace MeroBolee.EntityMapper
 
                     return getTender;
                 }
+            } else {
+                 if (tenderEntity == null)
+                    {
+                        return null;
+                    }
+
+                    GetTenderDto getTender = new GetTenderDto();
+                    getTender.TenderId = tenderEntity.Id;
+                    getTender.CompanyId = tenderEntity.CompanyId;
+                    getTender.CompanyName = tenderEntity.Company.Name;
+                    getTender.TenderCode = tenderEntity.Code;
+                    getTender.TenderTitle = tenderEntity.Title;
+                    getTender.RegistrationTill = tenderEntity.RegistrationTill;
+                    getTender.CategoryId = tenderEntity.CategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.TenderLiveInterval = tenderEntity.LiveInterval;
+                    getTender.LiveStartDate = tenderEntity.LiveStartDate;
+                    getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
+                    getTender.StatusId = tenderEntity.StatusId;
+                    getTender.Status = tenderEntity.TenderStatusEntity.Status;
+                    getTender.CancelRemarks = tenderEntity.CancelRemarks;
+                    getTender.Location = tenderEntity.Location;
+                    getTender.QualityRequest = tenderEntity.QualityRequest;
+                    getTender.PerformanceRequest = tenderEntity.PerformanceRequest;
+                    getTender.EligibilityCriteria = tenderEntity.EligibilityCriteria;
+                    getTender.AdditionalRequest = tenderEntity.AdditionalRequest;
+                    getTender.Price = tenderEntity.Price;
+                    getTender.MaxQuotation = tenderEntity.MaxQuotation;
+                    getTender.Product = tenderEntity.Product;
+                    getTender.DateOfExecution = tenderEntity.DateOfExecution;
+
+                    getTender.CreatedDate = tenderEntity.Date_created;
+                    getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                                                 select new TenderMaterialResponseDto
+                                                 {
+                                                     Id = me.Id,
+                                                     MaterialName = me.Materials,
+                                                     Quantity = me.Quantity,
+                                                     Units = me.Units
+
+                                                 }).ToList();
+
+                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
+                    //                      select new TenderCardInfo
+                    //                      {
+                    //                          Id = tc.Id,
+                    //                          Label = tc.Label,
+                    //                          Value = tc.Value
+                    //                      }).ToList();
+
+                    getTender.ExtraDocuments = null;
+
+                    return getTender;
             }
-            return null;
         }
 
     public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)

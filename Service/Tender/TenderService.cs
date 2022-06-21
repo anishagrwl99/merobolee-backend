@@ -369,5 +369,27 @@ namespace MeroBolee.Service
             }
         }
 
+         public async Task<string> GetTenderStatus(long tenderId, long userId) {
+             try
+            {
+                int tenderStatus = await tenderRepository.GetTenderStatus(tenderId, userId);
+                if(tenderStatus == 1) {
+                    return "Pending Approval";
+                } else if (tenderStatus == 2) {
+                    return "Approved";
+                } else if (tenderStatus == 3) {
+                    return "Require More Documents";
+                } else if (tenderStatus == 4) {
+                    return "Rejected";
+                } else {
+                    return "Invaid Status Id";
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
     }
 }

@@ -382,7 +382,7 @@ namespace MeroBolee.Repository
                 {
                     var list = from t in meroBoleeDbContexts.TenderEntities
                                join b in meroBoleeDbContexts.LiveBiddingEntities on t.Id equals b.TenderId
-                               where t.LiveEndDate < DateTime.Now
+                               where t.LiveEndDate < DateTimeNPT.Now
                                select new LiveBiddingEntity
                                {
                                    Id = b.Id,
@@ -657,6 +657,57 @@ namespace MeroBolee.Repository
             try
             {
                 return await meroBoleeDbContexts.BidRequestEntities.AnyAsync(x => x.CompanyId == companyId && x.TenderId == tenderId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<PositionAmountDto>> GetFinalBiddingPosition(long tenderId)
+        {
+            try
+            {
+                List<AuctionLog> auctionLog = meroBoleeDbContexts.AuctionLogs.Where(x => x.TenderId == tenderId).ToList();
+
+                var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
+                .Select(x => new
+                {
+                    Amount = x.Min(o => o.Amount),
+                    UserId = x.Key.UserId
+                }).OrderBy(x => x.Amount).ToArray();
+
+                List<PositionAmountDto> getFinalPosition = new List<PositionAmountDto>();
+                for (int i = 0; i < position.Length; i++)
+                {
+                    var item = position[i];
+                    PositionAmountDto positionAmountDto = new PositionAmountDto();
+                    positionAmountDto.Amount = item.Amount;
+                    positionAmountDto.UserId = item.UserId;
+                    getFinalPosition.Add(positionAmountDto);
+
+                }
+                return getFinalPosition;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<string> FindCompanyName(long userId)
+        {
+            try
+            {
+
+                long companyId = meroBoleeDbContexts.UserCompanies.Where(x => x.UserId == userId).Select(x => x.CompanyId).FirstOrDefault();
+                string companyName = meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == companyId).Select(x => x.Name).FirstOrDefault();
+
+                return companyName;
+
             }
             catch (Exception)
             {

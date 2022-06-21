@@ -36,9 +36,19 @@ namespace MeroBolee.Dto
         public string BidStatus { get; set; }
         public string PaymentProvider { get; set; }
         public string PaymentReferenceCode { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Price { get; set; }
         public DateTime TenderLiveDate { get; set; }
         public string TenderCode { get; set; }
+        public string Product { get; set; }
+
+        public string Location { get; set; }
+
+        public DateTime RegistrationTill { get; set; }
+
+        public DateTime LiveStartDate { get; set; }
+
+        public DateTime LiveEndDate { get; set; }
+
 
     }
 

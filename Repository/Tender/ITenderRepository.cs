@@ -75,5 +75,7 @@ namespace MeroBolee.Repository
 
         Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
 
+        Task<int> GetTenderStatus(long tenderId, long userId);
+
     }
 }
