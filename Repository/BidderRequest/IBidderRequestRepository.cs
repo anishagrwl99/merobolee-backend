@@ -129,7 +129,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="tenderId">A tender Id</param>
         /// <returns></returns>
-        Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId);
+        Task<List<BidInviterAuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId);
         
         Task<AuctionLog> LogActivityForAdmin(long tenderId,long logId);
         Task<AuctionLog> UpdateAuctionLog(AuctionLog auctionLogEntity, BidRequestEntity bidRequestEntity);

@@ -92,7 +92,7 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="tenderId">A tender number</param>
         /// <returns></returns>
-        Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter( long tenderId);
+        Task<List<BidInviterAuctionLog>> GetTenderAuctionLogForBidInviter( long tenderId);
 
         Task<List<FinalPositionResponseDto>> GetFinalBiddingPosition(long tenderId);
 

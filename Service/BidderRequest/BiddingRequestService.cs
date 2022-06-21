@@ -713,11 +713,11 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-        public async Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
+        public async Task<List<BidInviterAuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
         {
             try
             {
-                List<AuctionLog> logs = await bidRequestRepository.GetTenderAuctionLogForBidInviter(tenderId);
+                List<BidInviterAuctionLog> logs = await bidRequestRepository.GetTenderAuctionLogForBidInviter(tenderId);
                 return logs;
             }
             catch (Exception)

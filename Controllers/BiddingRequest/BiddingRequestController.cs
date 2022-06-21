@@ -5,7 +5,6 @@ using MeroBolee.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -536,11 +535,11 @@ namespace MeroBolee.Controllers.BiddingRequest
                     string url = Url.Action("GetAuctionLogForBidInviter", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    List<BidInviterAuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
-                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                        return NotFound(new Responses<List<BidInviterAuctionLog>>(logs, "404", "Record not found"));
                     }
                     return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
                 }
@@ -577,13 +576,14 @@ namespace MeroBolee.Controllers.BiddingRequest
                     string url = Url.Action("GetAuctionLogForBidInviter", null, new { CompanyId = dto.CompanyId, TenderId = dto.TenderId }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    List<BidInviterAuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
-                        return NotFound(new Responses<List<AuctionLog>>(logs, "404", "Record not found"));
+                        return NotFound(new Responses<List<BidInviterAuctionLog>>(logs, "404", "Record not found"));
                     }
-                    byte[] fileContent = streamService.ToArray(logs);
+                    MemoryStreamServiceBidInviter memoryStreamServiceBidInviter = new MemoryStreamServiceBidInviter();
+                    byte[] fileContent = memoryStreamServiceBidInviter.ToArray(logs);
                     return File(fileContent, "text/csv", $"AuctionLog_{logs.FirstOrDefault().TenderId}.csv");
                     //return Ok(ResultAfterPagination(logs, pagination, totalCount)); // To pass result in object along with pagination info
                 }
@@ -943,6 +943,20 @@ namespace MeroBolee.Controllers.BiddingRequest
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
                 return new PagedResponse<AuctionLog>(logs, totalCount);
+            }
+
+            var get = logs.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
+        private PagedResponse<BidInviterAuctionLog> ResultAfterPagination(IEnumerable<BidInviterAuctionLog> logs, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<BidInviterAuctionLog>(logs, totalCount);
             }
 
             var get = logs.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();

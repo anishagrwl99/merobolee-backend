@@ -518,7 +518,6 @@ namespace MeroBolee.Repository
             {
                 return await meroBoleeDbContexts.AuctionLogs
                     .Where(x => x.CompanyId == companyId && x.TenderId == tenderId)
-                    .Include(x => x.Company)
                     .ToListAsync();
             }
             catch (Exception)
@@ -585,14 +584,32 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
-        public async Task<List<AuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
+        public async Task<List<BidInviterAuctionLog>> GetTenderAuctionLogForBidInviter(long tenderId)
         {
             try
             {
-                return await meroBoleeDbContexts.AuctionLogs
+                var auctionLogBidInviter = await meroBoleeDbContexts.AuctionLogs
                     .Where(x => x.TenderId == tenderId)
-                    .Include(x => x.Company)
-                    .ToListAsync();
+                    .Select(x => new
+                    {
+                        Amount = x.Amount,
+                        Position = x.Position,
+                        LogDate = x.LogDate,
+                        TenderId = x.TenderId
+                    }).ToListAsync();
+
+                List<BidInviterAuctionLog> auctionLogs = new List<BidInviterAuctionLog>();
+                for (int i = 0; i < auctionLogBidInviter.Count;i++) {
+                    var a = auctionLogBidInviter[i];
+                    BidInviterAuctionLog bidInviterAuctionLog = new BidInviterAuctionLog();
+                    bidInviterAuctionLog.Amount = a.Amount;
+                    bidInviterAuctionLog.LogDate = a.LogDate;
+                    bidInviterAuctionLog.Position = a.Position;
+                    bidInviterAuctionLog.TenderId = a.TenderId;
+                    auctionLogs.Add(bidInviterAuctionLog);
+                }
+
+                return auctionLogs;
             }
             catch (Exception)
             {
