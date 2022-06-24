@@ -21,22 +21,18 @@ namespace MeroBolee.Dto
 
     public class UpdateUserDto
     {
-        [Required(ErrorMessage = "User id is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
         public long Id { get; set; }
-
-        [Required(ErrorMessage = "First name is required")]
-        [MaxLength(100, ErrorMessage = "First name can be {1} characters long")]
         public string FirstName { get; set; }
-
-        
         public string MiddleName { get; set; }
-
-        [Required(ErrorMessage = "Last name is required")]
-        [MaxLength(100, ErrorMessage = "Last name can be {1} characters long")]
         public string LastName { get; set; }
         public string UserName { get; set; }
         public string Designation { get; set; }
+        public string CompanyName { get; set; }
+        public string Address { get; set; }
+        public string Zip { get; set; }
+        public string Mobile { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PanNumber { get; set; }
     }
     public class AddUserDto
     {

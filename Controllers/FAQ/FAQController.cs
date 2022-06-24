@@ -5,7 +5,6 @@ using MeroBolee.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <returns></returns>
         [HttpPost("FAQ")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        [Authorize(Roles = "Super Admin")]
         public IActionResult Add([FromBody] FAQAddDto addFAQ)
         {
             try

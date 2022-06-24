@@ -369,20 +369,31 @@ namespace MeroBolee.Service
             }
         }
 
-         public async Task<string> GetTenderStatus(long tenderId, long userId) {
+         public async Task<TenderStatusDto> GetTenderStatus(long tenderId, long userId) {
              try
             {
                 int tenderStatus = await tenderRepository.GetTenderStatus(tenderId, userId);
+                TenderStatusDto tenderStatusDto = new TenderStatusDto();
                 if(tenderStatus == 1) {
-                    return "Pending Approval";
+                    tenderStatusDto.Status = "Pending Approval";
+                    tenderStatusDto.StatusId = tenderStatus;
+                    return tenderStatusDto;
                 } else if (tenderStatus == 2) {
-                    return "Approved";
+                    tenderStatusDto.Status = "Approved";
+                    tenderStatusDto.StatusId = tenderStatus;
+                    return tenderStatusDto;
                 } else if (tenderStatus == 3) {
-                    return "Require More Documents";
+                    tenderStatusDto.Status = "Require More Documents";
+                    tenderStatusDto.StatusId = tenderStatus;
+                    return tenderStatusDto;
                 } else if (tenderStatus == 4) {
-                    return "Rejected";
+                    tenderStatusDto.Status = "Rejected";
+                    tenderStatusDto.StatusId = tenderStatus;
+                    return tenderStatusDto;
                 } else {
-                    return "Invaid Status Id";
+                    tenderStatusDto.Status = "Invaid Status Id";
+                    tenderStatusDto.StatusId = 0;
+                    return tenderStatusDto;
                 }
             }
             catch

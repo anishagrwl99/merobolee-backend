@@ -188,6 +188,7 @@ namespace MeroBolee.Controllers.User
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut("UpdateUser")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> UpdateByUser([FromBody] UpdateUserDto user)
         {
             try

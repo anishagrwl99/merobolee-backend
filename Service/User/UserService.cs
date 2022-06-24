@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MeroBolee.Utility;
 
 namespace MeroBolee.Service
 {
@@ -83,13 +84,49 @@ namespace MeroBolee.Service
             UserEntity user = await userRepository.GetUserInfoDetail(dto.Id);
             if (user != null)
             {
-                user.FirstName = dto.FirstName;
-                user.MiddleName = dto.MiddleName;
-                user.LastName = dto.LastName;
-                user.Designation = dto.Designation;
-                user.Username = dto.UserName;
+                if(dto.FirstName != null && dto.FirstName.Length > 0) {
+                  user.FirstName = dto.FirstName;
+                }
+                if(dto.MiddleName != null && dto.MiddleName.Length > 0) {
+                  user.MiddleName = dto.MiddleName;
+                }
+                if(dto.LastName != null && dto.LastName.Length > 0) {
+                  user.LastName = dto.LastName;
+                }
+                if(dto.Designation != null && dto.Designation.Length > 0) {
+                  user.Designation = dto.Designation;
+                }
+                if(dto.UserName != null && dto.UserName.Length > 0) {
+                  user.Username = dto.UserName;
+                }
+                if(dto.CompanyName != null && dto.CompanyName.Length > 0) {
+                  user.CompanyName = dto.CompanyName;
+                }
                 user.Date_modified = DateTime.Now;
             }
+
+            MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+            long CompanyId = meroBoleeDbContext.UserCompanies.Where(x => x.UserId == dto.Id).Select(x => x.CompanyId).FirstOrDefault();
+            CompanyEntity companyEntity = meroBoleeDbContext.CompanyEntities.Where(x => x.CompanyId == CompanyId).FirstOrDefault();
+            if(dto.PhoneNumber != null && dto.PhoneNumber.Length > 0) {
+            companyEntity.PhoneNumber = dto.PhoneNumber;
+            }
+            if(dto.Mobile != null && dto.Mobile.Length > 0) {
+            companyEntity.MobileNumber = dto.Mobile;
+            }
+            if(dto.PanNumber != null && dto.PanNumber.Length > 0) {
+            companyEntity.PANNumber = dto.PanNumber;
+            }
+            if(dto.CompanyName != null && dto.CompanyName.Length > 0) {
+            companyEntity.Name = dto.CompanyName;
+            }
+            if(dto.Zip != null && dto.Zip.Length > 0) {
+            companyEntity.Zip = dto.Zip;
+            }
+            if(dto.Address != null && dto.Address.Length > 0) {
+            companyEntity.Address1 = dto.Address;
+            }
+            await meroBoleeDbContext.SaveChangesAsync();
             return UserEntityToDto(await userRepository.UpdateUser(user));
 
         }

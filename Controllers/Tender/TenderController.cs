@@ -564,7 +564,7 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                string status = await tenderService.GetTenderStatus(tenderId, userId);
+                TenderStatusDto status = await tenderService.GetTenderStatus(tenderId, userId);
                 if (status == null)
                 {
                     response.statusCode = "404";
@@ -572,7 +572,7 @@ namespace MeroBolee.Controllers.Tender
                     return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                 }
 
-                return Ok(new Responses<string>(status, "200", "Record found"));
+                return Ok(new Responses<TenderStatusDto>(status, "200", "Record found"));
             }
             catch (Exception e)
             {
