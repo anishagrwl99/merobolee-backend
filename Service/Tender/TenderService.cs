@@ -402,5 +402,21 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<int> GetTenderDetailBidInviterStatus(long tenderId) {
+            try {
+                TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
+                int tenderStatus = tenderEntity.StatusId;
+                if(tenderEntity.LiveStartDate >= DateTimeNPT.Now || tenderEntity.LiveStartDate < DateTimeNPT.Now) {
+                    tenderStatus = 4;
+                }
+                if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {
+                    tenderStatus = 5;
+                }
+                return tenderStatus;
+            } catch {
+                throw;
+            }
+        }
+
     }
 }

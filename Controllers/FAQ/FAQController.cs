@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.FAQ
 {
-    public class FAQController : Controller
+    public class FAQController : AuthorizeController
     {
         private readonly IFAQService FAQService;
         private readonly PaginationMapper pagination = new PaginationMapper();
@@ -28,7 +28,7 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <returns></returns>
         [HttpPost("FAQ")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Tender Support")]
         public IActionResult Add([FromBody] FAQAddDto addFAQ)
         {
             try

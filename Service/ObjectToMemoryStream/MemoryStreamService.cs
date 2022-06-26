@@ -19,10 +19,10 @@ namespace MeroBolee.Service
             {
                 using (TextWriter tw = new StreamWriter(ms))
                 {
-                    tw.WriteLine("Company,Bidding Time, Amount, Position");
+                    tw.WriteLine("CompanyId,Bidding Time, Amount, Position");
                     foreach (AuctionLog item in logs)
                     {
-                        tw.WriteLine($"{item.Company.Name},{item.LogDate},{item.Amount},{item.Position}");
+                        tw.WriteLine($"{item.CompanyId},{item.LogDate},{item.Amount},{item.Position}");
                     }
                     tw.Flush();
                 }

@@ -23,5 +23,9 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(5000)]
         public string Answer { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(5000)]
+        public string FAQType { get; set; }
     }
 }

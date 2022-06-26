@@ -19,15 +19,16 @@ namespace MeroBolee.Dto
         [MaxLength(1000, ErrorMessage = "FAQ question can be {1} character long")]
         public string Question { get; set; }
 
-
-
-
         /// <summary>
         /// An answer for a FAQ question
         /// </summary>
         [Required(ErrorMessage = "FAQ answer is required")]
         [MaxLength(5000, ErrorMessage = "FAQ answer can be {1} character long")]
         public string Answer { get; set; }
+
+        [Required(ErrorMessage = "FAQ Type is required")]
+        [MaxLength(5000, ErrorMessage = "FAQ answer can be {1} character long")]
+        public string FAQType { get; set; }
     }
 
     /// <summary>

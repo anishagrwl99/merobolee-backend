@@ -64,5 +64,7 @@ namespace MeroBolee.Service
         Task UpdateTenderMaxQuotation(decimal maxQuotation, long tenderId);
 
         Task<bool> DeleteTender(long tenderId);
+
+        Task<int> GetTenderDetailBidInviterStatus(long tenderId);
     }
 }

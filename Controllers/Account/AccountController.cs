@@ -163,6 +163,69 @@ namespace MeroBolee.Controllers
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
+        [HttpPost("Authenticate/TenderSupport")]
+        public async Task<IActionResult> AuthenticateTenderSupport([FromBody] AuthenticateRequest model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.TenderSupport, basePath, _defaultPic);
+                    if (response != null)
+                    {
+                        setTokenCookie(response);
+                        return Ok(response);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ResponseMsg response = new ResponseMsg
+                {
+                    statusCode = StatusCodes.Status400BadRequest.ToString(),
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+        }
+
+
+        [HttpPost("Authenticate/CustomerSupport")]
+        public async Task<IActionResult> AuthenticateCustomerSupport([FromBody] AuthenticateRequest model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string basePath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/";
+                    _defaultPic = $"{basePath}{defaultOptions.DefaultProfilePicture}";
+                    AuthenticateResponse response = await accountService.AuthenticateAsync(model, CompanyTypeEnum.CustomerSupport, basePath, _defaultPic);
+                    if (response != null)
+                    {
+                        setTokenCookie(response);
+                        return Ok(response);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ResponseMsg response = new ResponseMsg
+                {
+                    statusCode = StatusCodes.Status400BadRequest.ToString(),
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+            }
+            return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
+        }
+
         [HttpPost("/register")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {

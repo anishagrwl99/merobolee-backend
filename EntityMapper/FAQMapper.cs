@@ -25,6 +25,7 @@ namespace MeroBolee.EntityMapper
             {
                 Question = dto.Question,
                 Answer = dto.Answer,
+                FAQType = dto.FAQType,
                 Date_created = DateTimeNPT.Now,
                 Date_modified = DateTimeNPT.Now
             };
@@ -43,6 +44,7 @@ namespace MeroBolee.EntityMapper
                 Id = entity.Id,
                 Question = entity.Question,
                 Answer = entity.Answer,
+                FAQType = entity.FAQType,
                 CreatedDate = entity.Date_created,
                 ModifiedDate = entity.Date_modified
             };

@@ -15,6 +15,13 @@ namespace MeroBolee
         Bidder = 1,
 
         [Display(Name = "Super Admin")]
-        SuperAdmin = 2
+        SuperAdmin = 2,
+
+        [Display(Name = "Tender Support")]
+        TenderSupport = 3,
+
+        [Display(Name = "Customer Support")]
+        CustomerSupport = 4
+
     }
 }

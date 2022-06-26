@@ -271,8 +271,9 @@ namespace MeroBolee
             //Graph
             services.AddScoped<IGraphRepository, GraphRepository>();
             services.AddScoped<IGraphService, GraphService>();
+            services.AddScoped<IRequestDemoService, RequestDemoService>();
 
-            
+
             //Hangfire configuration
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration

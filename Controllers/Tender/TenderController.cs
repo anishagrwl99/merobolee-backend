@@ -501,6 +501,34 @@ namespace MeroBolee.Controllers.Tender
         }
 
 
+        [HttpGet("Tender/TenderStatusBidInviter")]
+        public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId)
+        {
+            try
+            {
+                if (tenderId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid tender id";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    int tenderStatusBidInviter = await tenderService.GetTenderDetailBidInviterStatus(tenderId);
+                    return Ok(new Responses<int>(tenderStatusBidInviter, "200", "Record found"));
+
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
+
+
         /// <summary>
         /// To get tender documents created by merobolee
         /// </summary>
