@@ -77,6 +77,7 @@ namespace MeroBolee
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));
+            services.Configure<PaymentValues>(Configuration.GetSection("PaymentValues"));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MeroBoleeDbContext>().AddDefaultTokenProviders();
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
@@ -272,6 +273,7 @@ namespace MeroBolee
             services.AddScoped<IGraphRepository, GraphRepository>();
             services.AddScoped<IGraphService, GraphService>();
             services.AddScoped<IRequestDemoService, RequestDemoService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
 
             //Hangfire configuration

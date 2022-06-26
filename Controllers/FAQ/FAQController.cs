@@ -28,7 +28,7 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <returns></returns>
         [HttpPost("FAQ")]
-        [Authorize(Roles = "Tender Support")]
+        [Authorize(Roles = "Super Admin, Tender Support")]
         public IActionResult Add([FromBody] FAQAddDto addFAQ)
         {
             try
@@ -146,69 +146,6 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        [HttpGet("FAQ")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination)
-        {
-            try
-            {
-                string url = Url.Action("GetAll", null, null, Request.Scheme); //get url for current request
-                this.uriService = new UriService(url);
-                //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<FAQResponseDto> FAQ = FAQService.GetAllFAQ();
-                int totalCount = FAQ.Count();
-                if (totalCount == 0)
-                {
-                    return NotFound(new Responses<IEnumerable<FAQResponseDto>>(FAQ, "404", "Record not found"));
-                }
-                return Ok(ResultAfterPagination(FAQ, pagination, totalCount)); // To pass result in object along with pagination info
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-
-        }
-
-
-        /// <summary>
-        /// To get individual FAQ detail
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("FAQDetail")]
-        public IActionResult GetById([FromQuery] int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-                else
-                {
-                    FAQResponseDto getFAQ = FAQService.GetFAQ(id);
-                    if (getFAQ == null)
-                    {
-                        response.statusCode = "404";
-                        response.Message = "Record not found";
-                        return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
-                    }
-                    return Ok(new Responses<FAQResponseDto>(getFAQ, "200", "Record found"));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-
-            }
-        }
-
 
         private PagedResponse<FAQResponseDto> ResultAfterPagination(IEnumerable<FAQResponseDto> getFAQ, PaginationQuery pagination, int totalCount)
         {

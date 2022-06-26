@@ -587,7 +587,6 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Tender/Bidder/TenderStatus")]
-        [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> GetTenderStatus([FromQuery] long tenderId, [FromQuery] long userId)
         {
             try

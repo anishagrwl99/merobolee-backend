@@ -20,29 +20,31 @@
     <UserSecretsId>20a3408a-afb3-4b78-92de-89e0267a1188</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Hangfire" Version="1.7.25"/>
-    <PackageReference Include="HtmlSanitizer" Version="7.1.475"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11"/>
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11"/>
+    <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
+    <PackageReference Include="Hangfire" Version="1.7.25" />
+    <PackageReference Include="HtmlSanitizer" Version="7.1.475" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0"/>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11"/>
-    <PackageReference Include="Microsoft.Net.Http.Server" Version="1.1.4"/>
-    <PackageReference Include="Microsoft.Graph.Core" Version="2.0.8"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.11"/>
-    <PackageReference Include="sib_api_v3_sdk" Version="3.3.0"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11" />
+    <PackageReference Include="Microsoft.Net.Http.Server" Version="1.1.4" />
+    <PackageReference Include="Microsoft.Graph.Core" Version="2.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.11" />
+    <PackageReference Include="sib_api_v3_sdk" Version="3.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="logs\"/>
-    <Folder Include="Resource\"/>
+    <Folder Include="logs\" />
+    <Folder Include="Resource\" />
   </ItemGroup>
 </Project>
