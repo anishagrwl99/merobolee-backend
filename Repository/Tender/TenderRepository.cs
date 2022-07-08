@@ -1044,5 +1044,22 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<int> AddTime(long tenderId, int min)
+        {
+            try
+            {
+                if(tenderId < 0 || min < 0) return 0;
+                TenderEntity tenderEntity = await meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).FirstOrDefaultAsync();
+                tenderEntity.LiveEndDate = tenderEntity.LiveEndDate.AddMinutes(min);
+                await unitOfWork.SaveChangesAsync();
+                return 1;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

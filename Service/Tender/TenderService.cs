@@ -418,5 +418,15 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<int> AddTime(long tenderId, int min) {
+            try {
+                int status = await tenderRepository.AddTime(tenderId, min);
+                
+                return status;
+            } catch {
+                throw;
+            }
+        }
+
     }
 }

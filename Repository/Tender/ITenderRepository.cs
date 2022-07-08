@@ -77,5 +77,7 @@ namespace MeroBolee.Repository
 
         Task<int> GetTenderStatus(long tenderId, long userId);
 
+        Task<int> AddTime(long tenderId, int min);
+
     }
 }

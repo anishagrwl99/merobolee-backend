@@ -609,6 +609,23 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        [HttpGet("Tender/AddTime")]
+        public async Task<IActionResult> AddTime([FromQuery] long tenderId, [FromQuery] int min)
+        {
+            try
+            {
+                int status = await tenderService.AddTime(tenderId, min);
+
+                return Ok(new Responses<int>(status, "200", $"{min} mintues has been added succesfully"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

@@ -66,5 +66,8 @@ namespace MeroBolee.Service
         Task<bool> DeleteTender(long tenderId);
 
         Task<int> GetTenderDetailBidInviterStatus(long tenderId);
+
+        Task<int> AddTime(long tenderId, int min);
+
     }
 }
