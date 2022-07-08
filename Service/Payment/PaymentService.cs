@@ -12,31 +12,33 @@ namespace MeroBolee.Service
 {
     public class PaymentService : IPaymentService
     {
-          private readonly PaymentValues paymentValues;
+        private readonly PaymentValues paymentValues;
 
-          public PaymentService(IOptions<PaymentValues> paymentValues)
-          {
-              this.paymentValues = paymentValues.Value;
-          }
+        public PaymentService(IOptions<PaymentValues> paymentValues)
+        {
+            this.paymentValues = paymentValues.Value;
+        }
         public async Task<ConnectIPSResponseDto> GenerateTokenConnectIPS(ConnectIPSRequestDto connectIPSRequestDto)
         {
             try
             {
-                string message = "MERCHANTID={merchantId}, APPID={appId}, APPNAME={appName}, TXNID={txnId}, TXNDATE={txnDate}, TXNCRNCY=NPR, TXNAMT={txnAmount}, REFERENCEID={referenceId}, REMARKS={remarks}, PARTICULARS={particulars}, TOKEN=TOKEN";
+                string message = "MERCHANTID={merchantId},APPID={appId},APPNAME={appName},TXNID={txnId},TXNDATE={txnDate},TXNCRNCY=NPR,TXNAMT={txnAmount},REFERENCEID={referenceId},REMARKS={remarks},PARTICULARS={particulars},TOKEN=TOKEN";
                 string randomTxnNumber = generateTransactionNumber(connectIPSRequestDto);
 
                 message = message.Replace("{merchantId}", paymentValues.MerchantId);
                 message = message.Replace("{appId}", paymentValues.AppId);
                 message = message.Replace("{appName}", paymentValues.AppName);
-                DateTime txnDateTime = DateTimeNPT.Now;
-                message = message.Replace("{txnDate}", txnDateTime.ToString());
+                string txnDateTime = DateTimeNPT.Now.ToString("dd-MM-yyyy").Substring(0, 10);
+                message = message.Replace("{txnDate}", txnDateTime.ToString().Substring(0, 10));
                 message = message.Replace("{txnAmount}", connectIPSRequestDto.TxnAmt.ToString());
                 message = message.Replace("{remarks}", connectIPSRequestDto.Remarks);
                 message = message.Replace("{particulars}", randomTxnNumber);
                 message = message.Replace("{txnId}", "TXN" + randomTxnNumber);
                 message = message.Replace("{referenceId}", "REF" + randomTxnNumber);
-                string particular = "PART" + randomTxnNumber;
-                message = message.Replace("{particulars}", particular);
+                message = message.Replace("{particulars}", randomTxnNumber);
+
+
+
 
                 string SHA256WithRSASignedString = ComputeSHA256Hash(message);
                 ConnectIPSResponseDto connectIPSResponseDto = new ConnectIPSResponseDto();
@@ -45,9 +47,12 @@ namespace MeroBolee.Service
                 connectIPSResponseDto.TxnTime = txnDateTime;
                 connectIPSResponseDto.TxnCurrency = "NPR";
                 connectIPSResponseDto.Remarks = connectIPSRequestDto.Remarks;
-                connectIPSResponseDto.Particulars = particular;
+                connectIPSResponseDto.Particulars = randomTxnNumber;
                 connectIPSResponseDto.ReferenceId = "REF" + randomTxnNumber;
                 connectIPSResponseDto.Token = SHA256WithRSASignedString;
+                connectIPSResponseDto.AppId = paymentValues.AppId;
+                connectIPSResponseDto.AppName = paymentValues.AppName;
+                connectIPSResponseDto.MerchantId = paymentValues.MerchantId;
 
                 return connectIPSResponseDto;
             }
@@ -58,11 +63,12 @@ namespace MeroBolee.Service
 
         }
 
-        public string ComputeSHA256Hash(string text)
+ public string ComputeSHA256Hash(string text)
         {
             try
             {
-                string path = @"C:\HostingSpaces\merobolee\office.merobolee.com\wwwroot\Resource\NHCL\CREDITOR.pfx";
+                //   string path = "CREDITOR.pfx";
+                 string path = @"C:\HostingSpaces\merobolee\office.merobolee.com\wwwroot\Resource\NHCL\CREDITOR.pfx";
                 byte[] certificate = File.ReadAllBytes(path);
                 X509Certificate2 cert2 = new X509Certificate2(certificate, "123", X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
                 SHA256Managed shHash = new SHA256Managed();
@@ -97,7 +103,7 @@ namespace MeroBolee.Service
             {
                 Random randomNumberGenerator = new Random();
                 randomNumberGenerator.Next(1000);
-                return DateTimeNPT.Now.ToString().Substring(0, 10).Replace("-", "") + connectIPSRequestDto.CompanyId + connectIPSRequestDto.TxnAmt + connectIPSRequestDto.UserId + (new Random()).Next(1000, 9999);
+                return DateTimeNPT.Now.ToString("dd-MM-yyyy").Substring(0, 10).Replace("-", "").Replace("/", "").Replace(" ", "") + connectIPSRequestDto.CompanyId + connectIPSRequestDto.TxnAmt + connectIPSRequestDto.UserId + (new Random()).Next(1000, 9999);
             }
             catch
             {

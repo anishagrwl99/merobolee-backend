@@ -10,7 +10,7 @@ namespace MeroBolee.Dto
         public string TxnId { get; set; }
         public string TxnCurrency { get; set; }
         public decimal TxnAmount { get; set; }
-        public DateTime TxnTime { get; set; }
+        public string TxnTime { get; set; }
 
         public string Remarks { get; set; }
 
@@ -18,5 +18,10 @@ namespace MeroBolee.Dto
 
         public string Token { get; set; }
         public string ReferenceId { get; set; }
+
+        public string MerchantId { get; set; }
+        public string AppName { get; set; }
+
+        public string AppId { get; set; }
     }
 }

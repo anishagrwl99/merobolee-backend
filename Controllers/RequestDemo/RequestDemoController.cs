@@ -33,7 +33,7 @@ namespace MeroBolee.Controllers.RequestDemo
                 {
                     RequestDemoService requestDemoService = new RequestDemoService();
                     string RequestDemoResponse = await IRequestDemoService.RequestDemo(requestDemoDto);
-                    return Ok(new Responses<string>(RequestDemoResponse, "200", "Request Demo Successfully"));
+                    return Ok(new Responses<string>(RequestDemoResponse, "200", "Thank you for contacting us. We will schedule your demo shortly!"));
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace MeroBolee.Controllers.RequestDemo
                 {
                     RequestDemoService requestDemoService = new RequestDemoService();
                     string RequestDemoResponse = await IRequestDemoService.ContactUs(requestDemoDto);
-                    return Ok(new Responses<string>(RequestDemoResponse, "200", "Request Demo Successfully"));
+                    return Ok(new Responses<string>(RequestDemoResponse, "200", "Thank you for contacting us. We will connect with you shortly!"));
                 }
                 else
                 {
