@@ -69,5 +69,10 @@ namespace MeroBolee.Service
 
         Task<int> AddTime(long tenderId, int min);
 
+        Task<int> EndTender(long tenderId);
+
+        Task<int> EnterBidRoomBidInviter(long tenderId, long comapnyId);
+
+
     }
 }

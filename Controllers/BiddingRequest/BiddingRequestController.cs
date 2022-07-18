@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace MeroBolee.Controllers.BiddingRequest
 {
@@ -23,15 +25,19 @@ namespace MeroBolee.Controllers.BiddingRequest
         private readonly ResponseMsg response = new ResponseMsg();
         private IUriService uriService;
 
+        private IMemoryCache memoryCache;
+
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="biddingRequestService"></param>
         /// <param name="streamService"></param>
-        public BiddingRequestController(IBiddingRequestService biddingRequestService, IMemoryStreamService streamService)
+        /// <param name="memoryCache"></param>
+        public BiddingRequestController(IBiddingRequestService biddingRequestService, IMemoryStreamService streamService, IMemoryCache memoryCache)
         {
             this.biddingRequestService = biddingRequestService;
             this.streamService = streamService;
+            this.memoryCache = memoryCache;
         }
 
 
@@ -61,8 +67,10 @@ namespace MeroBolee.Controllers.BiddingRequest
                     {
                         return Ok(new Responses<long>(bidId, "200", "Registration for bidding successful"));
                     }
-                    else
-                    {
+                    else if(bidId == -2) {
+                        return StatusCode(StatusCodes.Status401Unauthorized, new Responses<long>(-2, "401", "The tender has expired and you cannot apply to this tender"));
+                    }
+                    else {
                         return StatusCode(StatusCodes.Status302Found, new Responses<long>(-1, "302", "You have already registered for a tender"));
                     }
                 }
@@ -171,7 +179,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="addBiddingRequest"></param>
         /// <returns></returns>
         [HttpPost("Bidding/EnterLiveBiddingRoom")]
-        [Authorize(Roles = "Bidder")]
+        [Authorize(Roles = "Bidder, Bid Inviter")]
         public async Task<IActionResult> EnterLiveBiddingRoom([FromBody] AddBiddingRequestDto addBiddingRequest)
         {
             try
@@ -179,7 +187,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (!isCompanyVerified)
                 {
                     response.statusCode = "403";
-                    response.Message = "You can't enter a live bidding room";
+                    response.Message = "You can't enter the live bidding room";
                     response.Data = "Company not verified";
                     return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
                 }
@@ -194,7 +202,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     }
                     else
                     {
-                        return StatusCode(StatusCodes.Status403Forbidden, new Responses<long?>(null, "403", "You can't enter a live bidding room"));
+                        return StatusCode(StatusCodes.Status403Forbidden, new Responses<long?>(null, "403", "You can't enter the live bidding room"));
                     }
 
                 }
@@ -254,8 +262,8 @@ namespace MeroBolee.Controllers.BiddingRequest
             //return Ok(ResultAfterPagination(res, pagination, totalCount)); // To pass result in object along with pagination info
         }
 
-        [HttpGet("Admin/Bidding/FinalPosition")]
-        [Authorize(Roles = "Super Admin")]
+        [HttpGet("AdminAndBidInviter/Bidding/FinalPosition")]
+        [Authorize(Roles = "Super Admin, Bid Inviter")]
         public async Task<IActionResult> GetFinaliddingPosition([FromQuery] long tenderId)
         {
             try
@@ -268,11 +276,11 @@ namespace MeroBolee.Controllers.BiddingRequest
                 }
                 else if (res == null)
                 {
-                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "Final position for this tender could not be calculated"));
+                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "No bid for tender yet."));
                 }
                 else
                 {
-                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "Could not calculate position"));
+                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "No bid for tender yet."));
                 }
             }
             catch (Exception e)
@@ -337,6 +345,10 @@ namespace MeroBolee.Controllers.BiddingRequest
                 if (ModelState.IsValid)
                 {
                     LiveBidResponse res = await biddingRequestService.LiveBid(bidRequest);
+                    string liveBidKey = $"{bidRequest.TenderId}_{bidRequest.CompanyId}_LiveBid";
+                    DateTime expiryTime = DateTimeNPT.Now;
+                    expiryTime = expiryTime.AddHours(5);
+                    memoryCache.Set<LiveBidResponse>(liveBidKey, res, expiryTime);
 
                     if (res != null && res.IsBidSuccess)
                     {
@@ -367,7 +379,18 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
         }
 
-
+        [HttpPost("Bidding/LiveBidCache")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> LiveBidFromCache([FromBody] LiveBidFromCache bidRequest) {
+            try {
+                LiveBidResponse liveBidResponse = null;
+                string liveBidKey = $"{bidRequest.tenderId}_{bidRequest.companyId}_LiveBid";
+                memoryCache.TryGetValue<LiveBidResponse>(liveBidKey, out liveBidResponse);
+                return Ok(new Responses<LiveBidResponse>(liveBidResponse, "200", liveBidResponse.Message)); 
+            } catch {
+                throw;
+            }
+        }
 
         /// <summary>
         /// Get a remaining time interval to bid a tender
@@ -376,7 +399,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <returns></returns>
 
         [HttpGet("Bidding/CheckBiddingTime")]
-        [Authorize(Roles = "Bidder")]
+        [Authorize(Roles = "Bidder, Bid Inviter")]
         public async Task<IActionResult> CheckBiddingTime([FromQuery] long tenderId)
         {
             try
@@ -460,6 +483,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<BidHistoryCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId);
+                BiddingRequest = BiddingRequest.OrderByDescending(x => x.LiveEndDate);
                 int totalCount = BiddingRequest.Count();
                 if (totalCount == 0)
                 {
@@ -536,6 +560,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     List<BidInviterAuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    logs = logs.OrderByDescending(x => x.LogDate).ToList();
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
@@ -577,6 +602,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     List<BidInviterAuctionLog> logs = await biddingRequestService.GetTenderAuctionLogForBidInviter(dto.TenderId);
+                    logs = logs.OrderByDescending(x => x.LogDate).ToList();
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
@@ -623,6 +649,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
+                    logs = logs.OrderByDescending(x => x.LogDate).ToList();
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
@@ -665,6 +692,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     List<AuctionLog> logs = await biddingRequestService.GetTenderAuctionLog(dto.CompanyId, dto.TenderId);
+                    logs = logs.OrderByDescending(x => x.LogDate).ToList();
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {
@@ -703,6 +731,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     List<AuctionLog> logs = await biddingRequestService.GetAuctionLogForAdmin(tenderId);
+                    logs = logs.OrderByDescending(x => x.LogDate).ToList();
                     int totalCount = logs.Count();
                     if (totalCount == 0)
                     {

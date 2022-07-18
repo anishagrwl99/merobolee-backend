@@ -421,6 +421,32 @@ namespace MeroBolee.Service
         public async Task<int> AddTime(long tenderId, int min) {
             try {
                 int status = await tenderRepository.AddTime(tenderId, min);
+                AddTimeDto addTimeDto = new AddTimeDto();
+                addTimeDto.status = status;
+                addTimeDto.min = min;
+                addTimeDto.tenderId = tenderId;
+                string addTimeKey = $"{tenderId} + _AddTimeKey";
+                DateTime dateTime = DateTimeNPT.Now;
+                cache.Set<AddTimeDto>(addTimeKey, addTimeDto, dateTime.AddHours(12));
+                return status;
+            } catch {
+                throw;
+            }
+        }
+
+         public async Task<int> EndTender(long tenderId) {
+            try {
+                int status = await tenderRepository.EndTender(tenderId);
+                
+                return status;
+            } catch {
+                throw;
+            }
+        }
+
+        public async Task<int> EnterBidRoomBidInviter(long tenderId, long companyId) {
+            try {
+                int status = await tenderRepository.EnterBidRoomBidInviter(tenderId, companyId);
                 
                 return status;
             } catch {

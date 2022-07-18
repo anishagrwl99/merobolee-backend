@@ -91,5 +91,9 @@ namespace MeroBolee.Dto
 
         [JsonIgnore]
         public int FullIntervalCountWithoutReceivingBid { get; set; }
+
+        public int isTimeAdded { get; set; }
+
+        public int totalMinutesAdded { get; set; }
     }
 }

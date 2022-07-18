@@ -1061,5 +1061,37 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<int> EndTender(long tenderId)
+        {
+            try
+            {
+                if(tenderId < 0) return 0;
+                TenderEntity tenderEntity = await meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).FirstOrDefaultAsync();
+                tenderEntity.LiveEndDate = DateTimeNPT.Now;
+                await unitOfWork.SaveChangesAsync();
+                return 1;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<int> EnterBidRoomBidInviter(long tenderId, long comapnyId)
+        {
+            try
+            {
+                TenderEntity tenderEntity = await meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).FirstOrDefaultAsync();
+                if(tenderEntity.CompanyId == comapnyId) return 1;
+                else return 0;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

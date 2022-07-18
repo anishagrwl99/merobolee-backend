@@ -194,6 +194,7 @@ namespace MeroBolee.Controllers.Tender
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<TenderCard> tenders = await tenderService.GetBidIniviterTenderHistory(companyId, search);
+                tenders.OrderByDescending(x => x.LiveEndDate);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -610,13 +611,59 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Tender/AddTime")]
+        [Authorize(Roles = "Bid Inviter")]
+
         public async Task<IActionResult> AddTime([FromQuery] long tenderId, [FromQuery] int min)
         {
             try
             {
                 int status = await tenderService.AddTime(tenderId, min);
 
-                return Ok(new Responses<int>(status, "200", $"{min} mintues has been added succesfully"));
+                return Ok(new Responses<int>(status, "200", $"{min} minute(s) has been added succesfully"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpGet("Tender/EndTender")]
+        [Authorize(Roles = "Bid Inviter")]
+
+        public async Task<IActionResult> EndTender([FromQuery] long tenderId)
+        {
+            try
+            {
+                int status = await tenderService.EndTender(tenderId);
+
+                return Ok(new Responses<int>(status, "200", $"Tender with tenderId: {tenderId} ended successfully"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("BidInvter/EnterBiddingRoom")]
+        [Authorize(Roles = "Bid Inviter")]
+
+        public async Task<IActionResult> EnterBidRoomBidInviter([FromQuery] long tenderId, [FromQuery] long companyId)
+        {
+            try
+            {
+                int status = await tenderService.EnterBidRoomBidInviter(tenderId, companyId);
+                if(status == 1) {
+                    return Ok(new Responses<int>(status, "200", "Bid Inviter allowed to enter bidding room"));
+                } else {
+                     response.statusCode = "404";
+                     response.Message = "Inviter not allowed to enter in bidding room";
+                     return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
+                }
+                return Ok(new Responses<int>(status, "200", $"Tender with tenderId: {tenderId} ended successfully"));
             }
             catch (Exception e)
             {

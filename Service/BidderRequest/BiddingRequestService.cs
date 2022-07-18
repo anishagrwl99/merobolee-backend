@@ -52,6 +52,12 @@ namespace MeroBolee.Service
                 {
                     //tring companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
                     BidRequestEntity bidRequest = ToEntity(dto /*, companyFolder, fileService*/);
+
+                    MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                    TenderEntity tenderEntity = meroBoleeDbContext.TenderEntities.Where(x => x.Id == dto.TenderId).FirstOrDefault();
+                    if(tenderEntity.LiveStartDate < DateTimeNPT.Now) {
+                        return -2;
+                    }
                     bidRequest = await bidRequestRepository.RegisterForBidding(bidRequest);
                     return bidRequest.Id;
                 }
@@ -373,7 +379,24 @@ namespace MeroBolee.Service
                    resetBidDto.RemainingSecond = (int)(totalRemainingTimeSec  % (tenderEntity.LiveInterval * 60)) % 60;
                 }
                 resetBidDto.Interval = tenderEntity.LiveInterval;
+                // resetBidDto.RoundNumber = 5;
+
+                resetBidDto.TenderLiveEndDate = tenderEntity.LiveEndDate;
+                resetBidDto.TenderLiveStartDate = tenderEntity.LiveStartDate;
+
                 resetBidDto.RoundNumber = (int)(timeElapsedMin / tenderEntity.LiveInterval) + 1;
+
+                AddTimeDto addTimeDto = null;
+                string addTimeKey = $"{tenderId} + _AddTimeKey";
+                memoryCache.TryGetValue(addTimeKey, out addTimeDto);
+
+                if(addTimeDto == null) resetBidDto.isTimeAdded = 0;
+                else if (addTimeDto != null)
+                {
+                    resetBidDto.isTimeAdded = 1;
+                    resetBidDto.totalMinutesAdded = addTimeDto.min;
+                }
+
                 return resetBidDto;
             });
         }
