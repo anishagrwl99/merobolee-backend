@@ -732,5 +732,18 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public void SaveToQuotationEntity(QuotationEntity quotationEntity) 
+        {
+            try 
+            {
+                meroBoleeDbContexts.QuotationEntities.Add(quotationEntity);
+                unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+        }
     }
 }

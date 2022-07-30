@@ -210,10 +210,10 @@ namespace MeroBolee.Service
                     string batch = $"Tender_Batch_{materialDto.SupplierId}_{materialDto.TenderId}";
                     long batchNo = 0;
                     memoryCache.TryGetValue<long>(batch, out batchNo);
-
                     List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService, batchNo);
                     //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
                     entities = bidRequestRepository.LiveBid(entities);
+                    SaveToQuotationTable(materialDto);
 
                     if (entities != null) //if tender is not expired 
                     {
@@ -1086,6 +1086,21 @@ namespace MeroBolee.Service
             }
         }
 
-        
+        public async void SaveToQuotationTable(TenderMaterialBiddingDto tenderMaterialBiddingDto) 
+        {
+            QuotationEntity quotationEntity;
+            foreach(TenderMaterialQuotationDto tenderMaterialQuotationDto in tenderMaterialBiddingDto.MaterialQuotation) 
+            {
+                quotationEntity = new QuotationEntity();
+                quotationEntity.TenderId = tenderMaterialBiddingDto.TenderId;
+                quotationEntity.UserId = tenderMaterialBiddingDto.SupplierId;
+                quotationEntity.Quantity = tenderMaterialQuotationDto.Quantity;
+                quotationEntity.UnitPrice = tenderMaterialQuotationDto.UnitPrice;
+                quotationEntity.Units = tenderMaterialQuotationDto.Unit;
+                quotationEntity.Quotation = cryptoService.Encrypt(tenderMaterialQuotationDto.Quotation.ToString());
+                quotationEntity.MaterialId = tenderMaterialQuotationDto.MaterialId;
+                bidRequestRepository.SaveToQuotationEntity(quotationEntity);
+            }
+        }
     }
 }

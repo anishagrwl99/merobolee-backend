@@ -148,5 +148,7 @@ namespace MeroBolee.Repository
         Task<List<PositionAmountDto>> GetFinalBiddingPosition(long tenderId);
 
         Task<string> FindCompanyName(long userId);
+
+        void SaveToQuotationEntity(QuotationEntity quotationEntity);
     }
 }
