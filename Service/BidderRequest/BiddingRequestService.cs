@@ -311,8 +311,11 @@ namespace MeroBolee.Service
                             BiddingRequestId = bidDto.BiddingId,
                             TenderId = bidDto.TenderId,
                             MaterialId = q.MaterialId,
-                            Quotation = DescreaseQuotationByPercent(bidDto.Percentage, ent.Quotation)
-                        });
+                            Quotation = ent.Quotation,
+                            UnitPrice = DescreaseQuotationByPercent(bidDto.Percentage, q.UnitPrice),
+                            Units = q.Unit,
+                            Quantity = q.Quantity
+                    });
                     }
                 }
 
@@ -325,7 +328,10 @@ namespace MeroBolee.Service
                 response.MaterialQuotation = entities.Select(x => new TenderMaterialQuotationDto
                 {
                     MaterialId = x.MaterialId,
-                    Quotation = cryptoService.Decrypt<decimal>(x.Quotation)
+                    Unit = x.Units,
+                    Quantity = x.Quantity,
+                    UnitPrice = x.UnitPrice,
+                    Quotation = x.UnitPrice * x.Quantity
                 }).ToList();
                 response.IsBidSuccess = true;
                 return response;
@@ -379,12 +385,12 @@ namespace MeroBolee.Service
                    resetBidDto.RemainingSecond = (int)(totalRemainingTimeSec  % (tenderEntity.LiveInterval * 60)) % 60;
                 }
                 resetBidDto.Interval = tenderEntity.LiveInterval;
-                // resetBidDto.RoundNumber = 5;
 
                 resetBidDto.TenderLiveEndDate = tenderEntity.LiveEndDate;
                 resetBidDto.TenderLiveStartDate = tenderEntity.LiveStartDate;
 
                 resetBidDto.RoundNumber = (int)(timeElapsedMin / tenderEntity.LiveInterval) + 1;
+                // resetBidDto.RoundNumber = 6;
 
                 AddTimeDto addTimeDto = null;
                 string addTimeKey = $"{tenderId} + _AddTimeKey";
@@ -986,11 +992,9 @@ namespace MeroBolee.Service
         }
 
 
-        private string DescreaseQuotationByPercent(decimal percentage, string prevQuotation)
+        private decimal DescreaseQuotationByPercent(decimal percentage, decimal prevQuotation)
         {
-            decimal quotation = cryptoService.Decrypt<decimal>(prevQuotation);
-            quotation = quotation - (percentage * quotation) / 100; //decrease quotation by x%
-            return cryptoService.Encrypt(quotation.ToString());
+            return prevQuotation - (percentage * prevQuotation) / 100; //decrease quotation by x%
         }
 
 

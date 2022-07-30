@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MeroBolee.Utility;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace MeroBolee.Service
 {
@@ -18,11 +20,16 @@ namespace MeroBolee.Service
         private readonly IUserRepository userRepository;
         private readonly ICryptoService cryptoService;
         private IUploadFile uploadImage;
-        public UserService(IUserRepository userRepository, ICryptoService cryptoService, IUploadFile uploadFileService)
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+        public UserService(IUserRepository userRepository, ICryptoService cryptoService, IUploadFile uploadFileService,  UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             this.userRepository = userRepository;
             this.cryptoService = cryptoService;
             this.uploadImage = uploadFileService;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         public async Task<GetUserDto> AddUser(AddUserDto userDto)
         {
@@ -211,6 +218,17 @@ namespace MeroBolee.Service
                     dto.Password = cryptoService.Encrypt(dto.Password);
                     dto.ConfirmationPassword = dto.Password;
                     bool isChanged = await userRepository.ChangeUserPassword(dto);
+                    MeroBoleeDbContext dbContext = new MeroBoleeDbContext();
+                    UserEntity userEntity = dbContext.UserEntities.Where(x => x.Id == dto.UserId).FirstOrDefault();
+
+                    var user = await userManager.FindByEmailAsync(userEntity.Email);
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await userManager.ResetPasswordAsync(user, token, dto.ConfirmationPassword);
+                    if(result.Succeeded) {
+                        isChanged = true;
+                    } else {
+                        isChanged = false;
+                    }
                     return isChanged;
                 }
                 else

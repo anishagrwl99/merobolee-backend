@@ -373,6 +373,7 @@ namespace MeroBolee.Service
              try
             {
                 int tenderStatus = await tenderRepository.GetTenderStatus(tenderId, userId);
+                TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
                 TenderStatusDto tenderStatusDto = new TenderStatusDto();
                 if(tenderStatus == 1) {
                     tenderStatusDto.Status = "Pending Approval";
@@ -406,7 +407,7 @@ namespace MeroBolee.Service
             try {
                 TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
                 int tenderStatus = tenderEntity.StatusId;
-                if(tenderEntity.LiveStartDate >= DateTimeNPT.Now || tenderEntity.LiveStartDate < DateTimeNPT.Now) {
+                if(tenderEntity.LiveStartDate <= DateTimeNPT.Now && tenderEntity.LiveEndDate > DateTimeNPT.Now) {
                     tenderStatus = 4;
                 }
                 if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {

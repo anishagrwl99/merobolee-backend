@@ -23,7 +23,7 @@ namespace MeroBolee.Model
         [ForeignKey("TenderEntity")]
         public long TenderId { get; set; }
 
-        public int TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
 
 
         [ForeignKey("TenderMaterialEntity")]
@@ -32,6 +32,12 @@ namespace MeroBolee.Model
         [MaxLength(300)]
         [Required]
         public string Quotation { get; set; }
+
+        public string Units { get; set; }
+
+        public int Quantity { get; set; }
+
+        public decimal UnitPrice { get; set; }
 
         public long BatchNo { get; set; }
 

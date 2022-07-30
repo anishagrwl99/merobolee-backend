@@ -111,7 +111,7 @@ namespace MeroBolee.Dto
         public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
         public DateTime BiddingDate { get; set; }
 
-        public int totalAmount { get; set;}
+        public decimal totalAmount { get; set;}
     }
 
     public class TenderAutoBidDto : TenderMaterialBiddingDto
@@ -133,7 +133,11 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid quotation amount")]
         public decimal Quotation { get; set; }
 
+        public string Unit { get; set; }
 
+        public int Quantity { get; set; }
+
+        public decimal UnitPrice { get; set; }
 
         /// <summary>
         /// True if material quotation is available in memory cache. No need to pass value from caller as it is maintained within application

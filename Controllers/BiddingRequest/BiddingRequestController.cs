@@ -382,13 +382,18 @@ namespace MeroBolee.Controllers.BiddingRequest
         [HttpPost("Bidding/LiveBidCache")]
         [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> LiveBidFromCache([FromBody] LiveBidFromCache bidRequest) {
-            try {
+            try 
+            {
                 LiveBidResponse liveBidResponse = null;
                 string liveBidKey = $"{bidRequest.tenderId}_{bidRequest.companyId}_LiveBid";
                 memoryCache.TryGetValue<LiveBidResponse>(liveBidKey, out liveBidResponse);
                 return Ok(new Responses<LiveBidResponse>(liveBidResponse, "200", liveBidResponse.Message)); 
-            } catch {
-                throw;
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

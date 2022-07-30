@@ -20,7 +20,7 @@ namespace MeroBolee.Service
                 string demoRequestBy = "DEMO REQUEST BY : ";
                 string senderName = "Request Demo";
                 string toName = "REQUEST DEMO";
-                string fromEmailId = "requestdemo@merobolee.com";
+                string fromEmailId = "support@merobolee.com";
                 SendEmailResponseDto sendEmailResponseDto = RequestDemoEmail(requestDemoDto, demoRequestBy, senderName, toName, fromEmailId);
                 return sendEmailResponseDto.response;
             } catch {

@@ -169,7 +169,7 @@ namespace MeroBolee.Controllers
 
         [HttpDelete("Document/Delete")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Super Admin, Bidder, Bid Inviter")]
-        public async Task<IActionResult> DeleteDocument([FromBody] long documentId)
+        public async Task<IActionResult> DeleteDocument([FromQuery] long documentId)
         {
             try
             {
