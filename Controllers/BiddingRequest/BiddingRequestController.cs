@@ -855,7 +855,7 @@ namespace MeroBolee.Controllers.BiddingRequest
             catch (Exception e)
             {
                 response.statusCode = "500";
-                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                response.Message = $"{e.Message} Inner Message:  {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
