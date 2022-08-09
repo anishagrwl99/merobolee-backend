@@ -733,15 +733,58 @@ namespace MeroBolee.Repository
             }
         }
 
-        public void SaveToQuotationEntity(QuotationEntity quotationEntity) 
+        public async Task<List<QuotationEntity>> SaveToQuotationEntity(List<QuotationEntity> quotations) 
         {
             try 
             {
-                meroBoleeDbContexts.QuotationEntities.Add(quotationEntity);
-                unitOfWork.SaveChangesAsync();
+                Console.WriteLine("Inside Quotation Save");
+                meroBoleeDbContexts.QuotationEntities.AddRange(quotations);
+                await unitOfWork.SaveChangesAsync();
+                return quotations;
             }
             catch (Exception) 
             {
+                throw;
+            }
+        }
+
+        public async Task<List<QuotationResponseDto>> GenerateBill(long TenderId, long UserId) 
+        {
+            try
+            {
+                // var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
+                //     .Select(x => new
+                //     {
+                //         Amount = x.Min(o => o.Amount),
+                //         UserId = x.Key.UserId
+                //     }).OrderBy(x => x.Amount).ToArray();
+                var quotationEntities = meroBoleeDbContexts.QuotationEntities.Where(x => x.TenderId == TenderId).Where(x => x.UserId == UserId).ToList();
+                var quote = quotationEntities.GroupBy(x => new { x.MaterialId })
+                .Select(x => new
+                {
+                    MaterailId = x.Key.MaterialId,
+                    UnitPrice = x.Min(o => o.UnitPrice),
+                }).OrderBy(x => x.UnitPrice).ToArray();
+
+                List<QuotationResponseDto> quotationResponseDtoList = new List<QuotationResponseDto>();
+                for (int i = 0; i < quote.Length; i++)
+                {
+                    QuotationResponseDto quotationResponseDto = new QuotationResponseDto();
+                    quotationResponseDto.UnitPrice = quote[i].UnitPrice;
+                    quotationResponseDto.MaterialId = quote[i].MaterailId;
+                    quotationResponseDto.Quantity = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
+                    quotationResponseDto.Units = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Units).FirstOrDefaultAsync();
+                    quotationResponseDto.Quotation = quote[i].UnitPrice * await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
+                    quotationResponseDto.MaterialName = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.Id == quote[i].MaterailId).Where(x => x.TenderId == TenderId).Select(x => x.Materials).FirstOrDefaultAsync();
+                    quotationResponseDtoList.Add(quotationResponseDto);
+                }
+
+
+                Console.WriteLine(quote);
+                return quotationResponseDtoList;
+            } 
+           catch 
+           {
                 throw;
             }
         }

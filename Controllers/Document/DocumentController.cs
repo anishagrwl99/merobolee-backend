@@ -173,7 +173,7 @@ namespace MeroBolee.Controllers
         {
             try
             {
-                if (documentId == 0 || documentId == null)
+                if (documentId == 0)
                 {
                     response.statusCode = "400";
                     response.Message = "Invalid Document Id or Document Not found";

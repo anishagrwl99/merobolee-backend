@@ -836,7 +836,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// <param name="tenderId"></param>
         /// <returns></returns>
         [HttpGet("Bidding/Admin/Registrations")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
+        [Authorize(Roles = "Super Admin, Tender Support, Customer Support, Bid Inviter")]
         public async Task<IActionResult> Registrations([FromQuery] PaginationQuery pagination, [FromQuery] long tenderId)
         {
             try
@@ -954,6 +954,38 @@ namespace MeroBolee.Controllers.BiddingRequest
                         return StatusCode(StatusCodes.Status409Conflict, new ErrorResponse<ResponseMsg>(response));
                     }
                     return Ok(new Responses<long>(id, "200", "Tender winner selected"));
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Tender/Generate/Bill")]
+        public async Task<IActionResult> GenerateBill([FromQuery] long TenderId, [FromQuery] long UserId)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    GenerateBillResponseDto quotationEntities = await biddingRequestService.GenerateBill(TenderId, UserId);
+                    if (quotationEntities == null)
+                    {
+                        response.statusCode = "500";
+                        response.Message = "Could Not Generate Bill for Tender";
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                    }
+                    return Ok(new Responses<GenerateBillResponseDto>(quotationEntities, "200", "Bill is Generated"));
                 }
                 else
                 {

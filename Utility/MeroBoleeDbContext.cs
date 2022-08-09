@@ -72,6 +72,8 @@ namespace MeroBolee.Utility
         public DbSet<TechnicalSupportStatus> TechnicalSupportStatuses { get; set; }
         public DbSet<TechnicalSupportEntity> TechnicalSupportEntities { get; set; }
 
+        public DbSet<QuotationEntity> QuotationEntities { get; set; }
+
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
         }

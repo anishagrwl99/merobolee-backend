@@ -5,17 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MeroBolee.Model
 {
     [Table("mb_supplier_quotation")]
-    public class QuotationEntity : BaseEntity
+    public class QuotationEntity 
     {
-        [ForeignKey("UserEntity")]
-        public long UserId { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
+        public int UserId { get; set; }
 
-        [ForeignKey("TenderEntity")]
-        public long TenderId { get; set; }
+        public int TenderId { get; set; }
 
-        [ForeignKey("TenderMaterialEntity")]
-        public long MaterialId { get; set; }
+        public int MaterialId { get; set; }
 
         [MaxLength(300)]
         [Required]

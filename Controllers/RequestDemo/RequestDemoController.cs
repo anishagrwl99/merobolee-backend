@@ -15,9 +15,6 @@ namespace MeroBolee.Controllers.RequestDemo
     public class RequestDemoController : Controller
     {
        private readonly ResponseMsg response = new ResponseMsg();
-
-       private IUriService uriService;
-
         private readonly IRequestDemoService IRequestDemoService;
 
         public RequestDemoController(IRequestDemoService IRequestDemoService)

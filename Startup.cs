@@ -28,6 +28,9 @@ using Hangfire;
 using Hangfire.SqlServer;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using MeroBolee.Service.Inovice;
 
 namespace MeroBolee
 {
@@ -73,6 +76,7 @@ namespace MeroBolee
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.Configure<SMTPServerInfo>(Configuration.GetSection("EmailConfig"));
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
@@ -216,6 +220,8 @@ namespace MeroBolee
             services.AddScoped<IBiddingRequestService, BiddingRequestService>();
             services.AddScoped<IBidderRequestRepository, BidderRequestRepository>();
 
+            services.AddScoped<InovicePdfService, InvoicePdfServiceImpl>();
+
             //FAQ
             services.AddScoped<IFAQRepository, FAQRepository>();
             services.AddScoped<IFAQService, FAQService>();
@@ -290,6 +296,7 @@ namespace MeroBolee
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
+
 
             // Add the Hangfire server
             services.AddHangfireServer();

@@ -213,7 +213,7 @@ namespace MeroBolee.Service
                     List<LiveBiddingEntity> entities = MaterialBiddingDtoToLiveBiddingEntity(materialDto, cryptoService, batchNo);
                     //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
                     entities = bidRequestRepository.LiveBid(entities);
-                    SaveToQuotationTable(materialDto);
+                    await SaveToQuotationTable(materialDto);
 
                     if (entities != null) //if tender is not expired 
                     {
@@ -1086,20 +1086,47 @@ namespace MeroBolee.Service
             }
         }
 
-        public async void SaveToQuotationTable(TenderMaterialBiddingDto tenderMaterialBiddingDto) 
+        public async Task<List<QuotationEntity>> SaveToQuotationTable(TenderMaterialBiddingDto tenderMaterialBiddingDto) 
         {
             QuotationEntity quotationEntity;
+            List<QuotationEntity> quotations = new List<QuotationEntity>();
+            // Console.WriteLine("Started quotation saving");
+
             foreach(TenderMaterialQuotationDto tenderMaterialQuotationDto in tenderMaterialBiddingDto.MaterialQuotation) 
             {
                 quotationEntity = new QuotationEntity();
-                quotationEntity.TenderId = tenderMaterialBiddingDto.TenderId;
-                quotationEntity.UserId = tenderMaterialBiddingDto.SupplierId;
+                quotationEntity.TenderId = (int)tenderMaterialBiddingDto.TenderId;
+                quotationEntity.UserId = (int)tenderMaterialBiddingDto.SupplierId;
                 quotationEntity.Quantity = tenderMaterialQuotationDto.Quantity;
                 quotationEntity.UnitPrice = tenderMaterialQuotationDto.UnitPrice;
                 quotationEntity.Units = tenderMaterialQuotationDto.Unit;
                 quotationEntity.Quotation = cryptoService.Encrypt(tenderMaterialQuotationDto.Quotation.ToString());
-                quotationEntity.MaterialId = tenderMaterialQuotationDto.MaterialId;
-                bidRequestRepository.SaveToQuotationEntity(quotationEntity);
+                quotationEntity.MaterialId = (int)tenderMaterialQuotationDto.MaterialId;
+                quotations.Add(quotationEntity);
+            }
+            //  Console.WriteLine("Size of quotationList = " + quotations.Count);
+             List<QuotationEntity> response = await bidRequestRepository.SaveToQuotationEntity(quotations);
+            //  Console.WriteLine("Size of quotationList = " + quotations.Count + "Saved successfully? = " + response);
+            return response;
+        }
+
+        public async Task<GenerateBillResponseDto> GenerateBill(long TenderId, long UserId)
+        {
+            try
+            {
+                List<QuotationResponseDto> quotationEntities = await bidRequestRepository.GenerateBill(TenderId, UserId);
+                decimal totalQuotation = quotationEntities.Sum(x => x.Quotation);
+                FinalPositionResponseDto finalPositionResponseDto = await GetFinalBiddingPositionForBidder(TenderId, UserId);
+                GenerateBillResponseDto generateBillResponseDto = new GenerateBillResponseDto();
+                generateBillResponseDto.QuotationResponseDtoList = quotationEntities;
+                generateBillResponseDto.FinalPosition = finalPositionResponseDto.position;
+                generateBillResponseDto.TotalQuotation = totalQuotation;
+                generateBillResponseDto.CompanyName = finalPositionResponseDto.companyName;
+                return generateBillResponseDto;
+            }
+            catch
+            {
+                throw;
             }
         }
     }

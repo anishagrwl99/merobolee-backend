@@ -1,8 +1,7 @@
 ﻿using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace MeroBolee.Repository
@@ -12,8 +11,8 @@ namespace MeroBolee.Repository
     /// <summary>
     /// Technical Support Repo
     /// </summary>
-    /// <seealso cref="MeroBolee.Infrastructure.RepositoryBase&lt;MeroBolee.Model.TechnicalSupportEntity&gt;" />
-    /// <seealso cref="MeroBolee.Repository.RequestHelp.ITechnicalSupportpRepository" />
+    // / <seealso cref="MeroBolee.Infrastructure.RepositoryBase&lt;MeroBolee.Model.TechnicalSupportEntity&gt;" />
+    // / <seealso cref="MeroBolee.Repository.RequestHelp.ITechnicalSupportpRepository" />
     public class TechnicalSupportRepository : RepositoryBase<TechnicalSupportEntity >, ITechnicalSupportRepository
     {
         private readonly IUnitOfWork unitOfWork;

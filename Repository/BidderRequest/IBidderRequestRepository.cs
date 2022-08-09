@@ -149,6 +149,10 @@ namespace MeroBolee.Repository
 
         Task<string> FindCompanyName(long userId);
 
-        void SaveToQuotationEntity(QuotationEntity quotationEntity);
+        Task<List<QuotationEntity>> SaveToQuotationEntity(List<QuotationEntity> quotations);
+
+        Task<List<QuotationResponseDto>> GenerateBill(long TenderId, long UserId);
+
+
     }
 }

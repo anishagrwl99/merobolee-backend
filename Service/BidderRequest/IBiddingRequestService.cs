@@ -98,5 +98,7 @@ namespace MeroBolee.Service
 
         Task<FinalPositionResponseDto> GetFinalBiddingPositionForBidder(long tenderId, long userId);
 
+        Task<GenerateBillResponseDto> GenerateBill(long TenderId, long UserId);
+
     }
 }

@@ -146,6 +146,8 @@ namespace MeroBolee.Controllers.FAQ
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
+        /// <param name="getFAQ"></param>
+        /// <param name="totalCount"></param>
 
         private PagedResponse<FAQResponseDto> ResultAfterPagination(IEnumerable<FAQResponseDto> getFAQ, PaginationQuery pagination, int totalCount)
         {

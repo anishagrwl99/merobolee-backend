@@ -103,7 +103,7 @@ namespace MeroBolee.Service
             {
                 Random randomNumberGenerator = new Random();
                 randomNumberGenerator.Next(1000);
-                return DateTimeNPT.Now.ToString("dd-MM-yyyy").Substring(0, 10).Replace("-", "").Replace("/", "").Replace(" ", "") + connectIPSRequestDto.CompanyId + connectIPSRequestDto.TxnAmt + connectIPSRequestDto.UserId + (new Random()).Next(1000, 9999);
+                return DateTimeNPT.Now.ToString("dd-MM-yyyy").Substring(0, 10).Replace("-", "").Replace("/", "").Replace(" ", "") + connectIPSRequestDto.CompanyId  + connectIPSRequestDto.UserId + (new Random()).Next(1000, 9999);
             }
             catch
             {
