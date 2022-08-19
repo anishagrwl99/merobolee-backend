@@ -376,16 +376,42 @@ namespace MeroBolee.Service
                 TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
                 TenderStatusDto tenderStatusDto = new TenderStatusDto();
                 if(tenderStatus == 1) {
-                    tenderStatusDto.Status = "Pending Approval";
-                    tenderStatusDto.StatusId = tenderStatus;
+                    if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {
+                        tenderStatusDto.Status = "Rejected";
+                        tenderStatusDto.StatusId = 4;
+                    } 
+                    else 
+                    {
+                        tenderStatusDto.Status = "Pending Approval";
+                        tenderStatusDto.StatusId = tenderStatus;
+                    }
                     return tenderStatusDto;
                 } else if (tenderStatus == 2) {
-                    tenderStatusDto.Status = "Approved";
-                    tenderStatusDto.StatusId = tenderStatus;
+                    if(tenderEntity.LiveStartDate <= DateTimeNPT.Now && tenderEntity.LiveEndDate > DateTimeNPT.Now) {
+                        tenderStatusDto.Status = "Live";
+                        tenderStatusDto.StatusId = 5;
+                    }
+                    else if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {
+                        tenderStatusDto.Status = "Completed";
+                        tenderStatusDto.StatusId = 6;
+                    } 
+                    else
+                    {
+                        tenderStatusDto.Status = "Approved";
+                        tenderStatusDto.StatusId = tenderStatus;
+                    }
                     return tenderStatusDto;
                 } else if (tenderStatus == 3) {
-                    tenderStatusDto.Status = "Require More Documents";
-                    tenderStatusDto.StatusId = tenderStatus;
+                    if (tenderEntity.LiveEndDate < DateTimeNPT.Now)
+                    {
+                        tenderStatusDto.Status = "Rejected";
+                        tenderStatusDto.StatusId = 4;
+                    }
+                    else
+                    {
+                        tenderStatusDto.Status = "Require More Documents";
+                        tenderStatusDto.StatusId = tenderStatus;
+                    }
                     return tenderStatusDto;
                 } else if (tenderStatus == 4) {
                     tenderStatusDto.Status = "Rejected";

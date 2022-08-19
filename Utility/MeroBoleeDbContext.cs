@@ -73,6 +73,7 @@ namespace MeroBolee.Utility
         public DbSet<TechnicalSupportEntity> TechnicalSupportEntities { get; set; }
 
         public DbSet<QuotationEntity> QuotationEntities { get; set; }
+        public DbSet<PaymentDetailEntity> PaymentDetailEntities { get; set;}
 
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {

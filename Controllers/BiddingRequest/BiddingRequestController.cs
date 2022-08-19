@@ -381,7 +381,7 @@ namespace MeroBolee.Controllers.BiddingRequest
 
         [HttpPost("Bidding/LiveBidCache")]
         [Authorize(Roles = "Bidder")]
-        public async Task<IActionResult> LiveBidFromCache([FromBody] LiveBidFromCache bidRequest) {
+        public IActionResult LiveBidFromCache([FromBody] LiveBidFromCache bidRequest) {
             try 
             {
                 LiveBidResponse liveBidResponse = null;

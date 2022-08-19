@@ -9,7 +9,7 @@ namespace MeroBolee.Dto
     {
         public string TxnId { get; set; }
         public string TxnCurrency { get; set; }
-        public decimal TxnAmount { get; set; }
+        public long TxnAmount { get; set; }
         public string TxnTime { get; set; }
 
         public string Remarks { get; set; }
