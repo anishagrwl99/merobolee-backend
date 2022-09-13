@@ -22,7 +22,7 @@ namespace MeroBolee.Service
             return Task.Run(() =>
             {
                 string val = "";
-                string uniqueVal = DateTime.Now.ToString("yyMMdd");
+                string uniqueVal = DateTimeNPT.Now.ToString("yyMMdd");
                 switch (type)
                 {
                     case ReferenceEnum.Bidder:

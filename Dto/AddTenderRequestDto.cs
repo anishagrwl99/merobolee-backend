@@ -151,6 +151,7 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Tender material Units is required")]
         [MaxLength(500, ErrorMessage = "Tender material Units can be {1} character long")]
         public string Units { get; set; }
+        public int BatchNo { get; set; }
         public bool IsDeleted { get; set; }
 
     }
