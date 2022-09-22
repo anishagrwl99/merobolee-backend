@@ -139,6 +139,8 @@ namespace MeroBolee.Dto
 
         public decimal UnitPrice { get; set; }
 
+        public string Remarks { get; set; }
+
         /// <summary>
         /// True if material quotation is available in memory cache. No need to pass value from caller as it is maintained within application
         /// </summary>

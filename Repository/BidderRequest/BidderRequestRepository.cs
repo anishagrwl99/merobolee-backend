@@ -773,6 +773,7 @@ namespace MeroBolee.Repository
                     quotationResponseDto.UnitPrice = quote[i].UnitPrice;
                     quotationResponseDto.MaterialId = quote[i].MaterailId;
                     quotationResponseDto.Quantity = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
+                    quotationResponseDto.Remarks = await meroBoleeDbContexts.QuotationEntities.Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Remarks).FirstOrDefaultAsync();
                     quotationResponseDto.Units = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Units).FirstOrDefaultAsync();
                     quotationResponseDto.Quotation = quote[i].UnitPrice * await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
                     quotationResponseDto.MaterialName = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.Id == quote[i].MaterailId).Where(x => x.TenderId == TenderId).Select(x => x.Materials).FirstOrDefaultAsync();
