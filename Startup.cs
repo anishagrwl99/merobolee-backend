@@ -281,6 +281,9 @@ namespace MeroBolee
             services.AddScoped<IRequestDemoService, RequestDemoService>();
             services.AddScoped<IPaymentService, PaymentService>();
 
+            //PartialBidding
+            services.AddScoped<IPBTenderService, PBTenderService>();
+
 
             //Hangfire configuration
             // Add Hangfire services.

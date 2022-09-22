@@ -78,8 +78,8 @@ namespace MeroBolee.EntityMapper
                     Materials = item.Name,
                     Quantity = item.Quantity,
                     Units = item.Units,
+                    BatchNo = item.BatchNo == 0 ? 0 : item.BatchNo,
                     IsDeleted = false
-
                 };
                 entity.TenderMaterialEntities.Add(obj);
             }
