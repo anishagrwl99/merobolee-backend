@@ -13,5 +13,7 @@ namespace MeroBolee.Dto
         public decimal UnitPrice { get; set; }
         public string Units { get; set; }
         public decimal Quotation { get; set; }
+
+        public string Remarks { get; set; }
     }
 }
