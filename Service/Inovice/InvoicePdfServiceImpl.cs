@@ -1,21 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Mvc;
 using System.IO;
-using System.Net;
-using MeroBolee.Service;
 using MeroBolee.Dto;
-using MeroBolee.EntityMapper;
-using MeroBolee.Infrastructure;
-using MeroBolee.Model;
-using MeroBolee.Repository;
-using Microsoft.Extensions.Caching.Memory;
 using MeroBolee.Utility;
 using System.Text;
+using System.Net;
+
 
 namespace MeroBolee.Service.Inovice
 {
@@ -51,9 +44,9 @@ namespace MeroBolee.Service.Inovice
                 var globalSettings = new GlobalSettings
                 {
                     ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                    PaperSize = PaperKind.A4,
-                    Margins = new MarginSettings { Top = 10 },
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4Plus,
+                    Margins = new MarginSettings { Top = 0 },
                     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
                     // Out = @"D:\PDFCreator\Employee_Report.pdf"
                 };
@@ -62,7 +55,7 @@ namespace MeroBolee.Service.Inovice
                     PagesCount = true,
                     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
                     HtmlContent =  await GetHTMLString(TenderId, UserId),
-                    WebSettings = { DefaultEncoding = "utf-8"},
+                    // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
                     FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
@@ -91,7 +84,7 @@ namespace MeroBolee.Service.Inovice
                 {
                     invoiceHtml = web1.DownloadString("https://office.merobolee.com/Resource/Invoice.html");
                 }
-                // string invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\Invoice.html");
+                // string invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\Invoice.html");
                 var MaterialListSB = new StringBuilder();
                 foreach (var generateBillResponse in generateBillResponseDto.QuotationResponseDtoList)
                 {
@@ -100,8 +93,9 @@ namespace MeroBolee.Service.Inovice
                     {
                         MaterialList = web1.DownloadString("https://office.merobolee.com/Resource/tablecontent.html");
                     }                    
-                    // string MaterialList = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\tablecontent.html");
-                    MaterialList = String.Format(MaterialList, generateBillResponse.MaterialId, generateBillResponse.MaterialName, generateBillResponse.Quantity, generateBillResponse.Units, generateBillResponse.UnitPrice, generateBillResponse.Quotation);
+                    // string MaterialList = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\tablecontent.html");
+                    string remarks = generateBillResponse.Remarks;
+                    MaterialList = String.Format(MaterialList, generateBillResponse.MaterialId, generateBillResponse.MaterialName, generateBillResponse.Quantity, generateBillResponse.Units, generateBillResponse.UnitPrice, generateBillResponse.Quotation, remarks);
                     MaterialListSB.Append(MaterialList);
                 }
                 if(invoiceHtml.Contains("{MaterialList}")) 
@@ -124,6 +118,19 @@ namespace MeroBolee.Service.Inovice
                 {
                     invoiceHtml = invoiceHtml.Replace("{CompanyName}", "Company Name: " + generateBillResponseDto.CompanyName);
                 }
+
+                if(invoiceHtml.Contains("{CompanyNameOnly}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{CompanyName}", generateBillResponseDto.CompanyName);
+                }
+
+                String totalAmountInWords = ConvertToWord.ConvertAmount((double)generateBillResponseDto.TotalQuotation);
+
+                if(invoiceHtml.Contains("{TotalAmountInWords}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{TotalAmountInWords}", totalAmountInWords);
+                }
+
                 MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                 long companyId = meroBoleeDbContext.UserCompanies.Where(x => x.UserId == UserId).Select(x => x.CompanyId).FirstOrDefault();
                 string PanNumber = meroBoleeDbContext.CompanyEntities.Where(x => x.CompanyId == companyId).Select(x => x.PANNumber).FirstOrDefault();
@@ -131,6 +138,10 @@ namespace MeroBolee.Service.Inovice
                 {
                     invoiceHtml = invoiceHtml.Replace("{PanNumber}",  PanNumber);
                 }
+                // if(invoiceHtml.Contains("{Remarks}"))
+                // {
+                //     invoiceHtml = invoiceHtml.Replace("{Remarks}", "This is a long remark with values xyz for product mnq");
+                // }
                 return invoiceHtml;
 
             }

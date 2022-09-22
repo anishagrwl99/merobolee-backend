@@ -1102,6 +1102,7 @@ namespace MeroBolee.Service
                 quotationEntity.Units = tenderMaterialQuotationDto.Unit;
                 quotationEntity.Quotation = cryptoService.Encrypt(tenderMaterialQuotationDto.Quotation.ToString());
                 quotationEntity.MaterialId = (int)tenderMaterialQuotationDto.MaterialId;
+                quotationEntity.Remarks = tenderMaterialQuotationDto.Remarks;
                 quotations.Add(quotationEntity);
             }
             //  Console.WriteLine("Size of quotationList = " + quotations.Count);
