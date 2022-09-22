@@ -339,7 +339,7 @@ namespace MeroBolee
                 app.UseSwaggerUI(c =>
                 {
                     //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
-                    c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
+                    c.SwaggerEndpoint("https://dev.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
                 });
             }
 
