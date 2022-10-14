@@ -8,7 +8,8 @@ using MeroBolee.Dto;
 using MeroBolee.Utility;
 using System.Text;
 using System.Net;
-
+using System.Collections.Generic;
+using MeroBolee.Model;
 
 namespace MeroBolee.Service.Inovice
 {
@@ -41,31 +42,62 @@ namespace MeroBolee.Service.Inovice
         {
             try 
             {
-                var globalSettings = new GlobalSettings
+                
+                HtmlToPdfDocument doc = new HtmlToPdfDocument()
                 {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Landscape,
-                    PaperSize = PaperKind.A4Plus,
-                    Margins = new MarginSettings { Top = 0 },
-                    DocumentTitle = String.Format("Tender ID: {0}", TenderId),
-                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
+                    GlobalSettings = {
+                            PaperSize = PaperKind.A4Plus,
+                            Orientation = Orientation.Landscape,
+                            // Margins = new MarginSettings() { Top = 10, Left = 10, Right = 10 },
+                        },
                 };
-                    var objectSettings = new ObjectSettings
-                {
-                    PagesCount = true,
-                    // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
-                    HtmlContent =  await GetHTMLString(TenderId, UserId),
-                    // WebSettings = { DefaultEncoding = "utf-8"},
-                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
-                };
-                var pdf = new HtmlToPdfDocument()
-                {
-                    GlobalSettings = globalSettings,
-                    Objects = { objectSettings }
-                };
-                var file = _converter.Convert(pdf);
-                return file;
+
+                // add object settings to the document
+                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
+                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
+                for (int i = 0; i < userGroup.Length;i++) {
+                   
+                    string htmlString = await GetHTMLString(TenderId, userGroup[i].UserId);
+                    
+                    var page = new ObjectSettings()
+                    {
+                            // PagesCount = true,
+                            // WebSettings = { DefaultEncoding = "utf-8" },
+                            HtmlContent = htmlString
+                    };
+                    doc.Objects.Add(page);
+                }
+
+                //convert
+                var pdf = _converter.Convert(doc);
+                // var globalSettings = new GlobalSettings
+                // {
+                //     ColorMode = ColorMode.Color,
+                //     Orientation = Orientation.Landscape,
+                //     PaperSize = PaperKind.A4Plus,
+                //     Margins = new MarginSettings { Top = 0 },
+                //     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
+                //     // Out = @"D:\PDFCreator\Employee_Report.pdf"
+                // };
+
+                //     var objectSettings = new ObjectSettings
+                // {
+                //     PagesCount = true,
+                //     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
+                //     HtmlContent = await GetHTMLStringForAllUserId(TenderId),
+                //    // HtmlContent =  await GetHTMLString(TenderId, UserId),
+                //     // WebSettings = { DefaultEncoding = "utf-8"},
+                //     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                //     FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                // };
+                // var pdf = new HtmlToPdfDocument()
+                // {
+                //     GlobalSettings = globalSettings,
+                //     Objects = { objectSettings }
+                // };
+                // var file = _converter.Convert(pdf);
+                 return pdf;
             }
             catch 
             {
@@ -121,7 +153,7 @@ namespace MeroBolee.Service.Inovice
 
                 if(invoiceHtml.Contains("{CompanyNameOnly}")) 
                 {
-                    invoiceHtml = invoiceHtml.Replace("{CompanyName}", generateBillResponseDto.CompanyName);
+                    invoiceHtml = invoiceHtml.Replace("{CompanyNameOnly}", generateBillResponseDto.CompanyName);
                 }
 
                 String totalAmountInWords = ConvertToWord.ConvertAmount((double)generateBillResponseDto.TotalQuotation);
@@ -150,5 +182,25 @@ namespace MeroBolee.Service.Inovice
                 throw;
             }
         }
+
+        public async Task<string> GetHTMLStringForAllUserId(long TenderId)
+        {
+            try 
+            {
+                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).GroupBy(o => new { o.UserId }).Select(x => new {UserId = x.Key.UserId}).ToArray();
+                string htmlString = "";
+                for (int i = 0; i < quotationEntities.Length;i++) {
+                    htmlString = htmlString + GetHTMLString(TenderId, quotationEntities[i].UserId);
+                }
+                return htmlString;
+            }
+            catch
+            {
+                throw;
+            }
+
+        }
+
     }
 }
