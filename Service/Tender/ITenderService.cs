@@ -2,7 +2,6 @@
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Service
@@ -73,6 +72,7 @@ namespace MeroBolee.Service
 
         Task<int> EnterBidRoomBidInviter(long tenderId, long comapnyId);
 
+        Task<List<String>> AlgorithmList();
 
     }
 }

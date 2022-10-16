@@ -471,15 +471,32 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<int> EnterBidRoomBidInviter(long tenderId, long companyId) {
-            try {
+        public async Task<int> EnterBidRoomBidInviter(long tenderId, long companyId) 
+        {
+            try 
+            {
                 int status = await tenderRepository.EnterBidRoomBidInviter(tenderId, companyId);
                 
                 return status;
-            } catch {
+            } catch 
+            {
                 throw;
             }
         }
+
+        public async Task<List<String>> AlgorithmList() 
+        {
+            try 
+            {
+                List<String> algoList = await tenderRepository.AlgorithmList();
+                return algoList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
 
     }
 }

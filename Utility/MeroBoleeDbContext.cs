@@ -75,6 +75,8 @@ namespace MeroBolee.Utility
         public DbSet<QuotationEntity> QuotationEntities { get; set; }
         public DbSet<PaymentDetailEntity> PaymentDetailEntities { get; set;}
 
+        public DbSet<AlgorithmEntity> AlgorithmEntities { get; set;}
+
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
         }

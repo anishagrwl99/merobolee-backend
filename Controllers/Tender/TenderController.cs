@@ -673,6 +673,23 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        [HttpGet("Admin/Algorithms")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> AlgorithmList()
+        {
+            try 
+            {
+                List<String> algoList = await tenderService.AlgorithmList();
+                return Ok(new Responses<List<String>>(algoList, "200", "Algorithm List Fetched"));
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

@@ -68,7 +68,8 @@ namespace MeroBolee.EntityMapper
                 Date_modified = DateTimeNPT.Now,
                 IsDeleted = false,
                 DateOfExecution = tenderDto.DateOfExecution,
-                Product = tenderDto.Product
+                Product = tenderDto.Product,
+                AlgoName = tenderDto.Algorithm
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -229,7 +230,7 @@ namespace MeroBolee.EntityMapper
                                                 DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
-
+                getTender.AlgoName = tenderEntity.AlgoName;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -294,7 +295,7 @@ namespace MeroBolee.EntityMapper
                                                     DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
                 }
                 else
@@ -349,7 +350,7 @@ namespace MeroBolee.EntityMapper
                     //                      }).ToList();
 
                     getTender.ExtraDocuments = null;
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
                 }
             } else {
@@ -403,7 +404,7 @@ namespace MeroBolee.EntityMapper
                     //                      }).ToList();
 
                     getTender.ExtraDocuments = null;
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
             }
         }

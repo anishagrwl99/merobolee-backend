@@ -25,6 +25,8 @@ namespace MeroBolee.Dto
        
         public int TenderLiveInterval { get; set; }
         public string CancelRemarks { get; set; }
+
+        public string AlgoName { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }

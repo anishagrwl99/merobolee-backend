@@ -81,5 +81,7 @@ namespace MeroBolee.Repository
 
         Task<int> EndTender(long tenderId);
         Task<int> EnterBidRoomBidInviter(long tenderId, long companyId);
+
+        Task<List<String>> AlgorithmList();
     }
 }
