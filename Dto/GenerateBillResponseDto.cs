@@ -13,5 +13,7 @@ namespace MeroBolee.Dto
         public decimal TotalQuotation { get; set; }
 
         public string CompanyName { get; set; }
+
+        public long UserId { get; set; }
     }
 }

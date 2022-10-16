@@ -42,68 +42,202 @@ namespace MeroBolee.Service.Inovice
         {
             try 
             {
-                
-                HtmlToPdfDocument doc = new HtmlToPdfDocument()
+                //convert
+                // var pdf = _converter.Convert(doc);
+                var globalSettings = new GlobalSettings
                 {
-                    GlobalSettings = {
-                            PaperSize = PaperKind.A4Plus,
-                            Orientation = Orientation.Landscape,
-                            // Margins = new MarginSettings() { Top = 10, Left = 10, Right = 10 },
-                        },
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4Plus,
+                    Margins = new MarginSettings { Top = 0 },
+                    DocumentTitle = String.Format("Tender ID: {0}", TenderId),
+                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
                 };
 
-                // add object settings to the document
-                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
-                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
-                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
-                for (int i = 0; i < userGroup.Length;i++) {
-                   
-                    string htmlString = await GetHTMLString(TenderId, userGroup[i].UserId);
-                    
-                    var page = new ObjectSettings()
-                    {
-                            // PagesCount = true,
-                            // WebSettings = { DefaultEncoding = "utf-8" },
-                            HtmlContent = htmlString
-                    };
-                    doc.Objects.Add(page);
-                }
-
-                //convert
-                var pdf = _converter.Convert(doc);
-                // var globalSettings = new GlobalSettings
-                // {
-                //     ColorMode = ColorMode.Color,
-                //     Orientation = Orientation.Landscape,
-                //     PaperSize = PaperKind.A4Plus,
-                //     Margins = new MarginSettings { Top = 0 },
-                //     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
-                //     // Out = @"D:\PDFCreator\Employee_Report.pdf"
-                // };
-
-                //     var objectSettings = new ObjectSettings
-                // {
-                //     PagesCount = true,
-                //     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
-                //     HtmlContent = await GetHTMLStringForAllUserId(TenderId),
-                //    // HtmlContent =  await GetHTMLString(TenderId, UserId),
-                //     // WebSettings = { DefaultEncoding = "utf-8"},
-                //     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                //     FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
-                // };
-                // var pdf = new HtmlToPdfDocument()
-                // {
-                //     GlobalSettings = globalSettings,
-                //     Objects = { objectSettings }
-                // };
-                // var file = _converter.Convert(pdf);
-                 return pdf;
+                    var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
+                    HtmlContent =  await GetHTMLString(TenderId, UserId),
+                    // WebSettings = { DefaultEncoding = "utf-8"},
+                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
+                return file;
             }
             catch 
             {
                 throw;
             }
 
+        }
+
+        public async Task<byte[]> InvoicePdfGenerateAll(long TenderId)
+        {
+        
+            try 
+            {
+                // add object settings to the document
+                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
+                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < userGroup.Length;i++) {
+                   
+                    string htmlString = await GetHTMLString(TenderId, userGroup[i].UserId);
+
+                    sb.AppendFormat(htmlString);
+                    sb.AppendFormat("<div style='page-break-after: always;'></div>");
+                }
+
+                //convert
+                // var pdf = _converter.Convert(doc);
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4Plus,
+                    Margins = new MarginSettings { Top = 0 },
+                    DocumentTitle = String.Format("Tender ID: {0}", TenderId),
+                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
+                };
+
+                    var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
+                    HtmlContent = sb.ToString(),
+                   // HtmlContent =  await GetHTMLString(TenderId, UserId),
+                    // WebSettings = { DefaultEncoding = "utf-8"},
+                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
+                return file;
+            }
+            catch 
+            {
+                throw;
+            } 
+        }
+
+        public async Task<byte[]> InvoicePdfGenerateConsolidateReport(long TenderId)
+        {
+        
+            try 
+            {
+                // add object settings to the document
+                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
+                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
+                var materialIdList = quotationEntities.GroupBy(o => new { o.MaterialId, o.TenderId }).Select(x => new {MaterialId = x.Key.MaterialId, TenderId = x.Key.TenderId}).ToArray();
+                List<GenerateBillResponseDto> generateBillResponseDtoList = new List<GenerateBillResponseDto>();
+                for (int i = 0; i < userGroup.Length;i++) {
+                    GenerateBillResponseDto generateBillResponseDto = await biddingRequestService.GenerateBill(TenderId, userGroup[i].UserId);
+                    generateBillResponseDtoList.Add(generateBillResponseDto);
+                }
+                StringBuilder buildColumnHeader = new StringBuilder();
+                buildColumnHeader.AppendFormat("<td><strong>");
+                buildColumnHeader.AppendFormat("Material Name");
+                buildColumnHeader.AppendFormat("</strong></td>");
+                // for (int i = 0; i < userGroup.Length;i++) {
+                //     string companyName = generateBillResponseDtoList.Where(x => x.UserId == userGroup[i].UserId).Select(x => x.CompanyName).FirstOrDefault();
+                //     buildColumnHeader.AppendFormat("<td><strong>");
+                //     buildColumnHeader.AppendFormat(companyName);
+                //     buildColumnHeader.AppendFormat("</strong></td>");
+                // }
+                StringBuilder rowValues = new StringBuilder();
+                for (int i = 0; i < materialIdList.Length; i++)
+                {
+                    StringBuilder innerRowValue = new StringBuilder();
+                    innerRowValue.AppendFormat("<tr>");
+                    innerRowValue.AppendFormat("<td>");
+                    innerRowValue.AppendFormat(materialIdList[i].MaterialId.ToString());
+                    innerRowValue.AppendFormat("</td>");
+                    for (int j = 0; j < userGroup.Length; j++)
+                    {
+                        List<QuotationResponseDto> QuotationResponseDtoList = generateBillResponseDtoList.Where(x => x.UserId == userGroup[j].UserId).Select(x => x.QuotationResponseDtoList).FirstOrDefault();
+                        decimal unitPrice = QuotationResponseDtoList.Where(x => x.MaterialId == materialIdList[i].MaterialId).Select(x => x.UnitPrice).FirstOrDefault();
+                        var quantity = QuotationResponseDtoList.Where(x => x.MaterialId == materialIdList[i].MaterialId).Select(x => x.Quantity).FirstOrDefault();
+                        string companyName = generateBillResponseDtoList.Where(x => x.UserId == userGroup[j].UserId).Select(x => x.CompanyName).FirstOrDefault();
+                        buildColumnHeader.AppendFormat("<td><strong>");
+                        buildColumnHeader.AppendFormat(companyName);
+                        buildColumnHeader.AppendFormat("</strong></td>");
+                        innerRowValue.AppendFormat("<td>");
+                        innerRowValue.AppendFormat((unitPrice*quantity).ToString());
+                        innerRowValue.AppendFormat("</td>");
+                    }
+                    innerRowValue.AppendFormat("</tr>");
+                    rowValues.AppendFormat(innerRowValue.ToString());
+                }
+
+                String invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\consolidateinvoice.html");
+                if(invoiceHtml.Contains("{ColumnHeader}")) {
+                    invoiceHtml = invoiceHtml.Replace("{ColumnHeader}", buildColumnHeader.ToString());
+                }
+                if(invoiceHtml.Contains("{Date}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{Date}", "Date: " + DateTimeNPT.Now.ToString("dd-MM-yyyy").Substring(0, 10));
+                }
+                if(invoiceHtml.Contains("{MaterialList}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{MaterialList}", rowValues.ToString());
+                }
+
+                // StringBuilder sb = new StringBuilder();
+                // for (int i = 0; i < userGroup.Length;i++) {
+                   
+                //     string htmlString = await GetHTMLString(TenderId, userGroup[i].UserId);
+
+                //     sb.AppendFormat(htmlString);
+                //     sb.AppendFormat("<div style='page-break-after: always;'></div>");
+                // }
+
+                //convert
+                // var pdf = _converter.Convert(doc);
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4Plus,
+                    Margins = new MarginSettings { Top = 0 },
+                    DocumentTitle = String.Format("Tender ID: {0}", TenderId),
+                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
+                };
+
+                    var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
+                    HtmlContent = invoiceHtml,
+                   // HtmlContent =  await GetHTMLString(TenderId, UserId),
+                    // WebSettings = { DefaultEncoding = "utf-8"},
+                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
+                return file;
+            }
+            catch 
+            {
+                throw;
+            } 
         }
 
         public async Task<string> GetHTMLString(long TenderId, long UserId)

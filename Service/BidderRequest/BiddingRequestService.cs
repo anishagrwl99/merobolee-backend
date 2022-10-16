@@ -1123,6 +1123,7 @@ namespace MeroBolee.Service
                 generateBillResponseDto.FinalPosition = finalPositionResponseDto.position;
                 generateBillResponseDto.TotalQuotation = totalQuotation;
                 generateBillResponseDto.CompanyName = finalPositionResponseDto.companyName;
+                generateBillResponseDto.UserId = UserId;
                 return generateBillResponseDto;
             }
             catch

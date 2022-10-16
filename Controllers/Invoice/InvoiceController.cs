@@ -47,6 +47,52 @@ namespace MeroBolee.Controllers.Invoice
             }
         }
 
+        [HttpPost("Invoice/Generate/All")]
+        public async Task<IActionResult> InvoicePdfGenerateAll([FromQuery] long TenderId) 
+        {
+            try 
+            {
+                
+                 byte[] pdfcontent = await inovicePdfService.InvoicePdfGenerateAll(TenderId);
+                    if (pdfcontent == null)
+                    {
+                        response.statusCode = "500";
+                        response.Message = "Could Not Generate Bill for Tender";
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                    }
+                return File(pdfcontent, "application/pdf", String.Format("Tender ID: {0}", TenderId));
+            }
+            catch(Exception e) 
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Invoice/Generate/Consolidate/Report")]
+        public async Task<IActionResult> InvoicePdfGenerateConsolidateReport([FromQuery] long TenderId) 
+        {
+            try 
+            {
+                
+                 byte[] pdfcontent = await inovicePdfService.InvoicePdfGenerateConsolidateReport(TenderId);
+                    if (pdfcontent == null)
+                    {
+                        response.statusCode = "500";
+                        response.Message = "Could Not Generate Bill for Tender";
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                    }
+                return File(pdfcontent, "application/pdf", String.Format("Tender ID: {0}", TenderId));
+            }
+            catch(Exception e) 
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
     }
 
 }
