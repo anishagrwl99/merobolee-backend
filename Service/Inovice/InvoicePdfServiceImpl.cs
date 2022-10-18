@@ -61,7 +61,7 @@ namespace MeroBolee.Service.Inovice
                     HtmlContent =  await GetHTMLString(TenderId, UserId),
                     // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
@@ -86,7 +86,9 @@ namespace MeroBolee.Service.Inovice
                 // add object settings to the document
                 MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                 var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
-                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
+                  List<FinalPositionResponseDto> finalPositionResponseDtos = await biddingRequestService.GetFinalBiddingPosition(TenderId);
+                var userGroup = finalPositionResponseDtos.GroupBy(o => new { o.userId, o.companyName }).Select(x => new {UserId = x.Key.userId, TenderId = x.Key.companyName}).ToArray();
+                // var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < userGroup.Length;i++) {
                    
@@ -116,7 +118,7 @@ namespace MeroBolee.Service.Inovice
                    // HtmlContent =  await GetHTMLString(TenderId, UserId),
                     // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
@@ -140,9 +142,11 @@ namespace MeroBolee.Service.Inovice
                 // add object settings to the document
                 MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                 var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
-                var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
+                // var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
                 var materialIdList = quotationEntities.GroupBy(o => new { o.MaterialId, o.TenderId }).Select(x => new {MaterialId = x.Key.MaterialId, TenderId = x.Key.TenderId}).ToArray();
                 List<GenerateBillResponseDto> generateBillResponseDtoList = new List<GenerateBillResponseDto>();
+                List<FinalPositionResponseDto> finalPositionResponseDtos = await biddingRequestService.GetFinalBiddingPosition(TenderId);
+                var userGroup = finalPositionResponseDtos.GroupBy(o => new { o.userId, o.companyName }).Select(x => new {UserId = x.Key.userId, TenderId = x.Key.companyName}).ToArray();
                 for (int i = 0; i < userGroup.Length;i++) {
                     GenerateBillResponseDto generateBillResponseDto = await biddingRequestService.GenerateBill(TenderId, userGroup[i].UserId);
                     generateBillResponseDtoList.Add(generateBillResponseDto);
@@ -151,29 +155,36 @@ namespace MeroBolee.Service.Inovice
                 buildColumnHeader.AppendFormat("<td><strong>");
                 buildColumnHeader.AppendFormat("Material Name");
                 buildColumnHeader.AppendFormat("</strong></td>");
-                // for (int i = 0; i < userGroup.Length;i++) {
-                //     string companyName = generateBillResponseDtoList.Where(x => x.UserId == userGroup[i].UserId).Select(x => x.CompanyName).FirstOrDefault();
-                //     buildColumnHeader.AppendFormat("<td><strong>");
-                //     buildColumnHeader.AppendFormat(companyName);
-                //     buildColumnHeader.AppendFormat("</strong></td>");
-                // }
+                StringBuilder totalValue = new StringBuilder();
+
+                for (int i = 0; i < userGroup.Length;i++) {
+                    string companyName = generateBillResponseDtoList.Where(x => x.UserId == userGroup[i].UserId).Select(x => x.CompanyName).FirstOrDefault();
+                    string position = generateBillResponseDtoList.Where(x => x.UserId == userGroup[i].UserId).Select(x => x.FinalPosition).FirstOrDefault();
+
+                    buildColumnHeader.AppendFormat("<td><strong>");
+                    buildColumnHeader.AppendFormat(companyName + "-" + position);
+                    buildColumnHeader.AppendFormat("</strong></td>");
+                    totalValue.AppendFormat("<td><strong>");
+                    decimal totalAmount = generateBillResponseDtoList.Where(x => x.UserId == userGroup[i].UserId).Select(x => x.TotalQuotation).FirstOrDefault();
+                    totalValue.AppendFormat(totalAmount.ToString());
+                    totalValue.AppendFormat("</strong></td>");
+                }
                 StringBuilder rowValues = new StringBuilder();
                 for (int i = 0; i < materialIdList.Length; i++)
                 {
                     StringBuilder innerRowValue = new StringBuilder();
                     innerRowValue.AppendFormat("<tr>");
                     innerRowValue.AppendFormat("<td>");
-                    innerRowValue.AppendFormat(materialIdList[i].MaterialId.ToString());
+                    string MaterialName = meroBoleeDbContext.TenderMaterialEntities.Where(x => x.Id == materialIdList[i].MaterialId).Select(x => x.Materials).FirstOrDefault();
+                    innerRowValue.AppendFormat(MaterialName);
                     innerRowValue.AppendFormat("</td>");
+                    
                     for (int j = 0; j < userGroup.Length; j++)
                     {
                         List<QuotationResponseDto> QuotationResponseDtoList = generateBillResponseDtoList.Where(x => x.UserId == userGroup[j].UserId).Select(x => x.QuotationResponseDtoList).FirstOrDefault();
                         decimal unitPrice = QuotationResponseDtoList.Where(x => x.MaterialId == materialIdList[i].MaterialId).Select(x => x.UnitPrice).FirstOrDefault();
                         var quantity = QuotationResponseDtoList.Where(x => x.MaterialId == materialIdList[i].MaterialId).Select(x => x.Quantity).FirstOrDefault();
                         string companyName = generateBillResponseDtoList.Where(x => x.UserId == userGroup[j].UserId).Select(x => x.CompanyName).FirstOrDefault();
-                        buildColumnHeader.AppendFormat("<td><strong>");
-                        buildColumnHeader.AppendFormat(companyName);
-                        buildColumnHeader.AppendFormat("</strong></td>");
                         innerRowValue.AppendFormat("<td>");
                         innerRowValue.AppendFormat((unitPrice*quantity).ToString());
                         innerRowValue.AppendFormat("</td>");
@@ -193,6 +204,19 @@ namespace MeroBolee.Service.Inovice
                 if(invoiceHtml.Contains("{MaterialList}")) 
                 {
                     invoiceHtml = invoiceHtml.Replace("{MaterialList}", rowValues.ToString());
+                }
+                if(invoiceHtml.Contains("{TotalValues}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{TotalValues}", totalValue.ToString());
+                }
+                string tenderName = meroBoleeDbContext.TenderEntities.Where(x => x.Id == TenderId).Select(x => x.Title).FirstOrDefault();
+                if(invoiceHtml.Contains("{TenderName}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{TenderName}", "Tender Title: " + tenderName);
+                }
+                if(invoiceHtml.Contains("{TenderId}")) 
+                {
+                    invoiceHtml = invoiceHtml.Replace("{TenderId}", "Tender ID: " + TenderId.ToString());
                 }
 
                 // StringBuilder sb = new StringBuilder();
@@ -224,7 +248,7 @@ namespace MeroBolee.Service.Inovice
                    // HtmlContent =  await GetHTMLString(TenderId, UserId),
                     // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
+                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
