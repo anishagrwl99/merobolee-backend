@@ -335,7 +335,46 @@ namespace MeroBolee.Controllers.Tender
                     string url = Url.Action("GetUpCommingTender", null, new { companyId = companyId, isAlert = isAlert }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert);
+                    bool isLiveBidUpcoming = true;
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
+                    int totalCount = tenders.Count();
+                    if (totalCount == 0)
+                    {
+                        return NotFound(new Responses<IEnumerable<TenderCard>>(tenders, "404", "Record not found"));
+                    }
+                    return Ok(ResultAfterPagination(tenders, pagination, totalCount)); // To pass result in object along with pagination info
+                }
+                return NotFound(new Responses<IEnumerable<TenderCard>>(null, "404", "Record not found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
+                /// <summary>
+        /// To display only upcoming tender for bidder
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="companyId"></param>
+        /// <param name="isAlert"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/Bidder/Upcoming/Sealed")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> GetUpCommingTenderSealed([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] bool isAlert = true)
+        {
+            try
+            {
+                if (companyId > 0)
+                {
+                    string url = Url.Action("GetUpCommingTender", null, new { companyId = companyId, isAlert = isAlert }, Request.Scheme); //get url for current request
+                    this.uriService = new UriService(url);
+                    //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
+                    bool isLiveBidUpcoming = false;
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
                     int totalCount = tenders.Count();
                     if (totalCount == 0)
                     {
@@ -679,8 +718,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try 
             {
-                List<String> algoList = await tenderService.AlgorithmList();
-                return Ok(new Responses<List<String>>(algoList, "200", "Algorithm List Fetched"));
+                List<AlgorithmEntity> algoList = await tenderService.AlgorithmList();
+                return Ok(new Responses<List<AlgorithmEntity>>(algoList, "200", "Algorithm List Fetched"));
             } 
             catch (Exception e)
             {

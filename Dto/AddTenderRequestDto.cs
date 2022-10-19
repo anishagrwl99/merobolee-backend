@@ -120,7 +120,7 @@ namespace MeroBolee.Dto
 
         public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
 
-        public string Algorithm { get; set; }
+        public int Algorithm { get; set; }
 
     }
 

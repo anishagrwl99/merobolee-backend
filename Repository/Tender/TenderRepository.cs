@@ -1094,11 +1094,11 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<List<String>> AlgorithmList()
+        public async Task<List<AlgorithmEntity>> AlgorithmList()
         {
             try 
             {
-                return await meroBoleeDbContexts.AlgorithmEntities.Select(x => x.AlgoName).ToListAsync();
+                return await meroBoleeDbContexts.AlgorithmEntities.ToListAsync();
             }
             catch 
             {

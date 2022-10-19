@@ -59,6 +59,8 @@ namespace MeroBolee.Dto
 
         public string Size { get; set; }
 
+        public bool isSealBiddingAllowed { get; set; }
+
         //public List<TenderCardInfo> CardInfo { get; set; }
 
     }

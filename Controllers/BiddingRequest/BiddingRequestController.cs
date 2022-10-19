@@ -222,7 +222,6 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
         }
 
-
         /// <summary>
         /// Get a bidding position in a applied tender
         /// </summary>

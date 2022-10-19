@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MeroBolee.Utility;
 
 namespace MeroBolee.EntityMapper
 {
@@ -41,6 +42,8 @@ namespace MeroBolee.EntityMapper
         }
         public TenderEntity TenderDtoEntity(AddTenderRequestDto tenderDto)
         {
+            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
+            string algoName = meroboleeDbContext.AlgorithmEntities.Where(x => x.id == tenderDto.Algorithm).Select(x => x.AlgoName).FirstOrDefault();
             if (tenderDto == null)
             {
                 return null;
@@ -69,7 +72,7 @@ namespace MeroBolee.EntityMapper
                 IsDeleted = false,
                 DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product,
-                AlgoName = tenderDto.Algorithm == null ? "" : tenderDto.Algorithm
+                AlgoName = algoName == null ? "" : algoName
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
