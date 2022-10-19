@@ -16,12 +16,6 @@ namespace MeroBolee.Service.Inovice
     public class InvoicePdfServiceImpl : InovicePdfService
     {
         private IConverter _converter;
-        // private IBidderRequestRepository bidRequestRepository;
-        // private IMemoryCache memoryCache;
-        // private ICryptoService cryptoService;
-        // private readonly ITenderService tenderService;
-        // private readonly IUploadFile fileService;
-        // private readonly ICompanyDocumentRepository companyDocumentRepository;
 
         private readonly IBiddingRequestService biddingRequestService;
 
@@ -29,12 +23,6 @@ namespace MeroBolee.Service.Inovice
         {
             this._converter = _converter;
             this.biddingRequestService = biddingRequestService;
-            // this.bidRequestRepository = bidRequestRepository;
-            // memoryCache = cache;
-            // this.cryptoService = cryptoService;
-            // this.tenderService = tenderService;
-            // this.fileService = fileService;
-            // this.companyDocumentRepository = companyDocumentRepository;
         }
 
 
@@ -42,8 +30,6 @@ namespace MeroBolee.Service.Inovice
         {
             try 
             {
-                //convert
-                // var pdf = _converter.Convert(doc);
                 var globalSettings = new GlobalSettings
                 {
                     ColorMode = ColorMode.Color,
@@ -51,7 +37,6 @@ namespace MeroBolee.Service.Inovice
                     PaperSize = PaperKind.A4Plus,
                     Margins = new MarginSettings { Top = 0 },
                     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
-                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
                 };
 
                     var objectSettings = new ObjectSettings
@@ -59,9 +44,7 @@ namespace MeroBolee.Service.Inovice
                     PagesCount = true,
                     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
                     HtmlContent =  await GetHTMLString(TenderId, UserId),
-                    // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
@@ -83,12 +66,10 @@ namespace MeroBolee.Service.Inovice
         
             try 
             {
-                // add object settings to the document
                 MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                 var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
                   List<FinalPositionResponseDto> finalPositionResponseDtos = await biddingRequestService.GetFinalBiddingPosition(TenderId);
                 var userGroup = finalPositionResponseDtos.GroupBy(o => new { o.userId, o.companyName }).Select(x => new {UserId = x.Key.userId, TenderId = x.Key.companyName}).ToArray();
-                // var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < userGroup.Length;i++) {
                    
@@ -98,8 +79,6 @@ namespace MeroBolee.Service.Inovice
                     sb.AppendFormat("<div style='page-break-after: always;'></div>");
                 }
 
-                //convert
-                // var pdf = _converter.Convert(doc);
                 var globalSettings = new GlobalSettings
                 {
                     ColorMode = ColorMode.Color,
@@ -107,7 +86,6 @@ namespace MeroBolee.Service.Inovice
                     PaperSize = PaperKind.A4Plus,
                     Margins = new MarginSettings { Top = 0 },
                     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
-                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
                 };
 
                     var objectSettings = new ObjectSettings
@@ -116,9 +94,7 @@ namespace MeroBolee.Service.Inovice
                     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
                     HtmlContent = sb.ToString(),
                    // HtmlContent =  await GetHTMLString(TenderId, UserId),
-                    // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
@@ -142,7 +118,6 @@ namespace MeroBolee.Service.Inovice
                 // add object settings to the document
                 MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                 var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).ToArray();
-                // var userGroup = quotationEntities.GroupBy(o => new { o.UserId, o.TenderId }).Select(x => new {UserId = x.Key.UserId, TenderId = x.Key.TenderId}).ToArray();
                 var materialIdList = quotationEntities.GroupBy(o => new { o.MaterialId, o.TenderId }).Select(x => new {MaterialId = x.Key.MaterialId, TenderId = x.Key.TenderId}).ToArray();
                 List<GenerateBillResponseDto> generateBillResponseDtoList = new List<GenerateBillResponseDto>();
                 List<FinalPositionResponseDto> finalPositionResponseDtos = await biddingRequestService.GetFinalBiddingPosition(TenderId);
@@ -219,17 +194,6 @@ namespace MeroBolee.Service.Inovice
                     invoiceHtml = invoiceHtml.Replace("{TenderId}", "Tender ID: " + TenderId.ToString());
                 }
 
-                // StringBuilder sb = new StringBuilder();
-                // for (int i = 0; i < userGroup.Length;i++) {
-                   
-                //     string htmlString = await GetHTMLString(TenderId, userGroup[i].UserId);
-
-                //     sb.AppendFormat(htmlString);
-                //     sb.AppendFormat("<div style='page-break-after: always;'></div>");
-                // }
-
-                //convert
-                // var pdf = _converter.Convert(doc);
                 var globalSettings = new GlobalSettings
                 {
                     ColorMode = ColorMode.Color,
@@ -237,7 +201,6 @@ namespace MeroBolee.Service.Inovice
                     PaperSize = PaperKind.A4Plus,
                     Margins = new MarginSettings { Top = 0 },
                     DocumentTitle = String.Format("Tender ID: {0}", TenderId),
-                    // Out = @"D:\PDFCreator\Employee_Report.pdf"
                 };
 
                     var objectSettings = new ObjectSettings
@@ -246,9 +209,7 @@ namespace MeroBolee.Service.Inovice
                     // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
                     HtmlContent = invoiceHtml,
                    // HtmlContent =  await GetHTMLString(TenderId, UserId),
-                    // WebSettings = { DefaultEncoding = "utf-8"},
                     HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                    // FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Thank You for using Mero Bolee!" }
                 };
                 var pdf = new HtmlToPdfDocument()
                 {
@@ -328,10 +289,6 @@ namespace MeroBolee.Service.Inovice
                 {
                     invoiceHtml = invoiceHtml.Replace("{PanNumber}",  PanNumber);
                 }
-                // if(invoiceHtml.Contains("{Remarks}"))
-                // {
-                //     invoiceHtml = invoiceHtml.Replace("{Remarks}", "This is a long remark with values xyz for product mnq");
-                // }
                 return invoiceHtml;
 
             }
