@@ -1084,12 +1084,24 @@ namespace MeroBolee.Repository
             try
             {
                 TenderEntity tenderEntity = await meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).FirstOrDefaultAsync();
-                if(tenderEntity.CompanyId == comapnyId) return 1;
+                if (tenderEntity.CompanyId == comapnyId) return 1;
                 else return 0;
             }
             catch
             {
 
+                throw;
+            }
+        }
+
+        public async Task<List<AlgorithmEntity>> AlgorithmList()
+        {
+            try 
+            {
+                return await meroBoleeDbContexts.AlgorithmEntities.ToListAsync();
+            }
+            catch 
+            {
                 throw;
             }
         }

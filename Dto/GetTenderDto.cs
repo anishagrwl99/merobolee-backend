@@ -25,6 +25,8 @@ namespace MeroBolee.Dto
        
         public int TenderLiveInterval { get; set; }
         public string CancelRemarks { get; set; }
+
+        public string AlgoName { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
@@ -56,6 +58,8 @@ namespace MeroBolee.Dto
         public string Location { get; set;}
 
         public string Size { get; set; }
+
+        public bool isSealBiddingAllowed { get; set; }
 
         //public List<TenderCardInfo> CardInfo { get; set; }
 

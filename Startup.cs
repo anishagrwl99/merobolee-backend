@@ -281,6 +281,9 @@ namespace MeroBolee
             services.AddScoped<IRequestDemoService, RequestDemoService>();
             services.AddScoped<IPaymentService, PaymentService>();
 
+            //PartialBidding
+            services.AddScoped<IPBTenderService, PBTenderService>();
+
 
             //Hangfire configuration
             // Add Hangfire services.
@@ -339,7 +342,7 @@ namespace MeroBolee
                 app.UseSwaggerUI(c =>
                 {
                     //c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeroBolee v1");
-                    c.SwaggerEndpoint("https://office.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
+                    c.SwaggerEndpoint("https://dev.merobolee.com/swagger/v1/swagger.json", "MeroBolee v1");
                 });
             }
 

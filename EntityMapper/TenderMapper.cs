@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MeroBolee.Utility;
 
 namespace MeroBolee.EntityMapper
 {
@@ -41,6 +42,8 @@ namespace MeroBolee.EntityMapper
         }
         public TenderEntity TenderDtoEntity(AddTenderRequestDto tenderDto)
         {
+            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
+            string algoName = meroboleeDbContext.AlgorithmEntities.Where(x => x.id == tenderDto.Algorithm).Select(x => x.AlgoName).FirstOrDefault();
             if (tenderDto == null)
             {
                 return null;
@@ -68,7 +71,8 @@ namespace MeroBolee.EntityMapper
                 Date_modified = DateTimeNPT.Now,
                 IsDeleted = false,
                 DateOfExecution = tenderDto.DateOfExecution,
-                Product = tenderDto.Product
+                Product = tenderDto.Product,
+                AlgoName = algoName == null ? "" : algoName
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -78,8 +82,8 @@ namespace MeroBolee.EntityMapper
                     Materials = item.Name,
                     Quantity = item.Quantity,
                     Units = item.Units,
+                    BatchNo = item.BatchNo == 0 ? 0 : item.BatchNo,
                     IsDeleted = false
-
                 };
                 entity.TenderMaterialEntities.Add(obj);
             }
@@ -229,7 +233,7 @@ namespace MeroBolee.EntityMapper
                                                 DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
-
+                getTender.AlgoName = tenderEntity.AlgoName;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -294,7 +298,7 @@ namespace MeroBolee.EntityMapper
                                                     DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
                 }
                 else
@@ -349,7 +353,7 @@ namespace MeroBolee.EntityMapper
                     //                      }).ToList();
 
                     getTender.ExtraDocuments = null;
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
                 }
             } else {
@@ -403,7 +407,7 @@ namespace MeroBolee.EntityMapper
                     //                      }).ToList();
 
                     getTender.ExtraDocuments = null;
-
+                    getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
             }
         }

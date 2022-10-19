@@ -144,9 +144,50 @@ namespace MeroBolee.Service
                 return null;
             }
         }
-        public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert)
+        public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming)
         {
-            return await tenderRepository.UpcomingBidderTender(companyId, isAlert);
+            IEnumerable<TenderCard> tenderCards = await tenderRepository.UpcomingBidderTender(companyId, isAlert);
+
+            if (isLiveBidUpcoming)
+            {
+                List<TenderCard> updatedTenderCard = new List<TenderCard>();
+                foreach (TenderCard tenderCard in tenderCards)
+                {
+                    long tenderId = tenderCard.TenderId;
+                    TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
+                    if (tenderEntity.AlgoName.Contains("Sealed"))
+                    {
+                        tenderCard.isSealBiddingAllowed = true;
+
+                    }
+                    else
+                    {
+                        tenderCard.isSealBiddingAllowed = false;
+                        updatedTenderCard.Add(tenderCard);
+
+                    }
+                }
+                return updatedTenderCard;
+            } else
+            {
+                List<TenderCard> updatedTenderCard = new List<TenderCard>();
+                foreach (TenderCard tenderCard in tenderCards)
+                {
+                    long tenderId = tenderCard.TenderId;
+                    TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
+                    if (tenderEntity.AlgoName.Contains("Sealed"))
+                    {
+                        tenderCard.isSealBiddingAllowed = true;
+                        updatedTenderCard.Add(tenderCard);
+
+                    }
+                    else
+                    {
+                        tenderCard.isSealBiddingAllowed = false;
+                    }
+                }
+                return updatedTenderCard;
+            }
         }
 
         public async Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId)
@@ -471,15 +512,32 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<int> EnterBidRoomBidInviter(long tenderId, long companyId) {
-            try {
+        public async Task<int> EnterBidRoomBidInviter(long tenderId, long companyId) 
+        {
+            try 
+            {
                 int status = await tenderRepository.EnterBidRoomBidInviter(tenderId, companyId);
                 
                 return status;
-            } catch {
+            } catch 
+            {
                 throw;
             }
         }
+
+        public async Task<List<AlgorithmEntity>> AlgorithmList() 
+        {
+            try 
+            {
+                List<AlgorithmEntity> algoList = await tenderRepository.AlgorithmList();
+                return algoList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
 
     }
 }

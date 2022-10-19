@@ -100,6 +100,10 @@ namespace MeroBolee.Model
         [MaxLength(150)]
         public string Product { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(3999)]
+        public string AlgoName { get; set; }
+
         public DateTime DateOfExecution { get; set; }
 
         [JsonIgnore]

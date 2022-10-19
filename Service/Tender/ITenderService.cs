@@ -2,7 +2,6 @@
 using MeroBolee.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Service
@@ -17,7 +16,7 @@ namespace MeroBolee.Service
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
-        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert);
+        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
         Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
@@ -73,6 +72,7 @@ namespace MeroBolee.Service
 
         Task<int> EnterBidRoomBidInviter(long tenderId, long comapnyId);
 
+        Task<List<AlgorithmEntity>> AlgorithmList();
 
     }
 }
