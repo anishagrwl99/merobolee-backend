@@ -168,7 +168,13 @@ namespace MeroBolee.Service.Inovice
                     rowValues.AppendFormat(innerRowValue.ToString());
                 }
 
-                String invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\consolidateinvoice.html");
+                String invoiceHtml = "";
+                using (WebClient web1 = new WebClient())
+                {
+                    invoiceHtml = web1.DownloadString("https://dev.merobolee.com/Resource/consolidateinvoice.html");
+                }
+                
+                // String invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\consolidateinvoice.html");
                 if(invoiceHtml.Contains("{ColumnHeader}")) {
                     invoiceHtml = invoiceHtml.Replace("{ColumnHeader}", buildColumnHeader.ToString());
                 }
