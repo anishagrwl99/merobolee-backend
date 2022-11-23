@@ -406,7 +406,14 @@ namespace MeroBolee.EntityMapper
                     //                          Value = tc.Value
                     //                      }).ToList();
 
-                    getTender.ExtraDocuments = null;
+                    getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
+                                            select new TenderExtraDocumentResponseDto
+                                            {
+                                                Id = txd.Id,
+                                                DocTitle = txd.DocTitle,
+                                                DocPath = string.IsNullOrEmpty(txd.DocPath) ? "" :
+                                                            $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
+                                            }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
                     return getTender;
             }
