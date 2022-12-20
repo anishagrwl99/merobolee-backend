@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MeroBolee.Service;
+
 
 namespace MeroBolee.Repository
 {
@@ -17,15 +19,18 @@ namespace MeroBolee.Repository
     public class TenderRepository : RepositoryBase<TenderEntity>, ITenderRepository
     {
         private readonly IUnitOfWork unitOfWork;
+        private ICryptoService cryptoService;
+
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="unitOfWork"></param>
         /// <param name="dbFactory"></param>
-        public TenderRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory) : base(dbFactory)
+        public TenderRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory, ICryptoService cryptoService) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
+            this.cryptoService = cryptoService;
         }
 
         /// <summary>
@@ -357,11 +362,11 @@ namespace MeroBolee.Repository
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert)
+        public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming)
         {
             try
             {
-                if (isAlert)
+                if (isAlert && isLiveBidUpcoming)
                 {
                     return await (from bd in meroBoleeDbContexts.BidRequestEntities
                                   join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
@@ -373,6 +378,49 @@ namespace MeroBolee.Repository
                                         && t.StatusId == 3 //Tender should be approved
                                         && bd.BidRequestStatusId == 2 //Bid request should be approved
                                         && (t.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
+                                        && (t.LiveEndDate >= DateTimeNPT.Now)//Tender live end date should be future date
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      CompanyId = c1.CompanyId,
+                                      CompanyName = c1.Name,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      StatusId = t.StatusId,
+                                      Status = ts.Status,
+                                      Product = t.Product,
+                                      DateOfExecution = t.DateOfExecution,
+                                      DateCreated = t.Date_created,
+                                      Price = t.Price,
+                                      Location = t.Location
+
+                                      //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
+                                      //            where tc.TenderId == t.Id
+                                      //            select new TenderCardInfo
+                                      //            {
+                                      //                Id = tc.Id,
+                                      //                Label = tc.Label,
+                                      //                Value = tc.Value
+                                      //            }).ToList()
+                                  }).OrderByDescending(x => x.DateCreated).ToListAsync();
+                }
+                else if(isAlert && !isLiveBidUpcoming) 
+                {
+                     return await (from bd in meroBoleeDbContexts.BidRequestEntities
+                                  join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                                  join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
+                                  where bd.CompanyId == companyId
+                                        && t.IsDeleted == false
+                                        && t.StatusId == 3 //Tender should be approved
+                                        && bd.BidRequestStatusId == 2 //Bid request should be approved
+                                        && (t.RegistrationTill >= DateTimeNPT.Now)//Tender live date should be within next 7 days
                                         && (t.LiveEndDate >= DateTimeNPT.Now)//Tender live end date should be future date
                                   select new TenderCard
                                   {
@@ -1099,6 +1147,108 @@ namespace MeroBolee.Repository
             try 
             {
                 return await meroBoleeDbContexts.AlgorithmEntities.ToListAsync();
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<MaterialCatResDto>> MaterialCategory(long tenderId)
+        {
+            try 
+            {
+                List<TenderMaterialEntity> tenderMaterialList = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+                var groupedResult = tenderMaterialList.GroupBy(x => new { x.MaterialGroup }).Select(x => new { MaterialGroup = x.Key.MaterialGroup }).OrderBy(x => x.MaterialGroup).ToArray();
+                List<MaterialCatResDto> materialCatList = new List<MaterialCatResDto>();
+                for (int i = 0; i < groupedResult.Length; i++) {
+                    MaterialCatResDto materialCatResDto = new MaterialCatResDto();
+                    materialCatResDto.id = i;
+                    materialCatResDto.name = groupedResult[i].MaterialGroup;
+                    materialCatList.Add(materialCatResDto);
+                }
+                return materialCatList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async  Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWise(long tenderId, int materialId)
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await MaterialCategory(tenderId);
+                string materialGroup = materialCatList.Where(x => x.id == materialId).Select(x => x.name).FirstOrDefault();
+                List<TenderMaterialEntity> tenderMaterialList = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.TenderId == tenderId).Where(x => x.MaterialGroup.Equals(materialGroup)).ToListAsync();
+                List<TenderMaterialSealedResponseDto> materialListCatWise = new List<TenderMaterialSealedResponseDto>();
+                foreach (TenderMaterialEntity tenderMaterialEntity in tenderMaterialList) {
+                    TenderMaterialSealedResponseDto tenderMaterialSealedResponseDto = new TenderMaterialSealedResponseDto();
+                    tenderMaterialSealedResponseDto.MaterialGroup = tenderMaterialEntity.MaterialGroup;
+                    tenderMaterialSealedResponseDto.MaterialId = tenderMaterialEntity.Id;
+                    tenderMaterialSealedResponseDto.MaterialName = tenderMaterialEntity.Materials;
+                    tenderMaterialSealedResponseDto.Quantity = tenderMaterialEntity.Quantity;
+                    tenderMaterialSealedResponseDto.Units = tenderMaterialEntity.Units;
+                    materialListCatWise.Add(tenderMaterialSealedResponseDto);
+                }
+                return materialListCatWise;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWiseRetriveData(long tenderId, long materialId, long supplierId)
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await MaterialCategory(tenderId);
+                string materialGroup = materialCatList.Where(x => x.id == materialId).Select(x => x.name).FirstOrDefault();
+                List<QuotationSealBidEntity> quotationSealBidList = await meroBoleeDbContexts.QuotationSealBidEntities.Where(x => x.TenderId == tenderId).Where(x => x.MaterialGroup.Equals(materialGroup)).Where(x => x.UserId == supplierId).ToListAsync();
+                List<TenderMaterialSealedResponseDto> materialListCatWise = new List<TenderMaterialSealedResponseDto>();
+                foreach (QuotationSealBidEntity quotationSealBidEntity in quotationSealBidList) {
+                    TenderMaterialSealedResponseDto tenderMaterialSealedResponseDto = new TenderMaterialSealedResponseDto();
+                    tenderMaterialSealedResponseDto.MaterialGroup = quotationSealBidEntity.MaterialGroup;
+                    tenderMaterialSealedResponseDto.MaterialId = quotationSealBidEntity.MaterialId;
+                    tenderMaterialSealedResponseDto.MaterialName = quotationSealBidEntity.MaterialName;
+                    tenderMaterialSealedResponseDto.Quantity = quotationSealBidEntity.Quantity;
+                    tenderMaterialSealedResponseDto.Units = quotationSealBidEntity.Units;
+                    tenderMaterialSealedResponseDto.UnitPrice = quotationSealBidEntity.UnitPrice;
+                    tenderMaterialSealedResponseDto.Quotation = Decimal.Parse(cryptoService.Decrypt<string>(quotationSealBidEntity.Quotation));
+                    tenderMaterialSealedResponseDto.Remarks = quotationSealBidEntity.Remarks;
+                    materialListCatWise.Add(tenderMaterialSealedResponseDto);
+                }
+                return materialListCatWise;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<decimal> GetSubSectionTotalForUser(long tenderId, long materialId, long supplierId) 
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await MaterialCategory(tenderId);
+                string materialGroup = materialCatList.Where(x => x.id == materialId).Select(x => x.name).FirstOrDefault();
+                decimal subsectionTotal = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == supplierId).Where(x => x.MaterialGroup.Equals(materialGroup)).Select(x => x.subsectionTotal).FirstOrDefaultAsync();
+                return subsectionTotal;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId) 
+        {
+            try 
+            {
+                List<SealBidSubsectionTotalEntity> sealBidSubsectionTotalEntities = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.UserId == supplierId).Where(x => x.TenderId == tenderId).ToListAsync();
+                return sealBidSubsectionTotalEntities;
             }
             catch 
             {

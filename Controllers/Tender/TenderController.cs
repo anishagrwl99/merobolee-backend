@@ -729,6 +729,76 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        [HttpGet("Material/Category")]
+        [Authorize(Roles = "Super Admin, Bid Inviter, Bidder")]
+        public async Task<IActionResult> MaterialCategory([FromQuery] long tenderId)
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await tenderService.MaterialCategory(tenderId);
+                return Ok(new Responses<List<MaterialCatResDto>>(materialCatList, "200", "Material List Fetched"));
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpGet("Material/List/CategoryWise")]
+        [Authorize(Roles = "Super Admin, Bid Inviter, Bidder")]
+        public async Task<IActionResult> MaterialListCategoryWise([FromQuery] long tenderId, [FromQuery] int materialId)
+        {
+            try 
+            {
+                List<TenderMaterialSealedResponseDto> materialList = await tenderService.MaterialListCategoryWise(tenderId, materialId);
+                return Ok(new Responses<List<TenderMaterialSealedResponseDto>>(materialList, "200", "Material List Fetched Successfully"));
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpGet("Material/List/CategoryWise/RetriveData")]
+        [Authorize(Roles = "Super Admin, Bid Inviter, Bidder")]
+        public async Task<IActionResult> MaterialListCategoryWiseRetriveData([FromQuery] long tenderId, [FromQuery] int materialId, [FromQuery] long supplierId)
+        {
+            try 
+            {
+                RetriveDataSealBid retriveDataSealBid = await tenderService.MaterialListCategoryWiseRetriveData(tenderId, materialId, supplierId);
+                return Ok(new Responses<RetriveDataSealBid>(retriveDataSealBid, "200", "Data Retrive Successful"));
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        [HttpGet("Material/CategoryWise/RetriveSubsectionTotal")]
+        [Authorize(Roles = "Super Admin, Bid Inviter, Bidder")]
+        public async Task<IActionResult> RetriveSubsectionTotal([FromQuery] long tenderId, [FromQuery] long supplierId)
+        {
+            try 
+            {
+                RetriveSubSectionDto retriveDataSealBid = await tenderService.RetriveSubsectionTotal(tenderId, supplierId);
+                return Ok(new Responses<RetriveSubSectionDto>(retriveDataSealBid, "200", "Data Retrive Successful"));
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

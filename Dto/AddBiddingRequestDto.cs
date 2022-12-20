@@ -107,11 +107,78 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company number")]
         public long CompanyId { get; set; }
 
-
         public List<TenderMaterialQuotationDto> MaterialQuotation { get; set; }
+
         public DateTime BiddingDate { get; set; }
 
         public decimal totalAmount { get; set;}
+    }
+
+    public class TenderMaterialSealBiddingDto
+    {
+
+        [Required(ErrorMessage = "Bidding number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid bidding number")]
+        public long BiddingId { get; set; }
+
+        [Required(ErrorMessage = "Tender number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tendeer number")]
+        public long TenderId { get; set; }
+
+
+        [Required(ErrorMessage = "User number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid user number")]
+        public long SupplierId { get; set; }
+
+        [Required(ErrorMessage = "Company number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid company number")]
+        public long CompanyId { get; set; }
+
+        public Dictionary<String, List<TenderMaterialQuotationDtoForSealBid>> MaterialQuotation { get; set; }
+
+        public  Dictionary<String, decimal> subsectionTotal { get; set;}
+
+        public bool isBidEdited { get; set; }
+
+        public DateTime BiddingDate { get; set; }
+
+        public decimal totalAmount { get; set;}
+    }
+
+    // public class TenderMaterialSealBiddingDto
+    // {
+
+    //     [Required(ErrorMessage = "Bidding number is required")]
+    //     [Range(1, long.MaxValue, ErrorMessage = "Invalid bidding number")]
+    //     public long BiddingId { get; set; }
+
+    //     [Required(ErrorMessage = "Tender number is required")]
+    //     [Range(1, long.MaxValue, ErrorMessage = "Invalid tendeer number")]
+    //     public long TenderId { get; set; }
+
+
+    //     [Required(ErrorMessage = "User number is required")]
+    //     [Range(1, long.MaxValue, ErrorMessage = "Invalid user number")]
+    //     public long SupplierId { get; set; }
+
+    //     [Required(ErrorMessage = "Company number is required")]
+    //     [Range(1, long.MaxValue, ErrorMessage = "Invalid company number")]
+    //     public long CompanyId { get; set; }
+
+    //     public List<TenderMaterialQuotationDtoForSealBid> MaterialQuotation { get; set; }
+        
+    //     public  List<SubsectionTotal> subsectionTotal { get; set;}
+
+    //     public DateTime BiddingDate { get; set; }
+
+    //     public decimal totalAmount { get; set;}
+    // }
+
+    public class SubsectionTotal 
+    {
+        public string subsection { get; set; }
+        public decimal subsectionTotal { get; set; }
+
     }
 
     public class TenderAutoBidDto : TenderMaterialBiddingDto
@@ -139,6 +206,8 @@ namespace MeroBolee.Dto
 
         public decimal UnitPrice { get; set; }
 
+        public string MaterialGroup { get; set;}
+
         public string Remarks { get; set; }
 
         /// <summary>
@@ -153,6 +222,45 @@ namespace MeroBolee.Dto
         [JsonIgnore]
         public decimal PreviousQuotation { get; set; }
     }
+
+    public class TenderMaterialQuotationDtoForSealBid
+    {
+
+        [Required(ErrorMessage = "Tender material number is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid tender matrial number")]
+        public long MaterialId { get; set; }
+
+        [Required(ErrorMessage = "Tender material number is required")]
+        public string MaterialName { get; set; }
+
+
+        [Required(ErrorMessage = "Quotation amount is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Invalid quotation amount")]
+        public decimal Quotation { get; set; }
+
+        public string Unit { get; set; }
+
+        public int Quantity { get; set; }
+
+        public decimal UnitPrice { get; set; }
+
+        public string MaterialGroup { get; set;}
+
+        public string Remarks { get; set; }
+
+        /// <summary>
+        /// True if material quotation is available in memory cache. No need to pass value from caller as it is maintained within application
+        /// </summary>
+        [JsonIgnore]
+        public bool IsPrevCacheAvailable { get; set; }
+
+        /// <summary>
+        /// Will contain quotation amount when current quotation amount is invalid due to some other material quotation is invalid
+        /// </summary>
+        [JsonIgnore]
+        public decimal PreviousQuotation { get; set; }
+    }
+
 
     public class LiveBidResponse
     {

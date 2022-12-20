@@ -98,6 +98,41 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        public List<SealBidEntity> MaterialBiddingDtoToSealBidEntity(TenderMaterialSealBiddingDto dto, ICryptoService cryptoService, long batchNo)
+        {
+            if (dto == null)
+            {
+                return null;
+            }
+            List<SealBidEntity> entities = new List<SealBidEntity>();
+            foreach (var subsectionDto in dto.MaterialQuotation)
+            {
+                foreach (var subsectionDtoArray in subsectionDto.Value)
+                {
+                    entities.Add(new SealBidEntity
+                    {
+                        BiddingRequestId = dto.BiddingId,
+                        UserId = dto.SupplierId,
+                        TenderId = dto.TenderId,
+                        MaterialId = subsectionDtoArray.MaterialId,
+                        UnitPrice = subsectionDtoArray.UnitPrice,
+                        Units = subsectionDtoArray.Unit,
+                        Quantity = subsectionDtoArray.Quantity,
+                        // Quotation = item.Quotation.ToString(),
+                        Quotation = cryptoService.Encrypt(subsectionDtoArray.Quotation.ToString()),
+                        BidDate = dto.BiddingDate,
+                                // BatchNo = batchNo,
+                        TotalAmount = dto.totalAmount,
+                        MaterialGroup = subsectionDto.Key
+                    });
+                }
+            }
+                  
+            return entities;
+
+        }
+
+
 
         /// <summary>
         /// Convert bidrequestentity to bid card dto

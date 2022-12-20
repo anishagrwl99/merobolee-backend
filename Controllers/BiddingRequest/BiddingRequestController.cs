@@ -378,6 +378,98 @@ namespace MeroBolee.Controllers.BiddingRequest
             }
         }
 
+        [HttpPost("Bidding/SealBid")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> SealBid([FromBody] TenderMaterialSealBiddingDto sealBidRequest)
+        {
+            try
+            {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are not allowed to bid in this tender.";
+                    response.Data = "Company not verified";
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
+                if (ModelState.IsValid)
+                {
+                    SealBidResponse res = await biddingRequestService.SealBid(sealBidRequest);
+
+                    if (res != null && res.IsBidSuccess)
+                    {
+                        return Ok(new Responses<SealBidResponse>(res, "200", res.message));
+                    }
+                    else if(res == null)
+                    {
+                        return StatusCode(400, new Responses<SealBidResponse>(res, "400", res.message));
+                    }
+                    else
+                    {
+                        return StatusCode(400, new Responses<SealBidResponse>(res, "400", res.message));
+                    }
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
+        [HttpGet("Bidding/SealBid/CheckifSubmitted")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> SealBidCheckIfSubmitted([FromQuery] long tenderId, long supplierId)
+        {
+            try
+            {
+                if (!isCompanyVerified)
+                {
+                    response.statusCode = "403";
+                    response.Message = "You are not allowed to bid in this tender.";
+                    response.Data = "Company not verified";
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+
+                if (ModelState.IsValid)
+                {
+                    bool res = await biddingRequestService.SealBidCheckIfSubmitted(tenderId, supplierId);
+
+                    if (res.Equals(true))
+                    {
+                        return Ok(new Responses<bool>(res, "200", "First Quote has been submiitted by the user"));
+                    }
+                    else
+                    {
+                        return StatusCode(400, new Responses<bool>(res, "400", "First Quote has not been submiitted by the user"));
+                    }
+                }
+                else
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Format";
+                    response.Data = ModelState;
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
         [HttpPost("Bidding/LiveBidCache")]
         [Authorize(Roles = "Bidder")]
         public IActionResult LiveBidFromCache([FromBody] LiveBidFromCache bidRequest) {
@@ -387,6 +479,24 @@ namespace MeroBolee.Controllers.BiddingRequest
                 string liveBidKey = $"{bidRequest.tenderId}_{bidRequest.companyId}_LiveBid";
                 memoryCache.TryGetValue<LiveBidResponse>(liveBidKey, out liveBidResponse);
                 return Ok(new Responses<LiveBidResponse>(liveBidResponse, "200", liveBidResponse.Message)); 
+            } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Bidding/SealBidCache")]
+        [Authorize(Roles = "Bidder")]
+        public IActionResult SealBidFromCache([FromBody] LiveBidFromCache bidRequest) {
+            try 
+            {
+                SealBidResponse sealBidResponse = null;
+                string sealBidKey = $"{bidRequest.tenderId}_{bidRequest.companyId}_SealedBid";
+                memoryCache.TryGetValue<SealBidResponse>(sealBidKey, out sealBidResponse);
+                return Ok(new Responses<SealBidResponse>(sealBidResponse, "200", sealBidResponse.message)); 
             } 
             catch (Exception e)
             {

@@ -288,6 +288,156 @@ namespace MeroBolee.Service
             }
 
         }
+
+        public async Task<SealBidResponse> SealBid(TenderMaterialSealBiddingDto sealMaterialDto)
+        {
+            try
+            {
+                bool isSupplierRegistered = await IsSupplierRegistered(sealMaterialDto.CompanyId, sealMaterialDto.TenderId);// bidRequestRepository.IsBidderRegistered(materialDto.CompanyId, materialDto.TenderId, materialDto.BiddingId);
+                if (!isSupplierRegistered) return null;
+                if (!sealMaterialDto.isBidEdited)
+                {
+                    if (sealMaterialDto.totalAmount > 0)
+                    {
+                        string batch = $"Seal_Tender_Batch_{sealMaterialDto.SupplierId}_{sealMaterialDto.TenderId}";
+                        long batchNo = 0;
+                        memoryCache.TryGetValue<long>(batch, out batchNo);
+                        List<SealBidEntity> entities = MaterialBiddingDtoToSealBidEntity(sealMaterialDto, cryptoService, batchNo);
+                        //entity.Quotation = cryptoService.Encrypt(entity.Quotation);
+                        entities = bidRequestRepository.SealBid(entities);
+                        await SaveToQuotationTableForSealBid(sealMaterialDto);
+                        await SaveSubsectionTotalForSealBid(sealMaterialDto);
+
+                        if (entities != null) //if tender is not expired 
+                        {
+                            SealBidResponse sealBidResponse = new SealBidResponse();
+                            sealBidResponse.CurrentQuotation = sealMaterialDto.totalAmount;
+                            sealBidResponse.MaterialQuotation = sealMaterialDto.MaterialQuotation;
+                            sealBidResponse.subsectionTotal = sealMaterialDto.subsectionTotal;
+                            sealBidResponse.IsBidSuccess = true;
+                            sealBidResponse.message = "Your bid has been succesfully submitted for NPR. " + $"{sealMaterialDto.totalAmount}";
+
+                            string sealBidKey = $"{sealMaterialDto.TenderId}_{sealMaterialDto.CompanyId}_SealedBid";
+                            DateTime expiryTime = DateTimeNPT.Now;
+                            expiryTime = expiryTime.AddHours(5);
+                            memoryCache.Set<SealBidResponse>(sealBidKey, sealBidResponse, expiryTime);
+
+                            return sealBidResponse;
+                        }
+                        else
+                        {
+                            SealBidResponse sealBidResponse = new SealBidResponse();
+                            sealBidResponse.IsBidSuccess = false;
+                            sealBidResponse.CurrentQuotation = 0;
+                            sealBidResponse.message = "You have not quoted for any of the materials";
+
+                            string sealBidKey = $"{sealMaterialDto.TenderId}_{sealMaterialDto.CompanyId}_SealedBid";
+                            DateTime expiryTime = DateTimeNPT.Now;
+                            expiryTime = expiryTime.AddHours(5);
+                            memoryCache.Set<SealBidResponse>(sealBidKey, sealBidResponse, expiryTime);
+
+                            return sealBidResponse;
+                        }
+                    }
+                    else
+                    {
+                        SealBidResponse sealBidResponse = new SealBidResponse();
+                        sealBidResponse.IsBidSuccess = false;
+                        sealBidResponse.CurrentQuotation = 0;
+                        sealBidResponse.message = "You cannot quote NPR.0 as bid amount";
+
+                        string sealBidKey = $"{sealMaterialDto.TenderId}_{sealMaterialDto.CompanyId}_SealedBid";
+                        DateTime expiryTime = DateTimeNPT.Now;
+                        expiryTime = expiryTime.AddHours(5);
+                        memoryCache.Set<SealBidResponse>(sealBidKey, sealBidResponse, expiryTime);
+
+                        return sealBidResponse;
+                    }
+                }
+                else 
+                {
+                    List<SealBidEntity> entities = MaterialBiddingDtoToSealBidEntity(sealMaterialDto, cryptoService, 0);
+
+                    await SaveToQuotationTableForSealBid(sealMaterialDto);
+                    await SaveSubsectionTotalForSealBid(sealMaterialDto);
+
+                    entities = bidRequestRepository.SealBidEdit(entities);
+
+                    if (entities != null) //if tender is not expired 
+                    {
+                        SealBidResponse sealBidResponse = new SealBidResponse();
+                        sealBidResponse.CurrentQuotation = sealMaterialDto.totalAmount;
+                        sealBidResponse.MaterialQuotation = sealMaterialDto.MaterialQuotation;
+                        sealBidResponse.subsectionTotal = sealMaterialDto.subsectionTotal;
+                        sealBidResponse.IsBidSuccess = true;
+                        sealBidResponse.message = "Your bid has been succesfully edited";
+
+                        string sealBidKey = $"{sealMaterialDto.TenderId}_{sealMaterialDto.CompanyId}_SealedBid";
+                        DateTime expiryTime = DateTimeNPT.Now;
+                        expiryTime = expiryTime.AddHours(5);
+                        memoryCache.Set<SealBidResponse>(sealBidKey, sealBidResponse, expiryTime);
+                        return sealBidResponse;
+                    }
+                    else
+                    {
+                        SealBidResponse sealBidResponse = new SealBidResponse();
+                        sealBidResponse.IsBidSuccess = false;
+                        sealBidResponse.CurrentQuotation = 0;
+                        sealBidResponse.message = "You cannot quote NPR.0 as bid amount";
+
+                        string sealBidKey = $"{sealMaterialDto.TenderId}_{sealMaterialDto.CompanyId}_SealedBid";
+                        DateTime expiryTime = DateTimeNPT.Now;
+                        expiryTime = expiryTime.AddHours(5);
+                        memoryCache.Set<SealBidResponse>(sealBidKey, sealBidResponse, expiryTime);
+
+                        return sealBidResponse;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                MoveToHistoryForSealBid();
+            }
+
+        }
+
+        private async Task<List<SealBidSubsectionTotalEntity>> SaveSubsectionTotalForSealBid(TenderMaterialSealBiddingDto sealMaterialDto)
+        {
+            try 
+            {
+                List<SealBidSubsectionTotalEntity> subsectionTotalEntities = new List<SealBidSubsectionTotalEntity>();
+                foreach(var subsectionTotalDto in sealMaterialDto.subsectionTotal) 
+                {
+                    SealBidSubsectionTotalEntity subsectionTotalEntity = new SealBidSubsectionTotalEntity();
+                    subsectionTotalEntity.CompanyId = (int)sealMaterialDto.CompanyId;
+                    subsectionTotalEntity.UserId = (int)sealMaterialDto.SupplierId;
+                    subsectionTotalEntity.TenderId = (int)sealMaterialDto.TenderId;
+                    subsectionTotalEntity.MaterialGroup = subsectionTotalDto.Key;
+                    subsectionTotalEntity.subsectionTotal = subsectionTotalDto.Value;
+                    subsectionTotalEntities.Add(subsectionTotalEntity);
+                }
+                if (!sealMaterialDto.isBidEdited)
+                {
+                    List<SealBidSubsectionTotalEntity> response = await bidRequestRepository.SaveToSubsectionTotalEntity(subsectionTotalEntities);
+                    return subsectionTotalEntities;
+                }
+                else 
+                {
+                    List<SealBidSubsectionTotalEntity> response = await bidRequestRepository.SaveToSubsectionTotalEntityEdit(subsectionTotalEntities, sealMaterialDto.TenderId, sealMaterialDto.SupplierId);
+                    return subsectionTotalEntities;
+                }
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
         public async Task<LiveBidResponse> AutoBid(TenderAutoBidDto bidDto)
         {
             string key = $"Tender_Bidding_{bidDto.TenderId}";
@@ -674,6 +824,68 @@ namespace MeroBolee.Service
             });
         }
 
+        public Task MoveSealBidToHistory()
+        {
+            return Task.Run(async () =>
+            {
+                List<SealBidEntity> list = await bidRequestRepository.GetExpiredBidsForSeal();
+                List<BiddingHistoryEntity> historyEntities = new List<BiddingHistoryEntity>();
+
+                var tempResult = (from l in list
+                                  orderby l.BidDate descending
+                                  group l by new { l.UserId, l.TenderId } into g
+
+                                  select new
+                                  {
+                                      UserId = g.Key.UserId,
+                                      TenderId = g.Key.TenderId,
+                                      BidDate = g.Max(x => x.BidDate),
+                                      BatchNo = g.Max(x => x.BatchNo)
+
+                                  }).ToList();
+
+                List<SealBidEntity> finalRecords = (from ol in list
+                               join t in tempResult on new { ol.TenderId, ol.BidDate, ol.BatchNo } equals new { t.TenderId, t.BidDate, t.BatchNo }
+                               select ol
+                               ).ToList();
+
+                var computedAmount = (from ol in finalRecords
+                                      group ol by new { ol.UserId, ol.TenderId, ol.BatchNo } into g                                      
+                                      select new
+                                      {
+                                          TenderId = g.Key.TenderId,
+                                          UserId = g.Key.UserId,
+                                          Amount = g.Sum(x=> cryptoService.Decrypt<decimal>(x.Quotation))
+                                      })
+                                      .OrderBy(x=>x.Amount)
+                                      .ToList();
+
+                foreach (SealBidEntity item in list)
+                {
+                    int position = computedAmount.FindIndex(x => x.UserId == item.UserId && x.TenderId == item.TenderId);
+                    //Create history object with decrypted quotation
+                    BiddingHistoryEntity entity = new BiddingHistoryEntity
+                    {
+                        BiddingRequestId = item.BiddingRequestId,
+                        UserId = item.UserId,
+                        TenderId = item.TenderId,
+                        MaterialId = item.MaterialId,
+                        Quotation = cryptoService.Decrypt<decimal>(item.Quotation),
+                        BidDate = item.BidDate,
+                        BatchNo = item.BatchNo,
+                        FinalPosition = position >= 0 ? $"L{position+1}" : null
+                    };
+                    historyEntities.Add(entity);
+
+                }
+                //Save History
+                bool isHistoryCreated = await bidRequestRepository.AddHistory(historyEntities);
+
+                //delete item from live bid
+            });
+        }
+
+
 
         public async Task<List<AuctionLog>> GetTenderAuctionLog(long companyId, long tenderId)
         {
@@ -1036,6 +1248,13 @@ namespace MeroBolee.Service
             RecurringJob.AddOrUpdate(jobId, () => MoveBidToHistory(), Cron.Hourly());
         }
 
+        private void MoveToHistoryForSealBid()
+        {
+            string jobId = "Move Seal Bid To History";
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, () => MoveSealBidToHistory(), Cron.Hourly());
+        }
+
         private async Task<bool> IsSupplierRegistered(TenderMaterialBiddingDto dto)
         {
 
@@ -1111,6 +1330,43 @@ namespace MeroBolee.Service
             return response;
         }
 
+         public async Task<List<QuotationSealBidEntity>> SaveToQuotationTableForSealBid(TenderMaterialSealBiddingDto tenderMaterialBiddingDto) 
+        {
+            QuotationSealBidEntity quotationEntity;
+            List<QuotationSealBidEntity> quotations = new List<QuotationSealBidEntity>();
+            Console.WriteLine("Started quotation saving");
+
+            foreach(var tenderMaterialQuotationObject in tenderMaterialBiddingDto.MaterialQuotation) 
+            {
+                foreach (var tenderMaterialQuotationDto in tenderMaterialQuotationObject.Value)
+                {
+                    quotationEntity = new QuotationSealBidEntity();
+                    quotationEntity.TenderId = (int)tenderMaterialBiddingDto.TenderId;
+                    quotationEntity.UserId = (int)tenderMaterialBiddingDto.SupplierId;
+                    quotationEntity.Quantity = tenderMaterialQuotationDto.Quantity;
+                    quotationEntity.UnitPrice = tenderMaterialQuotationDto.UnitPrice;
+                    quotationEntity.Units = tenderMaterialQuotationDto.Unit;
+                    quotationEntity.Quotation = cryptoService.Encrypt(tenderMaterialQuotationDto.Quotation.ToString());
+                    quotationEntity.MaterialId = (int)tenderMaterialQuotationDto.MaterialId;
+                    quotationEntity.Remarks = tenderMaterialQuotationDto.Remarks;
+                    quotationEntity.MaterialGroup = tenderMaterialQuotationDto.MaterialGroup;
+                    quotationEntity.MaterialName = tenderMaterialQuotationDto.MaterialName;
+                    quotations.Add(quotationEntity);
+                }
+            }
+             Console.WriteLine("Size of quotationList = " + quotations.Count);
+            if (!tenderMaterialBiddingDto.isBidEdited)
+            {
+                List<QuotationSealBidEntity> response = await bidRequestRepository.SaveToQuotationEntitySealBid(quotations);
+                return response;
+            }
+            else 
+            {
+                List<QuotationSealBidEntity> response = await bidRequestRepository.EditToQuotationEntitySealBid(quotations, tenderMaterialBiddingDto.TenderId, tenderMaterialBiddingDto.SupplierId);
+                return response;
+            }
+        }
+
         public async Task<GenerateBillResponseDto> GenerateBill(long TenderId, long UserId)
         {
             try
@@ -1131,5 +1387,19 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId) 
+        {
+            try 
+            {
+                bool isSealBidSubmitted = await bidRequestRepository.SealBidCheckIfSubmitted(tenderId, supplierId);
+                return isSealBidSubmitted;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
     }
 }
