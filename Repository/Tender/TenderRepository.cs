@@ -27,6 +27,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="unitOfWork"></param>
         /// <param name="dbFactory"></param>
+        /// <param name="cryptoService"></param>
         public TenderRepository(IUnitOfWork unitOfWork, IDbFactory dbFactory, ICryptoService cryptoService) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
@@ -361,6 +362,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
+        /// <param name="isLiveBidUpcoming"></param>
         /// <returns></returns>
         public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming)
         {

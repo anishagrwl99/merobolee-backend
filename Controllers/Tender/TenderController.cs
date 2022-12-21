@@ -702,7 +702,6 @@ namespace MeroBolee.Controllers.Tender
                      response.Message = "Inviter not allowed to enter in bidding room";
                      return StatusCode(StatusCodes.Status404NotFound, new ErrorResponse<ResponseMsg>(response));
                 }
-                return Ok(new Responses<int>(status, "200", $"Tender with tenderId: {tenderId} ended successfully"));
             }
             catch (Exception e)
             {
