@@ -146,7 +146,7 @@ namespace MeroBolee.Service
         }
         public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming)
         {
-            IEnumerable<TenderCard> tenderCards = await tenderRepository.UpcomingBidderTender(companyId, isAlert);
+            IEnumerable<TenderCard> tenderCards = await tenderRepository.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
 
             if (isLiveBidUpcoming)
             {
@@ -538,6 +538,75 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<List<MaterialCatResDto>> MaterialCategory(long tenderId) 
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await tenderRepository.MaterialCategory(tenderId);
+                return materialCatList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWise(long tenderId, int materialId) 
+        {
+            try 
+            {
+                List<TenderMaterialSealedResponseDto> materialCatList = await tenderRepository.MaterialListCategoryWise(tenderId, materialId);
+                materialCatList.OrderBy(x => x.MaterialName);
+                return materialCatList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<RetriveDataSealBid> MaterialListCategoryWiseRetriveData(long tenderId, long materialId, long supplierId) 
+        {
+            try 
+            {
+                RetriveDataSealBid retriveDataSealBid = new RetriveDataSealBid();
+                retriveDataSealBid.supplierId = supplierId;
+                retriveDataSealBid.TenderId = tenderId;
+                List<TenderMaterialSealedResponseDto> materialList = await tenderRepository.MaterialListCategoryWiseRetriveData(tenderId, materialId, supplierId);
+                materialList.OrderBy(x => x.MaterialName);
+                decimal subsectionTotal = await tenderRepository.GetSubSectionTotalForUser(tenderId, materialId, supplierId);
+                retriveDataSealBid.materialList = materialList;
+                retriveDataSealBid.subsectionTotal = subsectionTotal;
+                retriveDataSealBid.materialGroupId = materialId;
+                retriveDataSealBid.materialGroupName = materialList.Select(x => x.MaterialGroup).FirstOrDefault();
+                return retriveDataSealBid;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId) 
+        {
+            try 
+            {
+                List<SealBidSubsectionTotalEntity> sealBidSubsectionTotalEntities = await tenderRepository.RetriveSubsectionTotal(tenderId, supplierId);
+                Dictionary<string, decimal> subsectionTotal = new Dictionary<string, decimal>();
+                foreach(SealBidSubsectionTotalEntity sealBidSubsectionTotalEntity in sealBidSubsectionTotalEntities) 
+                {
+                    subsectionTotal.Add(sealBidSubsectionTotalEntity.MaterialGroup, sealBidSubsectionTotalEntity.subsectionTotal);
+                }
+                RetriveSubSectionDto retriveSubSectionDto = new RetriveSubSectionDto();
+                retriveSubSectionDto.subsectionTotal = subsectionTotal;
+                retriveSubSectionDto.totalAmount = sealBidSubsectionTotalEntities.Sum(x => x.subsectionTotal);
+                return retriveSubSectionDto;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
 
     }
 }

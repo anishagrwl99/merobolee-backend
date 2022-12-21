@@ -100,5 +100,9 @@ namespace MeroBolee.Service
 
         Task<GenerateBillResponseDto> GenerateBill(long TenderId, long UserId);
 
+        Task<SealBidResponse> SealBid(TenderMaterialSealBiddingDto sealBidRequest);
+
+        Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId);
+
     }
 }

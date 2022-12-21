@@ -33,7 +33,7 @@ namespace MeroBolee.Repository
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert);
+        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
 
         /// <summary>
         /// Get bid inviter upcoming tender
@@ -83,5 +83,16 @@ namespace MeroBolee.Repository
         Task<int> EnterBidRoomBidInviter(long tenderId, long companyId);
 
         Task<List<AlgorithmEntity>> AlgorithmList();
+
+        Task<List<MaterialCatResDto>> MaterialCategory(long tenderId);
+
+        Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWise(long tenderId, int materialId);
+
+        Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWiseRetriveData(long tenderId, long materialId, long supplierId);
+
+        Task<decimal> GetSubSectionTotalForUser(long tenderId, long materialId, long supplierId);
+
+        Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId);
+
     }
 }

@@ -88,6 +88,18 @@ namespace MeroBolee.Dto
         public string Units { get; set; }
     }
 
+    public class TenderMaterialSealedResponseDto
+    {
+        public long MaterialId { get; set; }
+        public string MaterialName { get; set; }
+        public int Quantity { get; set; }
+        public string Units { get; set; }
+        public decimal UnitPrice { get; set; }
+        public string MaterialGroup { get; set; }
+        public string Remarks { get; set; }
+        public decimal Quotation { get; set; }
+    }
+
     public class TenderWatchListCard: TenderCard
     {
         public long WatchListId { get; set; }

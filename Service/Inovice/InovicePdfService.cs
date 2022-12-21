@@ -13,5 +13,7 @@ namespace MeroBolee.Service.Inovice
 
         Task<byte[]> InvoicePdfGenerateConsolidateReport(long TenderId);
 
+        Task<byte[]> GenerateSealBidReport(string htmlString);
+
     }
 }

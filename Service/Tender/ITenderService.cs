@@ -74,5 +74,13 @@ namespace MeroBolee.Service
 
         Task<List<AlgorithmEntity>> AlgorithmList();
 
+        Task<List<MaterialCatResDto>> MaterialCategory(long tenderId);
+
+        Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWise(long tenderId, int materialId);
+
+        Task<RetriveDataSealBid> MaterialListCategoryWiseRetriveData(long tenderId, long materialId, long supplierId);
+
+        Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId);
+
     }
 }

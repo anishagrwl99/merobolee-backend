@@ -81,6 +81,16 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         List<LiveBiddingEntity> LiveBid(List<LiveBiddingEntity> bidEntity);
 
+        // <summary>
+        /// Live bid in a tender
+        /// </summary>
+        /// <param name="sealBidEntity"></param>
+        /// <returns></returns>
+        List<SealBidEntity> SealBid(List<SealBidEntity> sealBidEntity);
+
+        List<SealBidEntity> SealBidEdit(List<SealBidEntity> sealBidEntity);
+
+
         /// <summary>
         /// Auto bid
         /// </summary>
@@ -106,6 +116,7 @@ namespace MeroBolee.Repository
         Task<IEnumerable<TenderWinnerEntity>> GetSupplierWinningBids(long supplierCompanyId);
 
         Task<List<LiveBiddingEntity>> GetExpiredBids();
+        Task<List<SealBidEntity>> GetExpiredBidsForSeal();
 
         Task<bool> DeleteLiveBids(List<LiveBiddingEntity> records);
         Task<bool> AddHistory(List<BiddingHistoryEntity> records);
@@ -145,13 +156,62 @@ namespace MeroBolee.Repository
         /// <returns></returns>
         Task<bool> IsSupplierRegistered(long companyId, long tenderId);
 
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="tenderId">The tender identifier.</param>
+        /// <returns></returns>
+
         Task<List<PositionAmountDto>> GetFinalBiddingPosition(long tenderId);
 
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="userId">The company identifier.</param>
+        /// <returns></returns>
         Task<string> FindCompanyName(long userId);
+
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="quotations">The company identifier.</param>
+        /// <returns></returns>
 
         Task<List<QuotationEntity>> SaveToQuotationEntity(List<QuotationEntity> quotations);
 
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="quotationsSealBid">The company identifier.</param>
+        /// <returns></returns>
+        Task<List<QuotationSealBidEntity>> SaveToQuotationEntitySealBid(List<QuotationSealBidEntity> quotationsSealBid);
+
+        Task<List<QuotationSealBidEntity>> EditToQuotationEntitySealBid(List<QuotationSealBidEntity> quotationsSealBid, long tenderId, long userId);
+
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="subsectionTotal">The company identifier.</param>
+        /// <returns></returns>
+        Task<List<SealBidSubsectionTotalEntity>> SaveToSubsectionTotalEntity(List<SealBidSubsectionTotalEntity> subsectionTotal);
+
+        Task<List<SealBidSubsectionTotalEntity>> SaveToSubsectionTotalEntityEdit(List<SealBidSubsectionTotalEntity> subsectionTotal, long tenderId, long supplierId);
+
+
+
+        /// <summary>
+        /// Determines whether [is supplier registered] [the specified company identifier].
+        /// </summary>
+        /// <param name="TenderId">The company identifier.</param>
+        /// <param name="UserId">The company identifier.</param>
+        /// <returns></returns>
+
         Task<List<QuotationResponseDto>> GenerateBill(long TenderId, long UserId);
+
+
+        Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId);
 
 
     }
