@@ -83,7 +83,6 @@ namespace MeroBolee.Repository
 
         // <summary>
         /// Live bid in a tender
-        /// </summary>
         /// <param name="sealBidEntity"></param>
         /// <returns></returns>
         List<SealBidEntity> SealBid(List<SealBidEntity> sealBidEntity);
