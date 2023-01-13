@@ -797,6 +797,32 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpPost("CommunityApproval")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> CommunityApproval([FromQuery] long tenderId)
+        {
+            try
+            {
+                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderId);
+                if (tenderEntity == null)
+                {
+                    return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
+                }
+                return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Record is successfully updated"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

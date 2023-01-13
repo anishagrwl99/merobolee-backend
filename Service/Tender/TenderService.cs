@@ -37,7 +37,21 @@ namespace MeroBolee.Service
             TenderEntity entity = TenderDtoEntity(tenderDto);
             entity = tenderRepository.AddTender(entity);
 
-            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+            List<CommunityApprovalEntity> community = CommunityDtoEntity(entity.Id,tenderDto);
+            tenderRepository.AddCommunityApproval(community);
+
+            //foreach (var item in tenderDto.companyIds)
+            //{
+            //    var tenderSubmissionEntity = tenderRepository.FindTenderSubmissionEntity(item);
+
+            //    if(tenderSubmissionEntity!=null)
+            //    {
+            //        tenderSubmissionEntity.StatusId = 4;
+            //        tenderRepository.UpdateTenderSubmissionStatus(tenderSubmissionEntity);
+            //    }
+            //}
+
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
@@ -49,7 +63,6 @@ namespace MeroBolee.Service
             {
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
-           
 
             List<TenderExtraDocumentEntity> documentEntities = new List<TenderExtraDocumentEntity>();
 
@@ -61,7 +74,7 @@ namespace MeroBolee.Service
                     {
                         TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
                         {
-                            CompanyId = tenderDto.CompanyId,
+                            CompanyId = tenderDto.superId,
                             UserId = tenderDto.CreatedBy,
                             DocTitle = item.DocTitle,
                             TenderId = entity.Id,
@@ -108,10 +121,25 @@ namespace MeroBolee.Service
 
         public async Task<GetTenderDto> GetTenderDetail(long tenderId, string baseUrl, bool isRegistered, string userRole)
         {
-            TenderEntity te = await tenderRepository.GetTenderDetail(tenderId);
+            TenderEntity te = await tenderRepository.GetTenderDetailForApproval(tenderId,userRole);
             if (te != null)
             {
                 return TenderEntityToDto(te, baseUrl, isRegistered, userRole);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<TenderEntity> CommunityApproval(long tenderId)
+        {
+            TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
+            if (te != null)
+            {
+                te.StatusId = 3;
+                await tenderRepository.UpdateTenderStatus(te);
+                return te;
             }
             else
             {
@@ -205,7 +233,7 @@ namespace MeroBolee.Service
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
             TenderEntity entity = await tenderRepository.GetTenderEntityOnly(tenderDto.TenderId);
-            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
@@ -252,7 +280,7 @@ namespace MeroBolee.Service
                     {
                         TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
                         {
-                            CompanyId = tenderDto.CompanyId,
+                            CompanyId = tenderDto.superId,
                             UserId = tenderDto.CreatedBy,
                             TenderId = entity.Id,
                             DocTitle = item.DocTitle,
@@ -316,10 +344,10 @@ namespace MeroBolee.Service
         {
             try
             {
-                TenderEntity t = await tenderRepository.GetTenderEntityOnly(dto.TenderId);
+                CommunityApprovalEntity t = await tenderRepository.GetTenderEntityOfCompany(dto.TenderId,dto.CompanyId);
                 t.StatusId = 3;//Approved
-                t.Date_modified = DateTime.Now;
-                t.ApprovedBy = dto.UserId;
+                t.Date_Modified = DateTime.Now;
+                //t.ApprovedBy = dto.UserId;
                 tenderRepository.ApproveTenderByBidInviter(t);
                 return dto;
             }

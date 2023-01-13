@@ -82,7 +82,7 @@ namespace MeroBolee.Repository
                                             }
 
                                         ).ToList<EmailEntity>();
-            return userEmails.OrderBy(x => x.Date_created).ToList();
+            return userEmails.OrderByDescending(x => x.Date_created).ToList();
         }
 
         public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportInboxEmails(long userId)
@@ -125,7 +125,7 @@ namespace MeroBolee.Repository
 
                                         ).ToList<EmailEntity>();
 
-            return userEmails.OrderBy(x => x.Date_created).ToList();
+            return userEmails.OrderByDescending(x => x.Date_created).ToList();
         }
 
         public List<TechnicalSupportEmailResponseDto> GetTechnicalSupportOutboxEmails(long userId)
@@ -171,7 +171,7 @@ namespace MeroBolee.Repository
 
                                         ).ToList<EmailEntity>();
 
-            return userEmails.OrderBy(x => x.Date_created).ToList();
+            return userEmails.OrderByDescending(x => x.Date_modified).ToList();
         }
 
         public EmailEntity GetEmailDetail(long emailId)

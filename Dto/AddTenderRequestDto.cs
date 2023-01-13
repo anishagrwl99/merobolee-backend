@@ -21,8 +21,9 @@ namespace MeroBolee.Dto
 
         [Required(ErrorMessage = "Company name is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
-        public long CompanyId { get; set; }
+        public List<long> companyIds { get; set; }
 
+        public long superId { get; set; }
 
         [Required(ErrorMessage = "Category name is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid category name")]

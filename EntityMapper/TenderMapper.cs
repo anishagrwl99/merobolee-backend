@@ -50,7 +50,7 @@ namespace MeroBolee.EntityMapper
             }
             TenderEntity entity = new TenderEntity
             {
-                CompanyId = tenderDto.CompanyId,
+                CompanyId = tenderDto.superId,
                 Title = tenderDto.TenderTitle,
                 CategoryId = tenderDto.CategoryId,
                 LiveInterval = tenderDto.TimeInterval,
@@ -100,6 +100,36 @@ namespace MeroBolee.EntityMapper
             return entity;
         }
 
+        public List<CommunityApprovalEntity> CommunityDtoEntity(long id ,AddTenderRequestDto tenderDto)
+        {
+            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
+
+            if (tenderDto == null)
+            {
+                return null;
+            }
+
+            var communityApproval=new List<CommunityApprovalEntity>();
+
+            foreach (var item in tenderDto.companyIds)
+            {
+                CommunityApprovalEntity community = new CommunityApprovalEntity
+                {
+                    CategoryId = tenderDto.CategoryId,
+                    TenderId = id,
+                    StatusId = 1,
+                    Date_Created = DateTimeNPT.Now,
+                    Date_Modified = DateTimeNPT.Now,
+                    IsDeleted = false,
+                    CompanyId=item
+                };
+
+                communityApproval.Add(community);
+            }
+
+            return communityApproval;
+        }
+
         public void UpdateTenderEntity(ref TenderEntity entity, UpdateTenderRequestDto dto)
         {
             entity.Title = dto.TenderTitle;
@@ -110,7 +140,7 @@ namespace MeroBolee.EntityMapper
             entity.LiveStartDate = dto.LiveStartDate;
             entity.LiveEndDate = dto.LiveEndDate;
             entity.QualityRequest = dto.QualityRequest;
-            entity.CompanyId = dto.CompanyId;
+            entity.CompanyId = dto.superId;
             entity.Date_modified = DateTimeNPT.Now;
             entity.AdditionalRequest = dto.AdditionalRequest;
             entity.EligibilityCriteria = dto.EligibilityCriteria;

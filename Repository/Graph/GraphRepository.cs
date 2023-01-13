@@ -38,7 +38,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="inviterCompanyId">The inviter company identifier.</param>
         /// <returns></returns>
-        Task<List<TenderEntity>> GetInviterTenderSubmissions(long inviterCompanyId);
+        Task<List<CommunityApprovalEntity>> GetInviterTenderSubmissions(long inviterCompanyId);
     }
 
 
@@ -69,16 +69,15 @@ namespace MeroBolee.Repository
         /// <param name="inviterCompanyId">The inviter company identifier.</param>
         /// <returns></returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public async Task<List<TenderEntity>> GetInviterTenderSubmissions(long inviterCompanyId)
+        public async Task<List<CommunityApprovalEntity>> GetInviterTenderSubmissions(long inviterCompanyId)
         {
             try
             {
                 DateTime fromDate = DateTime.Now.AddYears(-1);
-                return await meroBoleeDbContexts.TenderEntities
-                        .Include(x => x.CategoryEntity)
-                        .Include(x => x.TenderStatusEntity)
-                        .Where(x => x.CompanyId == inviterCompanyId && x.Date_created >= fromDate && x.Date_created <= DateTime.Now)
-                        .ToListAsync();
+                return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities)
+                       .ThenInclude(y => y.CategoryEntity)
+                       .Where(x => x.CompanyId == inviterCompanyId && x.Date_Created >= fromDate && x.Date_Created <= DateTime.Now)
+                       .ToListAsync();
             }
             catch (Exception)
             {
@@ -107,7 +106,7 @@ namespace MeroBolee.Repository
                               where br.CompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
-                                  CompanyId = t.CompanyId,
+                                  CompanyId = br.CompanyId,
                                   Id = t.Id,
                                   AdditionalRequest = t.AdditionalRequest,
                                   ApprovedBy = t.ApprovedBy,
@@ -173,7 +172,7 @@ namespace MeroBolee.Repository
                               where tw.WinnerCompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
-                                  CompanyId = t.CompanyId,
+                                  CompanyId = tw.WinnerCompanyId,
                                   Id = t.Id,
                                   AdditionalRequest = t.AdditionalRequest,
                                   ApprovedBy = t.ApprovedBy,

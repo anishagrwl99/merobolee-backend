@@ -280,7 +280,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>> resp = await companyRepository.GetCompanyDetail(companyId);
+                Tuple<CompanyEntity, List<UserEntity>, List<CommunityApprovalEntity>> resp = await companyRepository.GetCompanyDetail(companyId);
                 if (resp != null)
                 {
                     CompanyDetailResponse detail = ToDetailResponse(resp.Item1, resp.Item2, resp.Item3, fileService, baseUrl, defaultPic);
