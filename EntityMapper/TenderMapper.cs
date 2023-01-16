@@ -112,7 +112,17 @@ namespace MeroBolee.EntityMapper
 
             var communityApproval=new List<CommunityApprovalEntity>();
 
-            foreach (var item in tenderDto.companyIds)
+            List<int> companyIds = tenderDto.companyIds.Split(',')
+                .Select(possibleIntegerAsString => {
+                    int parsedInteger = 0;
+                    bool isInteger = int.TryParse(possibleIntegerAsString , out parsedInteger);
+                    return new {isInteger, parsedInteger};
+                })
+                .Where(tryParseResult => tryParseResult.isInteger)
+                .Select(tryParseResult => tryParseResult.parsedInteger)
+                .ToList();
+            
+            foreach (var item in companyIds)
             {
                 CommunityApprovalEntity community = new CommunityApprovalEntity
                 {
