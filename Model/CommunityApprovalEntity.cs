@@ -16,6 +16,7 @@ namespace MeroBolee.Model
 
         [ForeignKey("TenderStatusEntity")]
         public int StatusId { get; set; }
+        [ForeignKey("CompanyEntity")]
         public long CompanyId { get; set; }
         public DateTime Date_Created { get; set; }
         public DateTime Date_Modified { get; set; }
@@ -28,6 +29,7 @@ namespace MeroBolee.Model
         public virtual TenderEntity TenderEntities { get; set; }
         public virtual CategoryEntity CategoryEntity { get; set; }
         public virtual TenderStatusEntity TenderStatusEntity { get; set; }
+        public virtual CompanyEntity CompanyEntity { get; set; }
 
 
     }

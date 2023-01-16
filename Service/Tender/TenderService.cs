@@ -132,12 +132,16 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<TenderEntity> CommunityApproval(long tenderId)
+        public async Task<TenderEntity> CommunityApproval(long tenderId,bool status)
         {
             TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
             if (te != null)
             {
-                te.StatusId = 3;
+                if(status== true)
+                {
+                    te.StatusId = 3;
+                }
+                
                 await tenderRepository.UpdateTenderStatus(te);
                 return te;
             }
@@ -349,12 +353,29 @@ namespace MeroBolee.Service
                 t.Date_Modified = DateTime.Now;
                 //t.ApprovedBy = dto.UserId;
                 tenderRepository.ApproveTenderByBidInviter(t);
+
+                await ToUpdateCommunityApprovalStatusInTender(dto.TenderId);
+
                 return dto;
             }
             catch
             {
 
                 throw;
+            }
+        }
+
+        private async Task ToUpdateCommunityApprovalStatusInTender(long tenderId)
+        {
+            var check = await tenderRepository.CheckStatusInCommunityApproval(tenderId);
+            if (check == true)
+            {
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (te != null)
+                {
+                    te.CommunityApprovalStatus = 3;
+                    await tenderRepository.UpdateTenderStatus(te);
+                }
             }
         }
 
@@ -498,14 +519,14 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<int> GetTenderDetailBidInviterStatus(long tenderId) {
+        public async Task<int> GetTenderDetailBidInviterStatus(long tenderId, long companyId) {
             try {
-                TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
+                CommunityApprovalEntity tenderEntity = await tenderRepository.GetTenderDetailBidInviterStatus(tenderId, companyId);
                 int tenderStatus = tenderEntity.StatusId;
-                if(tenderEntity.LiveStartDate <= DateTimeNPT.Now && tenderEntity.LiveEndDate > DateTimeNPT.Now) {
+                if(tenderEntity.TenderEntities.LiveStartDate <= DateTimeNPT.Now && tenderEntity.TenderEntities.LiveEndDate > DateTimeNPT.Now) {
                     tenderStatus = 4;
                 }
-                if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {
+                if(tenderEntity.TenderEntities.LiveEndDate < DateTimeNPT.Now) {
                     tenderStatus = 5;
                 }
                 return tenderStatus;

@@ -61,16 +61,15 @@ namespace MeroBolee.Dto
 
         public bool isSealBiddingAllowed { get; set; }
 
-        //public List<TenderCardInfo> CardInfo { get; set; }
+        public List<CompanyInfo> CompanyInfo { get; set; }
 
     }
 
-    //public class TenderCardInfo
-    //{
-    //    public long Id { get; set; }
-    //    public string Label { get; set; }
-    //    public string Value { get; set; }
-    //}
+    public class CompanyInfo
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+    }
 
 
     public class TenderExtraDocumentResponseDto

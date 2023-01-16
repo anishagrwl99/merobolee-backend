@@ -72,7 +72,8 @@ namespace MeroBolee.EntityMapper
                 IsDeleted = false,
                 DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product,
-                AlgoName = algoName == null ? "" : algoName
+                AlgoName = algoName == null ? "" : algoName,
+                CommunityApprovalStatus=1
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)

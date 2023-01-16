@@ -62,7 +62,7 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<bool, string> tuple = await signupRepo.ValidateCompany(data.Email.Trim(), data.PANNumber.Trim(), companyTypeEnum);
+                Tuple<bool, string> tuple = await signupRepo.ValidateCompany(data.Email.Trim(), data.PANNumber.Trim());
 
                 if (tuple.Item1 == true)
                 {
@@ -71,14 +71,9 @@ namespace MeroBolee.Service
                         UserName = data.Email,
                         Email = data.Email,
                     };
-                    var flag=true;
-                    var op = await userManager.FindByEmailAsync(applicationUser.UserName);
-                    if (op == null)
-                    {
+                   
                         var result = await userManager.CreateAsync(applicationUser, data.Password);
-                        flag = result.Succeeded;
-                    }
-                    if (flag)
+                    if (result.Succeeded)
                     {
                          var token = await userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
 

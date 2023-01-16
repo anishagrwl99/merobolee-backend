@@ -20,6 +20,7 @@ namespace MeroBolee.Repository
         
          //  IEnumerable<TenderEntity> GetTenderByBidder();
          Task<TenderEntity> GetTenderDetail(long id);
+         Task<CommunityApprovalEntity> GetTenderDetailBidInviterStatus(long id,long companyid);
          Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
          Task<TenderEntity> FindTenderToUpdate(long id);
 
@@ -76,6 +77,7 @@ namespace MeroBolee.Repository
         Tuple<decimal, DateTime, DateTime>  GetMaxQuotationAllowed(long tenderId);
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
         Task<CommunityApprovalEntity> GetTenderEntityOfCompany(long tenderId,long companyId);
+        Task<bool> CheckStatusInCommunityApproval(long tenderId);
 
         Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
 

@@ -104,6 +104,8 @@ namespace MeroBolee.Model
         [MaxLength(3999)]
         public string AlgoName { get; set; }
 
+        public int CommunityApprovalStatus { get; set; }
+
         public DateTime DateOfExecution { get; set; }
 
         [JsonIgnore]

@@ -32,7 +32,7 @@ namespace MeroBolee.Repository
         /// <param name="email">The email.</param>
         /// <param name="panNumber">The pan number.</param>
         /// <returns></returns>
-        Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber, CompanyTypeEnum companyTypeEnum);
+        Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber);
     }
 
     public class SignupRepository : RepositoryBase<CompanyEntity>, ISignupRepository
@@ -110,7 +110,7 @@ namespace MeroBolee.Repository
         /// <param name="email">The email.</param>
         /// <param name="panNumber">The pan number.</param>
         /// <returns></returns>
-        public async Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber, CompanyTypeEnum companyTypeEnum)
+        public async Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber)
         {
             try
             {
@@ -126,18 +126,14 @@ namespace MeroBolee.Repository
                     .Select(x => x.Email)
                     .FirstOrDefaultAsync();
 
-                var registered = await meroBoleeDbContexts.CompanyEntities
-                            .Where(x => (x.CompanyEmail == email || x.PANNumber == panNumber) && x.RegisteredAs == companyTypeEnum.ToString())
-                            .Select(x => new { x.CompanyEmail, x.PANNumber })
-                            .FirstOrDefaultAsync();
 
-                if (((info != null && string.Equals(email, info.CompanyEmail, StringComparison.OrdinalIgnoreCase)) ||
-                     (userEmail != null && string.Equals(email, userEmail, StringComparison.OrdinalIgnoreCase))) && registered !=null)
+                if ((info != null && string.Equals(email, info.CompanyEmail, StringComparison.OrdinalIgnoreCase)) ||
+                     (userEmail != null && string.Equals(email, userEmail, StringComparison.OrdinalIgnoreCase)))
                 {
                     isValid = false;
                     msg = "Email is already registered";
                 }
-                else if ( (info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase)) && registered != null)
+                else if (info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase))
                 {
                     isValid = false;
                     msg = "PAN Number is already registered.";

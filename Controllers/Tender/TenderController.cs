@@ -542,7 +542,7 @@ namespace MeroBolee.Controllers.Tender
 
 
         [HttpGet("Tender/TenderStatusBidInviter")]
-        public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId)
+        public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId, [FromQuery] long companyId)
         {
             try
             {
@@ -554,7 +554,7 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    int tenderStatusBidInviter = await tenderService.GetTenderDetailBidInviterStatus(tenderId);
+                    int tenderStatusBidInviter = await tenderService.GetTenderDetailBidInviterStatus(tenderId, companyId);
                     return Ok(new Responses<int>(tenderStatusBidInviter, "200", "Record found"));
 
                 }
@@ -801,14 +801,15 @@ namespace MeroBolee.Controllers.Tender
         /// 
         /// </summary>
         /// <param name="tenderId"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
-        [HttpPost("CommunityApproval")]
+        [HttpPost("Admin/CommunityApproval")]
         [Authorize(Roles ="Super Admin")]
-        public async Task<IActionResult> CommunityApproval([FromQuery] long tenderId)
+        public async Task<IActionResult> CommunityApproval([FromQuery] long tenderId,bool status)
         {
             try
             {
-                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderId);
+                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderId, status);
                 if (tenderEntity == null)
                 {
                     return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
