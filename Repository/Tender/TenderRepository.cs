@@ -725,11 +725,9 @@ namespace MeroBolee.Repository
         {
             try
             {
-                return await (from cm in meroBoleeDbContexts.CommunityApprovalEntities
-                              join t in meroBoleeDbContexts.TenderEntities on cm.TenderId equals t.Id
+                return await (from t in meroBoleeDbContexts.TenderEntities 
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
-                              join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
                               where t.IsDeleted == false
                                     && t.StatusId == 3 //Tender should be approved
                                                        // && (t.LiveEndDate <= DateTime.Now.AddDays(3))
@@ -739,8 +737,6 @@ namespace MeroBolee.Repository
                               select new TenderCard
                               {
                                   TenderId = t.Id,
-                                  CompanyId = c1.CompanyId,
-                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -754,8 +750,14 @@ namespace MeroBolee.Repository
                                   DateOfExecution = t.DateOfExecution,
                                   DateCreated = t.Date_created,
                                   Price = t.Price,
-                                  Location = t.Location
-
+                                  Location = t.Location,
+                                  CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                 where tc.TenderId == t.Id
+                                                 select new CompanyInfo
+                                                 {
+                                                     Id = tc.CompanyId,
+                                                     Name = tc.CompanyEntity.Name
+                                                 }).ToList()
                               }).OrderByDescending(x => x.DateCreated).ToListAsync();
 
 
