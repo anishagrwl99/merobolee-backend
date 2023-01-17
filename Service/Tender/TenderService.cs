@@ -132,25 +132,30 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<TenderEntity> CommunityApproval(long tenderId,bool status)
+        public async Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApprove)
         {
-            TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
-            if (te != null)
+            try
             {
-                if(status== true)
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
+                if (te != null)
                 {
-                    te.StatusId = 3;
+                    if (tenderApprove.status == true)
+                    {
+                        te.StatusId = 3;
+                        te.ApprovedBy = tenderApprove.UserId;
+                        te.Date_modified = DateTimeNPT.Now;
+                    }
+
+                    await tenderRepository.UpdateTenderStatus(te);
+                    return te;
                 }
-                
-                await tenderRepository.UpdateTenderStatus(te);
-                return te;
-            }
-            else
-            {
                 return null;
             }
+            catch
+            {
+                throw;
+            }
         }
-
         public async Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath)
         {
             TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId);
@@ -534,6 +539,27 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<int> TenderStatusForAdmin(long tenderId)
+        {
+            try
+            {
+                TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
+                int tenderStatus = tenderEntity.StatusId;
+                if(tenderEntity.LiveStartDate <= DateTimeNPT.Now && tenderEntity.LiveEndDate > DateTimeNPT.Now) {
+                    tenderStatus = 4;
+                }
+                if(tenderEntity.LiveEndDate < DateTimeNPT.Now) {
+                    tenderStatus = 5;
+                }
+                return tenderStatus;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
 
         public async Task<int> AddTime(long tenderId, int min) {
             try {

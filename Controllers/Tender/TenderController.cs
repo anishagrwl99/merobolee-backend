@@ -540,7 +540,6 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
-
         [HttpGet("Tender/TenderStatusBidInviter")]
         public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId, [FromQuery] long companyId)
         {
@@ -567,7 +566,34 @@ namespace MeroBolee.Controllers.Tender
 
             }
         }
+        
+        
+        [HttpGet("Tender/TenderStatusAdmin")]
+        public async Task<IActionResult> TenderStatusForAdmin([FromQuery] long tenderId)
+        {
+            try
+            {
+                if (tenderId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid tender id";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    int tenderStatusBidInviter = await tenderService.TenderStatusForAdmin(tenderId);
+                    return Ok(new Responses<int>(tenderStatusBidInviter, "200", "Record found"));
 
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
 
         /// <summary>
         /// To get tender documents created by merobolee
@@ -800,21 +826,20 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tenderId"></param>
-        /// <param name="status"></param>
+        /// <param name="tenderApprove"></param>
         /// <returns></returns>
-        [HttpPost("Admin/CommunityApproval")]
+        [HttpPost("Admin/ApproveTender")]
         [Authorize(Roles ="Super Admin")]
-        public async Task<IActionResult> CommunityApproval([FromQuery] long tenderId,bool status)
+        public async Task<IActionResult> CommunityApproval([FromBody] TenderApproveDtoByAdmin tenderApprove)
         {
             try
             {
-                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderId, status);
+                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderApprove);
                 if (tenderEntity == null)
                 {
                     return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
                 }
-                return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Record is successfully updated"));
+                return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Tender is successfully updated"));
             }
             catch (Exception e)
             {

@@ -1,18 +1,14 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
 using MeroBolee.Service;
 using MeroBolee.Settings;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.City

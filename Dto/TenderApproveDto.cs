@@ -20,4 +20,9 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid approve user id")]
         public long UserId { get; set; }
     }
+
+    public class TenderApproveDtoByAdmin : TenderApproveDto
+    {
+        public bool status { get; set; } 
+    }
 }
