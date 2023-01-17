@@ -28,6 +28,8 @@ namespace MeroBolee.Dto
 
         public string AlgoName { get; set; }
         public DateTime CreatedDate { get; set; }
+        
+        public int CommunityApprovalStatus { get; set; }
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
         public List<TenderMaterialResponseDto> TenderMaterials { get; set; }

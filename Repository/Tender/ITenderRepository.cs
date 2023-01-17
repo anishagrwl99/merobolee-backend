@@ -21,7 +21,7 @@ namespace MeroBolee.Repository
          //  IEnumerable<TenderEntity> GetTenderByBidder();
          Task<TenderEntity> GetTenderDetail(long id);
          Task<CommunityApprovalEntity> GetTenderDetailBidInviterStatus(long id,long companyid);
-         Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
+         // Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
          Task<TenderEntity> FindTenderToUpdate(long id);
 
         Task<TenderEntity> GetTenderDetailNew(long id);

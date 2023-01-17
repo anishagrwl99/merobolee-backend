@@ -839,7 +839,17 @@ namespace MeroBolee.Controllers.Tender
                 {
                     return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
                 }
-                return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Tender is successfully updated"));
+
+                if (tenderEntity != null && tenderApprove.status == true)
+                {
+                    return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Tender is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "500";
+                    response.Message = "Your request has been process. The tender has been rejected!";
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
             }
             catch (Exception e)
             {
