@@ -112,17 +112,13 @@ namespace MeroBolee.Repository
             try
             {
                 var timeNow = DateTimeNPT.Now;
-                return await (from cm in meroBoleeDbContexts.CommunityApprovalEntities
-                              join t in meroBoleeDbContexts.TenderEntities on cm.TenderId equals t.Id
+                return await (from t in meroBoleeDbContexts.TenderEntities 
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                               join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
-                              join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
                               where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
                               select new TenderCard
                               {
                                   TenderId = t.Id,
-                                  CompanyId = c1.CompanyId,
-                                  CompanyName = c1.Name,
                                   TenderCode = t.Code,
                                   TenderTitle = t.Title,
                                   CategoryId = c.Id,
@@ -135,15 +131,14 @@ namespace MeroBolee.Repository
                                   Price = t.Price,
                                   Location = t.Location,
                                   DateOfExecution = t.DateOfExecution,
-                                  DateCreated = t.Date_created
-                                  //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
-                                  //            where tc.TenderId == t.Id
-                                  //            select new TenderCardInfo
-                                  //            {
-                                  //                Id = tc.Id,
-                                  //                Label = tc.Label,
-                                  //                Value = tc.Value
-                                  //            }).ToList()
+                                  DateCreated = t.Date_created,
+                                  CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                 where tc.TenderId == t.Id
+                                                 select new CompanyInfo
+                                                 {
+                                                     Id = tc.CompanyId,
+                                                     Name = tc.CompanyEntity.Name
+                                                 }).ToList()
                               }
 
                 ).OrderByDescending(x => x.DateCreated).ToListAsync();
