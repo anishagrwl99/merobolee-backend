@@ -859,6 +859,32 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        /// <summary>
+        /// Get the list of companies with their respective statusid in communityapproval table
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpPost("Admin/List/CommunityApprovalList")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> CommunityApprovalList([FromQuery] long tenderId)
+        {
+            try
+            {
+                var communityApprovalEntity = await tenderService.CommunityApprovalList(tenderId);
+                if (communityApprovalEntity == null)
+                {
+                    return NotFound(new Responses<IEnumerable<CommunityApprovalDto>>(communityApprovalEntity, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<CommunityApprovalDto>>(communityApprovalEntity, "200", "Record found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

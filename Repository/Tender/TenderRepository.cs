@@ -899,7 +899,7 @@ namespace MeroBolee.Repository
                                          join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                          join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                                          //join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
-                                         where t.IsDeleted == false && t.CommunityApprovalStatus == statusId
+                                         where t.IsDeleted == false && t.StatusId == statusId
 
                                          select new TenderCard
                                          {
@@ -986,6 +986,29 @@ namespace MeroBolee.Repository
             catch (Exception)
             {
                 throw new Exception();
+            }
+
+        }
+
+        public async Task<IEnumerable<CommunityApprovalDto>> FindCommunityApprovalEntityByTenderId(long tenderId)
+        {
+            try
+            {
+                return await (from ca in meroBoleeDbContexts.CommunityApprovalEntities
+                              join c in meroBoleeDbContexts.CompanyEntities on ca.CompanyId equals c.CompanyId
+                              join s in meroBoleeDbContexts.TenderStatus on ca.StatusId equals s.StatusId
+                              where ca.TenderId == tenderId
+                              select new CommunityApprovalDto
+                              {
+                                  CompanyId = ca.CompanyId,
+                                  CompanyName = c.Name,
+                                  Status = s.Status,
+                                  StatusId=ca.StatusId
+                              }).ToListAsync();
+            }
+            catch 
+            {
+                throw ;
             }
 
         }
@@ -1456,6 +1479,11 @@ namespace MeroBolee.Repository
             {
                 throw;
             }
+        }
+
+        public async Task<string> FetchFeedback(long tenderId, long companyId)
+        {
+           return await meroBoleeDbContexts.TenderCardFeedbacks.Where(x => x.TenderId == tenderId && x.CompanyId == companyId).Select(x => x.Feeback).FirstOrDefaultAsync();
         }
     }
 }
