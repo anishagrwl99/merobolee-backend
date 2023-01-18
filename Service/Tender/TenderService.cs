@@ -124,7 +124,13 @@ namespace MeroBolee.Service
             TenderEntity te = await tenderRepository.GetTenderDetailForApproval(tenderId,userRole);
             if (te != null)
             {
-                return TenderEntityToDto(te, baseUrl, isRegistered, userRole);
+                var result= TenderEntityToDto(te, baseUrl, isRegistered, userRole);
+                if (userRole != "Bidder")
+                {
+                    result.RegisteredCompanyIds = tenderRepository.GetBidInviterCompanyList(tenderId);
+
+                }
+                return result;
             }
             else
             {
