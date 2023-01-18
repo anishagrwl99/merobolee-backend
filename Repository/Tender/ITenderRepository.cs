@@ -27,6 +27,7 @@ namespace MeroBolee.Repository
         Task<TenderEntity> GetTenderDetailNew(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
         Task<TenderEntity> UpdateTenderStatus(TenderEntity tenderEntity);
+        Task<IEnumerable<CommunityApprovalDto>> FindCommunityApprovalEntityByTenderId(long tenderId);
         Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId);
         /// <summary>
         /// Adds the tender documents.
@@ -103,6 +104,6 @@ namespace MeroBolee.Repository
         Task<decimal> GetSubSectionTotalForUser(long tenderId, long materialId, long supplierId);
 
         Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId);
-
+        Task<string> FetchFeedback(long tenderId, long companyId);
     }
 }

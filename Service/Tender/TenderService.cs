@@ -156,6 +156,31 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId)
+        {
+            try
+            {
+                IEnumerable<CommunityApprovalDto> communityApprovalDto = await tenderRepository.FindCommunityApprovalEntityByTenderId(tenderId);
+                List<CommunityApprovalDto> communityApprovalDtoUpdated = new List<CommunityApprovalDto>();
+                foreach (var item in communityApprovalDto)
+                {
+                    if(item.StatusId == 2)
+                    {
+                        Task<string> remark = tenderRepository.FetchFeedback(tenderId, item.CompanyId);
+                        item.Remarks = remark.ToString();
+                    }
+                    communityApprovalDtoUpdated.Add(item);
+                }
+                return communityApprovalDtoUpdated;
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath)
         {
             TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId);
