@@ -33,6 +33,7 @@ namespace MeroBolee.Dto
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
         public List<TenderMaterialResponseDto> TenderMaterials { get; set; }
+        public List<long> RegisteredCompanyIds { get; set; }
     }
 
 

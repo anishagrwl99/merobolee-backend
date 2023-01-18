@@ -1485,5 +1485,17 @@ namespace MeroBolee.Repository
         {
            return await meroBoleeDbContexts.TenderCardFeedbacks.Where(x => x.TenderId == tenderId && x.CompanyId == companyId).Select(x => x.Feeback).FirstOrDefaultAsync();
         }
+
+        public List<long> GetBidInviterCompanyList(long tenderId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.CommunityApprovalEntities.Where(x => x.TenderId == tenderId).Select(x => x.CompanyId).ToList();
+            }
+            catch 
+            {
+                throw;
+            }
+        }
     }
 }
