@@ -28,6 +28,8 @@ namespace MeroBolee.Dto
 
         public string AlgoName { get; set; }
         public DateTime CreatedDate { get; set; }
+        
+        public int CommunityApprovalStatus { get; set; }
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
         public List<TenderMaterialResponseDto> TenderMaterials { get; set; }
@@ -86,6 +88,8 @@ namespace MeroBolee.Dto
         public string MaterialName { get; set; }
         public int Quantity { get; set; }
         public string Units { get; set; }
+        
+        public string MaterialGroup { get; set; }
     }
 
     public class TenderMaterialSealedResponseDto

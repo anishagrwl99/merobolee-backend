@@ -360,43 +360,43 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<TenderEntity> GetTenderDetailForApproval(long tenderId, string userRole)
-        {
-            try
-            {
-                TenderEntity ent = await meroBoleeDbContexts.TenderEntities
-                    .Where(m => m.Id == tenderId)
-                    .Include(x => x.TenderMaterialEntities)
-                    //.Include(x => x.TenderCards)
-                    //.Include(x => x.ExtraDocuments)
-                    .Include(x => x.CategoryEntity)
-                    .Include(x => x.CreatedByUser)
-                    .Include(x => x.TenderStatusEntity)
-                    .Include(x => x.Company)
-                    .FirstOrDefaultAsync();
-                ent.ExtraDocuments = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == tenderId).ToListAsync();
-                if(!(userRole.Equals("Bid Inviter") || userRole.Equals("Bidder")))
-                {
-                    var list= (from c in meroBoleeDbContexts.CommunityApprovalEntities
-                               where c.TenderId==tenderId
-                               select c.StatusId).ToList();
-                    foreach (var item in list)
-                    {
-                        if(item!=3)
-                        {
-                            return ent;
-                        } 
-                    }
-                    ent.StatusId = 3;
-                }
-                return ent;
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        // public async Task<TenderEntity> GetTenderDetailForApproval(long tenderId, string userRole)
+        // {
+        //     try
+        //     {
+        //         TenderEntity ent = await meroBoleeDbContexts.TenderEntities
+        //             .Where(m => m.Id == tenderId)
+        //             .Include(x => x.TenderMaterialEntities)
+        //             //.Include(x => x.TenderCards)
+        //             //.Include(x => x.ExtraDocuments)
+        //             .Include(x => x.CategoryEntity)
+        //             .Include(x => x.CreatedByUser)
+        //             .Include(x => x.TenderStatusEntity)
+        //             .Include(x => x.Company)
+        //             .FirstOrDefaultAsync();
+        //         ent.ExtraDocuments = await meroBoleeDbContexts.TenderExtraDocuments.Where(x => x.TenderId == tenderId).ToListAsync();
+        //         if(!(userRole.Equals("Bid Inviter") || userRole.Equals("Bidder")))
+        //         {
+        //             var list= (from c in meroBoleeDbContexts.CommunityApprovalEntities
+        //                        where c.TenderId==tenderId
+        //                        select c.StatusId).ToList();
+        //             foreach (var item in list)
+        //             {
+        //                 if(item!=3)
+        //                 {
+        //                     return ent;
+        //                 } 
+        //             }
+        //             ent.StatusId = 3;
+        //         }
+        //         return ent;
+        //
+        //     }
+        //     catch (Exception)
+        //     {
+        //         throw;
+        //     }
+        // }
 
         public async Task<TenderEntity> FindTenderToUpdate(long tenderId)
         {
@@ -1498,18 +1498,32 @@ namespace MeroBolee.Repository
             }
         }
 
-        public Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId)
+        public async Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId)
         {
             try
             {
-                return meroBoleeDbContexts.CommunityApprovalEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+                CommunityApprovalEntity communityApprovalEntity = await meroBoleeDbContexts.CommunityApprovalEntities
+                    .Where(x => x.TenderId == tenderId).Where(x => x.CompanyId == companyId).FirstOrDefaultAsync();
+                return communityApprovalEntity;
             }
-            catch 
+            catch
             {
-
                 throw;
             }
         }
-
+        
+        public async Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto)
+        {
+            try
+            {
+                meroBoleeDbContexts.CommunityApprovalEntities.Update(dto);
+                await meroBoleeDbContexts.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

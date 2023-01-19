@@ -254,7 +254,8 @@ namespace MeroBolee.EntityMapper
                                                  Id = me.Id,
                                                  MaterialName = me.Materials,
                                                  Quantity = me.Quantity,
-                                                 Units = me.Units
+                                                 Units = me.Units,
+                                                 MaterialGroup = me.MaterialGroup
 
                                              }).ToList();
 
@@ -275,6 +276,7 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                 getTender.AlgoName = tenderEntity.AlgoName;
+                getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -319,8 +321,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
-
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
                                                  }).ToList();
 
                     //getTender.CardInfo = (from tc in tenderEntity.TenderCards
@@ -340,6 +342,7 @@ namespace MeroBolee.EntityMapper
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
                 else
@@ -381,7 +384,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
@@ -395,6 +399,7 @@ namespace MeroBolee.EntityMapper
 
                     getTender.ExtraDocuments = null;
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
             } else {
@@ -435,7 +440,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
@@ -456,6 +462,7 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
             }
         }

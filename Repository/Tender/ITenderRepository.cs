@@ -21,7 +21,7 @@ namespace MeroBolee.Repository
          //  IEnumerable<TenderEntity> GetTenderByBidder();
          Task<TenderEntity> GetTenderDetail(long id);
          Task<CommunityApprovalEntity> GetTenderDetailBidInviterStatus(long id,long companyid);
-         Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
+         // Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
          Task<TenderEntity> FindTenderToUpdate(long id);
 
         Task<TenderEntity> GetTenderDetailNew(long id);
@@ -106,6 +106,8 @@ namespace MeroBolee.Repository
         Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId);
         Task<string> FetchFeedback(long tenderId, long companyId);
         List<long> GetBidInviterCompanyList(long tenderId);
-        Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId);
-    }
+        Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId);
+        Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto);
+
+   }
 }

@@ -121,7 +121,7 @@ namespace MeroBolee.Service
 
         public async Task<GetTenderDto> GetTenderDetail(long tenderId, string baseUrl, bool isRegistered, string userRole)
         {
-            TenderEntity te = await tenderRepository.GetTenderDetailForApproval(tenderId,userRole);
+            TenderEntity te = await tenderRepository.GetTenderDetail(tenderId);
             if (te != null)
             {
                 var result= TenderEntityToDto(te, baseUrl, isRegistered, userRole);
@@ -149,6 +149,11 @@ namespace MeroBolee.Service
                     {
                         te.StatusId = 3;
                         te.ApprovedBy = tenderApprove.UserId;
+                        te.Date_modified = DateTimeNPT.Now;
+                    } 
+                    else if (tenderApprove.status == false)
+                    {
+                        te.StatusId = 6;
                         te.Date_modified = DateTimeNPT.Now;
                     }
 
