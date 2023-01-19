@@ -1497,5 +1497,33 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId)
+        {
+            try
+            {
+                CommunityApprovalEntity communityApprovalEntity = await meroBoleeDbContexts.CommunityApprovalEntities
+                    .Where(x => x.TenderId == tenderId).Where(x => x.CompanyId == companyId).FirstOrDefaultAsync();
+                return communityApprovalEntity;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        
+        public async Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto)
+        {
+            try
+            {
+                meroBoleeDbContexts.CommunityApprovalEntities.Update(dto);
+                await meroBoleeDbContexts.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

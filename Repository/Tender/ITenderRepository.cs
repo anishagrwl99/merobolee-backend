@@ -106,5 +106,8 @@ namespace MeroBolee.Repository
         Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId);
         Task<string> FetchFeedback(long tenderId, long companyId);
         List<long> GetBidInviterCompanyList(long tenderId);
-    }
+        Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId);
+        Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto);
+
+   }
 }

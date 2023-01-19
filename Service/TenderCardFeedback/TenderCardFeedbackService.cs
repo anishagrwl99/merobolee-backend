@@ -36,6 +36,11 @@ namespace MeroBolee.Service
                 await feedbackRepository.SaveFeedback(ent);
                 TenderEntity te = await tenderRepository.GetTenderEntityOnly(feedbackDto.TenderId);
                 te.StatusId = 2; //change requested
+                CommunityApprovalEntity communityApprovalEntity =
+                    await tenderRepository.FindCommunityApprovalByCompanyId(feedbackDto.CompanyId,
+                        feedbackDto.TenderId);
+                communityApprovalEntity.StatusId = 2;
+                await tenderRepository.UpdateStatusByFeedbackForCommunityApproval(communityApprovalEntity);
                 await tenderRepository.UpdateTender(te);
                 return feedbackDto;
             }

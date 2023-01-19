@@ -864,7 +864,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="tenderId"></param>
         /// <returns></returns>
-        [HttpPost("Admin/List/CommunityApprovalList")]
+        [HttpGet("Admin/List/CommunityApprovalList")]
         [Authorize(Roles = "Super Admin")]
         public async Task<IActionResult> CommunityApprovalList([FromQuery] long tenderId)
         {

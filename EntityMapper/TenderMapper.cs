@@ -254,7 +254,8 @@ namespace MeroBolee.EntityMapper
                                                  Id = me.Id,
                                                  MaterialName = me.Materials,
                                                  Quantity = me.Quantity,
-                                                 Units = me.Units
+                                                 Units = me.Units,
+                                                 MaterialGroup = me.MaterialGroup
 
                                              }).ToList();
 
@@ -320,8 +321,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
-
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
                                                  }).ToList();
 
                     //getTender.CardInfo = (from tc in tenderEntity.TenderCards
@@ -383,7 +384,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
@@ -438,7 +440,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
