@@ -278,6 +278,9 @@ namespace MeroBolee.Service
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
             TenderEntity entity = await tenderRepository.GetTenderEntityOnly(tenderDto.TenderId);
+
+            var communityapprovalentity = await tenderRepository.FetchCommunityApprovalEntity(tenderDto.TenderId);
+
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
