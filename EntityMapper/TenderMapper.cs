@@ -160,6 +160,8 @@ namespace MeroBolee.EntityMapper
             entity.MaxQuotation = dto.MaxQuotation;
             entity.IsDeleted = dto.IsDeleted;
             entity.Product = dto.Product;
+            entity.StatusId = 1;
+            entity.CommunityApprovalStatus = 1;
             entity.DateOfExecution = dto.DateOfExecution;
             if (dto.TenderMaterials != null)
             {

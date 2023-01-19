@@ -108,6 +108,6 @@ namespace MeroBolee.Repository
         List<long> GetBidInviterCompanyList(long tenderId);
         Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId);
         Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto);
-
-   }
+        Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId);
+    }
 }

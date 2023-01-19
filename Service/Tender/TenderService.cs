@@ -281,6 +281,16 @@ namespace MeroBolee.Service
 
             var communityapprovalentity = await tenderRepository.FetchCommunityApprovalEntity(tenderDto.TenderId);
 
+            foreach (var item in communityapprovalentity)
+            {
+                if (item.StatusId==2)
+                {
+                    item.StatusId = 1;
+                    item.Date_Modified = DateTime.Now;
+                    await tenderRepository.UpdateStatusByFeedbackForCommunityApproval(item);
+                }
+            }
+
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
