@@ -1497,5 +1497,19 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId)
+        {
+            try
+            {
+                return meroBoleeDbContexts.CommunityApprovalEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
     }
 }
