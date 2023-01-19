@@ -69,6 +69,5 @@ namespace MeroBolee.Service
                 throw;
             }
         }
-
     }
 }

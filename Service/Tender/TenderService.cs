@@ -178,8 +178,8 @@ namespace MeroBolee.Service
                 {
                     if(item.StatusId == 2)
                     {
-                        Task<string> remark = tenderRepository.FetchFeedback(tenderId, item.CompanyId);
-                        item.Remarks = remark.ToString();
+                        string remark = await tenderRepository.FetchFeedback(tenderId, item.CompanyId);
+                        item.Remarks = remark;
                     }
                     communityApprovalDtoUpdated.Add(item);
                 }
