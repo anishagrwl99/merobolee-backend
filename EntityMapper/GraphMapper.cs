@@ -9,7 +9,7 @@ namespace MeroBolee.EntityMapper
 {
     public class GraphMapper
     {
-        public BidInviterGraphDto ToBidInviterGraph(List<TenderEntity> tenders)
+        public BidInviterGraphDto ToBidInviterGraph(List<CommunityApprovalEntity> tenders)
         {
             if (tenders != null && tenders.Count > 0)
             {
@@ -22,8 +22,8 @@ namespace MeroBolee.EntityMapper
                 };
 
                 dto.PendingByMonth = (from t in tenders
-                                      where t.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.LiveEndDate
-                                      group t by new { t.Date_created.Year, t.Date_created.Month } into g
+                                      where t.TenderEntities.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.TenderEntities.LiveEndDate
+                                      group t by new { t.Date_Created.Year, t.Date_Created.Month } into g
                                       select new GraphPoint
                                       {
                                           Key = new DateTime(g.Key.Year, g.Key.Month, DateTime.DaysInMonth(g.Key.Year, g.Key.Month)).ToString(),
@@ -32,8 +32,8 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.CompletedByMonth = (from t in tenders
-                                        where t.LiveEndDate < DateTimeNPT.Now
-                                        group t by new { t.Date_created.Year, t.Date_created.Month } into g
+                                        where t.TenderEntities.LiveEndDate < DateTimeNPT.Now
+                                        group t by new { t.Date_Created.Year, t.Date_Created.Month } into g
                                         select new GraphPoint
                                         {
                                             Key = new DateTime(g.Key.Year, g.Key.Month, DateTime.DaysInMonth(g.Key.Year, g.Key.Month)).ToString(),
@@ -42,8 +42,8 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.PendingByCategory = (from t in tenders
-                                         where t.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.LiveEndDate
-                                         group t by new { t.CategoryEntity.Category } into g
+                                         where t.TenderEntities.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.TenderEntities.LiveEndDate
+                                         group t by new { t.TenderEntities.CategoryEntity.Category } into g
                                          select new GraphPoint
                                          {
                                              Key = g.Key.Category,
@@ -52,8 +52,8 @@ namespace MeroBolee.EntityMapper
                                  ).ToList();
 
                 dto.CompletedByCategory = (from t in tenders
-                                           where t.LiveEndDate < DateTimeNPT.Now
-                                           group t by new { t.CategoryEntity.Category } into g
+                                           where t.TenderEntities.LiveEndDate < DateTimeNPT.Now
+                                           group t by new { t.TenderEntities.CategoryEntity.Category } into g
                                            select new GraphPoint
                                            {
                                                Key = g.Key.Category,

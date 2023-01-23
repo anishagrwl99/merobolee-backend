@@ -77,6 +77,15 @@ namespace MeroBolee.Utility
 
         public DbSet<AlgorithmEntity> AlgorithmEntities { get; set;}
 
+        public DbSet<SealBidEntity> SealBidEntities { get; set;}
+
+        public DbSet<QuotationSealBidEntity> QuotationSealBidEntities { get; set;}
+
+        public DbSet<SealBidSubsectionTotalEntity> SealBidSubsectionTotalEntities { get; set;}
+
+        public DbSet<CommunityApprovalEntity> CommunityApprovalEntities { get; set; }
+
+
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
         }

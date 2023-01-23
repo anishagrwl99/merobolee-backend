@@ -37,7 +37,21 @@ namespace MeroBolee.Service
             TenderEntity entity = TenderDtoEntity(tenderDto);
             entity = tenderRepository.AddTender(entity);
 
-            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+            List<CommunityApprovalEntity> community = CommunityDtoEntity(entity.Id,tenderDto);
+            tenderRepository.AddCommunityApproval(community);
+
+            //foreach (var item in tenderDto.companyIds)
+            //{
+            //    var tenderSubmissionEntity = tenderRepository.FindTenderSubmissionEntity(item);
+
+            //    if(tenderSubmissionEntity!=null)
+            //    {
+            //        tenderSubmissionEntity.StatusId = 4;
+            //        tenderRepository.UpdateTenderSubmissionStatus(tenderSubmissionEntity);
+            //    }
+            //}
+
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
@@ -49,7 +63,6 @@ namespace MeroBolee.Service
             {
                 entity.TermsAndConditionDocPath = await uploadFileService.Upload(tenderDto.TenderTermsAndConditionDoc, docPath);
             }
-           
 
             List<TenderExtraDocumentEntity> documentEntities = new List<TenderExtraDocumentEntity>();
 
@@ -61,7 +74,7 @@ namespace MeroBolee.Service
                     {
                         TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
                         {
-                            CompanyId = tenderDto.CompanyId,
+                            CompanyId = tenderDto.superId,
                             UserId = tenderDto.CreatedBy,
                             DocTitle = item.DocTitle,
                             TenderId = entity.Id,
@@ -111,11 +124,71 @@ namespace MeroBolee.Service
             TenderEntity te = await tenderRepository.GetTenderDetail(tenderId);
             if (te != null)
             {
-                return TenderEntityToDto(te, baseUrl, isRegistered, userRole);
+                var result= TenderEntityToDto(te, baseUrl, isRegistered, userRole);
+                if (userRole != "Bidder")
+                {
+                    result.RegisteredCompanyIds = tenderRepository.GetBidInviterCompanyList(tenderId);
+
+                }
+                return result;
             }
             else
             {
                 return null;
+            }
+        }
+
+        public async Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApprove)
+        {
+            try
+            {
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
+                if (te != null)
+                {
+                    if (tenderApprove.status == true)
+                    {
+                        te.StatusId = 3;
+                        te.ApprovedBy = tenderApprove.UserId;
+                        te.Date_modified = DateTimeNPT.Now;
+                    } 
+                    else if (tenderApprove.status == false)
+                    {
+                        te.StatusId = 6;
+                        te.Date_modified = DateTimeNPT.Now;
+                    }
+
+                    await tenderRepository.UpdateTenderStatus(te);
+                    return te;
+                }
+                return null;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId)
+        {
+            try
+            {
+                IEnumerable<CommunityApprovalDto> communityApprovalDto = await tenderRepository.FindCommunityApprovalEntityByTenderId(tenderId);
+                List<CommunityApprovalDto> communityApprovalDtoUpdated = new List<CommunityApprovalDto>();
+                foreach (var item in communityApprovalDto)
+                {
+                    if(item.StatusId == 2)
+                    {
+                        string remark = await tenderRepository.FetchFeedback(tenderId, item.CompanyId);
+                        item.Remarks = remark;
+                    }
+                    communityApprovalDtoUpdated.Add(item);
+                }
+                return communityApprovalDtoUpdated;
+
+            }
+            catch
+            {
+                throw;
             }
         }
 
@@ -146,7 +219,7 @@ namespace MeroBolee.Service
         }
         public async Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming)
         {
-            IEnumerable<TenderCard> tenderCards = await tenderRepository.UpcomingBidderTender(companyId, isAlert);
+            IEnumerable<TenderCard> tenderCards = await tenderRepository.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
 
             if (isLiveBidUpcoming)
             {
@@ -205,7 +278,20 @@ namespace MeroBolee.Service
         public async Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto)
         {
             TenderEntity entity = await tenderRepository.GetTenderEntityOnly(tenderDto.TenderId);
-            string companyFolder = docRepo.GetCompanyFolder(tenderDto.CompanyId);
+
+            var communityapprovalentity = await tenderRepository.FetchCommunityApprovalEntity(tenderDto.TenderId);
+
+            foreach (var item in communityapprovalentity)
+            {
+                if (item.StatusId==2)
+                {
+                    item.StatusId = 1;
+                    item.Date_Modified = DateTime.Now;
+                    await tenderRepository.UpdateStatusByFeedbackForCommunityApproval(item);
+                }
+            }
+
+            string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 
             if (tenderDto.TenderDetailDoc != null)
@@ -252,7 +338,7 @@ namespace MeroBolee.Service
                     {
                         TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
                         {
-                            CompanyId = tenderDto.CompanyId,
+                            CompanyId = tenderDto.superId,
                             UserId = tenderDto.CreatedBy,
                             TenderId = entity.Id,
                             DocTitle = item.DocTitle,
@@ -316,17 +402,34 @@ namespace MeroBolee.Service
         {
             try
             {
-                TenderEntity t = await tenderRepository.GetTenderEntityOnly(dto.TenderId);
+                CommunityApprovalEntity t = await tenderRepository.GetTenderEntityOfCompany(dto.TenderId,dto.CompanyId);
                 t.StatusId = 3;//Approved
-                t.Date_modified = DateTime.Now;
-                t.ApprovedBy = dto.UserId;
+                t.Date_Modified = DateTime.Now;
+                //t.ApprovedBy = dto.UserId;
                 tenderRepository.ApproveTenderByBidInviter(t);
+
+                await ToUpdateCommunityApprovalStatusInTender(dto.TenderId);
+
                 return dto;
             }
             catch
             {
 
                 throw;
+            }
+        }
+
+        private async Task ToUpdateCommunityApprovalStatusInTender(long tenderId)
+        {
+            var check = await tenderRepository.CheckStatusInCommunityApproval(tenderId);
+            if (check == true)
+            {
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (te != null)
+                {
+                    te.CommunityApprovalStatus = 3;
+                    await tenderRepository.UpdateTenderStatus(te);
+                }
             }
         }
 
@@ -470,8 +573,26 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<int> GetTenderDetailBidInviterStatus(long tenderId) {
+        public async Task<int> GetTenderDetailBidInviterStatus(long tenderId, long companyId) {
             try {
+                CommunityApprovalEntity tenderEntity = await tenderRepository.GetTenderDetailBidInviterStatus(tenderId, companyId);
+                int tenderStatus = tenderEntity.StatusId;
+                if(tenderEntity.TenderEntities.LiveStartDate <= DateTimeNPT.Now && tenderEntity.TenderEntities.LiveEndDate > DateTimeNPT.Now) {
+                    tenderStatus = 4;
+                }
+                if(tenderEntity.TenderEntities.LiveEndDate < DateTimeNPT.Now) {
+                    tenderStatus = 5;
+                }
+                return tenderStatus;
+            } catch {
+                throw;
+            }
+        }
+
+        public async Task<int> TenderStatusForAdmin(long tenderId)
+        {
+            try
+            {
                 TenderEntity tenderEntity = await tenderRepository.GetTenderDetail(tenderId);
                 int tenderStatus = tenderEntity.StatusId;
                 if(tenderEntity.LiveStartDate <= DateTimeNPT.Now && tenderEntity.LiveEndDate > DateTimeNPT.Now) {
@@ -481,10 +602,13 @@ namespace MeroBolee.Service
                     tenderStatus = 5;
                 }
                 return tenderStatus;
-            } catch {
+            }
+            catch
+            {
                 throw;
             }
         }
+
 
         public async Task<int> AddTime(long tenderId, int min) {
             try {
@@ -538,6 +662,75 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<List<MaterialCatResDto>> MaterialCategory(long tenderId) 
+        {
+            try 
+            {
+                List<MaterialCatResDto> materialCatList = await tenderRepository.MaterialCategory(tenderId);
+                return materialCatList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TenderMaterialSealedResponseDto>> MaterialListCategoryWise(long tenderId, int materialId) 
+        {
+            try 
+            {
+                List<TenderMaterialSealedResponseDto> materialCatList = await tenderRepository.MaterialListCategoryWise(tenderId, materialId);
+                materialCatList.OrderBy(x => x.MaterialName);
+                return materialCatList;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<RetriveDataSealBid> MaterialListCategoryWiseRetriveData(long tenderId, long materialId, long supplierId) 
+        {
+            try 
+            {
+                RetriveDataSealBid retriveDataSealBid = new RetriveDataSealBid();
+                retriveDataSealBid.supplierId = supplierId;
+                retriveDataSealBid.TenderId = tenderId;
+                List<TenderMaterialSealedResponseDto> materialList = await tenderRepository.MaterialListCategoryWiseRetriveData(tenderId, materialId, supplierId);
+                materialList.OrderBy(x => x.MaterialName);
+                decimal subsectionTotal = await tenderRepository.GetSubSectionTotalForUser(tenderId, materialId, supplierId);
+                retriveDataSealBid.materialList = materialList;
+                retriveDataSealBid.subsectionTotal = subsectionTotal;
+                retriveDataSealBid.materialGroupId = materialId;
+                retriveDataSealBid.materialGroupName = materialList.Select(x => x.MaterialGroup).FirstOrDefault();
+                return retriveDataSealBid;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId) 
+        {
+            try 
+            {
+                List<SealBidSubsectionTotalEntity> sealBidSubsectionTotalEntities = await tenderRepository.RetriveSubsectionTotal(tenderId, supplierId);
+                Dictionary<string, decimal> subsectionTotal = new Dictionary<string, decimal>();
+                foreach(SealBidSubsectionTotalEntity sealBidSubsectionTotalEntity in sealBidSubsectionTotalEntities) 
+                {
+                    subsectionTotal.Add(sealBidSubsectionTotalEntity.MaterialGroup, sealBidSubsectionTotalEntity.subsectionTotal);
+                }
+                RetriveSubSectionDto retriveSubSectionDto = new RetriveSubSectionDto();
+                retriveSubSectionDto.subsectionTotal = subsectionTotal;
+                retriveSubSectionDto.totalAmount = sealBidSubsectionTotalEntities.Sum(x => x.subsectionTotal);
+                return retriveSubSectionDto;
+            }
+            catch 
+            {
+                throw;
+            }
+        }
 
     }
 }

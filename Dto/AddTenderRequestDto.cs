@@ -19,10 +19,11 @@ namespace MeroBolee.Dto
         private string _additionalRequest;
 
 
-        [Required(ErrorMessage = "Company name is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
-        public long CompanyId { get; set; }
+        // [Required(ErrorMessage = "Company name is required")]
+        // [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")] 
+        public String companyIds { get; set; }
 
+        public int superId { get; set; }
 
         [Required(ErrorMessage = "Category name is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid category name")]
@@ -153,7 +154,7 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Tender material Units is required")]
         [MaxLength(500, ErrorMessage = "Tender material Units can be {1} character long")]
         public string Units { get; set; }
-        public int BatchNo { get; set; }
+        public string MaterialGroup { get; set; }
         public bool IsDeleted { get; set; }
 
     }

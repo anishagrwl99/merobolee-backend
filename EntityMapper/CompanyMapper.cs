@@ -125,7 +125,7 @@ namespace MeroBolee.EntityMapper
             };
         }
 
-        public CompanyDetailResponse ToDetailResponse(CompanyEntity company, List<UserEntity> users, List<TenderEntity> tenders, IUploadFile fileService, string baseUrl, string defaultPic)
+        public CompanyDetailResponse ToDetailResponse(CompanyEntity company, List<UserEntity> users, List<CommunityApprovalEntity> tenders, IUploadFile fileService, string baseUrl, string defaultPic)
         {
             CompanyDetailResponse companyDetailResponse = new CompanyDetailResponse
             {
@@ -180,18 +180,18 @@ namespace MeroBolee.EntityMapper
             if (tenders != null && tenders.Count > 0)
             {
                 companyDetailResponse.Tenders = new List<TenderCard>();
-                foreach (TenderEntity t in tenders)
+                foreach (CommunityApprovalEntity t in tenders)
                 {
                     TenderCard dto = new TenderCard
                     {
-                        TenderId = t.Id,
-                        TenderCode = t.Code,
-                        TenderTitle = t.Title,
+                        TenderId = t.TenderId,
+                        TenderCode = t.TenderEntities.Code,
+                        TenderTitle = t.TenderEntities.Title,
                         CategoryName = t.CategoryEntity.Category,
                         CategoryId = t.CategoryId,
-                        LiveStartDate = t.LiveStartDate,
-                        LiveEndDate = t.LiveEndDate,
-                        RegistrationTill = t.RegistrationTill,
+                        LiveStartDate = t.TenderEntities.LiveStartDate,
+                        LiveEndDate = t.TenderEntities.LiveEndDate,
+                        RegistrationTill = t.TenderEntities.RegistrationTill,
                         Status = t.TenderStatusEntity.Status,
                         StatusId = t.StatusId
                         //CardInfo = (from tc in t.TenderCards

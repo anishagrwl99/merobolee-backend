@@ -70,8 +70,9 @@ namespace MeroBolee.Service
                     {
                         UserName = data.Email,
                         Email = data.Email,
-                };  
-                    var result = await userManager.CreateAsync(applicationUser, data.Password);
+                    };
+                   
+                        var result = await userManager.CreateAsync(applicationUser, data.Password);
                     if (result.Succeeded)
                     {
                          var token = await userManager.GenerateEmailConfirmationTokenAsync(applicationUser);

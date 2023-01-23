@@ -42,7 +42,7 @@ namespace MeroBolee.Service
 
         public async Task<BidInviterGraphDto> GetInviterTenderGraph(GraphRequestDto dto)
         {
-            List<TenderEntity> result = await graphRepository.GetInviterTenderSubmissions(dto.CompanyId);
+            List<CommunityApprovalEntity> result = await graphRepository.GetInviterTenderSubmissions(dto.CompanyId);
             BidInviterGraphDto responseDto = ToBidInviterGraph(result);
             return responseDto;
         }

@@ -9,8 +9,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using MeroBolee.Utility;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using MeroBolee.Controllers.EmailService;
 using System.Web;

@@ -323,5 +323,42 @@ namespace MeroBolee.Service.Inovice
 
         }
 
+        public async Task<byte[]> GenerateSealBidReport(string htmlString)
+        {
+
+            try
+            {
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4Plus,
+                    Margins = new MarginSettings { Top = 0 },
+                    DocumentTitle = String.Format("Tender ID: {0}", ""),
+                };
+
+                    var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    // HtmlContent = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\verify-email.html"),
+                    HtmlContent =  htmlString,
+                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
+                return file;
+            }
+
+            catch 
+            {
+                throw;
+            }
+
+        }
+
     }
 }

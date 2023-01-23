@@ -19,7 +19,7 @@ namespace MeroBolee.Repository
 
 
         Task<CompanyEntity> GetCompany(long companyId);
-        Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId);
+        Task<Tuple<CompanyEntity, List<UserEntity>, List<CommunityApprovalEntity>>> GetCompanyDetail(long companyId);
 
         Task<CompanyEntity> UpdateCompany(CompanyEntity companyEntity);
 
@@ -103,7 +103,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="companyId">The company identifier.</param>
         /// <returns></returns>
-        public async Task<Tuple<CompanyEntity, List<UserEntity>, List<TenderEntity>>> GetCompanyDetail(long companyId)
+        public async Task<Tuple<CompanyEntity, List<UserEntity>, List<CommunityApprovalEntity>>> GetCompanyDetail(long companyId)
         {
             try
             {
@@ -124,29 +124,28 @@ namespace MeroBolee.Repository
                                                  )
                                              .ToListAsync();
 
-                    List<TenderEntity> tenders = new List<TenderEntity>();
+                    List<CommunityApprovalEntity> tenders = new List<CommunityApprovalEntity>();
                     if (string.Equals(company.RegisteredAs, "BidInviter", StringComparison.OrdinalIgnoreCase))
                     {
-                        tenders = await meroBoleeDbContexts
-                                .TenderEntities
-                                .Include(x => x.CategoryEntity)
-                                .Include(x => x.TenderStatusEntity)
-                               // .Include(x => x.TenderCards)
-                                .Where(x => x.CompanyId == companyId)
-                            .ToListAsync();
+
+                        tenders = await meroBoleeDbContexts.CommunityApprovalEntities
+                            .Include(x => x.TenderEntities)
+                            .Include(x => x.CategoryEntity)
+                            .Include(x => x.TenderStatusEntity).Where(x => x.CompanyId == companyId).ToListAsync();
 
                     }
                     else if (string.Equals(company.RegisteredAs, "Bidder", StringComparison.OrdinalIgnoreCase))
                     {
                         tenders = await (from b in meroBoleeDbContexts.BidRequestEntities
                                          join t in meroBoleeDbContexts.TenderEntities on b.TenderId equals t.Id
+                                         join c in meroBoleeDbContexts.CommunityApprovalEntities on t.Id equals c.TenderId
                                          where b.CompanyId == companyId
-                                         select t
+                                         select c
                                      )
                                      .Include(t => t.CategoryEntity)
                                      .Include(t => t.TenderStatusEntity)
                                     // .Include(t => t.TenderCards)
-                                     .ToListAsync<TenderEntity>();
+                                     .ToListAsync<CommunityApprovalEntity>();
                     }
 
                     //return companyDetailResponse; 

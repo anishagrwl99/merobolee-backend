@@ -16,6 +16,8 @@ namespace MeroBolee.Repository
         private readonly IUnitOfWork unitOfWork;
         private IUploadFile uploadImage;
 
+        private ICryptoService cryptoService;
+
 
         /// <summary>
         /// Default const
@@ -23,10 +25,11 @@ namespace MeroBolee.Repository
         /// <param name="unitOfWork"></param>
         /// <param name="uploadFileService"></param>
         /// <param name="dbFactory"></param>
-        public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory) : base(dbFactory)
+        public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory, ICryptoService cryptoService) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
             uploadImage = uploadFileService;
+            this.cryptoService = cryptoService;
         }
 
 
@@ -252,6 +255,87 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public List<SealBidEntity> SealBid(List<SealBidEntity> bidEntity)
+        {
+            try
+            {
+                var tenderEntity = meroBoleeDbContexts.TenderEntities
+                    .Where(x => x.Id == bidEntity.FirstOrDefault().TenderId)
+                    .FirstOrDefault();
+                //bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
+                //    .Where(x => x.Tender_Id == bidEntity.TenderId)
+                //    .FirstOrDefault();
+                if (bidEntity.FirstOrDefault().BidDate <= tenderEntity.RegistrationTill)
+                {
+                    meroBoleeDbContexts.SealBidEntities.AddRange(bidEntity);
+                    unitOfWork.SaveChange();
+
+                    foreach (var bidItem in bidEntity)
+                    {
+                        bidItem.TenderEntity = tenderEntity;
+                    }
+                    return bidEntity;
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public List<SealBidEntity> SealBidEdit(List<SealBidEntity> bidEntity)
+        {
+            try
+            {
+                var tenderEntity = meroBoleeDbContexts.TenderEntities
+                    .Where(x => x.Id == bidEntity.FirstOrDefault().TenderId)
+                    .FirstOrDefault();
+                //bidEntity.TenderEntity = meroBoleeDbContexts.TenderEntities
+                //    .Where(x => x.Tender_Id == bidEntity.TenderId)
+                //    .FirstOrDefault();
+                if (bidEntity.FirstOrDefault().BidDate <= tenderEntity.RegistrationTill)
+                {
+                    meroBoleeDbContexts.SealBidEntities.UpdateRange(bidEntity);
+                    unitOfWork.SaveChange();
+
+                    foreach (var bidItem in bidEntity)
+                    {
+                        bidItem.TenderEntity = tenderEntity;
+                    }
+                    UpdateTotalEditSealBid(bidEntity.FirstOrDefault().TenderId, bidEntity.FirstOrDefault().UserId);
+                    return bidEntity;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void UpdateTotalEditSealBid(long tenderId, long userId)
+        {
+            try
+            {
+                List<SealBidSubsectionTotalEntity> subsectionTotal = meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).ToList();
+                decimal totalAmount = subsectionTotal.Sum(x => x.subsectionTotal);
+                
+                (from p in meroBoleeDbContexts.SealBidEntities 
+                    where p.UserId == userId && p.TenderId == tenderId select p).ToList()
+                                        .ForEach(x => x.TotalAmount = totalAmount);
+                unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<List<LiveBiddingEntity>> TenderLiveBids(long tenderId)
         {
             try
@@ -395,6 +479,37 @@ namespace MeroBolee.Repository
                                    BatchNo = b.BatchNo,
                                };
                     return list.ToList<LiveBiddingEntity>();
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Task<List<SealBidEntity>> GetExpiredBidsForSeal()
+        {
+
+            try
+            {
+                return Task.Run<List<SealBidEntity>>(() =>
+                {
+                    var list = from t in meroBoleeDbContexts.TenderEntities
+                               join b in meroBoleeDbContexts.SealBidEntities on t.Id equals b.TenderId
+                               where t.RegistrationTill < DateTimeNPT.Now
+                               select new SealBidEntity
+                               {
+                                   Id = b.Id,
+                                   BiddingRequestId = b.BiddingRequestId,
+                                   UserId = b.UserId,
+                                   TenderId = b.TenderId,
+                                   MaterialId = b.MaterialId,
+                                   Quotation = b.Quotation,
+                                   BidDate = b.BidDate,
+                                   BatchNo = b.BatchNo,
+                               };
+                    return list.ToList<SealBidEntity>();
                 });
             }
             catch (Exception)
@@ -737,10 +852,80 @@ namespace MeroBolee.Repository
         {
             try 
             {
-                Console.WriteLine("Inside Quotation Save");
                 meroBoleeDbContexts.QuotationEntities.AddRange(quotations);
                 await unitOfWork.SaveChangesAsync();
                 return quotations;
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<QuotationSealBidEntity>> SaveToQuotationEntitySealBid(List<QuotationSealBidEntity> quotations) 
+        {
+            try 
+            {
+                meroBoleeDbContexts.QuotationSealBidEntities.AddRange(quotations);
+                await unitOfWork.SaveChangesAsync();
+                return quotations;
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<QuotationSealBidEntity>> EditToQuotationEntitySealBid(List<QuotationSealBidEntity> quotations, long tenderId, long userId) 
+        {
+            try 
+            {
+                List<QuotationSealBidEntity> updatedList = new List<QuotationSealBidEntity>();
+                foreach (QuotationSealBidEntity quotationSealBidEntity in quotations) 
+                {
+                    int id = meroBoleeDbContexts.QuotationSealBidEntities.Where(x => x.MaterialId == quotationSealBidEntity.MaterialId).Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).Select(x => x.Id).FirstOrDefault();
+                    quotationSealBidEntity.Id = id;
+                    updatedList.Add(quotationSealBidEntity);
+                }
+                meroBoleeDbContexts.QuotationSealBidEntities.UpdateRange(updatedList);
+                await unitOfWork.SaveChangesAsync();
+                return updatedList;
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<List<SealBidSubsectionTotalEntity>> SaveToSubsectionTotalEntity(List<SealBidSubsectionTotalEntity> subsectionTotal) 
+        {
+            try 
+            {
+                meroBoleeDbContexts.SealBidSubsectionTotalEntities.AddRange(subsectionTotal);
+                await unitOfWork.SaveChangesAsync();
+                return subsectionTotal;
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<SealBidSubsectionTotalEntity>> SaveToSubsectionTotalEntityEdit(List<SealBidSubsectionTotalEntity> subsectionTotal, long tenderId, long userId) 
+        {
+            try 
+            {
+                List<SealBidSubsectionTotalEntity> updatedList = new List<SealBidSubsectionTotalEntity>();
+                foreach(SealBidSubsectionTotalEntity sealBidSubsectionTotalEntity in subsectionTotal) 
+                {
+                    int id = meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.MaterialGroup.Equals(sealBidSubsectionTotalEntity.MaterialGroup)).Where(x => x.TenderId == tenderId).Where(x => x.UserId == userId).Select(x => x.Id).FirstOrDefault();
+                    sealBidSubsectionTotalEntity.Id = id;
+                    updatedList.Add(sealBidSubsectionTotalEntity);
+                }
+                meroBoleeDbContexts.SealBidSubsectionTotalEntities.UpdateRange(updatedList);
+                await unitOfWork.SaveChangesAsync();
+                return subsectionTotal;
             }
             catch (Exception) 
             {
@@ -752,12 +937,6 @@ namespace MeroBolee.Repository
         {
             try
             {
-                // var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
-                //     .Select(x => new
-                //     {
-                //         Amount = x.Min(o => o.Amount),
-                //         UserId = x.Key.UserId
-                //     }).OrderBy(x => x.Amount).ToArray();
                 var quotationEntities = meroBoleeDbContexts.QuotationEntities.Where(x => x.TenderId == TenderId).Where(x => x.UserId == UserId).ToList();
                 var quote = quotationEntities.GroupBy(x => new { x.MaterialId })
                 .Select(x => new
@@ -786,6 +965,22 @@ namespace MeroBolee.Repository
             } 
            catch 
            {
+                throw;
+            }
+        }
+
+        public async Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId) 
+        {
+            try 
+            {
+                // var sealBidEntity = await meroBoleeDbContexts.SealBidEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == supplierId).FirstOrDefaultAsync();
+                var quotationSealBidEntity = await meroBoleeDbContexts.QuotationSealBidEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == supplierId).FirstOrDefaultAsync();
+                var sealBidSubsectionTotalEntity = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.UserId == supplierId).Where(x => x.TenderId == tenderId).FirstOrDefaultAsync();
+                if(quotationSealBidEntity != null && sealBidSubsectionTotalEntity != null) return true;
+                return false;
+            }
+            catch 
+            {
                 throw;
             }
         }

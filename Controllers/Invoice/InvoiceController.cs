@@ -93,6 +93,30 @@ namespace MeroBolee.Controllers.Invoice
             }
         }
 
+        [HttpPost("Invoice/Generate/SealBid/Report")]
+        public async Task<IActionResult> GenerateSealBidReport([FromQuery] string htmlString) 
+        {
+            try 
+            {
+                
+                 byte[] pdfcontent = await inovicePdfService.GenerateSealBidReport(htmlString);
+                    if (pdfcontent == null)
+                    {
+                        response.statusCode = "500";
+                        response.Message = "Could Not Generate Bill for Tender";
+                        return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+                    }
+                return File(pdfcontent, "application/pdf", String.Format("Tender ID: {0}"));
+            }
+            catch(Exception e) 
+            {
+                response.statusCode = "500";
+                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+
     }
 
 }
