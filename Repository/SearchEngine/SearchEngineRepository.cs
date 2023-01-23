@@ -206,10 +206,11 @@ namespace MeroBolee.Repository
             try
             {
                 AdvanceSearchDto dto = new AdvanceSearchDto();
-                dto.Tenders = await (from t in meroBoleeDbContexts.TenderEntities
+                dto.Tenders = await (from cm in  meroBoleeDbContexts.CommunityApprovalEntities 
+                                     join  t in meroBoleeDbContexts.TenderEntities on cm.TenderId equals t.Id
                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
                                      join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
-                                     join c1 in meroBoleeDbContexts.CompanyEntities on t.CompanyId equals c1.CompanyId
+                                     join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
                                      where t.Title.Contains(searchText)
                                             || t.Code.Contains(searchText)
                                             || c.Category.Contains(searchText)

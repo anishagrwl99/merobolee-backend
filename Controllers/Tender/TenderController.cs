@@ -540,9 +540,8 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
-
         [HttpGet("Tender/TenderStatusBidInviter")]
-        public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId)
+        public async Task<IActionResult> GetTenderDetailBidInviterStatus([FromQuery] long tenderId, [FromQuery] long companyId)
         {
             try
             {
@@ -554,7 +553,7 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    int tenderStatusBidInviter = await tenderService.GetTenderDetailBidInviterStatus(tenderId);
+                    int tenderStatusBidInviter = await tenderService.GetTenderDetailBidInviterStatus(tenderId, companyId);
                     return Ok(new Responses<int>(tenderStatusBidInviter, "200", "Record found"));
 
                 }
@@ -567,7 +566,34 @@ namespace MeroBolee.Controllers.Tender
 
             }
         }
+        
+        
+        [HttpGet("Tender/TenderStatusAdmin")]
+        public async Task<IActionResult> TenderStatusForAdmin([FromQuery] long tenderId)
+        {
+            try
+            {
+                if (tenderId == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid tender id";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    int tenderStatusBidInviter = await tenderService.TenderStatusForAdmin(tenderId);
+                    return Ok(new Responses<int>(tenderStatusBidInviter, "200", "Record found"));
 
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+
+            }
+        }
 
         /// <summary>
         /// To get tender documents created by merobolee
@@ -789,6 +815,68 @@ namespace MeroBolee.Controllers.Tender
                 RetriveSubSectionDto retriveDataSealBid = await tenderService.RetriveSubsectionTotal(tenderId, supplierId);
                 return Ok(new Responses<RetriveSubSectionDto>(retriveDataSealBid, "200", "Data Retrive Successful"));
             } 
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tenderApprove"></param>
+        /// <returns></returns>
+        [HttpPost("Admin/ApproveTender")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> CommunityApproval([FromBody] TenderApproveDtoByAdmin tenderApprove)
+        {
+            try
+            {
+                TenderEntity tenderEntity = await tenderService.CommunityApproval(tenderApprove);
+                if (tenderEntity == null)
+                {
+                    return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
+                }
+
+                if (tenderEntity != null && tenderApprove.status == true)
+                {
+                    return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Tender is successfully updated"));
+                }
+                else
+                {
+                    response.statusCode = "500";
+                    response.Message = "Your request has been process. The tender has been rejected!";
+                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get the list of companies with their respective statusid in communityapproval table
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpGet("Admin/List/CommunityApprovalList")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> CommunityApprovalList([FromQuery] long tenderId)
+        {
+            try
+            {
+                var communityApprovalEntity = await tenderService.CommunityApprovalList(tenderId);
+                if (communityApprovalEntity == null)
+                {
+                    return NotFound(new Responses<IEnumerable<CommunityApprovalDto>>(communityApprovalEntity, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<CommunityApprovalDto>>(communityApprovalEntity, "200", "Record found"));
+            }
             catch (Exception e)
             {
                 response.statusCode = "500";

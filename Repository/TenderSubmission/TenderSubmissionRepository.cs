@@ -209,7 +209,7 @@ namespace MeroBolee.Repository
                     return meroBoleeDbContexts.TenderSubmissions
                     .Where(x => x.CompanyId == companyId)
                     .Include(x => x.TenderSubmissionStatus)
-                    .Include(x => x.Company)
+                    .Include(x => x.Company).OrderByDescending(x=>x.Date_created)
                     .ToList();
 
                 });
@@ -240,7 +240,7 @@ namespace MeroBolee.Repository
                     return meroBoleeDbContexts.TenderSubmissions
                     .Where(x => x.StatusId != 1) //Pending payment status submission is not visible to admin
                     .Include(x => x.TenderSubmissionStatus)
-                    .Include(x => x.Company)
+                    .Include(x => x.Company).OrderByDescending(x=>x.Date_created)
                     .ToList();
 
                 });

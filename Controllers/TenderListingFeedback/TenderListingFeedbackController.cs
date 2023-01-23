@@ -32,7 +32,8 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="feedback"></param>
         /// <returns></returns>
-        [HttpPost("TenderListing/Feedback/Send")]
+        [HttpPost("TenderListing" +
+                  "/Feedback/Send")]
         [Authorize(Roles = "Bid Inviter")]
         public async Task<IActionResult> SendFeedback([FromBody] TenderCardFeedbackDto feedback)
         {

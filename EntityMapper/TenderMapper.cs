@@ -50,7 +50,7 @@ namespace MeroBolee.EntityMapper
             }
             TenderEntity entity = new TenderEntity
             {
-                CompanyId = tenderDto.CompanyId,
+                CompanyId = tenderDto.superId,
                 Title = tenderDto.TenderTitle,
                 CategoryId = tenderDto.CategoryId,
                 LiveInterval = tenderDto.TimeInterval,
@@ -72,7 +72,8 @@ namespace MeroBolee.EntityMapper
                 IsDeleted = false,
                 DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product,
-                AlgoName = algoName == null ? "" : algoName
+                AlgoName = algoName == null ? "" : algoName,
+                CommunityApprovalStatus=1
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -100,6 +101,46 @@ namespace MeroBolee.EntityMapper
             return entity;
         }
 
+        public List<CommunityApprovalEntity> CommunityDtoEntity(long id ,AddTenderRequestDto tenderDto)
+        {
+            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
+
+            if (tenderDto == null)
+            {
+                return null;
+            }
+
+            var communityApproval=new List<CommunityApprovalEntity>();
+
+            List<int> companyIds = tenderDto.companyIds.Split(',')
+                .Select(possibleIntegerAsString => {
+                    int parsedInteger = 0;
+                    bool isInteger = int.TryParse(possibleIntegerAsString , out parsedInteger);
+                    return new {isInteger, parsedInteger};
+                })
+                .Where(tryParseResult => tryParseResult.isInteger)
+                .Select(tryParseResult => tryParseResult.parsedInteger)
+                .ToList();
+            
+            foreach (var item in companyIds)
+            {
+                CommunityApprovalEntity community = new CommunityApprovalEntity
+                {
+                    CategoryId = tenderDto.CategoryId,
+                    TenderId = id,
+                    StatusId = 1,
+                    Date_Created = DateTimeNPT.Now,
+                    Date_Modified = DateTimeNPT.Now,
+                    IsDeleted = false,
+                    CompanyId=item
+                };
+
+                communityApproval.Add(community);
+            }
+
+            return communityApproval;
+        }
+
         public void UpdateTenderEntity(ref TenderEntity entity, UpdateTenderRequestDto dto)
         {
             entity.Title = dto.TenderTitle;
@@ -110,7 +151,7 @@ namespace MeroBolee.EntityMapper
             entity.LiveStartDate = dto.LiveStartDate;
             entity.LiveEndDate = dto.LiveEndDate;
             entity.QualityRequest = dto.QualityRequest;
-            entity.CompanyId = dto.CompanyId;
+            entity.CompanyId = dto.superId;
             entity.Date_modified = DateTimeNPT.Now;
             entity.AdditionalRequest = dto.AdditionalRequest;
             entity.EligibilityCriteria = dto.EligibilityCriteria;
@@ -119,6 +160,8 @@ namespace MeroBolee.EntityMapper
             entity.MaxQuotation = dto.MaxQuotation;
             entity.IsDeleted = dto.IsDeleted;
             entity.Product = dto.Product;
+            entity.StatusId = 1;
+            entity.CommunityApprovalStatus = 1;
             entity.DateOfExecution = dto.DateOfExecution;
             if (dto.TenderMaterials != null)
             {
@@ -213,7 +256,8 @@ namespace MeroBolee.EntityMapper
                                                  Id = me.Id,
                                                  MaterialName = me.Materials,
                                                  Quantity = me.Quantity,
-                                                 Units = me.Units
+                                                 Units = me.Units,
+                                                 MaterialGroup = me.MaterialGroup
 
                                              }).ToList();
 
@@ -234,6 +278,7 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                 getTender.AlgoName = tenderEntity.AlgoName;
+                getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -278,8 +323,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
-
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
                                                  }).ToList();
 
                     //getTender.CardInfo = (from tc in tenderEntity.TenderCards
@@ -299,6 +344,7 @@ namespace MeroBolee.EntityMapper
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
                 else
@@ -340,7 +386,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
@@ -354,6 +401,7 @@ namespace MeroBolee.EntityMapper
 
                     getTender.ExtraDocuments = null;
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
             } else {
@@ -394,7 +442,8 @@ namespace MeroBolee.EntityMapper
                                                      Id = me.Id,
                                                      MaterialName = me.Materials,
                                                      Quantity = me.Quantity,
-                                                     Units = me.Units
+                                                     Units = me.Units,
+                                                     MaterialGroup = me.MaterialGroup
 
                                                  }).ToList();
 
@@ -415,6 +464,7 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
             }
         }

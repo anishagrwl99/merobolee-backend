@@ -133,7 +133,7 @@ namespace MeroBolee.Repository
                     isValid = false;
                     msg = "Email is already registered";
                 }
-                else if ( info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase))
+                else if (info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase))
                 {
                     isValid = false;
                     msg = "PAN Number is already registered.";

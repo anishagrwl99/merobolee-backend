@@ -11,14 +11,23 @@ namespace MeroBolee.Repository
    public interface ITenderRepository: IRepositoryBase<TenderEntity>
    {
         TenderEntity AddTender(TenderEntity tenderEntity);
+        List<CommunityApprovalEntity> AddCommunityApproval(List<CommunityApprovalEntity> communityApprovalEntity);
+        //TenderSubmission UpdateTenderSubmissionStatus(TenderSubmission tenderSubmission);
+        //TenderSubmission FindTenderSubmissionEntity(long companyId);
         Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
         
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
         
          //  IEnumerable<TenderEntity> GetTenderByBidder();
          Task<TenderEntity> GetTenderDetail(long id);
+         Task<CommunityApprovalEntity> GetTenderDetailBidInviterStatus(long id,long companyid);
+         // Task<TenderEntity> GetTenderDetailForApproval(long id, string userRole);
+         Task<TenderEntity> FindTenderToUpdate(long id);
+
         Task<TenderEntity> GetTenderDetailNew(long id);
         Task<TenderEntity> UpdateTender(TenderEntity tenderEntity);
+        Task<TenderEntity> UpdateTenderStatus(TenderEntity tenderEntity);
+        Task<IEnumerable<CommunityApprovalDto>> FindCommunityApprovalEntityByTenderId(long tenderId);
         Task<List<TenderCardFeedbackEntity>> GetTenderCardFeedback(long tenderId);
         /// <summary>
         /// Adds the tender documents.
@@ -61,13 +70,15 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="ent"></param>
         /// <returns></returns>
-        TenderEntity ApproveTenderByBidInviter(TenderEntity ent);
+        CommunityApprovalEntity ApproveTenderByBidInviter(CommunityApprovalEntity ent);
 
         
         Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
 
         Tuple<decimal, DateTime, DateTime>  GetMaxQuotationAllowed(long tenderId);
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
+        Task<CommunityApprovalEntity> GetTenderEntityOfCompany(long tenderId,long companyId);
+        Task<bool> CheckStatusInCommunityApproval(long tenderId);
 
         Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
 
@@ -93,6 +104,10 @@ namespace MeroBolee.Repository
         Task<decimal> GetSubSectionTotalForUser(long tenderId, long materialId, long supplierId);
 
         Task<List<SealBidSubsectionTotalEntity>> RetriveSubsectionTotal(long tenderId, long supplierId);
-
+        Task<string> FetchFeedback(long tenderId, long companyId);
+        List<long> GetBidInviterCompanyList(long tenderId);
+        Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId);
+        Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto);
+        Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId);
     }
 }

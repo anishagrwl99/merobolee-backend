@@ -19,10 +19,11 @@ namespace MeroBolee.Dto
         private string _additionalRequest;
 
 
-        [Required(ErrorMessage = "Company name is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")]
-        public long CompanyId { get; set; }
+        // [Required(ErrorMessage = "Company name is required")]
+        // [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")] 
+        public String companyIds { get; set; }
 
+        public int superId { get; set; }
 
         [Required(ErrorMessage = "Category name is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid category name")]
