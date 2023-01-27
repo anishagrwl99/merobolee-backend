@@ -18,6 +18,7 @@ namespace MeroBolee.Dto
         public string CompanyStatus { get; set; }
         public string CompanyName { get; set; }
         public string CompanyEmail { get; set; }
+        public string PANNumber { get; set; }
 
         public long Id { get; set; }
         public int UserStatusId { get; set; }
@@ -30,7 +31,7 @@ namespace MeroBolee.Dto
         public DateTime Created { get; set; }
         public DateTime TokenExpiryTime { get; set; }
         public string JwtToken { get; set; }
-       
+
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
     }

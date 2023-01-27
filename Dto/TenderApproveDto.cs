@@ -25,4 +25,9 @@ namespace MeroBolee.Dto
     {
         public bool status { get; set; } 
     }
+
+    public class PostBidApproveDDtoByBidInviter: TenderApproveDto
+    {
+        public string Remarks { get; set; }
+    }
 }

@@ -15,6 +15,7 @@ namespace MeroBolee.Service
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
         Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApproveDtoByAdmin);
         Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId);
+        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
@@ -85,6 +86,10 @@ namespace MeroBolee.Service
         Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId);
         
         Task<int> TenderStatusForAdmin(long tenderId);
-
+        Task<PostBidddingApprovalEntity> PostBidApprove(long tenderId, long companyId);
+        Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove);
+        Task<PostBidddingApprovalEntity> GenerateNewRequest(PostBidApproveDDtoByBidInviter tenderApprove);
+        Task<TenderEntity> PostBidFinalApprove(PostBidApproveDDtoByBidInviter tenderApprove);
+        Task<List<PostBidddingApprovalEntity>> AddPostBid(long tenderId);
     }
 }

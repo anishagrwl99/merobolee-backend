@@ -192,6 +192,20 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId)
+        {
+            try
+            {
+                IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalList(tenderId);
+                return postBidddingApprovalEntity;
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath)
         {
             TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId);
@@ -732,5 +746,127 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<PostBidddingApprovalEntity> PostBidApprove(long tenderId, long companyId)
+        {
+            try
+            {
+                var postBidEntity = await tenderRepository.FindPostBiddingApproval(tenderId, companyId);
+
+                if (postBidEntity != null)
+                {
+                    postBidEntity.StatusId = 3;
+                    postBidEntity.Date_Modified = DateTimeNPT.Now;
+
+                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+        public async Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var postBidEntity = await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.CompanyId);
+
+                if (postBidEntity != null)
+                {
+                    postBidEntity.StatusId = 2;
+                    postBidEntity.Date_Modified = DateTimeNPT.Now;
+
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove);
+                    await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
+
+                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<PostBidddingApprovalEntity> GenerateNewRequest(PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var postBidEntity =await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.CompanyId);
+                if (postBidEntity != null)
+                {
+                    postBidEntity.StatusId = 1;
+                    postBidEntity.Date_Modified = DateTimeNPT.Now;
+
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove);
+                    await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
+
+                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<TenderEntity> PostBidFinalApprove(PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var tenderEntity = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
+                if (tenderEntity!=null)
+                {
+                    //tenderEntity.
+                    return tenderEntity;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<PostBidddingApprovalEntity>> AddPostBid(long tenderId)
+        {
+            var communityApprovalEntity = await tenderRepository.FetchCommunityApprovalEntity(tenderId);
+            var postBidEntity = new List<PostBidddingApprovalEntity>();
+            foreach (var item in communityApprovalEntity)
+            {
+                var obj = new PostBidddingApprovalEntity();
+
+                obj.TenderId = item.TenderId;
+                obj.CategoryId = item.CategoryId;
+                obj.Date_Created = DateTimeNPT.Now;
+                obj.Date_Modified = DateTimeNPT.Now;
+                obj.StatusId = 1;
+                obj.IsDeleted = false;
+                obj.CompanyId = item.CompanyId;
+                postBidEntity.Add(obj);
+            }
+
+            return await tenderRepository.AddPostBid(postBidEntity);
+        }
     }
 }

@@ -74,7 +74,8 @@ namespace MeroBolee.Repository
                                CompanyName = c.Name,
                                CompanyEmail = c.CompanyEmail,
                                CompanyStatusId = c.CompanyStatusId == null ? 0 : c.CompanyStatusId.Value,
-                               CompanyStatus = cs.Status
+                               CompanyStatus = cs.Status,
+                               PANNumber=c.PANNumber
                            };
 
                 return user.FirstOrDefault();

@@ -103,7 +103,6 @@ namespace MeroBolee.EntityMapper
 
         public List<CommunityApprovalEntity> CommunityDtoEntity(long id ,AddTenderRequestDto tenderDto)
         {
-            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
 
             if (tenderDto == null)
             {
@@ -467,6 +466,18 @@ namespace MeroBolee.EntityMapper
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
             }
+        }
+
+        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            var postBidddingRemarksEntity = new PostBidddingRemarksEntity
+            {
+                CompanyId = tenderApprove.CompanyId,
+                Date_Created = DateTimeNPT.Now,
+                TenderId = tenderApprove.TenderId,
+                Remarks = tenderApprove.Remarks
+            };
+            return postBidddingRemarksEntity;
         }
 
     public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)

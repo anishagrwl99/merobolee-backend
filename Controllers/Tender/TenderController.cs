@@ -885,6 +885,181 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        #region Post-Bid
+
+        /// <summary>
+        /// Post-Bid inviter approve 
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/PostBid/BidInviter/Approve")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> PostBidApprove([FromQuery] long tenderId, [FromQuery] long companyId)
+        {
+            try
+            {
+                var response = await tenderService.PostBidApprove(tenderId,companyId);
+                if (response!=null)
+                {
+                    return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding status is successfully updated"));
+                }
+                else
+                {
+                    return NotFound(new Responses<PostBidddingApprovalEntity>(response, "404", "Record not found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Post-Bid inviter request changes
+        /// </summary>
+        /// <param name="tenderApprove"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/PostBid/BidInviter/RequestChanges")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> PostBidRequestChanges([FromBody] PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var response = await tenderService.PostBidRequestChanges(tenderApprove);
+                if (response != null)
+                {
+                    return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding Request changes successfully made"));
+                }
+                else
+                {
+                    return NotFound(new Responses<PostBidddingApprovalEntity>(response, "404", "Record not found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get the list of companies with their respective statusid in PostBidApproval table
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpGet("Admin/List/PostBidApprovalList")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId)
+        {
+            try
+            {
+                var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId);
+                if (postBidApprovalList == null)
+                {
+                    return NotFound(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "200", "Record found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Generates new request after request changes is made by Bid Inviter 
+        /// </summary>
+        /// <param name="tenderApprove"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/PostBid/Admin/GenerateNewRequest")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> GenerateNewRequest([FromBody] PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var response = await tenderService.GenerateNewRequest(tenderApprove);
+                if (response != null)
+                {
+                    return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding New Request Generated successfully"));
+                }
+                else
+                {
+                    return NotFound(new Responses<PostBidddingApprovalEntity>(response, "404", "Record not found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Post bid final approve by admin
+        /// </summary>
+        /// <param name="tenderApprove"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/Admin/PostBidFinalApprove")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> PostBidFinalApprove([FromBody] PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var response = await tenderService.PostBidFinalApprove(tenderApprove);
+                if (response != null)
+                {
+                    return Ok(new Responses<TenderEntity>(response, "200", "Tender Post Bidding New Request Generated successfully"));
+                }
+                else
+                {
+                    return NotFound(new Responses<TenderEntity>(response, "404", "Record not found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Insert data into post-bid approval
+        /// </summary>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/PostBid/Add")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> AddPostBid([FromBody] long tenderId)
+        {
+            try
+            {
+                var response =await tenderService.AddPostBid(tenderId);
+                if (response==null)
+                {
+                    return NotFound(new Responses<List<PostBidddingApprovalEntity>>(response, "404", "Record not found"));
+                }
+                else
+                {
+                    return Ok(new Responses<List<PostBidddingApprovalEntity>>(response, "200", "Record is successfully added"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+        #endregion
+
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

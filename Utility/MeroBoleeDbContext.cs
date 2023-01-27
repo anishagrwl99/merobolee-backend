@@ -84,7 +84,9 @@ namespace MeroBolee.Utility
         public DbSet<SealBidSubsectionTotalEntity> SealBidSubsectionTotalEntities { get; set;}
 
         public DbSet<CommunityApprovalEntity> CommunityApprovalEntities { get; set; }
+        public DbSet<PostBidddingApprovalEntity> PostBidddingApprovalEntities { get; set; }
 
+        public DbSet<PostBidddingRemarksEntity> PostBidddingRemarksEntities { get; set; }
 
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {

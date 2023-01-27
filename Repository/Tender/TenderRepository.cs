@@ -1538,5 +1538,75 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<PostBidddingApprovalEntity> UpdatePostBidApprovalStatus(PostBidddingApprovalEntity postBidEntity)
+        {
+            try
+            {
+                 meroBoleeDbContexts.PostBidddingApprovalEntities.Update(postBidEntity);
+                 await unitOfWork.SaveChangesAsync();
+                return postBidEntity;
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
+        public async Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId)
+        {
+            try
+            {
+               return await meroBoleeDbContexts.PostBidddingApprovalEntities.Where(x => x.CompanyId == companyId && x.TenderId == tenderId).FirstOrDefaultAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public  async Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId)
+        {
+            try
+            {
+                return await (from b in meroBoleeDbContexts.PostBidddingApprovalEntities
+                        join c in meroBoleeDbContexts.CompanyEntities on b.CompanyId equals c.CompanyId
+                        where b.TenderId == tenderId
+                        select new PostBidApprovalListDto
+                        {
+                            CompanyId = b.CompanyId,
+                            StatusId = b.StatusId,
+                            CompanyName = b.CompanyEntity.Name,
+                            Remarks = (from a in meroBoleeDbContexts.PostBidddingRemarksEntities
+                                       where a.CompanyId == b.CompanyId && a.TenderId == tenderId
+                                       select new Remarks
+                                       {
+                                           Id = a.Id,
+                                           Message = a.Remarks
+                                       }).ToList()
+                        }).ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity)
+        {
+             meroBoleeDbContexts.PostBidddingRemarksEntities.Add(postBidddingRemarksEntity);
+            await unitOfWork.SaveChangesAsync();
+            return postBidddingRemarksEntity;
+        }
+
+        public async Task<List<PostBidddingApprovalEntity>> AddPostBid(List<PostBidddingApprovalEntity> postBidEntity)
+        {
+            meroBoleeDbContexts.PostBidddingApprovalEntities.AddRange(postBidEntity);
+            await unitOfWork.SaveChangesAsync();
+            return postBidEntity;
+        }
     }
 }
