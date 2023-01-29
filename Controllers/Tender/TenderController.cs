@@ -890,16 +890,15 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// Post-Bid inviter approve 
         /// </summary>
-        /// <param name="tenderId"></param>
-        /// <param name="companyId"></param>
+        /// <param name="tenderApprove"></param>
         /// <returns></returns>
         [HttpPost("Tender/PostBid/BidInviter/Approve")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> PostBidApprove([FromQuery] long tenderId, [FromQuery] long companyId)
+        public async Task<IActionResult> PostBidApprove([FromBody] TenderApproveDto tenderApprove)
         {
             try
             {
-                var response = await tenderService.PostBidApprove(tenderId,companyId);
+                var response = await tenderService.PostBidApprove(tenderApprove.TenderId,tenderApprove.CompanyId);
                 if (response!=null)
                 {
                     return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding status is successfully updated"));
@@ -1033,15 +1032,15 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// Insert data into post-bid approval
         /// </summary>
-        /// <param name="tenderId"></param>
+        /// <param name="tenderApprove"></param>
         /// <returns></returns>
         [HttpPost("Tender/PostBid/Add")]
         [Authorize(Roles = "Super Admin")]
-        public async Task<IActionResult> AddPostBid([FromBody] long tenderId)
+        public async Task<IActionResult> AddPostBid([FromBody] TenderApproveDto tenderApprove)
         {
             try
             {
-                var response =await tenderService.AddPostBid(tenderId);
+                var response =await tenderService.AddPostBid(tenderApprove.TenderId);
                 if (response==null)
                 {
                     return NotFound(new Responses<List<PostBidddingApprovalEntity>>(response, "404", "Record not found"));
