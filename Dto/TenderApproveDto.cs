@@ -29,5 +29,12 @@ namespace MeroBolee.Dto
     public class PostBidApproveDDtoByBidInviter: TenderApproveDto
     {
         public string Remarks { get; set; }
+
+    }
+
+    public class GenerateNewRequestDtoByAdmin: PostBidApproveDDtoByBidInviter
+    {
+        public long BidInviterId { get; set; }
+
     }
 }

@@ -88,7 +88,7 @@ namespace MeroBolee.Service
         Task<int> TenderStatusForAdmin(long tenderId);
         Task<PostBidddingApprovalEntity> PostBidApprove(long tenderId, long companyId);
         Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove);
-        Task<PostBidddingApprovalEntity> GenerateNewRequest(PostBidApproveDDtoByBidInviter tenderApprove);
+        Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove);
         Task<TenderEntity> PostBidFinalApprove(PostBidApproveDDtoByBidInviter tenderApprove);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(long tenderId);
     }

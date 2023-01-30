@@ -783,7 +783,7 @@ namespace MeroBolee.Service
                     postBidEntity.StatusId = 2;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
 
-                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove);
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove, postBidEntity);
                     await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
 
                     return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
@@ -799,17 +799,17 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<PostBidddingApprovalEntity> GenerateNewRequest(PostBidApproveDDtoByBidInviter tenderApprove)
+        public async Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove)
         {
             try
             {
-                var postBidEntity =await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.CompanyId);
+                var postBidEntity =await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.BidInviterId);
                 if (postBidEntity != null)
                 {
                     postBidEntity.StatusId = 1;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
 
-                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove);
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove,postBidEntity);
                     await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
 
                     return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);

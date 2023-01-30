@@ -468,11 +468,12 @@ namespace MeroBolee.EntityMapper
             }
         }
 
-        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(PostBidApproveDDtoByBidInviter tenderApprove)
+        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(PostBidApproveDDtoByBidInviter tenderApprove, PostBidddingApprovalEntity postBidEntity)
         {
             var postBidddingRemarksEntity = new PostBidddingRemarksEntity
             {
                 CompanyId = tenderApprove.CompanyId,
+                TenderPostBiddingApprovalId = postBidEntity.Id,
                 Date_Created = DateTimeNPT.Now,
                 TenderId = tenderApprove.TenderId,
                 Remarks = tenderApprove.Remarks

@@ -13,6 +13,8 @@ namespace MeroBolee.Model
 
         public long CompanyId { get; set; }
 
+        public long TenderPostBiddingApprovalId { get; set; }
+
         public DateTime Date_Created { get; set; }
 
         public long TenderId { get;  set; }
