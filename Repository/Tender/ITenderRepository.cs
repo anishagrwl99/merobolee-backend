@@ -79,6 +79,7 @@ namespace MeroBolee.Repository
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
         Task<CommunityApprovalEntity> GetTenderEntityOfCompany(long tenderId,long companyId);
         Task<bool> CheckStatusInCommunityApproval(long tenderId);
+        Task<bool> CheckStatusInPostBidApproval(long tenderId);
 
         Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
 
@@ -112,6 +113,7 @@ namespace MeroBolee.Repository
         Task<PostBidddingApprovalEntity> UpdatePostBidApprovalStatus(PostBidddingApprovalEntity postBidEntity);
         Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId);
         Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalListForBidInviter(long tenderId,long companyId);
         Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(List<PostBidddingApprovalEntity> postBidEntity);
     }

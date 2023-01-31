@@ -1580,15 +1580,45 @@ namespace MeroBolee.Repository
                             StatusId = b.StatusId,
                             CompanyName = b.CompanyEntity.Name,
                             Remarks = (from a in meroBoleeDbContexts.PostBidddingRemarksEntities
-                                       where a.CompanyId == b.CompanyId && a.TenderId == tenderId
+                                       where a.TenderPostBiddingApprovalId == b.Id
                                        select new Remarks
                                        {
                                            Id = a.Id,
-                                           Message = a.Remarks
+                                           Message = a.Remarks,
+                                           CompanyId=a.CompanyId
                                        }).ToList()
                         }).ToListAsync();
             }
             catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalListForBidInviter(long tenderId,long companyId)
+        {
+            try
+            {
+                return await (from b in meroBoleeDbContexts.PostBidddingApprovalEntities
+                              join c in meroBoleeDbContexts.CompanyEntities on b.CompanyId equals c.CompanyId
+                              where b.TenderId == tenderId && b.CompanyId==companyId
+                              select new PostBidApprovalListDto
+                              {
+                                  CompanyId = b.CompanyId,
+                                  StatusId = b.StatusId,
+                                  CompanyName = b.CompanyEntity.Name,
+                                  Remarks = (from a in meroBoleeDbContexts.PostBidddingRemarksEntities
+                                             where a.TenderPostBiddingApprovalId == b.Id
+                                             select new Remarks
+                                             {
+                                                 Id = a.Id,
+                                                 Message = a.Remarks,
+                                                 CompanyId = a.CompanyId
+                                             }).ToList()
+                              }).ToListAsync();
+            }
+            catch
             {
 
                 throw;
@@ -1607,6 +1637,26 @@ namespace MeroBolee.Repository
             meroBoleeDbContexts.PostBidddingApprovalEntities.AddRange(postBidEntity);
             await unitOfWork.SaveChangesAsync();
             return postBidEntity;
+        }
+
+        public async Task<bool> CheckStatusInPostBidApproval(long tenderId)
+        {
+            try
+            {
+
+                var statusList = await meroBoleeDbContexts.PostBidddingApprovalEntities.Where(x => x.TenderId == tenderId).Select(x => x.StatusId).ToListAsync();
+                foreach (var item in statusList)
+                {
+                    if (item != 3) return false;
+                }
+                return true;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

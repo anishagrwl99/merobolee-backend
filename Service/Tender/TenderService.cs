@@ -192,12 +192,20 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId)
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId,long companyId)
         {
             try
             {
-                IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalList(tenderId);
-                return postBidddingApprovalEntity;
+                if(companyId==1)
+                {
+                    IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalList(tenderId);
+                    return postBidddingApprovalEntity;
+                }
+                else
+                {
+                    IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalListForBidInviter(tenderId,companyId);
+                    return postBidddingApprovalEntity;
+                }
 
             }
             catch
@@ -757,8 +765,11 @@ namespace MeroBolee.Service
                     postBidEntity.StatusId = 3;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
 
-                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                    await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
 
+                    await ToUpdatePostSealBidStatusInTender(tenderId);
+
+                    return postBidEntity;
 
                 }
                 else
@@ -769,6 +780,21 @@ namespace MeroBolee.Service
             catch 
             {
                 throw;
+            }
+        }
+
+
+        private async Task ToUpdatePostSealBidStatusInTender(long tenderId)
+        {
+            var check = await tenderRepository.CheckStatusInPostBidApproval(tenderId);
+            if (check == true)
+            {
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (te != null)
+                {
+                    te.PostBidStatus = 2; //Aprroved by all Bid Inviter
+                    await tenderRepository.UpdateTenderStatus(te);
+                }
             }
         }
 
@@ -826,14 +852,26 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<TenderEntity> PostBidFinalApprove(PostBidApproveDDtoByBidInviter tenderApprove)
+        public async Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove)
         {
             try
             {
                 var tenderEntity = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
                 if (tenderEntity!=null)
                 {
-                    //tenderEntity.
+                    if (tenderApprove.status == true)
+                    {
+                        tenderEntity.PostBidStatus = 3; //Approved by Admin
+                        tenderEntity.ApprovedBy = tenderApprove.UserId;
+                        tenderEntity.Date_modified = DateTimeNPT.Now;
+                    }
+                    else if (tenderApprove.status == false)
+                    {
+                        tenderEntity.PostBidStatus = 4; //Rejected By Admin
+                        tenderEntity.Date_modified = DateTimeNPT.Now;
+                    }
+
+                    await tenderRepository.UpdateTenderStatus(tenderEntity);
                     return tenderEntity;
                 }
                 else

@@ -949,14 +949,15 @@ namespace MeroBolee.Controllers.Tender
         /// Get the list of companies with their respective statusid in PostBidApproval table
         /// </summary>
         /// <param name="tenderId"></param>
+        /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Admin/List/PostBidApprovalList")]
-        [Authorize(Roles = "Super Admin")]
-        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId)
+        [Authorize(Roles = "Super Admin,Bid Inviter")]
+        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId, [FromQuery] long companyId)
         {
             try
             {
-                var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId);
+                var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId,companyId);
                 if (postBidApprovalList == null)
                 {
                     return NotFound(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "404", "Record not found"));
@@ -1007,7 +1008,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpPost("Tender/Admin/PostBidFinalApprove")]
         [Authorize(Roles = "Super Admin")]
-        public async Task<IActionResult> PostBidFinalApprove([FromBody] PostBidApproveDDtoByBidInviter tenderApprove)
+        public async Task<IActionResult> PostBidFinalApprove([FromBody] TenderApproveDtoByAdmin tenderApprove)
         {
             try
             {
