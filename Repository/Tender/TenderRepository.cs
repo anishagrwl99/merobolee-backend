@@ -1585,7 +1585,8 @@ namespace MeroBolee.Repository
                                        {
                                            Id = a.Id,
                                            Message = a.Remarks,
-                                           CompanyId=a.CompanyId
+                                           CompanyId=a.CompanyId,
+                                           CompanyName = a.CompanyEntity.Name
                                        }).ToList()
                         }).ToListAsync();
             }
@@ -1614,7 +1615,8 @@ namespace MeroBolee.Repository
                                              {
                                                  Id = a.Id,
                                                  Message = a.Remarks,
-                                                 CompanyId = a.CompanyId
+                                                 CompanyId = a.CompanyId,
+                                                 CompanyName = a.CompanyEntity.Name
                                              }).ToList()
                               }).ToListAsync();
             }
@@ -1627,7 +1629,7 @@ namespace MeroBolee.Repository
 
         public async Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity)
         {
-             meroBoleeDbContexts.PostBidddingRemarksEntities.Add(postBidddingRemarksEntity);
+            meroBoleeDbContexts.PostBidddingRemarksEntities.Add(postBidddingRemarksEntity);
             await unitOfWork.SaveChangesAsync();
             return postBidddingRemarksEntity;
         }

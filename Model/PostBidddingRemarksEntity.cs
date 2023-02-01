@@ -11,6 +11,7 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
+        [ForeignKey("CompanyEntity")]
         public long CompanyId { get; set; }
 
         public long TenderPostBiddingApprovalId { get; set; }
@@ -20,6 +21,8 @@ namespace MeroBolee.Model
         public long TenderId { get;  set; }
 
         public string Remarks { get; set; }
+
+        public virtual CompanyEntity CompanyEntity { get; set; }
 
     }
 }
