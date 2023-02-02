@@ -973,6 +973,32 @@ namespace MeroBolee.Controllers.Tender
         }
 
         /// <summary>
+        /// Get the list of post bid companies
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/PostBid/PostBidCompanyList")]
+        [Authorize(Roles = "Super Admin,Bid Inviter")]
+        public async Task<IActionResult> PostBidCompanyList([FromQuery] long? companyId)
+        {
+            try
+            {
+                var postBidApprovalList = await tenderService.GetPostBidCompanyList(companyId);
+                if (postBidApprovalList == null)
+                {
+                    return NotFound(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "200", "Record found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
         /// Generates new request after request changes is made by Bid Inviter 
         /// </summary>
         /// <param name="tenderApprove"></param>

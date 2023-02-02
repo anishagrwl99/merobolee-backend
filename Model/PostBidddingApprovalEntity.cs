@@ -21,8 +21,10 @@ namespace MeroBolee.Model
         public DateTime Date_Modified { get; set; }
         public bool IsDeleted { get; set; }
 
+        [ForeignKey("TenderEntity")]
         public long TenderId { get;  set; }
 
         public virtual CompanyEntity CompanyEntity { get; set; }
+        public virtual TenderEntity TenderEntity { get; set; }
     }
 }

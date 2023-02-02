@@ -113,7 +113,9 @@ namespace MeroBolee.Repository
         Task<PostBidddingApprovalEntity> UpdatePostBidApprovalStatus(PostBidddingApprovalEntity postBidEntity);
         Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId);
         Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListByTenderId();
         Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalListForBidInviter(long tenderId,long companyId);
+        Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long? companyId);
         Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(List<PostBidddingApprovalEntity> postBidEntity);
     }

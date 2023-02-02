@@ -15,4 +15,11 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "User id is required")]
         public List<long>  UserIds { get; set; }
     }
+
+    public class PostBidDtoList
+    {
+        public long TenderId { get; set; }
+
+        public string TenderTitle { get; set; }
+    }
 }

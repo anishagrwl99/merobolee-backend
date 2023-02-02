@@ -906,5 +906,27 @@ namespace MeroBolee.Service
 
             return await tenderRepository.AddPostBid(postBidEntity);
         }
+
+        public async Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long? companyId)
+        {
+            try
+            {
+                if (companyId == null)
+                {
+                    IEnumerable<PostBidDtoList> postBidddingApprovalEntity = await tenderRepository.FetchTenderTitleListByTenderId();
+                    return postBidddingApprovalEntity;
+                }
+                else
+                {
+                    IEnumerable<PostBidDtoList> postBidddingApprovalEntity = await tenderRepository.FetchTenderTitleListForBidInviter(companyId);
+                    return postBidddingApprovalEntity;
+                }
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

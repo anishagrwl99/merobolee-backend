@@ -1660,5 +1660,42 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListByTenderId()
+        {
+            try
+            {
+                return await (from p in meroBoleeDbContexts.PostBidddingApprovalEntities
+                              select new PostBidDtoList
+                              {
+                                  TenderId = p.TenderId,
+                                  TenderTitle = p.TenderEntity.Title
+                              }).Distinct().ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long? companyId)
+        {
+            try
+            {
+                return await (from p in meroBoleeDbContexts.PostBidddingApprovalEntities
+                              where p.CompanyId == companyId
+                              select new PostBidDtoList
+                              {
+                                  TenderId = p.TenderId,
+                                  TenderTitle = p.TenderEntity.Title
+                              }).Distinct().ToListAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }
