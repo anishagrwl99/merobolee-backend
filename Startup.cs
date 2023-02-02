@@ -82,6 +82,7 @@ namespace MeroBolee
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));
             services.Configure<PaymentValues>(Configuration.GetSection("PaymentValues"));
+            services.Configure<EmailValues>(Configuration.GetSection("EmailValues"));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MeroBoleeDbContext>().AddDefaultTokenProviders();
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
@@ -257,6 +258,7 @@ namespace MeroBolee
             //EMail
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISendEmailService, SendEmailService>();
 
 
             //Tender Submission

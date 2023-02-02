@@ -32,7 +32,7 @@ namespace MeroBolee.Repository
         /// <param name="email">The email.</param>
         /// <param name="panNumber">The pan number.</param>
         /// <returns></returns>
-        Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber);
+        Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber, CompanyTypeEnum companyTypeEnum);
     }
 
     public class SignupRepository : RepositoryBase<CompanyEntity>, ISignupRepository
@@ -110,7 +110,7 @@ namespace MeroBolee.Repository
         /// <param name="email">The email.</param>
         /// <param name="panNumber">The pan number.</param>
         /// <returns></returns>
-        public async Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber)
+        public async Task<Tuple<bool, string>> ValidateCompany(string email, string panNumber, CompanyTypeEnum companyTypeEnum)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace MeroBolee.Repository
                 bool isValid = true;
                 var info = await meroBoleeDbContexts.CompanyEntities
                             .Where(x => x.CompanyEmail == email || x.PANNumber == panNumber)
-                            .Select(x => new { x.CompanyEmail, x.PANNumber})
+                            .Select(x => new { x.CompanyEmail, x.PANNumber, x.RegisteredAs})
                             .FirstOrDefaultAsync();
 
                 string userEmail = await meroBoleeDbContexts.UserEntities
@@ -127,16 +127,16 @@ namespace MeroBolee.Repository
                     .FirstOrDefaultAsync();
 
 
-                if ((info != null && string.Equals(email, info.CompanyEmail, StringComparison.OrdinalIgnoreCase)) ||
-                     (userEmail != null && string.Equals(email, userEmail, StringComparison.OrdinalIgnoreCase)))
+                if ((info != null && string.Equals(email, info.CompanyEmail, StringComparison.OrdinalIgnoreCase)) && companyTypeEnum.ToString().Equals(info.RegisteredAs) ||
+                     (userEmail != null && string.Equals(email, userEmail, StringComparison.OrdinalIgnoreCase) && companyTypeEnum.ToString().Equals(info.RegisteredAs)))
                 {
                     isValid = false;
-                    msg = "Email is already registered";
+                    msg = "Email is already registered for " + $"{companyTypeEnum.ToString()}" ;
                 }
-                else if (info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase))
+                else if (info != null && string.Equals(panNumber, info.PANNumber, StringComparison.OrdinalIgnoreCase) && companyTypeEnum.ToString().Equals(info.RegisteredAs))
                 {
                     isValid = false;
-                    msg = "PAN Number is already registered.";
+                    msg = "PAN Number is already registered for " + $"{companyTypeEnum.ToString()}" ;
                 }
 
                 return Tuple.Create(isValid, msg);

@@ -1,13 +1,8 @@
 using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
 using MeroBolee.Service;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeroBolee.Controllers.RequestDemo
@@ -28,7 +23,6 @@ namespace MeroBolee.Controllers.RequestDemo
                 
                 if (ModelState.IsValid)
                 {
-                    RequestDemoService requestDemoService = new RequestDemoService();
                     string RequestDemoResponse = await IRequestDemoService.RequestDemo(requestDemoDto);
                     return Ok(new Responses<string>(RequestDemoResponse, "200", "Thank you for contacting us. We will schedule your demo shortly!"));
                 }
@@ -50,7 +44,6 @@ namespace MeroBolee.Controllers.RequestDemo
                 
                 if (ModelState.IsValid)
                 {
-                    RequestDemoService requestDemoService = new RequestDemoService();
                     string RequestDemoResponse = await IRequestDemoService.ContactUs(requestDemoDto);
                     return Ok(new Responses<string>(RequestDemoResponse, "200", "Thank you for contacting us. We will connect with you shortly!"));
                 }

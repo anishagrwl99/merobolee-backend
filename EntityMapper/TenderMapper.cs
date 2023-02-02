@@ -73,6 +73,7 @@ namespace MeroBolee.EntityMapper
                 DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product,
                 AlgoName = algoName == null ? "" : algoName,
+                AlgoId = tenderDto.Algorithm,
                 CommunityApprovalStatus=1,
                 PostBidStatus=1
             };
@@ -279,6 +280,7 @@ namespace MeroBolee.EntityMapper
                                             }).ToList();
                 getTender.AlgoName = tenderEntity.AlgoName;
                 getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
+                getTender.AlgoId = tenderEntity.AlgoId;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -344,6 +346,7 @@ namespace MeroBolee.EntityMapper
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
@@ -401,6 +404,7 @@ namespace MeroBolee.EntityMapper
 
                     getTender.ExtraDocuments = null;
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
@@ -464,6 +468,7 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
             }

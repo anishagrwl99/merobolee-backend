@@ -715,7 +715,6 @@ namespace MeroBolee.Controllers.Tender
 
         [HttpPost("BidInvter/EnterBiddingRoom")]
         [Authorize(Roles = "Bid Inviter")]
-
         public async Task<IActionResult> EnterBidRoomBidInviter([FromQuery] long tenderId, [FromQuery] long companyId)
         {
             try
