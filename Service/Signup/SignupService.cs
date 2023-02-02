@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using System;
 using System.Web;
 using Microsoft.AspNetCore.Identity;
-using MeroBolee.Controllers.EmailService;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MeroBolee.Service
 {

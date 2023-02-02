@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MeroBolee.Dto;
-using MeroBolee.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using sib_api_v3_sdk.Api;
-using sib_api_v3_sdk.Client;
-using sib_api_v3_sdk.Model;
-using System.Diagnostics;
+
 
 
 namespace MeroBolee.Service

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Mail;
-using System.Web;
 using MeroBolee.Dto;
 using MeroBolee.Settings;
 using Microsoft.Extensions.Options;
