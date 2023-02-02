@@ -15,7 +15,7 @@ namespace MeroBolee.Repository
         Task<UserEntity> AddUser(long companyId, UserEntity user);
         Task<List<CompanyEntity>> GetCompanyByType(CompanyTypeEnum companyType, string search);
         Task<List<CompanyEntity>> GetAllCompany( string search);
-        Task<List<CompanyEntity>> GetVerifiedCompany(CompanyTypeEnum companyType, string search);
+        Task<List<CompanyCardResponseDto>> GetVerifiedCompany(CompanyTypeEnum companyType, string search);
 
 
         Task<CompanyEntity> GetCompany(long companyId);
@@ -239,29 +239,47 @@ namespace MeroBolee.Repository
         /// <param name="companyType"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        public async Task<List<CompanyEntity>> GetVerifiedCompany(CompanyTypeEnum companyType, string search)
+        public async Task<List<CompanyCardResponseDto>> GetVerifiedCompany(CompanyTypeEnum companyType, string search)
         {
             try
             {
                 if (string.IsNullOrEmpty(search))
                 {
-                    return await meroBoleeDbContexts.CompanyEntities
-                        .Include(x => x.Country)
-                        .Include(x => x.CompanyStatus)
-                        .Where(x => x.CompanyId != 1 && x.CompanyStatusId == 4 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
-                        .OrderByDescending(x => x.CompanyId)
-                        .ToListAsync();
+                    return await (from u in meroBoleeDbContexts.UserEntities
+                                  join c in meroBoleeDbContexts.CompanyEntities on u.Email equals c.CompanyEmail
+                                  join co in meroBoleeDbContexts.CountryEntities on c.CountryId equals co.Id
+                                  join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                  where c.CompanyId != 1 && c.CompanyStatusId == 4 && c.RegisteredAs == companyType.ToString() //1 is merobolee company
+                                  select new CompanyCardResponseDto
+                                  {
+                                      Id = c.CompanyId,
+                                      Name = c.Name,
+                                      ReferenceCode = c.ReferenceCode,
+                                      City = c.City,
+                                      Country = c.Country.Name,
+                                      Email = c.CompanyEmail,
+                                      Status = c.CompanyStatus.Status,
+                                      UserId = u.Id
+                                  }).OrderByDescending(x => x.Id).ToListAsync();
                 }
                 else
                 {
-                    return await meroBoleeDbContexts.CompanyEntities
-                        .Include(x => x.Country)
-                        .Include(x => x.CompanyStatus)
-                        .Where(x => x.Name.ToLower().Contains(search.ToLower())
-                                 && x.CompanyId != 1 && x.CompanyStatusId == 4
-                                 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
-                        .OrderByDescending(x => x.CompanyId)
-                        .ToListAsync();
+                    return await (from u in meroBoleeDbContexts.UserEntities
+                                  join c in meroBoleeDbContexts.CompanyEntities on u.Email equals c.CompanyEmail
+                                  join co in meroBoleeDbContexts.CountryEntities on c.CountryId equals co.Id
+                                  join s in meroBoleeDbContexts.CompanyStatusEntities on c.CompanyStatusId equals s.Id
+                                  where c.Name.ToLower().Contains(search.ToLower()) && c.CompanyId != 1 && c.CompanyStatusId == 4 && c.RegisteredAs == companyType.ToString() //1 is merobolee company
+                                  select new CompanyCardResponseDto
+                                  {
+                                      Id = c.CompanyId,
+                                      Name = c.Name,
+                                      ReferenceCode = c.ReferenceCode,
+                                      City = c.City,
+                                      Country = c.Country.Name,
+                                      Email = c.CompanyEmail,
+                                      Status = c.CompanyStatus.Status,
+                                      UserId = u.Id
+                                  }).OrderByDescending(x => x.Id).ToListAsync();
                 }
             }
             catch (Exception)

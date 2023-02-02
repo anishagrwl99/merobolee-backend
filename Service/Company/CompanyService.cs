@@ -252,14 +252,9 @@ namespace MeroBolee.Service
         {
             try
             {
-                List<CompanyEntity> companies = await companyRepository.GetVerifiedCompany(companyType, search);
-                List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
-                foreach (CompanyEntity item in companies)
-                {
-                    CompanyCardResponseDto dto = ToCard(item);
-                    reponseDtos.Add(dto);
-                }
-                return reponseDtos;
+                List<CompanyCardResponseDto> companies = await companyRepository.GetVerifiedCompany(companyType, search);
+               
+                return companies;
             }
             catch (Exception)
             {

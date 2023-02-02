@@ -1036,7 +1036,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="tenderApprove"></param>
         /// <returns></returns>
         [HttpPost("Tender/PostBid/Add")]
-        [Authorize(Roles = "Bidder")]
+        [Authorize(Roles = "Super Admin")]
         public async Task<IActionResult> AddPostBid([FromBody] TenderApproveDto tenderApprove)
         {
             try
