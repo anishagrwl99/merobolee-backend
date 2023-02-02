@@ -11,7 +11,7 @@ namespace MeroBolee.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        public int CategoryId { get; set; }
+        public long UserId { get; set; }
 
         public int StatusId { get; set; }
 

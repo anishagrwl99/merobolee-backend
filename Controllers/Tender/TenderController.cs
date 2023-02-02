@@ -1033,15 +1033,15 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// Insert data into post-bid approval
         /// </summary>
-        /// <param name="tenderApprove"></param>
+        /// <param name="postBidDto"></param>
         /// <returns></returns>
         [HttpPost("Tender/PostBid/Add")]
         [Authorize(Roles = "Super Admin")]
-        public async Task<IActionResult> AddPostBid([FromBody] TenderApproveDto tenderApprove)
+        public async Task<IActionResult> AddPostBid([FromBody] AddPostBidDto postBidDto)
         {
             try
             {
-                var response =await tenderService.AddPostBid(tenderApprove.TenderId);
+                var response =await tenderService.AddPostBid(postBidDto);
                 if (response==null)
                 {
                     return NotFound(new Responses<List<PostBidddingApprovalEntity>>(response, "404", "Record not found"));

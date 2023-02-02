@@ -886,21 +886,21 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<List<PostBidddingApprovalEntity>> AddPostBid(long tenderId)
+        public async Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto)
         {
-            var communityApprovalEntity = await tenderRepository.FetchCommunityApprovalEntity(tenderId);
             var postBidEntity = new List<PostBidddingApprovalEntity>();
-            foreach (var item in communityApprovalEntity)
+
+            for (int i = 0; i < postBidDto.CompanyIds.Count; i++)
             {
                 var obj = new PostBidddingApprovalEntity();
 
-                obj.TenderId = item.TenderId;
-                obj.CategoryId = item.CategoryId;
+                obj.TenderId = postBidDto.TenderId;
                 obj.Date_Created = DateTimeNPT.Now;
                 obj.Date_Modified = DateTimeNPT.Now;
                 obj.StatusId = 1;
                 obj.IsDeleted = false;
-                obj.CompanyId = item.CompanyId;
+                obj.CompanyId = postBidDto.CompanyIds[i];
+                obj.UserId = postBidDto.UserIds[i];
                 postBidEntity.Add(obj);
             }
 

@@ -90,6 +90,6 @@ namespace MeroBolee.Service
         Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove);
         Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove);
         Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove);
-        Task<List<PostBidddingApprovalEntity>> AddPostBid(long tenderId);
+        Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto);
     }
 }
