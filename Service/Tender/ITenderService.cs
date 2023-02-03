@@ -15,8 +15,9 @@ namespace MeroBolee.Service
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
         Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApproveDtoByAdmin);
         Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId);
-        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId,long companyId);
-        Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long? companyId);
+        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long companyId);
+        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidRemarksList(long tenderId,long companyId);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);

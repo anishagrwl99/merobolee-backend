@@ -951,12 +951,12 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Admin/List/PostBidApprovalList")]
-        [Authorize(Roles = "Super Admin,Bid Inviter")]
-        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId, [FromQuery] long companyId)
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId)
         {
             try
             {
-                var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId,companyId);
+                var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId);
                 if (postBidApprovalList == null)
                 {
                     return NotFound(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "404", "Record not found"));
@@ -972,13 +972,13 @@ namespace MeroBolee.Controllers.Tender
         }
 
         /// <summary>
-        /// Get the list of post bid companies
+        /// Get the list of post bid for BidInviter
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("Tender/PostBid/PostBidCompanyList")]
-        [Authorize(Roles = "Super Admin,Bid Inviter")]
-        public async Task<IActionResult> PostBidCompanyList([FromQuery] long? companyId)
+        [HttpGet("Tender/BidInviter/PostBidList")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> PostBidCompanyList([FromQuery] long companyId)
         {
             try
             {
@@ -988,6 +988,33 @@ namespace MeroBolee.Controllers.Tender
                     return NotFound(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "404", "Record not found"));
                 }
                 return Ok(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "200", "Record found"));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        /// <summary>
+        /// Get the post bid remarks for Bid Inviter
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="tenderId"></param>
+        /// <returns></returns>
+        [HttpGet("Tender/BidInviter/PostBidRemarksList")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> PostBidRemarksList([FromQuery] long tenderId,[FromQuery] long companyId)
+        {
+            try
+            {
+                var postBidApprovalList = await tenderService.GetPostBidRemarksList(tenderId,companyId);
+                if (postBidApprovalList == null)
+                {
+                    return NotFound(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "404", "Record not found"));
+                }
+                return Ok(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "200", "Record found"));
             }
             catch (Exception e)
             {

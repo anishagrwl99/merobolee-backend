@@ -192,21 +192,12 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId,long companyId)
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId)
         {
             try
             {
-                if(companyId==1)
-                {
                     IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalList(tenderId);
                     return postBidddingApprovalEntity;
-                }
-                else
-                {
-                    IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalListForBidInviter(tenderId,companyId);
-                    return postBidddingApprovalEntity;
-                }
-
             }
             catch
             {
@@ -808,6 +799,7 @@ namespace MeroBolee.Service
                 {
                     postBidEntity.StatusId = 2;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
+                    postBidEntity.RemarksStatusId = 1; //Outgoing Remarks for Bid Inviter
 
                     var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove, postBidEntity);
                     await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
@@ -834,6 +826,7 @@ namespace MeroBolee.Service
                 {
                     postBidEntity.StatusId = 1;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
+                    postBidEntity.RemarksStatusId = 2; //Incoming Remarks for Bid Inviter
 
                     var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove,postBidEntity);
                     await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
@@ -907,21 +900,25 @@ namespace MeroBolee.Service
             return await tenderRepository.AddPostBid(postBidEntity);
         }
 
-        public async Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long? companyId)
+        public async Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long companyId)
         {
             try
             {
-                if (companyId == null)
-                {
-                    IEnumerable<PostBidDtoList> postBidddingApprovalEntity = await tenderRepository.FetchTenderTitleListByTenderId();
-                    return postBidddingApprovalEntity;
-                }
-                else
-                {
                     IEnumerable<PostBidDtoList> postBidddingApprovalEntity = await tenderRepository.FetchTenderTitleListForBidInviter(companyId);
                     return postBidddingApprovalEntity;
-                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidRemarksList(long tenderId, long companyId)
+        {
+            try
+            {
+                IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidRemarksList(tenderId, companyId);
+                return postBidddingApprovalEntity;
             }
             catch
             {

@@ -21,5 +21,9 @@ namespace MeroBolee.Dto
         public long TenderId { get; set; }
 
         public string TenderTitle { get; set; }
+        public string Status { get; set; }
+        public int StatusId { get; set; }
+
+        public int RemarksStatusId { get; set; }
     }
 }

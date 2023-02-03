@@ -1597,36 +1597,6 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalListForBidInviter(long tenderId,long companyId)
-        {
-            try
-            {
-                return await (from b in meroBoleeDbContexts.PostBidddingApprovalEntities
-                              join c in meroBoleeDbContexts.CompanyEntities on b.CompanyId equals c.CompanyId
-                              where b.TenderId == tenderId && b.CompanyId==companyId
-                              select new PostBidApprovalListDto
-                              {
-                                  CompanyId = b.CompanyId,
-                                  StatusId = b.StatusId,
-                                  CompanyName = b.CompanyEntity.Name,
-                                  Remarks = (from a in meroBoleeDbContexts.PostBidddingRemarksEntities
-                                             where a.TenderPostBiddingApprovalId == b.Id
-                                             select new Remarks
-                                             {
-                                                 Id = a.Id,
-                                                 Message = a.Remarks,
-                                                 CompanyId = a.CompanyId,
-                                                 CompanyName = a.CompanyEntity.Name
-                                             }).ToList()
-                              }).ToListAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
         public async Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity)
         {
             meroBoleeDbContexts.PostBidddingRemarksEntities.Add(postBidddingRemarksEntity);
@@ -1661,25 +1631,7 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListByTenderId()
-        {
-            try
-            {
-                return await (from p in meroBoleeDbContexts.PostBidddingApprovalEntities
-                              select new PostBidDtoList
-                              {
-                                  TenderId = p.TenderId,
-                                  TenderTitle = p.TenderEntity.Title
-                              }).Distinct().ToListAsync();
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long? companyId)
+        public async Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long companyId)
         {
             try
             {
@@ -1688,8 +1640,40 @@ namespace MeroBolee.Repository
                               select new PostBidDtoList
                               {
                                   TenderId = p.TenderId,
-                                  TenderTitle = p.TenderEntity.Title
-                              }).Distinct().ToListAsync();
+                                  TenderTitle = p.TenderEntity.Title,
+                                  StatusId = p.StatusId,
+                                  Status= p.TenderStatusEntity.Status,
+                                  RemarksStatusId=p.RemarksStatusId
+                              }).ToListAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidRemarksList(long tenderId, long companyId)
+        {
+            try
+            {
+                return await (from b in meroBoleeDbContexts.PostBidddingApprovalEntities
+                              where b.TenderId == tenderId && b.CompanyId == companyId
+                              select new PostBidApprovalListDto
+                              {
+                                  CompanyId = b.CompanyId,
+                                  StatusId = b.StatusId,
+                                  CompanyName = b.CompanyEntity.Name,
+                                  Remarks = (from a in meroBoleeDbContexts.PostBidddingRemarksEntities
+                                             where a.TenderPostBiddingApprovalId == b.Id
+                                             select new Remarks
+                                             {
+                                                 Id = a.Id,
+                                                 Message = a.Remarks,
+                                                 CompanyId = a.CompanyId,
+                                                 CompanyName = a.CompanyEntity.Name
+                                             }).ToList()
+                              }).ToListAsync();
             }
             catch
             {
