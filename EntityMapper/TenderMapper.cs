@@ -501,5 +501,17 @@ namespace MeroBolee.EntityMapper
 
         }
 
+        public PostBiddingSuperseedEntity PostBiddingSuperseedDtoEntity(SuperSeedDto superSeedDto)
+        {
+            var obj = new PostBiddingSuperseedEntity
+            {
+                UserId = superSeedDto.UserId,
+                TenderId = superSeedDto.TenderId,
+                Date_Created = DateTimeNPT.Now,
+                Remarks = "This tender has been approved by Super Admin using super seed authority."
+            };
+            return obj;
+        }
+
     }
 }

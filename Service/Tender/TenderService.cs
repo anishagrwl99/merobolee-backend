@@ -925,5 +925,47 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<bool> AddSuperSeed(SuperSeedDto superSeedDto)
+        {
+            try
+            {
+                var result = await tenderRepository.FindTenderToUpdate(superSeedDto.TenderId);
+                if (result != null)
+                {
+                    result.PostBidStatus = 3; //Approve by Admin
+                    var response = await tenderRepository.UpdateTenderStatus(result);
+
+                    await AddToPostBiddingSuperSeed(superSeedDto);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        private async Task<bool> AddToPostBiddingSuperSeed(SuperSeedDto superSeedDto)
+        {
+            try
+            {
+                var postBiddingSuperseedEntity = PostBiddingSuperseedDtoEntity(superSeedDto);
+                await tenderRepository.AddPostBiddingSuperSeed(postBiddingSuperseedEntity);
+                return true;
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

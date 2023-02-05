@@ -1681,5 +1681,20 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<bool> AddPostBiddingSuperSeed(PostBiddingSuperseedEntity postBiddingSuperseedEntity)
+        {
+            try
+            {
+                await meroBoleeDbContexts.PostBiddingSuperseedEntities.AddAsync(postBiddingSuperseedEntity);
+                await unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

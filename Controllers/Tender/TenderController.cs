@@ -1110,6 +1110,37 @@ namespace MeroBolee.Controllers.Tender
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
+        [HttpPost("Tender/PostBid/Admin/SuperSeed")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> SuperSeed([FromBody] SuperSeedDto superSeedDto)
+        {
+            try
+            {
+                if (superSeedDto.Status==true)
+                {
+                    var response = await tenderService.AddSuperSeed(superSeedDto);
+                    if (response)
+                    {
+                        return Ok(new Responses<string>("Ok", "200", "Record is successfully added"));
+                    }
+                    else
+                    {
+                        return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                    }
+                }
+                else
+                {
+                    return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
         #endregion
 
 
