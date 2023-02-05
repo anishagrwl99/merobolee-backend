@@ -40,17 +40,6 @@ namespace MeroBolee.Service
             List<CommunityApprovalEntity> community = CommunityDtoEntity(entity.Id,tenderDto);
             tenderRepository.AddCommunityApproval(community);
 
-            //foreach (var item in tenderDto.companyIds)
-            //{
-            //    var tenderSubmissionEntity = tenderRepository.FindTenderSubmissionEntity(item);
-
-            //    if(tenderSubmissionEntity!=null)
-            //    {
-            //        tenderSubmissionEntity.StatusId = 4;
-            //        tenderRepository.UpdateTenderSubmissionStatus(tenderSubmissionEntity);
-            //    }
-            //}
-
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
 

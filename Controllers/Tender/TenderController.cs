@@ -1142,8 +1142,8 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
-        [HttpGet("Tender/PostBid/Admin/CheckFinalApprove")]
-        [Authorize(Roles ="Super Admin")]
+        [HttpGet("Tender/PostBid/CheckFinalApprove")]
+        [Authorize(Roles ="Super Admin,Bid Inviter")]
         public async Task<IActionResult> CheckFinalApprove([FromQuery] long tenderId)
         {
             try
