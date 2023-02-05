@@ -744,6 +744,7 @@ namespace MeroBolee.Service
                 {
                     postBidEntity.StatusId = 3;
                     postBidEntity.Date_Modified = DateTimeNPT.Now;
+                    postBidEntity.RemarksStatusId = 1;
 
                     await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
 
