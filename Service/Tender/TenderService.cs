@@ -967,5 +967,25 @@ namespace MeroBolee.Service
                 throw;
             }
         }
+
+        public async Task<int> CheckPostBidStatus(long tenderId)
+        {
+            try
+            {
+                var tenderEntity = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (tenderEntity!=null)
+                {
+                    return tenderEntity.PostBidStatus;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

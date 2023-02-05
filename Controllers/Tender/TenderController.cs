@@ -1141,6 +1141,23 @@ namespace MeroBolee.Controllers.Tender
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
+        [HttpGet("Tender/PostBid/Admin/CheckFinalApprove")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> CheckFinalApprove([FromQuery] long tenderId)
+        {
+            try
+            {
+                var response = await tenderService.CheckPostBidStatus(tenderId);
+                return Ok(new Responses<int>(response, "200", "Post Bid Status Id is successfully fetched."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
         #endregion
 
 

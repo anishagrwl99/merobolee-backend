@@ -94,5 +94,6 @@ namespace MeroBolee.Service
         Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto);
         Task <bool> AddSuperSeed(SuperSeedDto superSeedDto);
+        Task<int> CheckPostBidStatus(long tenderId);
     }
 }
