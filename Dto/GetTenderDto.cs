@@ -52,6 +52,7 @@ namespace MeroBolee.Dto
         public DateTime LiveEndDate { get; set; }
         public DateTime RegistrationTill { get; set; }
         public int StatusId { get; set; }
+        public int PostBidStatus { get; set; }
         public string Status { get; set; }
 
         public string Product { get; set; }

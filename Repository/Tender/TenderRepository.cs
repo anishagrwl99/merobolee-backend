@@ -227,7 +227,8 @@ namespace MeroBolee.Repository
                                   DateOfExecution = t.DateOfExecution,
                                   DateCreated = t.Date_created,
                                   Price = t.Price,
-                                  Location = t.Location
+                                  Location = t.Location,
+                                  PostBidStatus=t.PostBidStatus
 
                                   //CardInfo = (from tc in meroBoleeDbContexts.TenderCards
                                   //            where tc.TenderId == t.Id
