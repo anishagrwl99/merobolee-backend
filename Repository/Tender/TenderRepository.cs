@@ -1555,11 +1555,39 @@ namespace MeroBolee.Repository
             }
         }
 
+        public async Task<IEnumerable<PostBidddingApprovalEntity>> UpdatePostBidApprovalStatusByTenderId(IEnumerable<PostBidddingApprovalEntity> postBidEntity)
+        {
+            try
+            {
+                meroBoleeDbContexts.PostBidddingApprovalEntities.UpdateRange(postBidEntity);
+                await unitOfWork.SaveChangesAsync();
+                return postBidEntity;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId)
         {
             try
             {
                return await meroBoleeDbContexts.PostBidddingApprovalEntities.Where(x => x.CompanyId == companyId && x.TenderId == tenderId).FirstOrDefaultAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PostBidddingApprovalEntity>> FindPostBiddingApprovalByTenderId(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.PostBidddingApprovalEntities.Where(x => x.TenderId == tenderId).ToListAsync();
             }
             catch
             {
@@ -1643,7 +1671,7 @@ namespace MeroBolee.Repository
                                   TenderId = p.TenderId,
                                   TenderTitle = p.TenderEntity.Title,
                                   StatusId = p.StatusId,
-                                  Status= p.TenderStatusEntity.Status,
+                                  Status= p.TenderPostBidStatusEntity.Status,
                                   RemarksStatusId=p.RemarksStatusId
                               }).ToListAsync();
             }

@@ -1067,7 +1067,7 @@ namespace MeroBolee.Controllers.Tender
                 var response = await tenderService.PostBidFinalApprove(tenderApprove);
                 if (response != null)
                 {
-                    return Ok(new Responses<TenderEntity>(response, "200", "Tender Post Bidding New Request Generated successfully"));
+                    return Ok(new Responses<TenderEntity>(response, "200", "Tender Post Bidding Approved"));
                 }
                 else
                 {

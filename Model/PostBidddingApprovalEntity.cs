@@ -13,7 +13,7 @@ namespace MeroBolee.Model
 
         public long UserId { get; set; }
 
-        [ForeignKey("TenderStatusEntity")]
+        [ForeignKey("TenderPostBidStatusEntity")]
         public int StatusId { get; set; }
 
         [ForeignKey("CompanyEntity")]
@@ -28,6 +28,6 @@ namespace MeroBolee.Model
 
         public virtual CompanyEntity CompanyEntity { get; set; }
         public virtual TenderEntity TenderEntity { get; set; }
-        public virtual TenderStatusEntity TenderStatusEntity { get; set; }
+        public virtual TenderPostBidStatusEntity TenderPostBidStatusEntity { get; set; }
     }
 }

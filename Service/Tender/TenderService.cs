@@ -926,6 +926,15 @@ namespace MeroBolee.Service
                     result.PostBidStatus = 3; //Approve by Admin
                     var response = await tenderRepository.UpdateTenderStatus(result);
 
+                    var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
+
+                    foreach (var item in postBidddingApprovalEntity)
+                    {
+                        item.StatusId = 4; //Superseeded by Admin
+                    }
+
+                    await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
+
                     await AddToPostBiddingSuperSeed(superSeedDto);
 
                     return true;
