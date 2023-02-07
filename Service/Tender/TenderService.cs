@@ -852,6 +852,15 @@ namespace MeroBolee.Service
                     {
                         tenderEntity.PostBidStatus = 4; //Rejected By Admin
                         tenderEntity.Date_modified = DateTimeNPT.Now;
+
+                        var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(tenderApprove.TenderId);
+
+                        foreach (var item in postBidddingApprovalEntity)
+                        {
+                            item.StatusId = 5; //Rejected by Admin
+                        }
+
+                        await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
                     }
 
                     await tenderRepository.UpdateTenderStatus(tenderEntity);
