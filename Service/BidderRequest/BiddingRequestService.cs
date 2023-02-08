@@ -1274,7 +1274,6 @@ namespace MeroBolee.Service
         public async Task<List<FinalPositionResponseDto>> GetFinalBiddingPosition(long tenderId)
         {
             try {
-
                 List<PositionAmountDto> positionAmountList = await bidRequestRepository.GetFinalBiddingPosition(tenderId);
                 List<FinalPositionResponseDto> getFinalBiddingPoisitionList = new List<FinalPositionResponseDto>();
                 int size = positionAmountList.Count;
@@ -1293,6 +1292,32 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<List<FinalPositionResponseDto>> GetFinalSealBiddingPosition(long tenderId)
+        {
+            try
+            {
+
+                List<PositionAmountDto> positionAmountList = await bidRequestRepository.GetFinalSealBiddingPosition(tenderId);
+                List<FinalPositionResponseDto> getFinalBiddingPoisitionList = new List<FinalPositionResponseDto>();
+                int size = positionAmountList.Count;
+                for (int i = 0; i < size; i++)
+                {
+                    PositionAmountDto positionAmountDto = positionAmountList[i];
+                    FinalPositionResponseDto finalPositionResponseDto = new FinalPositionResponseDto();
+                    finalPositionResponseDto.Amount = positionAmountDto.Amount;
+                    finalPositionResponseDto.userId = positionAmountDto.UserId;
+                    finalPositionResponseDto.position = $"L{i + 1}";
+                    finalPositionResponseDto.companyName = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                    getFinalBiddingPoisitionList.Add(finalPositionResponseDto);
+                }
+                return getFinalBiddingPoisitionList;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<FinalPositionResponseDto> GetFinalBiddingPositionForBidder(long tenderId, long userId)
         {
             try {
@@ -1301,6 +1326,21 @@ namespace MeroBolee.Service
                 FinalPositionResponseDto finalPositionResponseDto = getFinalBiddingPoisitionList.Where(x => x.userId == userId).FirstOrDefault();
                 return finalPositionResponseDto;
             } catch {
+                throw;
+            }
+        }
+
+        public async Task<FinalPositionResponseDto> GetFinalSealBiddingPositionForBidder(long tenderId, long userId)
+        {
+            try
+            {
+
+                List<FinalPositionResponseDto> getFinalBiddingPoisitionList = await GetFinalSealBiddingPosition(tenderId);
+                FinalPositionResponseDto finalPositionResponseDto = getFinalBiddingPoisitionList.Where(x => x.userId == userId).FirstOrDefault();
+                return finalPositionResponseDto;
+            }
+            catch
+            {
                 throw;
             }
         }
