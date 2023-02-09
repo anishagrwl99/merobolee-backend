@@ -163,7 +163,8 @@ namespace MeroBolee.Repository
 
         Task<List<PositionAmountDto>> GetFinalBiddingPosition(long tenderId);
 
-        Task<List<PositionAmountDto>> GetFinalSealBiddingPosition(long tenderId);
+        Task<List<PositionAmountDto>> GetFinalSealBiddingPositionTopBottom(long tenderId);
+        Task<List<PositionAmountDto>> GetFinalSealBiddingPositionBottomTop(long tenderId);
 
         /// <summary>
         /// Determines whether [is supplier registered] [the specified company identifier].

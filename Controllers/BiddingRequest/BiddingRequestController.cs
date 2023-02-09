@@ -292,11 +292,11 @@ namespace MeroBolee.Controllers.BiddingRequest
 
         [HttpGet("AdminAndBidInviter/SealBidding/FinalPosition")]
         [Authorize(Roles = "Super Admin, Bid Inviter")]
-        public async Task<IActionResult> GetFinalSealBiddingPosition([FromQuery] long tenderId)
+        public async Task<IActionResult> GetFinalSealBiddingPosition([FromQuery] long tenderId, [FromQuery] int algoId)
         {
             try
             {
-                List<FinalPositionResponseDto> res = await biddingRequestService.GetFinalSealBiddingPosition(tenderId);
+                List<FinalPositionResponseDto> res = await biddingRequestService.GetFinalSealBiddingPosition(tenderId, algoId);
                 int totalCount = res.Count();
                 if (res != null && totalCount > 0)
                 {
@@ -351,11 +351,11 @@ namespace MeroBolee.Controllers.BiddingRequest
 
         [HttpGet("Bidder/SealBidding/FinalPosition")]
         [Authorize(Roles = "Bidder")]
-        public async Task<IActionResult> GetFinalSealBiddingPosition([FromQuery] long tenderId, long userId)
+        public async Task<IActionResult> GetFinalSealBiddingPosition([FromQuery] long tenderId, [FromQuery] long userId, [FromQuery] int algoId)
         {
             try
             {
-                FinalPositionResponseDto res = await biddingRequestService.GetFinalSealBiddingPositionForBidder(tenderId, userId);
+                FinalPositionResponseDto res = await biddingRequestService.GetFinalSealBiddingPositionForBidder(tenderId, userId,algoId);
                 if (res != null)
                 {
                     return Ok(new Responses<FinalPositionResponseDto>(res, "200", "Caculated Final Bidding Position for " + res.companyName));
