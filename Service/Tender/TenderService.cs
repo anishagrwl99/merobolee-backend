@@ -3,11 +3,13 @@ using MeroBolee.EntityMapper;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
+using MeroBolee.Service.Otp;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace MeroBolee.Service
 {
@@ -18,18 +20,24 @@ namespace MeroBolee.Service
         private readonly IReferenceCodeService referenceCodeService;
         private readonly IUploadFile uploadFileService;
         private readonly ICompanyDocumentRepository docRepo;
+        private readonly ISendEmailService sendEmailService;
+        private readonly IOtpService otpService;
+
 
         public TenderService(ITenderRepository tenderRepository,
                                 IMemoryCache cache,
                                 IReferenceCodeService referenceCodeService,
                                 IUploadFile uploadFileService,
-                                ICompanyDocumentRepository docRepo)
+                                ICompanyDocumentRepository docRepo,
+                                ISendEmailService sendEmailService, IOtpService otpService) 
         {
             this.tenderRepository = tenderRepository;
             this.cache = cache;
             this.referenceCodeService = referenceCodeService;
             this.uploadFileService = uploadFileService;
             this.docRepo = docRepo;
+            this.sendEmailService = sendEmailService;
+            this.otpService = otpService;
         }
 
         public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
@@ -734,23 +742,31 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<PostBidddingApprovalEntity> PostBidApprove(long tenderId, long companyId)
+        public async Task<PostBidddingApprovalEntity> PostBidApprove(VerifyOtpDto verifyOtpDto)
         {
             try
             {
-                var postBidEntity = await tenderRepository.FindPostBiddingApproval(tenderId, companyId);
+                var postBidEntity = await tenderRepository.FindPostBiddingApproval(verifyOtpDto.TenderId, verifyOtpDto.CompanyId);
 
                 if (postBidEntity != null)
                 {
-                    postBidEntity.StatusId = 3;
-                    postBidEntity.Date_Modified = DateTimeNPT.Now;
-                    postBidEntity.RemarksStatusId = 1;
+                    var check= otpService.VerifyOtp(verifyOtpDto.OtpCode);
+                    if(check)
+                    {
+                        postBidEntity.StatusId = 3;
+                        postBidEntity.Date_Modified = DateTimeNPT.Now;
+                        postBidEntity.RemarksStatusId = 1;
 
-                    await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                        await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
 
-                    await ToUpdatePostSealBidStatusInTender(tenderId);
+                        await ToUpdatePostSealBidStatusInTender(verifyOtpDto.TenderId);
 
-                    return postBidEntity;
+                        return postBidEntity;
+                    }
+                    else
+                    {
+                        return null;
+                    }
 
                 }
                 else
@@ -932,21 +948,30 @@ namespace MeroBolee.Service
                 var result = await tenderRepository.FindTenderToUpdate(superSeedDto.TenderId);
                 if (result != null)
                 {
-                    result.PostBidStatus = 3; //Approve by Admin
-                    var response = await tenderRepository.UpdateTenderStatus(result);
-
-                    var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
-
-                    foreach (var item in postBidddingApprovalEntity)
+                    var check = otpService.VerifyOtp(superSeedDto.otpCode);
+                    if (check)
                     {
-                        item.StatusId = 4; //Superseeded by Admin
+                        result.PostBidStatus = 3; //Approve by Admin
+                        var response = await tenderRepository.UpdateTenderStatus(result);
+
+                        var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
+
+                        foreach (var item in postBidddingApprovalEntity)
+                        {
+                            item.StatusId = 4; //Superseeded by Admin
+                        }
+
+                        await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
+
+                        await AddToPostBiddingSuperSeed(superSeedDto);
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
                     }
 
-                    await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
-
-                    await AddToPostBiddingSuperSeed(superSeedDto);
-
-                    return true;
                 }
                 else
                 {
@@ -994,6 +1019,42 @@ namespace MeroBolee.Service
             {
                 throw;
             }
+        }
+
+        public async Task<bool> CheckOtpSent(OtpDto otpDto)
+        {
+            try
+            {
+                SendEmailResponseDto sendEmailResponse = new SendEmailResponseDto();
+
+                EmailRequestdto emailRequestdto = new EmailRequestdto();
+                emailRequestdto.toEmailId = await tenderRepository.GetUserEmailByUserId(otpDto.UserId);
+
+                if(emailRequestdto.toEmailId==null)
+                {
+                    return false;
+                }
+
+                emailRequestdto.callFrom = "OtpGenerate";
+                sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+
+                if(sendEmailResponse!=null)
+                {
+                    return true;
+
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch 
+            {
+
+                throw;
+            }
+           
         }
     }
 }

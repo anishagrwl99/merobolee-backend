@@ -5,7 +5,7 @@ namespace MeroBolee.Service.Otp
 {
     public interface IOtpService
     {
-        string GenerateOtp(OtpDto otpDto);
-        bool VerifyOtp(OtpVerifyDto otpVerifyDto);
+        string GenerateOtp();
+        bool VerifyOtp(string otpCode);
     }
 }

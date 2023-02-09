@@ -14,5 +14,7 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "User id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
         public long UserId { get; set; }
+
+        public string otpCode { get; set; }
     }
 }

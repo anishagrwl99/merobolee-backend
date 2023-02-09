@@ -23,18 +23,24 @@ namespace MeroBolee.Dto
 
     public class TenderApproveDtoByAdmin : TenderApproveDto
     {
-        public bool status { get; set; } 
+        public bool status { get; set; }
     }
 
-    public class PostBidApproveDDtoByBidInviter: TenderApproveDto
+    public class PostBidApproveDDtoByBidInviter : TenderApproveDto
     {
         public string Remarks { get; set; }
 
     }
 
-    public class GenerateNewRequestDtoByAdmin: PostBidApproveDDtoByBidInviter
+    public class GenerateNewRequestDtoByAdmin : PostBidApproveDDtoByBidInviter
     {
         public long BidInviterId { get; set; }
+
+    }
+
+    public class VerifyOtpDto : TenderApproveDto
+    {
+        public string OtpCode { get; set; }
 
     }
 }

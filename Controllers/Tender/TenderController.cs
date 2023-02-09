@@ -2,6 +2,7 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
+using MeroBolee.Service.Otp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -889,15 +890,15 @@ namespace MeroBolee.Controllers.Tender
         /// <summary>
         /// Post-Bid inviter approve 
         /// </summary>
-        /// <param name="tenderApprove"></param>
+        /// <param name="verifyOtpDto"></param>
         /// <returns></returns>
         [HttpPost("Tender/PostBid/BidInviter/Approve")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> PostBidApprove([FromBody] TenderApproveDto tenderApprove)
+        public async Task<IActionResult> PostBidApprove([FromBody] VerifyOtpDto verifyOtpDto)
         {
             try
             {
-                var response = await tenderService.PostBidApprove(tenderApprove.TenderId,tenderApprove.CompanyId);
+                var response = await tenderService.PostBidApprove(verifyOtpDto);
                 if (response!=null)
                 {
                     return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding status is successfully updated"));
@@ -1150,6 +1151,33 @@ namespace MeroBolee.Controllers.Tender
             {
                 var response = await tenderService.CheckPostBidStatus(tenderId);
                 return Ok(new Responses<int>(response, "200", "Post Bid Status Id is successfully fetched."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Tender/PostBid/OtpSentCheck")]
+        [Authorize(Roles = "Bid Inviter, Super Admin")]
+        public async Task<IActionResult> OtpSentCheck([FromBody] OtpDto otpDto)
+        {
+            try
+            {
+                var response= await tenderService.CheckOtpSent(otpDto);
+                if (response)
+                {
+                    return Ok(new Responses<bool>(response, "200", "Otp is successfully sent."));
+                }
+                else
+                {
+                    return NotFound(new Responses<bool>(response, "404", "Otp failed to send."));
+
+                }
+
+
             }
             catch (Exception e)
             {

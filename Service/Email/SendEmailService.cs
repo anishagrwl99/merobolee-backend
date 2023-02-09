@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using MeroBolee.Dto;
+using MeroBolee.Service.Otp;
 using MeroBolee.Settings;
 using Microsoft.Extensions.Options;
 
@@ -9,12 +10,15 @@ namespace MeroBolee.Service;
 
 public class SendEmailService : ISendEmailService
 {
-    
+    private readonly IOtpService otpService;
+
     private readonly EmailValues emailValues;
 
-    public SendEmailService(IOptions<EmailValues> emailValues)
+    public SendEmailService(IOptions<EmailValues> emailValues, IOtpService otpService)
     {
         this.emailValues = emailValues.Value;
+        this.otpService = otpService;
+
     }
     public SendEmailResponseDto SendEmail(EmailRequestdto emailRequestdto)
     {
@@ -50,6 +54,23 @@ public class SendEmailService : ISendEmailService
             }
 
             emailRequestdto.subject = "Merobolee: Request for password change!";
+            emailRequestdto.htmlContent = HtmlContent;
+        }
+        else if (emailRequestdto.callFrom.Equals("OtpGenerate"))
+        {
+            string HtmlContent = "";
+            using (WebClient web1 = new WebClient())
+            {
+                HtmlContent = web1.DownloadString("https://api.merobolee.com/Resource/forgot-password.html");
+            }
+
+            if (HtmlContent.Contains("{0}"))
+            {
+                var otp=otpService.GenerateOtp();
+                HtmlContent = HtmlContent.Replace("{0}", otp);
+            }
+
+            emailRequestdto.subject = "Merobolee: Otp for approval";
             emailRequestdto.htmlContent = HtmlContent;
         }
 

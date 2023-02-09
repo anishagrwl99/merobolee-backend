@@ -17,7 +17,7 @@ namespace MeroBolee.Service.Otp
             this._otp = otp.Value;
         }
     
-        public string GenerateOtp(OtpDto otpDto)
+        public string GenerateOtp()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace MeroBolee.Service.Otp
        
 
 
-        public bool VerifyOtp(OtpVerifyDto otpVerifyDto)
+        public bool VerifyOtp(string otpCode)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace MeroBolee.Service.Otp
 
                 var totp = new Totp(bytes, step: 300);
                 long timeStepMatched;
-                bool verify = totp.VerifyTotp(DateTimeNPT.Now, otpVerifyDto.Input, out timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay);
+                bool verify = totp.VerifyTotp(DateTimeNPT.Now, otpCode, out timeStepMatched, VerificationWindow.RfcSpecifiedNetworkDelay);
                 return verify;
             }
             catch 

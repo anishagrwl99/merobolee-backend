@@ -88,12 +88,13 @@ namespace MeroBolee.Service
         Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId);
         
         Task<int> TenderStatusForAdmin(long tenderId);
-        Task<PostBidddingApprovalEntity> PostBidApprove(long tenderId, long companyId);
+        Task<PostBidddingApprovalEntity> PostBidApprove(VerifyOtpDto verifyOtpDto);
         Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove);
         Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove);
         Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto);
         Task <bool> AddSuperSeed(SuperSeedDto superSeedDto);
         Task<int> CheckPostBidStatus(long tenderId);
+        Task<bool> CheckOtpSent(OtpDto otpDto);
     }
 }
