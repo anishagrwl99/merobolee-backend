@@ -755,7 +755,7 @@ namespace MeroBolee.Service
                     {
                         postBidEntity.StatusId = 3;
                         postBidEntity.Date_Modified = DateTimeNPT.Now;
-                        postBidEntity.RemarksStatusId = 1;
+                        postBidEntity.RemarksStatusId = 0;
 
                         await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
 
@@ -959,6 +959,7 @@ namespace MeroBolee.Service
                         foreach (var item in postBidddingApprovalEntity)
                         {
                             item.StatusId = 4; //Superseeded by Admin
+                            item.RemarksStatusId = 0;
                         }
 
                         await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
