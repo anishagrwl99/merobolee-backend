@@ -123,6 +123,8 @@ namespace MeroBolee.Dto
 
         public int Algorithm { get; set; }
 
+        public int ProcurementId { get; set; }
+
     }
 
     public class UpdateTenderRequestDto : TenderRequestBaseDto

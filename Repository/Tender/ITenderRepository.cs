@@ -121,5 +121,6 @@ namespace MeroBolee.Repository
         Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidRemarksList(long tenderId, long companyId);
         Task <bool> AddPostBiddingSuperSeed(PostBiddingSuperseedEntity postBiddingSuperseedEntity);
         Task<string> GetUserEmailByUserId(long userId);
+        Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList();
     }
 }

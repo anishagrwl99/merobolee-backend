@@ -108,6 +108,7 @@ namespace MeroBolee.Model
 
         public int CommunityApprovalStatus { get; set; }
         public int PostBidStatus { get; set; }
+        public int ProcurementId { get; set; }
 
         public DateTime DateOfExecution { get; set; }
 

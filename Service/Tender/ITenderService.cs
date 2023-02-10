@@ -96,5 +96,6 @@ namespace MeroBolee.Service
         Task <bool> AddSuperSeed(SuperSeedDto superSeedDto);
         Task<int> CheckPostBidStatus(long tenderId);
         Task<bool> CheckOtpSent(OtpDto otpDto);
+        Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement();
     }
 }

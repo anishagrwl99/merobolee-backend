@@ -949,7 +949,6 @@ namespace MeroBolee.Controllers.Tender
         /// Get the list of companies with their respective statusid in PostBidApproval table
         /// </summary>
         /// <param name="tenderId"></param>
-        /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("Admin/List/PostBidApprovalList")]
         [Authorize(Roles = "Super Admin")]
@@ -1188,6 +1187,29 @@ namespace MeroBolee.Controllers.Tender
         }
         #endregion
 
+        [HttpGet("Tender/ProcurementType/List")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> ProcurementType()
+        {
+            try
+            {
+                var response= await tenderService.GetProcurement();
+                if(response!=null)
+                {
+                    return Ok(new Responses<IEnumerable<TenderProcurementTypeEntity>>(response, "200", "Record fetched successfully."));
+                }
+                else
+                {
+                    return NotFound(new Responses<IEnumerable<TenderProcurementTypeEntity>>(response, "404", "Record not found."));
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
         {

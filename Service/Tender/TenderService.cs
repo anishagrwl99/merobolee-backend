@@ -1057,5 +1057,18 @@ namespace MeroBolee.Service
             }
            
         }
+
+        public async Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement()
+        {
+            try
+            {
+                return await tenderRepository.GetProcurementList();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

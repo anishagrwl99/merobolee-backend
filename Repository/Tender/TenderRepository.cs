@@ -1738,5 +1738,18 @@ namespace MeroBolee.Repository
                 throw;
             }
         }
+
+        public async Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList()
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderProcurementTypeEntities.ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

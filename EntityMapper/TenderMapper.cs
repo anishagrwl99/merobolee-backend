@@ -75,7 +75,8 @@ namespace MeroBolee.EntityMapper
                 AlgoName = algoName == null ? "" : algoName,
                 AlgoId = tenderDto.Algorithm,
                 CommunityApprovalStatus=1,
-                PostBidStatus=1
+                PostBidStatus=1,
+                ProcurementId=tenderDto.ProcurementId
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)

@@ -89,6 +89,7 @@ namespace MeroBolee.Utility
         public DbSet<PostBidddingRemarksEntity> PostBidddingRemarksEntities { get; set; }
         public DbSet<PostBiddingSuperseedEntity> PostBiddingSuperseedEntities { get; set; }
         public DbSet<TenderPostBidStatusEntity> TenderPostBidStatusEntities { get; set; }
+        public DbSet<TenderProcurementTypeEntity> TenderProcurementTypeEntities { get; set; }
 
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
