@@ -41,6 +41,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
+        /// <param name="isLiveBidUpcoming"></param>
         /// <returns></returns>
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
 
@@ -48,12 +49,14 @@ namespace MeroBolee.Repository
         /// Get bid inviter upcoming tender
         /// </summary>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId, long? companyId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search, int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, int? procurementId, int? algoId);
         Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 

@@ -183,18 +183,20 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/History")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string search = "")
+        public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId, [FromQuery] string search = "")
         {
             try
             {
                 string url = Url.Action("GetBidInviterTenderHistory", null, new { companyId = companyId, search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = await tenderService.GetBidIniviterTenderHistory(companyId, search);
+                IEnumerable<TenderCard> tenders = await tenderService.GetBidIniviterTenderHistory(companyId, search,procurementId,algoId);
                 tenders.OrderByDescending(x => x.LiveEndDate);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
@@ -404,10 +406,12 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Upcoming")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetUpCommingTenderForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] long companyId)
+        public async Task<IActionResult> GetUpCommingTenderForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId)
         {
             try
             {
@@ -416,7 +420,7 @@ namespace MeroBolee.Controllers.Tender
                     string url = Url.Action("GetUpCommingTenderForBidInviter", null, new { companyId = companyId }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidInviterTender(companyId);
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidInviterTender(companyId,procurementId,algoId);
                     int totalCount = tenders.Count();
                     if (totalCount == 0)
                     {

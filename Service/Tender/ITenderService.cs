@@ -22,11 +22,11 @@ namespace MeroBolee.Service
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
-        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId);
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search, int? procurementId, int? algoId);
         Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId,int? procurementId,int? algoId);
 
         Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
