@@ -215,10 +215,12 @@ namespace MeroBolee.Controllers.Tender
         /// Gat a tender listing of a bid inviter company
         /// </summary>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId)
+        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId)
         {
             try
             {
@@ -227,7 +229,7 @@ namespace MeroBolee.Controllers.Tender
                     string url = Url.Action("GetBidInviterTenderListing", null, new { companyId = companyId }, Request.Scheme); //get url for current request
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                    BidInviterTenderListing tenders = await tenderService.GetBidInviterTenderListing(companyId);
+                    BidInviterTenderListing tenders = await tenderService.GetBidInviterTenderListing(companyId,procurementId,algoId);
                     int totalCount = tenders.ActiveTenders.Count() + tenders.PendingTenders.Count();
                     if (totalCount == 0)
                     {

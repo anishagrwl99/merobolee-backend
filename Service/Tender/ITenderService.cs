@@ -27,7 +27,7 @@ namespace MeroBolee.Service
 
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId);
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
-        Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);
+        Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId,int? procurementId,int? algoId);
 
         Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
 

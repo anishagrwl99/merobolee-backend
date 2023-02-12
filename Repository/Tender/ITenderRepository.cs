@@ -54,7 +54,7 @@ namespace MeroBolee.Repository
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
         Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId );
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, int? procurementId, int? algoId);
         Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 
         Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode);
