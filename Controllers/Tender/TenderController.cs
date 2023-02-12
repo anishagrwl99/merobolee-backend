@@ -291,16 +291,18 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="search"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
         [HttpGet("Tender/Marketplace")]
-        public async Task<IActionResult> Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] string search = null)
+        public async Task<IActionResult> Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] int? procurementId, [FromQuery] int? algoId, [FromQuery] string search = null)
         {
             try
             {
                 string url = Url.Action("Marketplace", null, new { search = search }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = await tenderService.GetMarketplaceTender(search);
+                IEnumerable<TenderCard> tenders = await tenderService.GetMarketplaceTender(search,procurementId,algoId);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -1187,6 +1189,10 @@ namespace MeroBolee.Controllers.Tender
         }
         #endregion
 
+        /// <summary>
+        /// Get the procurement type
+        /// </summary>
+        /// <returns>List of procurements</returns>
         [HttpGet("Tender/ProcurementType/List")]
         [Authorize(Roles ="Super Admin")]
         public async Task<IActionResult> ProcurementType()

@@ -14,7 +14,7 @@ namespace MeroBolee.Repository
         List<CommunityApprovalEntity> AddCommunityApproval(List<CommunityApprovalEntity> communityApprovalEntity);
         //TenderSubmission UpdateTenderSubmissionStatus(TenderSubmission tenderSubmission);
         //TenderSubmission FindTenderSubmissionEntity(long companyId);
-        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,int? procurementId, int? algoId);
         
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
         

@@ -90,9 +90,9 @@ namespace MeroBolee.Service
             return entity;
         }
 
-        public Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search)
+        public Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search, int? procurementId, int? algoId)
         {
-            return tenderRepository.GetMarketplaceTender(search);
+            return tenderRepository.GetMarketplaceTender(search,procurementId,algoId);
         }
         public Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search)
         {

@@ -106,42 +106,150 @@ namespace MeroBolee.Repository
         /// Marketplace tender
         /// </summary>
         /// <param name="search"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search)
+        public async Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search, int? procurementId, int? algoId)
         {
             try
             {
                 var timeNow = DateTimeNPT.Now;
-                return await (from t in meroBoleeDbContexts.TenderEntities 
-                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                              join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
-                              where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
-                              select new TenderCard
-                              {
-                                  TenderId = t.Id,
-                                  TenderCode = t.Code,
-                                  TenderTitle = t.Title,
-                                  CategoryId = c.Id,
-                                  CategoryName = c.Category,
-                                  LiveStartDate = t.LiveStartDate,
-                                  LiveEndDate = t.LiveEndDate,
-                                  RegistrationTill = t.RegistrationTill,
-                                  Status = s.Status,
-                                  Product = t.Product,
-                                  Price = t.Price,
-                                  Location = t.Location,
-                                  DateOfExecution = t.DateOfExecution,
-                                  DateCreated = t.Date_created,
-                                  CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
-                                                 where tc.TenderId == t.Id
-                                                 select new CompanyInfo
-                                                 {
-                                                     Id = tc.CompanyId,
-                                                     Name = tc.CompanyEntity.Name
-                                                 }).ToList()
-                              }
+                if (procurementId == null && algoId == null)
+                {
+
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                  where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      Status = s.Status,
+                                      Product = t.Product,
+                                      Price = t.Price,
+                                      Location = t.Location,
+                                      DateOfExecution = t.DateOfExecution,
+                                      DateCreated = t.Date_created,
+                                      CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                     where tc.TenderId == t.Id
+                                                     select new CompanyInfo
+                                                     {
+                                                         Id = tc.CompanyId,
+                                                         Name = tc.CompanyEntity.Name
+                                                     }).ToList()
+                                  }
 
                 ).OrderByDescending(x => x.DateCreated).ToListAsync();
+                }
+                else if(procurementId!=null && algoId!=null)
+                {
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                  where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
+                                  && t.AlgoId == algoId && t.ProcurementId == procurementId
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      Status = s.Status,
+                                      Product = t.Product,
+                                      Price = t.Price,
+                                      Location = t.Location,
+                                      DateOfExecution = t.DateOfExecution,
+                                      DateCreated = t.Date_created,
+                                      CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                     where tc.TenderId == t.Id
+                                                     select new CompanyInfo
+                                                     {
+                                                         Id = tc.CompanyId,
+                                                         Name = tc.CompanyEntity.Name
+                                                     }).ToList()
+                                  }
+
+              ).OrderByDescending(x => x.DateCreated).ToListAsync();
+                }
+                else if (algoId != null)
+                {
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                  where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
+                                  && t.AlgoId == algoId
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      Status = s.Status,
+                                      Product = t.Product,
+                                      Price = t.Price,
+                                      Location = t.Location,
+                                      DateOfExecution = t.DateOfExecution,
+                                      DateCreated = t.Date_created,
+                                      CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                     where tc.TenderId == t.Id
+                                                     select new CompanyInfo
+                                                     {
+                                                         Id = tc.CompanyId,
+                                                         Name = tc.CompanyEntity.Name
+                                                     }).ToList()
+                                  }
+
+                ).OrderByDescending(x => x.DateCreated).ToListAsync();
+                }
+                else
+                {
+                    return await (from t in meroBoleeDbContexts.TenderEntities
+                                  join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                  join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
+                                  where t.StatusId == 3 && t.IsDeleted == false && (search == null || t.Title.Contains(search)) && DateTime.Compare(t.RegistrationTill, DateTimeNPT.Now) > 0
+                                  && t.ProcurementId == procurementId
+                                  select new TenderCard
+                                  {
+                                      TenderId = t.Id,
+                                      TenderCode = t.Code,
+                                      TenderTitle = t.Title,
+                                      CategoryId = c.Id,
+                                      CategoryName = c.Category,
+                                      LiveStartDate = t.LiveStartDate,
+                                      LiveEndDate = t.LiveEndDate,
+                                      RegistrationTill = t.RegistrationTill,
+                                      Status = s.Status,
+                                      Product = t.Product,
+                                      Price = t.Price,
+                                      Location = t.Location,
+                                      DateOfExecution = t.DateOfExecution,
+                                      DateCreated = t.Date_created,
+                                      CompanyInfo = (from tc in meroBoleeDbContexts.CommunityApprovalEntities
+                                                     where tc.TenderId == t.Id
+                                                     select new CompanyInfo
+                                                     {
+                                                         Id = tc.CompanyId,
+                                                         Name = tc.CompanyEntity.Name
+                                                     }).ToList()
+                                  }
+
+               ).OrderByDescending(x => x.DateCreated).ToListAsync();
+                }
 
             }
             catch (Exception)

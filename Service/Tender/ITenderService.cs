@@ -9,7 +9,7 @@ namespace MeroBolee.Service
     public interface ITenderService
     {
         Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto);
-        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
 
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
