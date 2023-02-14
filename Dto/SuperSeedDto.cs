@@ -16,5 +16,7 @@ namespace MeroBolee.Dto
         public long UserId { get; set; }
 
         public string otpCode { get; set; }
+
+        public string Remarks { get; set; }
     }
 }

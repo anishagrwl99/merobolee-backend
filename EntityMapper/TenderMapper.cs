@@ -509,7 +509,7 @@ namespace MeroBolee.EntityMapper
                 UserId = superSeedDto.UserId,
                 TenderId = superSeedDto.TenderId,
                 Date_Created = DateTimeNPT.Now,
-                Remarks = "This tender has been approved by Super Admin using super seed authority."
+                Remarks = superSeedDto.Remarks
             };
             return obj;
         }
