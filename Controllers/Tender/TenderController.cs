@@ -746,7 +746,7 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Admin/Algorithms")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Super Admin, Bid Inviter")]
         public async Task<IActionResult> AlgorithmList()
         {
             try 
@@ -1174,7 +1174,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <returns>List of procurements</returns>
         [HttpGet("Tender/ProcurementType/List")]
-        [Authorize(Roles ="Super Admin")]
+        [Authorize(Roles ="Super Admin, Bid Inviter")]
         public async Task<IActionResult> ProcurementType()
         {
             try
