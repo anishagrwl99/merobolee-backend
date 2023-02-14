@@ -1167,32 +1167,6 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
-        [HttpPost("Tender/PostBid/OtpSentCheck")]
-        [Authorize(Roles = "Bid Inviter, Super Admin")]
-        public async Task<IActionResult> OtpSentCheck([FromBody] OtpDto otpDto)
-        {
-            try
-            {
-                var response= await tenderService.CheckOtpSent(otpDto);
-                if (response)
-                {
-                    return Ok(new Responses<bool>(response, "200", "Otp is successfully sent."));
-                }
-                else
-                {
-                    return NotFound(new Responses<bool>(response, "404", "Otp failed to send."));
-
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
-            }
-        }
         #endregion
 
         /// <summary>

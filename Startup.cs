@@ -32,6 +32,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using MeroBolee.Service.Inovice;
 using MeroBolee.Service.Otp;
+using MeroBolee.Repository.Otp;
 
 namespace MeroBolee
 {
@@ -217,6 +218,7 @@ namespace MeroBolee
 
             //Otp 
             services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<IOtpRepository, OtpRepository>();
 
             //Watchlist
             services.AddScoped<IWatchListRepository, WatchListRepository>();

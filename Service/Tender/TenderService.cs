@@ -20,7 +20,6 @@ namespace MeroBolee.Service
         private readonly IReferenceCodeService referenceCodeService;
         private readonly IUploadFile uploadFileService;
         private readonly ICompanyDocumentRepository docRepo;
-        private readonly ISendEmailService sendEmailService;
         private readonly IOtpService otpService;
 
 
@@ -29,14 +28,13 @@ namespace MeroBolee.Service
                                 IReferenceCodeService referenceCodeService,
                                 IUploadFile uploadFileService,
                                 ICompanyDocumentRepository docRepo,
-                                ISendEmailService sendEmailService, IOtpService otpService) 
+                                IOtpService otpService) 
         {
             this.tenderRepository = tenderRepository;
             this.cache = cache;
             this.referenceCodeService = referenceCodeService;
             this.uploadFileService = uploadFileService;
             this.docRepo = docRepo;
-            this.sendEmailService = sendEmailService;
             this.otpService = otpService;
         }
 
@@ -1020,42 +1018,6 @@ namespace MeroBolee.Service
             {
                 throw;
             }
-        }
-
-        public async Task<bool> CheckOtpSent(OtpDto otpDto)
-        {
-            try
-            {
-                SendEmailResponseDto sendEmailResponse = new SendEmailResponseDto();
-
-                EmailRequestdto emailRequestdto = new EmailRequestdto();
-                emailRequestdto.toEmailId = await tenderRepository.GetUserEmailByUserId(otpDto.UserId);
-
-                if(emailRequestdto.toEmailId==null)
-                {
-                    return false;
-                }
-
-                emailRequestdto.callFrom = "OtpGenerate";
-                sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
-
-                if(sendEmailResponse!=null)
-                {
-                    return true;
-
-                }
-                else
-                {
-                    return false;
-                }
-
-            }
-            catch 
-            {
-
-                throw;
-            }
-           
         }
 
         public async Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement()

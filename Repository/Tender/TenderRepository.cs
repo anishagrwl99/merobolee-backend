@@ -2122,19 +2122,6 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<string> GetUserEmailByUserId(long userId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.UserEntities.Where(x => x.Id == userId).Select(x => x.Email).FirstOrDefaultAsync();
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
         public async Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList()
         {
             try

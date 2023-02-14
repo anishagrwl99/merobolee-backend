@@ -10,14 +10,12 @@ namespace MeroBolee.Service;
 
 public class SendEmailService : ISendEmailService
 {
-    private readonly IOtpService otpService;
 
     private readonly EmailValues emailValues;
 
-    public SendEmailService(IOptions<EmailValues> emailValues, IOtpService otpService)
+    public SendEmailService(IOptions<EmailValues> emailValues)
     {
         this.emailValues = emailValues.Value;
-        this.otpService = otpService;
 
     }
     public SendEmailResponseDto SendEmail(EmailRequestdto emailRequestdto)
@@ -66,7 +64,7 @@ public class SendEmailService : ISendEmailService
 
             if (HtmlContent.Contains("{0}"))
             {
-                var otp=otpService.GenerateOtp();
+                var otp=emailRequestdto.Otp;
                 HtmlContent = HtmlContent.Replace("{0}", otp);
             }
 
