@@ -3,11 +3,13 @@ using MeroBolee.EntityMapper;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Repository;
+using MeroBolee.Service.Otp;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace MeroBolee.Service
 {
@@ -18,18 +20,22 @@ namespace MeroBolee.Service
         private readonly IReferenceCodeService referenceCodeService;
         private readonly IUploadFile uploadFileService;
         private readonly ICompanyDocumentRepository docRepo;
+        private readonly IOtpService otpService;
+
 
         public TenderService(ITenderRepository tenderRepository,
                                 IMemoryCache cache,
                                 IReferenceCodeService referenceCodeService,
                                 IUploadFile uploadFileService,
-                                ICompanyDocumentRepository docRepo)
+                                ICompanyDocumentRepository docRepo,
+                                IOtpService otpService) 
         {
             this.tenderRepository = tenderRepository;
             this.cache = cache;
             this.referenceCodeService = referenceCodeService;
             this.uploadFileService = uploadFileService;
             this.docRepo = docRepo;
+            this.otpService = otpService;
         }
 
         public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
@@ -39,17 +45,6 @@ namespace MeroBolee.Service
 
             List<CommunityApprovalEntity> community = CommunityDtoEntity(entity.Id,tenderDto);
             tenderRepository.AddCommunityApproval(community);
-
-            //foreach (var item in tenderDto.companyIds)
-            //{
-            //    var tenderSubmissionEntity = tenderRepository.FindTenderSubmissionEntity(item);
-
-            //    if(tenderSubmissionEntity!=null)
-            //    {
-            //        tenderSubmissionEntity.StatusId = 4;
-            //        tenderRepository.UpdateTenderSubmissionStatus(tenderSubmissionEntity);
-            //    }
-            //}
 
             string companyFolder = docRepo.GetCompanyFolder(tenderDto.superId);
             string docPath = companyFolder + $"\\Tender\\{entity.Id}";
@@ -93,23 +88,23 @@ namespace MeroBolee.Service
             return entity;
         }
 
-        public Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search)
+        public Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search, int? procurementId, int? algoId)
         {
-            return tenderRepository.GetMarketplaceTender(search);
+            return tenderRepository.GetMarketplaceTender(search,procurementId,algoId);
         }
         public Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search)
         {
             return tenderRepository.GetLiveBidMarketplaceTenderForAdmin(search);
         }
 
-        public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search)
+        public async Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search, int? procurementId, int? algoId)
         {
-            return await tenderRepository.GetBidIniviterTenderHistory(companyId, search);
+            return await tenderRepository.GetBidIniviterTenderHistory(companyId, search,procurementId,algoId);
         }
 
-        public async Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId)
+        public async Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId,int? procurmentId,int? algoId)
         {
-            IEnumerable<TenderCard> tenders = await tenderRepository.GetBidIniviterTenderListing(companyId);
+            IEnumerable<TenderCard> tenders = await tenderRepository.GetBidIniviterTenderListing(companyId, procurmentId, algoId);
             BidInviterTenderListing listing = new BidInviterTenderListing
             {
                 PendingTenders = tenders.Where(x => x.StatusId == 1 || x.StatusId == 2).ToList(),
@@ -192,6 +187,19 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId)
+        {
+            try
+            {
+                    IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidApprovalList(tenderId);
+                    return postBidddingApprovalEntity;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath)
         {
             TenderEntity te = await tenderRepository.GetTenderEntityOnly(tenderId);
@@ -263,9 +271,9 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId)
+        public async Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId,int? procurementId, int? algoId)
         {
-            return await tenderRepository.UpcomingBidInviterTender(companyId);
+            return await tenderRepository.UpcomingBidInviterTender(companyId,procurementId,algoId);
         }
         public async Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin()
         {
@@ -732,5 +740,297 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<PostBidddingApprovalEntity> PostBidApprove(VerifyOtpDto verifyOtpDto)
+        {
+            try
+            {
+                var postBidEntity = await tenderRepository.FindPostBiddingApproval(verifyOtpDto.TenderId, verifyOtpDto.CompanyId);
+
+                if (postBidEntity != null)
+                {
+                    var check= otpService.VerifyOtp(verifyOtpDto.OtpCode);
+                    if(check)
+                    {
+                        postBidEntity.StatusId = 3;
+                        postBidEntity.Date_Modified = DateTimeNPT.Now;
+                        postBidEntity.RemarksStatusId = 0;
+
+                        await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+
+                        await ToUpdatePostSealBidStatusInTender(verifyOtpDto.TenderId);
+
+                        return postBidEntity;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+                throw;
+            }
+        }
+
+
+        private async Task ToUpdatePostSealBidStatusInTender(long tenderId)
+        {
+            var check = await tenderRepository.CheckStatusInPostBidApproval(tenderId);
+            if (check == true)
+            {
+                TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (te != null)
+                {
+                    te.PostBidStatus = 2; //Aprroved by all Bid Inviter
+                    await tenderRepository.UpdateTenderStatus(te);
+                }
+            }
+        }
+
+        public async Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove)
+        {
+            try
+            {
+                var postBidEntity = await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.CompanyId);
+
+                if (postBidEntity != null)
+                {
+                    postBidEntity.StatusId = 2;
+                    postBidEntity.Date_Modified = DateTimeNPT.Now;
+                    postBidEntity.RemarksStatusId = 1; //Outgoing Remarks for Bid Inviter
+
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove, postBidEntity);
+                    await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
+
+                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove)
+        {
+            try
+            {
+                var postBidEntity =await tenderRepository.FindPostBiddingApproval(tenderApprove.TenderId, tenderApprove.BidInviterId);
+                if (postBidEntity != null)
+                {
+                    postBidEntity.StatusId = 1;
+                    postBidEntity.Date_Modified = DateTimeNPT.Now;
+                    postBidEntity.RemarksStatusId = 2; //Incoming Remarks for Bid Inviter
+
+                    var postBidRemarksEntity = PostBidRemarksDtoEntity(tenderApprove,postBidEntity);
+                    await tenderRepository.InsertIntoPostBidRemarks(postBidRemarksEntity);
+
+                    return await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove)
+        {
+            try
+            {
+                var tenderEntity = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
+                if (tenderEntity!=null)
+                {
+                    if (tenderApprove.status == true)
+                    {
+                        tenderEntity.PostBidStatus = 3; //Approved by Admin
+                        tenderEntity.ApprovedBy = tenderApprove.UserId;
+                        tenderEntity.Date_modified = DateTimeNPT.Now;
+                    }
+                    else if (tenderApprove.status == false)
+                    {
+                        tenderEntity.PostBidStatus = 4; //Rejected By Admin
+                        tenderEntity.Date_modified = DateTimeNPT.Now;
+
+                        var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(tenderApprove.TenderId);
+
+                        foreach (var item in postBidddingApprovalEntity)
+                        {
+                            item.StatusId = 5; //Rejected by Admin
+                        }
+
+                        await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
+                    }
+
+                    await tenderRepository.UpdateTenderStatus(tenderEntity);
+                    return tenderEntity;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto)
+        {
+            var postBidEntity = new List<PostBidddingApprovalEntity>();
+
+            for (int i = 0; i < postBidDto.CompanyIds.Count; i++)
+            {
+                var obj = new PostBidddingApprovalEntity();
+
+                obj.TenderId = postBidDto.TenderId;
+                obj.Date_Created = DateTimeNPT.Now;
+                obj.Date_Modified = DateTimeNPT.Now;
+                obj.StatusId = 1;
+                obj.IsDeleted = false;
+                obj.CompanyId = postBidDto.CompanyIds[i];
+                obj.UserId = postBidDto.UserIds[i];
+                postBidEntity.Add(obj);
+            }
+
+            return await tenderRepository.AddPostBid(postBidEntity);
+        }
+
+        public async Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long companyId)
+        {
+            try
+            {
+                    IEnumerable<PostBidDtoList> postBidddingApprovalEntity = await tenderRepository.FetchTenderTitleListForBidInviter(companyId);
+                    return postBidddingApprovalEntity;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PostBidApprovalListDto>> GetPostBidRemarksList(long tenderId, long companyId)
+        {
+            try
+            {
+                IEnumerable<PostBidApprovalListDto> postBidddingApprovalEntity = await tenderRepository.FetchPostBidRemarksList(tenderId, companyId);
+                return postBidddingApprovalEntity;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> AddSuperSeed(SuperSeedDto superSeedDto)
+        {
+            try
+            {
+                var result = await tenderRepository.FindTenderToUpdate(superSeedDto.TenderId);
+                if (result != null)
+                {
+                    var check = otpService.VerifyOtp(superSeedDto.otpCode);
+                    if (check)
+                    {
+                        result.PostBidStatus = 3; //Approve by Admin
+                        var response = await tenderRepository.UpdateTenderStatus(result);
+
+                        var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
+
+                        foreach (var item in postBidddingApprovalEntity)
+                        {
+                            item.StatusId = 4; //Superseeded by Admin
+                            item.RemarksStatusId = 0;
+                        }
+
+                        await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
+
+                        await AddToPostBiddingSuperSeed(superSeedDto);
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    return false;
+
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        private async Task<bool> AddToPostBiddingSuperSeed(SuperSeedDto superSeedDto)
+        {
+            try
+            {
+                var postBiddingSuperseedEntity = PostBiddingSuperseedDtoEntity(superSeedDto);
+                await tenderRepository.AddPostBiddingSuperSeed(postBiddingSuperseedEntity);
+                return true;
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<int> CheckPostBidStatus(long tenderId)
+        {
+            try
+            {
+                var tenderEntity = await tenderRepository.FindTenderToUpdate(tenderId);
+                if (tenderEntity!=null)
+                {
+                    return tenderEntity.PostBidStatus;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement()
+        {
+            try
+            {
+                return await tenderRepository.GetProcurementList();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -27,6 +27,8 @@ namespace MeroBolee.Dto
         public string CancelRemarks { get; set; }
 
         public string AlgoName { get; set; }
+        
+        public int AlgoId { get; set; }
         public DateTime CreatedDate { get; set; }
         
         public int CommunityApprovalStatus { get; set; }
@@ -50,6 +52,7 @@ namespace MeroBolee.Dto
         public DateTime LiveEndDate { get; set; }
         public DateTime RegistrationTill { get; set; }
         public int StatusId { get; set; }
+        public int PostBidStatus { get; set; }
         public string Status { get; set; }
 
         public string Product { get; set; }

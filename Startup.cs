@@ -31,6 +31,8 @@ using Microsoft.AspNetCore.Identity;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using MeroBolee.Service.Inovice;
+using MeroBolee.Service.Otp;
+using MeroBolee.Repository.Otp;
 
 namespace MeroBolee
 {
@@ -82,6 +84,8 @@ namespace MeroBolee
             services.Configure<CryptoKeys>(Configuration.GetSection("CryptoConfig"));
             services.Configure<AppDefaults>(Configuration.GetSection("AppDefaults"));
             services.Configure<PaymentValues>(Configuration.GetSection("PaymentValues"));
+            services.Configure<EmailValues>(Configuration.GetSection("EmailValues"));
+            services.Configure<TOTP>(Configuration.GetSection("OtpSecretKey"));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<MeroBoleeDbContext>().AddDefaultTokenProviders();
             //CryptoConfig.Salt = Configuration.GetValue<string>("EncryptionSalt");
 
@@ -212,6 +216,10 @@ namespace MeroBolee
             services.AddScoped<ITenderRepository, TenderRepository>();
             services.AddScoped<ITenderService, TenderService>();
 
+            //Otp 
+            services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<IOtpRepository, OtpRepository>();
+
             //Watchlist
             services.AddScoped<IWatchListRepository, WatchListRepository>();
             services.AddScoped<IWatchListService, WatchListService>();
@@ -257,6 +265,7 @@ namespace MeroBolee
             //EMail
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISendEmailService, SendEmailService>();
 
 
             //Tender Submission

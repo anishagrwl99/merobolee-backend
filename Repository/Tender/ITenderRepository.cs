@@ -14,7 +14,7 @@ namespace MeroBolee.Repository
         List<CommunityApprovalEntity> AddCommunityApproval(List<CommunityApprovalEntity> communityApprovalEntity);
         //TenderSubmission UpdateTenderSubmissionStatus(TenderSubmission tenderSubmission);
         //TenderSubmission FindTenderSubmissionEntity(long companyId);
-        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,int? procurementId, int? algoId);
         
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
         
@@ -41,6 +41,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
+        /// <param name="isLiveBidUpcoming"></param>
         /// <returns></returns>
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
 
@@ -48,13 +49,15 @@ namespace MeroBolee.Repository
         /// Get bid inviter upcoming tender
         /// </summary>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId, long? companyId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search);
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId );
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search, int? procurementId, int? algoId);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, int? procurementId, int? algoId);
         Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 
         Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode);
@@ -79,6 +82,7 @@ namespace MeroBolee.Repository
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
         Task<CommunityApprovalEntity> GetTenderEntityOfCompany(long tenderId,long companyId);
         Task<bool> CheckStatusInCommunityApproval(long tenderId);
+        Task<bool> CheckStatusInPostBidApproval(long tenderId);
 
         Task<TenderEntity> GetTenderEntityOnly(long tenderId, long companyId);
 
@@ -109,5 +113,16 @@ namespace MeroBolee.Repository
         Task<CommunityApprovalEntity> FindCommunityApprovalByCompanyId(long companyId, long tenderId);
         Task<bool> UpdateStatusByFeedbackForCommunityApproval(CommunityApprovalEntity dto);
         Task<List<CommunityApprovalEntity>> FetchCommunityApprovalEntity(long tenderId);
+        Task<PostBidddingApprovalEntity> UpdatePostBidApprovalStatus(PostBidddingApprovalEntity postBidEntity);
+        Task<IEnumerable<PostBidddingApprovalEntity>> UpdatePostBidApprovalStatusByTenderId(IEnumerable<PostBidddingApprovalEntity> postBidEntity);
+        Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId);
+        Task<IEnumerable<PostBidddingApprovalEntity>> FindPostBiddingApprovalByTenderId(long tenderId);
+        Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long companyId);
+        Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity);
+        Task<List<PostBidddingApprovalEntity>> AddPostBid(List<PostBidddingApprovalEntity> postBidEntity);
+        Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidRemarksList(long tenderId, long companyId);
+        Task <bool> AddPostBiddingSuperSeed(PostBiddingSuperseedEntity postBiddingSuperseedEntity);
+        Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList();
     }
 }

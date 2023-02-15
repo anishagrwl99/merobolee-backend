@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using MeroBolee.Utility;
 using System.Linq;
-using MeroBolee.Controllers.EmailService;
 using System.Web;
 
 
@@ -30,18 +29,20 @@ namespace MeroBolee.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly ICryptoService cryptoService;
+        private readonly ISendEmailService sendEmailService;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public AccountController(IAccountService accountService, IOptions<AppDefaults> defaultOptions, UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager, ICryptoService cryptoService)
+            SignInManager<IdentityUser> signInManager, ICryptoService cryptoService, ISendEmailService sendEmailService)
         {
             this.accountService = accountService;
             this.defaultOptions = defaultOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.cryptoService = cryptoService;
+            this.sendEmailService = sendEmailService;
         }
 
         /// <summary>
@@ -224,49 +225,14 @@ namespace MeroBolee.Controllers
             return NotFound(new Responses<ResponseMsg>(null, "404", "Record not found"));
         }
 
-        [HttpPost("/register")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                // Copy data from RegisterViewModel to IdentityUser
-                var user = new IdentityUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email
-                };
-
-                // Store user data in AspNetUsers database table
-                var result = await userManager.CreateAsync(user, model.Password);
-
-                // If user is successfully created, sign-in the user using
-                // SignInManager and redirect to index action of HomeController
-                if (result.Succeeded)
-                {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("index", "home");
-                }
-
-                // If there are any errors, add them to the ModelState object
-                // which will be displayed by the validation summary tag helper
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return null;
-        }
-
         [HttpPost("/Account/ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
         {
             if (confirmEmailRequestDto.userId == null || confirmEmailRequestDto.token == null)
             {
-                return RedirectToAction("index", "home");
+                return NotFound(new Responses<ResponseMsg>(null, "404", "Could Not Confirm Your Email ID! We apologise for any inconvenience caused."));
             }
-
-            // var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-
+            
             var user = await userManager.FindByIdAsync(confirmEmailRequestDto.userId);
             if (user == null)
             {
@@ -284,7 +250,6 @@ namespace MeroBolee.Controllers
             }
 
             return NotFound(new Responses<ResponseMsg>(null, "404", "Email Could Not be Confirmed"));
-
         }
 
 
@@ -317,13 +282,13 @@ namespace MeroBolee.Controllers
                     var passwordResetLink = string.Format("{0}/resetpassword?emailId={1}&token={2}&role={3}", "https://merobolee.com", model.Email, HttpUtility.UrlEncode(token), role);
 
                     // Log the password reset link
-                    EmailServiceController emailServiceController = new EmailServiceController();
                     EmailRequestdto emailRequestdto = new EmailRequestdto();
                     emailRequestdto.toEmailId = model.Email;
                     emailRequestdto.confirmationLink = passwordResetLink;
-                    emailServiceController.sendEmailForgotPassword(emailRequestdto);
+                    emailRequestdto.callFrom = "ForgotPassword";
+                    sendEmailService.SendEmail(emailRequestdto);
                     EmailResDto emailResDto = new EmailResDto();
-                    emailResDto.responseMessage = "Forgot password email has been sent successfully";
+                    emailResDto.responseMessage = "1";
                     return Ok(new Responses<EmailResDto>(emailResDto, "200", "Forgot Password Email has been sent"));
                     // Send the user to Forgot Password Confirmation view
                 }

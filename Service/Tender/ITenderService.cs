@@ -9,22 +9,25 @@ namespace MeroBolee.Service
     public interface ITenderService
     {
         Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto);
-        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
 
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
         Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApproveDtoByAdmin);
         Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId);
+        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long companyId);
+        Task<IEnumerable<PostBidApprovalListDto>> GetPostBidRemarksList(long tenderId,long companyId);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
         Task<TenderDocuments> GetTenderDocumentsForSupplier(long tenderId, long companyId, string basePath);
         Task<TenderEntity> UpdateTender(UpdateTenderRequestDto tenderDto);
         Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
-        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId);
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, int? procurementId, int? algoId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
         Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId,long? companyId);
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search);
-        Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId, string search, int? procurementId, int? algoId);
+        Task<BidInviterTenderListing> GetBidInviterTenderListing(long companyId,int? procurementId,int? algoId);
 
         Task<bool> isSupplierRegistered(long tenderId, long userId, long companyId);
 
@@ -85,6 +88,13 @@ namespace MeroBolee.Service
         Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId);
         
         Task<int> TenderStatusForAdmin(long tenderId);
-
+        Task<PostBidddingApprovalEntity> PostBidApprove(VerifyOtpDto verifyOtpDto);
+        Task<PostBidddingApprovalEntity> PostBidRequestChanges(PostBidApproveDDtoByBidInviter tenderApprove);
+        Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove);
+        Task<TenderEntity> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove);
+        Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto);
+        Task <bool> AddSuperSeed(SuperSeedDto superSeedDto);
+        Task<int> CheckPostBidStatus(long tenderId);
+        Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement();
     }
 }

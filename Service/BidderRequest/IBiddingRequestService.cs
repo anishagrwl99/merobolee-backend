@@ -95,8 +95,10 @@ namespace MeroBolee.Service
         Task<List<BidInviterAuctionLog>> GetTenderAuctionLogForBidInviter( long tenderId);
 
         Task<List<FinalPositionResponseDto>> GetFinalBiddingPosition(long tenderId);
+        Task<List<FinalPositionResponseDto>> GetFinalSealBiddingPosition(long tenderId,int algoId);
 
         Task<FinalPositionResponseDto> GetFinalBiddingPositionForBidder(long tenderId, long userId);
+        Task<FinalPositionResponseDto> GetFinalSealBiddingPositionForBidder(long tenderId, long userId, int algoId);
 
         Task<GenerateBillResponseDto> GenerateBill(long TenderId, long UserId);
 

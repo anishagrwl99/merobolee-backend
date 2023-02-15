@@ -103,8 +103,12 @@ namespace MeroBolee.Model
         [Column(TypeName = "VARCHAR")]
         [MaxLength(3999)]
         public string AlgoName { get; set; }
+        
+        public int AlgoId { get; set; }
 
         public int CommunityApprovalStatus { get; set; }
+        public int PostBidStatus { get; set; }
+        public int ProcurementId { get; set; }
 
         public DateTime DateOfExecution { get; set; }
 

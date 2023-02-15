@@ -4,8 +4,8 @@ using MeroBolee.Model;
 using MeroBolee.Repository;
 using System.Threading.Tasks;
 using System;
+using System.Web;
 using Microsoft.AspNetCore.Identity;
-using MeroBolee.Controllers.EmailService;
 
 namespace MeroBolee.Service
 {
@@ -34,6 +34,7 @@ namespace MeroBolee.Service
         private readonly ISignupRepository signupRepo;
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly ISendEmailService sendEmailService;
 
         /// <summary>
         /// Default constructor
@@ -43,13 +44,14 @@ namespace MeroBolee.Service
         /// <param name="signupRepo"></param>
         /// <param name="userManager"></param>
         /// <param name="signInManager"></param>
-        public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ISendEmailService sendEmailService)
         {
             this.cryptoService = cryptoService;
             this.codeService = codeService;
             this.signupRepo = signupRepo;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.sendEmailService = sendEmailService;
         }
 
         /// <summary>
@@ -62,22 +64,32 @@ namespace MeroBolee.Service
         {
             try
             {
-                Tuple<bool, string> tuple = await signupRepo.ValidateCompany(data.Email.Trim(), data.PANNumber.Trim());
-
+                Tuple<bool, string> tuple = await signupRepo.ValidateCompany(data.Email.Trim(), data.PANNumber.Trim(), companyTypeEnum);
+                SendEmailResponseDto sendEmailResponse = new SendEmailResponseDto();
                 if (tuple.Item1 == true)
                 {
-                    var applicationUser = new IdentityUser
+                    bool checkIfExists = false;
+                    var applicationUser = new IdentityUser();
+                    var result = new IdentityResult();
+                    var userExists = await userManager.FindByEmailAsync(data.Email);
+                    Console.WriteLine(userExists);
+                    if (userExists != null)
                     {
-                        UserName = data.Email,
-                        Email = data.Email,
-                    };
-                   
-                        var result = await userManager.CreateAsync(applicationUser, data.Password);
+                        checkIfExists = true;
+                    }
+                    else
+                    {
+                        applicationUser = new IdentityUser
+                        {
+                            UserName = data.Email,
+                            Email = data.Email,
+                        };
+                        result = await userManager.CreateAsync(applicationUser, data.Password);
+                    }
+
                     if (result.Succeeded)
                     {
-                         var token = await userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-
-                        EmailServiceController emailServiceController = new EmailServiceController();
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
                         EmailRequestdto emailRequestdto = new EmailRequestdto();
                         emailRequestdto.toEmailId = data.Email;
                         emailRequestdto.token = token;
@@ -86,11 +98,34 @@ namespace MeroBolee.Service
                             emailRequestdto.role = "Supplier";
                         } else {
                             emailRequestdto.role = "BidInviter";
-                        }
-                        emailServiceController.sendEmail(emailRequestdto);
-                    } else {
+                        } 
+                        var confirmationLink = string.Format("{0}/signin?userId={1}&token={2}&role={3}", "https://merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), emailRequestdto.role);
+                        emailRequestdto.confirmationLink = confirmationLink;
+                        emailRequestdto.callFrom = "SignUp";
+                        sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+                    } 
+                    else if (checkIfExists)
+                    {
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(userExists);
+                        EmailRequestdto emailRequestdto = new EmailRequestdto();
+                        emailRequestdto.toEmailId = data.Email;
+                        emailRequestdto.token = token;
+                        emailRequestdto.id = userExists.Id;
+                        if(companyTypeEnum == CompanyTypeEnum.Bidder) {
+                            emailRequestdto.role = "Supplier";
+                        } else {
+                            emailRequestdto.role = "BidInviter";
+                        } 
+                        var confirmationLink = string.Format("{0}/signin?userId={1}&token={2}&role={3}", "https://merobolee.com", emailRequestdto.id, HttpUtility.UrlEncode(emailRequestdto.token), emailRequestdto.role);
+                        emailRequestdto.confirmationLink = confirmationLink;
+                        emailRequestdto.callFrom = "SignUp";
+                        sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+                    }
+                    else 
+                    {
                         return Tuple.Create<long, String>(0, "false");
                     }
+                    
                     CompanyMapper mapper = new();
                     CompanyEntity companyEntity = mapper.SupplierSignUpDToCompanyEntity(data, companyTypeEnum);
 

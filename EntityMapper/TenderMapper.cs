@@ -73,7 +73,10 @@ namespace MeroBolee.EntityMapper
                 DateOfExecution = tenderDto.DateOfExecution,
                 Product = tenderDto.Product,
                 AlgoName = algoName == null ? "" : algoName,
-                CommunityApprovalStatus=1
+                AlgoId = tenderDto.Algorithm,
+                CommunityApprovalStatus=1,
+                PostBidStatus=1,
+                ProcurementId=tenderDto.ProcurementId
             };
             entity.TenderMaterialEntities = new List<TenderMaterialEntity>();
             foreach (var item in tenderDto.TenderMaterials)
@@ -103,7 +106,6 @@ namespace MeroBolee.EntityMapper
 
         public List<CommunityApprovalEntity> CommunityDtoEntity(long id ,AddTenderRequestDto tenderDto)
         {
-            MeroBoleeDbContext meroboleeDbContext = new MeroBoleeDbContext();
 
             if (tenderDto == null)
             {
@@ -279,6 +281,7 @@ namespace MeroBolee.EntityMapper
                                             }).ToList();
                 getTender.AlgoName = tenderEntity.AlgoName;
                 getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
+                getTender.AlgoId = tenderEntity.AlgoId;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -344,6 +347,7 @@ namespace MeroBolee.EntityMapper
                                                                 $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                                 }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
@@ -401,6 +405,7 @@ namespace MeroBolee.EntityMapper
 
                     getTender.ExtraDocuments = null;
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
                 }
@@ -464,9 +469,23 @@ namespace MeroBolee.EntityMapper
                                                             $"{baseUrl}{txd.DocPath.Replace("\\", "/")}"
                                             }).ToList();
                     getTender.AlgoName = tenderEntity.AlgoName;
+                    getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                     return getTender;
             }
+        }
+
+        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(PostBidApproveDDtoByBidInviter tenderApprove, PostBidddingApprovalEntity postBidEntity)
+        {
+            var postBidddingRemarksEntity = new PostBidddingRemarksEntity
+            {
+                CompanyId = tenderApprove.CompanyId,
+                TenderPostBiddingApprovalId = postBidEntity.Id,
+                Date_Created = DateTimeNPT.Now,
+                TenderId = tenderApprove.TenderId,
+                Remarks = tenderApprove.Remarks
+            };
+            return postBidddingRemarksEntity;
         }
 
     public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
@@ -481,6 +500,18 @@ namespace MeroBolee.EntityMapper
             };
             return doc;
 
+        }
+
+        public PostBiddingSuperseedEntity PostBiddingSuperseedDtoEntity(SuperSeedDto superSeedDto)
+        {
+            var obj = new PostBiddingSuperseedEntity
+            {
+                UserId = superSeedDto.UserId,
+                TenderId = superSeedDto.TenderId,
+                Date_Created = DateTimeNPT.Now,
+                Remarks = superSeedDto.Remarks
+            };
+            return obj;
         }
 
     }

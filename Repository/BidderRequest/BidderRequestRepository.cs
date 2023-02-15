@@ -830,6 +830,73 @@ namespace MeroBolee.Repository
             }
         }
 
+        public async Task<List<PositionAmountDto>> GetFinalSealBiddingPositionTopBottom(long tenderId)
+        {
+            try
+            {
+                List<SealBidSubsectionTotalEntity> auctionLog = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+
+                var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
+                .Select(x => new
+                {
+                    Amount = x.Sum(o => o.subsectionTotal),
+                    UserId = x.Key.UserId
+                }).OrderBy(x => x.Amount).ToArray();
+
+                List<PositionAmountDto> getFinalPosition = new List<PositionAmountDto>();
+                for (int i = 0; i < position.Length; i++)
+                {
+                    var item = position[i];
+                    PositionAmountDto positionAmountDto = new PositionAmountDto();
+                    positionAmountDto.Amount = item.Amount;
+                    positionAmountDto.UserId = item.UserId;
+                    getFinalPosition.Add(positionAmountDto);
+
+                }
+                return getFinalPosition;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<PositionAmountDto>> GetFinalSealBiddingPositionBottomTop(long tenderId)
+        {
+            try
+            {
+                List<SealBidSubsectionTotalEntity> auctionLog = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.TenderId == tenderId).ToListAsync();
+
+                var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
+                .Select(x => new
+                {
+                    Amount = x.Sum(o => o.subsectionTotal),
+                    UserId = x.Key.UserId
+                }).OrderByDescending(x => x.Amount).ToArray();
+
+                List<PositionAmountDto> getFinalPosition = new List<PositionAmountDto>();
+                for (int i = 0; i < position.Length; i++)
+                {
+                    var item = position[i];
+                    PositionAmountDto positionAmountDto = new PositionAmountDto();
+                    positionAmountDto.Amount = item.Amount;
+                    positionAmountDto.UserId = item.UserId;
+                    getFinalPosition.Add(positionAmountDto);
+
+                }
+                return getFinalPosition;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
         public async Task<string> FindCompanyName(long userId)
         {
             try
