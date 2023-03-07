@@ -239,7 +239,7 @@ namespace MeroBolee.Service.Inovice
                 string invoiceHtml = "";
                 using (WebClient web1 = new WebClient())
                 {
-                    invoiceHtml = web1.DownloadString("https://office.merobolee.com/Resource/Invoice.html");
+                    invoiceHtml = web1.DownloadString("https://api.merobolee.com/Resource/Invoice.html");
                 }
                 // string invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\Invoice.html");
                 var MaterialListSB = new StringBuilder();
@@ -248,7 +248,7 @@ namespace MeroBolee.Service.Inovice
                     string MaterialList = "";
                     using (WebClient web1 = new WebClient())
                     {
-                        MaterialList = web1.DownloadString("https://office.merobolee.com/Resource/tablecontent.html");
+                        MaterialList = web1.DownloadString("https://api.merobolee.com/Resource/tablecontent.html");
                     }                    
                     // string MaterialList = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\tablecontent.html");
                     string remarks = generateBillResponse.Remarks;

@@ -19,6 +19,8 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "Approve user id is required")]
         [Range(1, long.MaxValue, ErrorMessage = "Invalid approve user id")]
         public long UserId { get; set; }
+
+        public string Remarks { get; set; }
     }
 
     public class TenderApproveDtoByAdmin : TenderApproveDto
@@ -26,19 +28,20 @@ namespace MeroBolee.Dto
         public bool status { get; set; }
     }
 
-    public class PostBidApproveDDtoByBidInviter : TenderApproveDto
-    {
-        public string Remarks { get; set; }
-
-    }
-
-    public class GenerateNewRequestDtoByAdmin : PostBidApproveDDtoByBidInviter
+    public class GenerateNewRequestDtoByAdmin : TenderApproveDto
     {
         public long BidInviterId { get; set; }
 
     }
 
     public class VerifyOtpDto : TenderApproveDto
+    {
+        public string OtpCode { get; set; }
+        public string Email {get; set; }
+
+    }
+
+    public class PreBidSuperSeed: TenderApproveDto
     {
         public string OtpCode { get; set; }
 

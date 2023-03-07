@@ -61,10 +61,9 @@ namespace MeroBolee.Service
         Task<IEnumerable<BidCardDto>> ShowAllRegistration(long tenderId);
         Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId);
 
-        Task<IEnumerable<BidHistoryCardDto>> SupplierBidHistory(long supplierCompanyId);
+        Task<IEnumerable<BidHistoryCardDto>> SupplierBidHistory(long supplierCompanyId,string procurementId,string algoId);
 
         Task<BidCardDto> ApproveOrDisapprove(BidUpdateRequestDto updateRequest);
-        Task<long> SetTenderWinner(BidWinnerRequestDto dto);
 
         Task<LiveBidResponse> TenderPosition(long tenderId, long supplierId);
 
@@ -105,6 +104,5 @@ namespace MeroBolee.Service
         Task<SealBidResponse> SealBid(TenderMaterialSealBiddingDto sealBidRequest);
 
         Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId);
-
     }
 }

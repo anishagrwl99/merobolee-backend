@@ -6,7 +6,7 @@ namespace MeroBolee.Service.Otp
     public interface IOtpService
     {
         Task<bool> CheckOtpSent(OtpDto otpDto);
-        string GenerateOtp();
-        bool VerifyOtp(string otpCode);
+        string GenerateOtp(string seed);
+        Task<bool> VerifyOtp(string otpCode, long UserId, long CompanyId, string Email);
     }
 }

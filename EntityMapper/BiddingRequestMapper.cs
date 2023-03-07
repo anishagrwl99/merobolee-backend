@@ -31,7 +31,9 @@ namespace MeroBolee.EntityMapper
                 Amount = dto.PaymentAmount,
                 Remark = null,
                 Date_created = DateTimeNPT.Now,
-                Date_modified = DateTimeNPT.Now
+                Date_modified = DateTimeNPT.Now,
+                QualifiedDate = DateTimeNPT.Now,
+                WonDate = DateTimeNPT.Now,
             };
             //entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
             //string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
@@ -164,6 +166,7 @@ namespace MeroBolee.EntityMapper
                     TenderTitle = entity.Tender.Title,
                     TenderCode = entity.Tender.Code,
                     PaymentReferenceCode = entity.PaymentReferenceCode,
+                    PanNumber=entity.Company.PANNumber
                 };
             }
 
@@ -231,7 +234,7 @@ namespace MeroBolee.EntityMapper
 
         }
 
-        public IEnumerable<BidHistoryCardDto> ToBidHistory(IEnumerable<BidRequestEntity> bidderRequests, IEnumerable<TenderWinnerEntity> winbids)
+        public IEnumerable<BidHistoryCardDto> ToBidHistory(IEnumerable<BidRequestEntity> bidderRequests)
         {
             if (bidderRequests == null)
             {
@@ -244,7 +247,6 @@ namespace MeroBolee.EntityMapper
                 foreach (BidRequestEntity requestEntity in bidderRequests)
                 {
                     BidHistoryCardDto c = BidEntityToHistoryCard(requestEntity);
-                    c.IsWinner = winbids.Any(x => x.TenderId == requestEntity.TenderId);
                     MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
                     TenderEntity e = meroBoleeDbContext.TenderEntities.Where(x => x.Id == c.TenderId).FirstOrDefault();
                     c.Product = e.Product;
@@ -312,18 +314,6 @@ namespace MeroBolee.EntityMapper
                                 }).ToList();
 
             return dto;
-        }
-
-
-        public TenderWinnerEntity ToWinnerEntity(BidWinnerRequestDto dto)
-        {
-            return new TenderWinnerEntity
-            {
-                TenderId = dto.TenderId,
-                WinnerCompanyId = dto.CompanyId,
-                Date_created = DateTimeNPT.Now,
-                Date_modified = DateTimeNPT.Now
-            };
         }
     }
 }

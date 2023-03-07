@@ -39,4 +39,16 @@ namespace MeroBolee.Dto
         public string Key { get; set; }
         public string Value { get; set; }
     }
+
+    public class GraphDataDto
+    {
+        public long TotalBudget { get; set; }
+        public List<GraphData> graphDatas { get; set; }
+    }
+    public class GraphData
+    {
+        public long allocatedBudget { get; set; }
+        public long fundsUsed { get; set; }
+        public long fundsRemaining { get; set; }
+    }
 }

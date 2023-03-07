@@ -46,7 +46,7 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <param name="registration"></param>
         /// <returns></returns>
-        [HttpPost("Bidding/Register")]
+        [HttpPut("Bidding/Register")]
         [Authorize(Roles = "Bidder")]
         public async Task<IActionResult> RegisterForTender([FromBody] RegisterForTenderDto registration)
         {
@@ -297,14 +297,13 @@ namespace MeroBolee.Controllers.BiddingRequest
             try
             {
                 List<FinalPositionResponseDto> res = await biddingRequestService.GetFinalSealBiddingPosition(tenderId, algoId);
-                int totalCount = res.Count();
-                if (res != null && totalCount > 0)
+                if (res == null)
+                {
+                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "Final position for this tender could not be calculated"));
+                }
+                else if (res != null && res.Count() > 0)
                 {
                     return Ok(new Responses<List<FinalPositionResponseDto>>(res, "200", "Caculated Final Bidding Position for " + tenderId));
-                }
-                else if (res == null)
-                {
-                    return NotFound(new Responses<List<FinalPositionResponseDto>>(null, "404", "No bid for tender yet."));
                 }
                 else
                 {
@@ -643,17 +642,19 @@ namespace MeroBolee.Controllers.BiddingRequest
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="supplierCompanyId"></param>
+        /// <param name="procurementIds"></param>
+        /// <param name="algoIds"></param>
         /// <returns></returns>
         [HttpGet("Bidding/History")]
         [Authorize(Roles = "Bidder")]
-        public async Task<IActionResult> GetBidderRequest([FromQuery] PaginationQuery pagination, [FromQuery] long supplierCompanyId)
+        public async Task<IActionResult> GetBidderRequest([FromQuery] PaginationQuery pagination, [FromQuery] long supplierCompanyId, [FromQuery] string procurementIds, [FromQuery] string algoIds)
         {
             try
             {
                 string url = Url.Action("GetBidderRequest", null, new { supplierCompanyId = supplierCompanyId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<BidHistoryCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId);
+                IEnumerable<BidHistoryCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId,procurementIds,algoIds);
                 BiddingRequest = BiddingRequest.OrderByDescending(x => x.LiveEndDate);
                 int totalCount = BiddingRequest.Count();
                 if (totalCount == 0)
@@ -1096,44 +1097,6 @@ namespace MeroBolee.Controllers.BiddingRequest
                 response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
 
-            }
-        }
-
-        /// <summary>
-        /// Select a tender winner 
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        [HttpPost("Bidding/Admin/SetTenderWinner")]
-        [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public async Task<IActionResult> SelectBidWinner([FromBody] BidWinnerRequestDto dto)
-        {
-            try
-            {
-                if(ModelState.IsValid)
-                {
-                    long id = await biddingRequestService.SetTenderWinner(dto);
-                    if (id < 0)
-                    {
-                        response.statusCode = "409";
-                        response.Message = "Bid winner already selected";
-                        return StatusCode(StatusCodes.Status409Conflict, new ErrorResponse<ResponseMsg>(response));
-                    }
-                    return Ok(new Responses<long>(id, "200", "Tender winner selected"));
-                }
-                else
-                {
-                    response.statusCode = "400";
-                    response.Message = "Invalid Format";
-                    response.Data = ModelState;
-                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
-                }
-            }
-            catch (Exception e)
-            {
-                response.statusCode = "500";
-                response.Message = $"{e.Message} Inner Message: {(e.InnerException != null ? e.InnerException.Message : "")}";
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

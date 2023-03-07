@@ -77,9 +77,11 @@ namespace MeroBolee.Controllers.WatchList
         /// <param name="pagination"></param>
         /// <param name="userId"></param>
         /// <param name="companyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
         [HttpGet("Tender/WatchLists")]
-        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId)
+        public IActionResult GetAll([FromQuery] PaginationQuery pagination, [FromQuery] long userId, [FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId)
         {
             try
             {
@@ -92,7 +94,7 @@ namespace MeroBolee.Controllers.WatchList
                 string url = Url.Action("GetAll", null, new { userId = userId }, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderWatchListCard> watchList = watchListService.GetAllWatchList(userId, companyId);
+                IEnumerable<TenderWatchListCard> watchList = watchListService.GetAllWatchList(userId, companyId,procurementId,algoId);
                 int totalCount = watchList.Count();
                 if (totalCount == 0)
                 {

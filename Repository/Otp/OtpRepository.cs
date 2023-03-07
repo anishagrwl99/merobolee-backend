@@ -25,5 +25,31 @@ namespace MeroBolee.Repository.Otp
                 throw;
             }
         }
+        
+        public async Task<long> GetCompanyIdByEmail(string email)
+        {
+            try
+            {
+                return await meroBoleeDbContext.UserEntities.Where(x => x.Email.Equals(email)).Select(x => x.Id).FirstOrDefaultAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+        
+        public async Task<long> GetUserIdByEmail(string email)
+        {
+            try
+            {
+                return await meroBoleeDbContext.CompanyEntities.Where(x => x.CompanyEmail.Equals(email)).Select(x => x.CompanyId).FirstOrDefaultAsync();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
 }

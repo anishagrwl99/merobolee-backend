@@ -107,17 +107,19 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
         /// /// <param name="statusId"></param>
+        /// /// <param name="procurementIds"></param>
+        /// /// <param name="algoIds"></param>
         /// <returns></returns>
         [HttpPost("Tender/Admin/List")]
         [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
-        public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] int statusId, [FromQuery] long? companyId = null)
+        public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] int statusId,[FromQuery] string procurementIds, [FromQuery] string algoIds, [FromQuery] long? companyId = null)
         {
             try
             {
                 string url = Url.Action("GetTenderList", null, new { companyId = companyId ,status=statusId}, Request.Scheme); //get url for current request
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<TenderCard> tenders = await tenderService.CompanyTendersForAdmin(statusId,companyId);
+                IEnumerable<TenderCard> tenders = await tenderService.CompanyTendersForAdmin(statusId,companyId,procurementIds,algoIds);
                 int totalCount = tenders.Count();
                 if (totalCount == 0)
                 {
@@ -189,7 +191,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/History")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId, [FromQuery] string search = "")
+        public async Task<IActionResult> GetBidInviterTenderHistory([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId, [FromQuery] string search = "")
         {
             try
             {
@@ -222,7 +224,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId)
+        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId)
         {
             try
             {
@@ -299,7 +301,7 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="algoId"></param>
         /// <returns></returns>
         [HttpGet("Tender/Marketplace")]
-        public async Task<IActionResult> Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] int? procurementId, [FromQuery] int? algoId, [FromQuery] string search = null)
+        public async Task<IActionResult> Marketplace([FromQuery] PaginationQuery pagination, [FromQuery] string procurementId, [FromQuery] string algoId, [FromQuery] string search = null)
         {
             try
             {
@@ -329,11 +331,13 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="procurementIds"></param>
+        /// <param name="algoIds"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
         [HttpGet("Tender/Bidder/Upcoming")]
         [Authorize(Roles = "Bidder")]
-        public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] bool isAlert = true)
+        public async Task<IActionResult> GetUpCommingTender([FromQuery] PaginationQuery pagination, [FromQuery] long companyId,[FromQuery] string procurementIds, [FromQuery] string algoIds, [FromQuery] bool isAlert = true)
         {
             try
             {
@@ -343,7 +347,7 @@ namespace MeroBolee.Controllers.Tender
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     bool isLiveBidUpcoming = true;
-                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming,procurementIds,algoIds);
                     int totalCount = tenders.Count();
                     if (totalCount == 0)
                     {
@@ -362,16 +366,18 @@ namespace MeroBolee.Controllers.Tender
 
         }
 
-                /// <summary>
+        /// <summary>
         /// To display only upcoming tender for bidder
         /// </summary>
         /// <param name="pagination"></param>
         /// <param name="companyId"></param>
+        /// <param name="procurementIds"></param>
+        /// <param name="algoIds"></param>
         /// <param name="isAlert"></param>
         /// <returns></returns>
         [HttpGet("Tender/Bidder/Upcoming/Sealed")]
         [Authorize(Roles = "Bidder")]
-        public async Task<IActionResult> GetUpCommingTenderSealed([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] bool isAlert = true)
+        public async Task<IActionResult> GetUpCommingTenderSealed([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string procurementIds, [FromQuery] string algoIds, [FromQuery] bool isAlert = true)
         {
             try
             {
@@ -381,7 +387,7 @@ namespace MeroBolee.Controllers.Tender
                     this.uriService = new UriService(url);
                     //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                     bool isLiveBidUpcoming = false;
-                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming);
+                    IEnumerable<TenderCard> tenders = await tenderService.UpcomingBidderTender(companyId, isAlert, isLiveBidUpcoming,procurementIds,algoIds);
                     int totalCount = tenders.Count();
                     if (totalCount == 0)
                     {
@@ -411,7 +417,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Upcoming")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetUpCommingTenderForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] int? procurementId, [FromQuery] int? algoId)
+        public async Task<IActionResult> GetUpCommingTenderForBidInviter([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId)
         {
             try
             {
@@ -746,7 +752,7 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Admin/Algorithms")]
-        [Authorize(Roles = "Super Admin, Bid Inviter")]
+        [Authorize(Roles = "Super Admin, Bid Inviter,Bidder")]
         public async Task<IActionResult> AlgorithmList()
         {
             try 
@@ -854,9 +860,9 @@ namespace MeroBolee.Controllers.Tender
                 }
                 else
                 {
-                    response.statusCode = "500";
+                    response.statusCode = "200";
                     response.Message = "Your request has been process. The tender has been rejected!";
-                    return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse<ResponseMsg>(response));
+                    return StatusCode(StatusCodes.Status200OK, new ErrorResponse<ResponseMsg>(response));
                 }
             }
             catch (Exception e)
@@ -867,6 +873,35 @@ namespace MeroBolee.Controllers.Tender
             }
         }
 
+        /// <summary>
+        /// Superseed the tender in pre biddingm
+        /// </summary>
+        /// <param name="tenderApproveDto"></param>
+        /// <returns></returns>
+        [HttpPost("Tender/PreBid/Admin/Superseed")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> PreBidSuperseed([FromBody] PreBidSuperSeed tenderApproveDto)
+        {
+            try
+            {
+                bool tenderEntity = await tenderService.PreBidSuperseed(tenderApproveDto);
+                if (!tenderEntity)
+                {
+                    return NotFound(new Responses<bool>(tenderEntity, "404", "Record not found"));
+                }
+
+                else
+                {
+                    return Ok(new Responses<bool>(tenderEntity, "200", "Tender is successfully updated"));
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
         /// <summary>
         /// Get the list of companies with their respective statusid in communityapproval table
         /// </summary>
@@ -931,7 +966,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpPost("Tender/PostBid/BidInviter/RequestChanges")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> PostBidRequestChanges([FromBody] PostBidApproveDDtoByBidInviter tenderApprove)
+        public async Task<IActionResult> PostBidRequestChanges([FromBody] TenderApproveDto tenderApprove)
         {
             try
             {
@@ -965,11 +1000,11 @@ namespace MeroBolee.Controllers.Tender
             try
             {
                 var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId);
-                if (postBidApprovalList == null)
+                if (postBidApprovalList.postBidApprovalListDtos.Count() == 0)
                 {
-                    return NotFound(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "404", "Record not found"));
+                    return NotFound(new Responses<PostBidDetail>(postBidApprovalList, "404", "Record not found"));
                 }
-                return Ok(new Responses<IEnumerable<PostBidApprovalListDto>>(postBidApprovalList, "200", "Record found"));
+                return Ok(new Responses<PostBidDetail>(postBidApprovalList, "200", "Record found"));
             }
             catch (Exception e)
             {
@@ -983,19 +1018,23 @@ namespace MeroBolee.Controllers.Tender
         /// Get the list of post bid for BidInviter
         /// </summary>
         /// <param name="companyId"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/PostBidList")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> PostBidCompanyList([FromQuery] long companyId)
+        public async Task<IActionResult> PostBidCompanyList([FromQuery] PaginationQuery pagination,[FromQuery] long companyId)
         {
             try
             {
+                string url = Url.Action("PostBidCompanyList", null, new { companyId = companyId }, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 var postBidApprovalList = await tenderService.GetPostBidCompanyList(companyId);
-                if (postBidApprovalList == null)
+                if (postBidApprovalList.Count()==0)
                 {
                     return NotFound(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "404", "Record not found"));
                 }
-                return Ok(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "200", "Record found"));
+                //return Ok(new Responses<IEnumerable<PostBidDtoList>>(postBidApprovalList, "200", "Record found"));
+                return Ok(ResultAfterPagination(postBidApprovalList, pagination, postBidApprovalList.Count()));
             }
             catch (Exception e)
             {
@@ -1073,13 +1112,13 @@ namespace MeroBolee.Controllers.Tender
             try
             {
                 var response = await tenderService.PostBidFinalApprove(tenderApprove);
-                if (response != null)
+                if (response)
                 {
-                    return Ok(new Responses<TenderEntity>(response, "200", "Tender Post Bidding Approved"));
+                    return Ok(new Responses<bool>(response, "200", "Tender Post Bidding Approved"));
                 }
                 else
                 {
-                    return NotFound(new Responses<TenderEntity>(response, "404", "Record not found"));
+                    return Ok(new Responses<bool>(response, "200", "Tender Post Bidding Rejected"));
                 }
             }
             catch (Exception e)
@@ -1095,14 +1134,38 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <param name="postBidDto"></param>
         /// <returns></returns>
-        [HttpPost("Tender/PostBid/Add")]
+        //[HttpPost("Tender/PostBid/Add")]
+        //[Authorize(Roles = "Super Admin")]
+        //public async Task<IActionResult> AddPostBid([FromBody] AddPostBidDto postBidDto)
+        //{
+        //    try
+        //    {
+        //        var response =await tenderService.AddPostBid(postBidDto);
+        //        if (response==null)
+        //        {
+        //            return NotFound(new Responses<List<PostBidddingApprovalEntity>>(response, "404", "Record not found"));
+        //        }
+        //        else
+        //        {
+        //            return Ok(new Responses<List<PostBidddingApprovalEntity>>(response, "200", "Record is successfully added"));
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        response.statusCode = "500";
+        //        response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+        //    }
+        //}
+
+        [HttpPut("Tender/PostBid/Add")]
         [Authorize(Roles = "Super Admin")]
         public async Task<IActionResult> AddPostBid([FromBody] AddPostBidDto postBidDto)
         {
             try
             {
-                var response =await tenderService.AddPostBid(postBidDto);
-                if (response==null)
+                var response = await tenderService.AddPostBid(postBidDto);
+                if (response == null)
                 {
                     return NotFound(new Responses<List<PostBidddingApprovalEntity>>(response, "404", "Record not found"));
                 }
@@ -1118,6 +1181,7 @@ namespace MeroBolee.Controllers.Tender
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
+
 
         [HttpPost("Tender/PostBid/Admin/SuperSeed")]
         [Authorize(Roles = "Super Admin")]
@@ -1151,7 +1215,7 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Tender/PostBid/CheckFinalApprove")]
-        [Authorize(Roles ="Super Admin,Bid Inviter")]
+        [Authorize(Roles ="Super Admin,Bid Inviter,Bidder")]
         public async Task<IActionResult> CheckFinalApprove([FromQuery] long tenderId)
         {
             try
@@ -1174,7 +1238,7 @@ namespace MeroBolee.Controllers.Tender
         /// </summary>
         /// <returns>List of procurements</returns>
         [HttpGet("Tender/ProcurementType/List")]
-        [Authorize(Roles ="Super Admin, Bid Inviter")]
+        [Authorize(Roles ="Super Admin, Bid Inviter,Bidder")]
         public async Task<IActionResult> ProcurementType()
         {
             try
@@ -1190,19 +1254,135 @@ namespace MeroBolee.Controllers.Tender
 
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 
-        private PagedResponse<GetTenderDto> ResultAfterPagination(IEnumerable<GetTenderDto> tenders, PaginationQuery pagination, int totalCount)
+        #region Stats
+
+        [HttpGet("Tender/Stats/Admin")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> AdminDashboard()
+        {
+            try
+            {
+                List<StatDto> response = await tenderService.GetAdminDashboard();
+                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpGet("Tender/Stats/BidInviter")]
+        [Authorize(Roles = "Bid Inviter")]
+        public async Task<IActionResult> BidInviterDashboard([FromQuery] long companyId)
+        {
+            try
+            {
+                List<StatDto> response = await tenderService.GetBidInviterDashboard(companyId);
+                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpGet("Tender/Stats/Bidder")]
+        [Authorize(Roles = "Bidder")]
+        public async Task<IActionResult> BidderDashboard([FromQuery] long companyId)
+        {
+            try
+            {
+                List<StatDto> response = await tenderService.GetBidderDashboard(companyId);
+                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+        #endregion
+
+        [HttpPost("Tender/Save/GraphData")]
+        [Authorize(Roles ="Super Admin")]
+        public async Task<IActionResult> GraphData([FromBody] GraphDataDto graphDataDto)
+        {
+            try
+            {
+                var response=await tenderService.SaveGraphData(graphDataDto);
+                return Ok(new Responses<IEnumerable<GraphDataEntity>>(response, "200", "Records added successfully."));
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+
+        }
+
+        [HttpGet("Tender/Admin/ParticipantBidderList")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> ParticipantBidderList([FromQuery] long tenderId, [FromQuery] string Rank)
+        {
+            try
+            {
+                var response = await tenderService.GetParticipantBidderList(tenderId,Rank);
+                if (response.Count==0)
+                {
+                    return NotFound(new Responses<List<BidderInfo>>(response, "404", "Record not found."));
+                }
+                else
+                {
+                    return Ok(new Responses<List<BidderInfo>>(response, "200", "Records fetched successfully."));
+
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Tender/Admin/SetQulifiedOrWinner")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> SetQulifiedOrWinner([FromBody] QualifiedOrWinnerDto qualifiedOrWinnerDto)
+        {
+            try
+            {
+                var response = await tenderService.SaveQulifiedOrWinner(qualifiedOrWinnerDto);
+                return Ok(new Responses<bool>(response, "200", "Records added successfully."));
+
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        private PagedResponse<PostBidDtoList> ResultAfterPagination(IEnumerable<PostBidDtoList> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);
             if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
             {
-                return new PagedResponse<GetTenderDto>(tenders, totalCount);
+                return new PagedResponse<PostBidDtoList>(tenders, totalCount);
             }
 
             var get = tenders.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
@@ -1210,7 +1390,7 @@ namespace MeroBolee.Controllers.Tender
             return paginationResponse;
 
         }
-
+        
         private PagedResponse<TenderCard> ResultAfterPagination(IEnumerable<TenderCard> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

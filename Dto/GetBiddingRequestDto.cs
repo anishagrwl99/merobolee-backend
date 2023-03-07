@@ -20,7 +20,6 @@ namespace MeroBolee.Dto
     public class BidHistoryCardDto : BidCardDto
     {
         public bool IsWinner { get; set; }
-        //public List<TenderCardInfo> CardInfo { get; set; }
     }
     public class BidCardDto
     {
@@ -49,7 +48,7 @@ namespace MeroBolee.Dto
 
         public DateTime LiveEndDate { get; set; }
 
-
+        public string PanNumber { get; set; }
     }
 
     public class BidDetailDto : BidCardDto

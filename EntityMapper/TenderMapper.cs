@@ -91,15 +91,6 @@ namespace MeroBolee.EntityMapper
                 };
                 entity.TenderMaterialEntities.Add(obj);
             }
-            //entity.TenderCards = new List<TenderCardEntity>();
-            //foreach (var item in tenderDto.TenderCards)
-            //{
-            //    entity.TenderCards.Add(new TenderCardEntity
-            //    {
-            //        Label = item.Label,
-            //        Value = item.Value
-            //    });
-            //}
 
             return entity;
         }
@@ -192,30 +183,6 @@ namespace MeroBolee.EntityMapper
                     }
                 }
             }
-
-            //if (dto.TenderCards != null)
-            //{
-            //    foreach (var item in dto.TenderCards)
-            //    {
-            //        var itm = entity.TenderCards.Where(x => x.Id == item.Id).FirstOrDefault();
-            //        if (itm != null)
-            //        {
-            //            entity.TenderCards.Add(new TenderCardEntity
-            //            {
-            //                Label = itm.Label,
-            //                Value = itm.Value,
-            //                TenderId = entity.Id
-            //            });
-            //        }
-            //        else
-            //        {
-            //            itm = new TenderCardEntity();
-            //            itm.Label = item.Label;
-            //            itm.Value = itm.Value;
-            //        }
-            //    }
-            //}
-
         }
         public GetTenderDto TenderEntityToDto(TenderEntity tenderEntity, string baseUrl, bool isRegistered, string userRole)
         {
@@ -262,14 +229,6 @@ namespace MeroBolee.EntityMapper
                                                  MaterialGroup = me.MaterialGroup
 
                                              }).ToList();
-
-                //getTender.CardInfo = (from tc in tenderEntity.TenderCards
-                //                      select new TenderCardInfo
-                //                      {
-                //                          Id = tc.Id,
-                //                          Label = tc.Label,
-                //                          Value = tc.Value
-                //                      }).ToList();
 
                 getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
                                             select new TenderExtraDocumentResponseDto
@@ -330,14 +289,6 @@ namespace MeroBolee.EntityMapper
                                                      MaterialGroup = me.MaterialGroup
                                                  }).ToList();
 
-                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
-                    //                      select new TenderCardInfo
-                    //                      {
-                    //                          Id = tc.Id,
-                    //                          Label = tc.Label,
-                    //                          Value = tc.Value
-                    //                      }).ToList();
-
                     getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
                                                 select new TenderExtraDocumentResponseDto
                                                 {
@@ -395,14 +346,6 @@ namespace MeroBolee.EntityMapper
 
                                                  }).ToList();
 
-                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
-                    //                      select new TenderCardInfo
-                    //                      {
-                    //                          Id = tc.Id,
-                    //                          Label = tc.Label,
-                    //                          Value = tc.Value
-                    //                      }).ToList();
-
                     getTender.ExtraDocuments = null;
                     getTender.AlgoName = tenderEntity.AlgoName;
                     getTender.AlgoId = tenderEntity.AlgoId;
@@ -439,7 +382,6 @@ namespace MeroBolee.EntityMapper
                     getTender.MaxQuotation = tenderEntity.MaxQuotation;
                     getTender.Product = tenderEntity.Product;
                     getTender.DateOfExecution = tenderEntity.DateOfExecution;
-
                     getTender.CreatedDate = tenderEntity.Date_created;
                     getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
                                                  select new TenderMaterialResponseDto
@@ -452,13 +394,7 @@ namespace MeroBolee.EntityMapper
 
                                                  }).ToList();
 
-                    //getTender.CardInfo = (from tc in tenderEntity.TenderCards
-                    //                      select new TenderCardInfo
-                    //                      {
-                    //                          Id = tc.Id,
-                    //                          Label = tc.Label,
-                    //                          Value = tc.Value
-                    //                      }).ToList();
+                   
 
                     getTender.ExtraDocuments = (from txd in tenderEntity.ExtraDocuments
                                             select new TenderExtraDocumentResponseDto
@@ -475,7 +411,7 @@ namespace MeroBolee.EntityMapper
             }
         }
 
-        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(PostBidApproveDDtoByBidInviter tenderApprove, PostBidddingApprovalEntity postBidEntity)
+        public PostBidddingRemarksEntity PostBidRemarksDtoEntity(TenderApproveDto tenderApprove, PostBidddingApprovalEntity postBidEntity)
         {
             var postBidddingRemarksEntity = new PostBidddingRemarksEntity
             {
@@ -488,7 +424,7 @@ namespace MeroBolee.EntityMapper
             return postBidddingRemarksEntity;
         }
 
-    public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
+        public TenderDocuments ToTenderDocuments(TenderEntity tenderEntity, string baseUrl)
         {
             TenderDocuments doc = new TenderDocuments
             {
@@ -509,9 +445,92 @@ namespace MeroBolee.EntityMapper
                 UserId = superSeedDto.UserId,
                 TenderId = superSeedDto.TenderId,
                 Date_Created = DateTimeNPT.Now,
-                Remarks = superSeedDto.Remarks
+                Remarks = superSeedDto.Remarks,
+                Bid = "PostBid",
+                Status = "Super seed"
             };
             return obj;
+        }
+
+        public PostBiddingSuperseedEntity PreBiddingSuperseedDtoEntity(TenderApproveDto tenderApprove)
+        {
+            var obj = new PostBiddingSuperseedEntity
+            {
+                UserId = tenderApprove.UserId,
+                TenderId = tenderApprove.TenderId,
+                Date_Created = DateTimeNPT.Now,
+                Remarks = tenderApprove.Remarks,
+                Bid="PreBid",
+                Status="Super seed"
+            };
+            return obj;
+        }
+
+        public PostBiddingSuperseedEntity BidRejectDtoEntity(TenderApproveDtoByAdmin tenderApprove,string Bid)
+        {
+            var obj = new PostBiddingSuperseedEntity()
+            {
+                UserId = tenderApprove.UserId,
+                TenderId = tenderApprove.TenderId,
+                Date_Created = DateTimeNPT.Now,
+                Remarks = tenderApprove.Remarks,
+                Bid = Bid,
+                Status = "Reject"
+            };
+            return obj;
+        }
+
+        public IEnumerable<GraphDataEntity> GraphDataDtoEntity(GraphDataDto graphDataDto)
+        {
+            var list = new List<GraphDataEntity>();
+            foreach (var item in graphDataDto.graphDatas)
+            {
+                var obj = new GraphDataEntity
+                {
+                    Procurement_of_Goods = item.allocatedBudget,
+                    Procurement_of_Works = item.fundsUsed,
+                    Procurement_of_Consultancy_Service = item.fundsRemaining,
+                    Date_Created=DateTimeNPT.Now,
+                    Date_Modified = DateTimeNPT.Now,
+                    TotalBudget=graphDataDto.TotalBudget
+                };
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public List<GraphDataEntity> GraphDataUpdateDtoEntity(GraphDataDto graphDataDto, List<GraphDataEntity> graphDataEntities)
+        {
+            
+            for (int i = 0; i < 3; i++)
+            {
+
+                graphDataEntities[i].Procurement_of_Goods = graphDataDto.graphDatas[i].allocatedBudget;
+                graphDataEntities[i].Procurement_of_Works = graphDataDto.graphDatas[i].fundsUsed;
+                graphDataEntities[i].Procurement_of_Consultancy_Service = graphDataDto.graphDatas[i].fundsRemaining;
+                graphDataEntities[i].Date_Modified = DateTimeNPT.Now;
+                graphDataEntities[i].TotalBudget = graphDataDto.TotalBudget;
+            };
+            return graphDataEntities;
+        }
+
+        public IEnumerable<BidRequestEntity> UpdateBidRequestEntitiesDto(IEnumerable<BidRequestEntity> bidRequestEntities,string Rank)
+        {
+            if (Rank == "Qualified")
+            {
+                foreach (var item in bidRequestEntities)
+                {
+                    item.IsQualified = false;
+                }
+            }
+            else
+            {
+                foreach (var item in bidRequestEntities)
+                {
+                    item.IsWinner = false;
+                }
+            }
+            return bidRequestEntities;
         }
 
     }
