@@ -15,12 +15,10 @@ namespace MeroBolee.Dto
     }
     public class GetTenderDto : TenderCard
     {
-        public string Location { get; set; }
         public string QualityRequest { get; set; }
         public string PerformanceRequest { get; set; }
         public string EligibilityCriteria { get; set; }
         public string AdditionalRequest { get; set; }
-        public decimal Price { get; set; }
         public decimal MaxQuotation { get; set; }
        
         public int TenderLiveInterval { get; set; }
@@ -28,10 +26,9 @@ namespace MeroBolee.Dto
 
         public string AlgoName { get; set; }
         
-        public int AlgoId { get; set; }
         public DateTime CreatedDate { get; set; }
-        
-        public int CommunityApprovalStatus { get; set; }
+        public PostBidDetail preBidDetail { get; set; }
+
 
         public List<TenderExtraDocumentResponseDto> ExtraDocuments { get; set; }
         public List<TenderMaterialResponseDto> TenderMaterials { get; set; }
@@ -66,6 +63,9 @@ namespace MeroBolee.Dto
         public string Size { get; set; }
 
         public bool isSealBiddingAllowed { get; set; }
+        public bool isWinner { get; set; }
+        public int AlgoId { get; set; }
+        public int CommunityApprovalStatus { get; set; }
 
         public List<CompanyInfo> CompanyInfo { get; set; }
 
@@ -75,6 +75,13 @@ namespace MeroBolee.Dto
     {
         public long Id { get; set; }
         public string Name { get; set; }
+    }
+
+    public class BidderInfo:CompanyInfo
+    {
+        public bool IsQualified { get; set; }
+        public bool IsWinner { get; set; }
+        public DateTime DateModified { get; set; }
     }
 
 

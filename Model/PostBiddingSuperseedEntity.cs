@@ -17,5 +17,7 @@ namespace MeroBolee.Model
         public long TenderId { get; set; }
 
         public string Remarks { get; set; }
+        public string Bid { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -19,7 +19,10 @@ namespace MeroBolee.Model
 
 
         [ForeignKey("WinCompany")]
-        public long WinnerCompanyId { get; set; }
+        public long CompanyId { get; set; }
+
+        public string Rank { get; set; }
+        public bool IsDeleted { get; set; }
 
 
         public virtual TenderEntity Tender { get; set; }

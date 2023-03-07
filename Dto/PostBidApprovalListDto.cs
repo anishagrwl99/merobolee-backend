@@ -15,6 +15,14 @@ namespace MeroBolee.Dto
         public List<Remarks> Remarks { get; set; }
     }
 
+    public class PostBidDetail
+    {
+        public string Remarks { get; set; }
+        public string Status { get; set; }
+
+        public IEnumerable<PostBidApprovalListDto> postBidApprovalListDtos { get; set; }
+    }
+
     public class Remarks
     {
         public long Id { get; set; }

@@ -51,7 +51,7 @@ public class SendEmailService : ISendEmailService
                 HtmlContent = HtmlContent.Replace("{0}", emailRequestdto.confirmationLink);
             }
 
-            emailRequestdto.subject = "Merobolee: Request for password change!";
+            emailRequestdto.subject = "Meroolee: Request for password change!";
             emailRequestdto.htmlContent = HtmlContent;
         }
         else if (emailRequestdto.callFrom.Equals("OtpGenerate"))
@@ -59,16 +59,14 @@ public class SendEmailService : ISendEmailService
             string HtmlContent = "";
             using (WebClient web1 = new WebClient())
             {
-                HtmlContent = web1.DownloadString("https://api.merobolee.com/Resource/forgot-password.html");
+                HtmlContent = web1.DownloadString("https://api.merobolee.com/Resource/otp.html");
             }
-
+            
             if (HtmlContent.Contains("{0}"))
             {
-                var otp=emailRequestdto.Otp;
-                HtmlContent = HtmlContent.Replace("{0}", otp);
+                HtmlContent = HtmlContent.Replace("{0}", emailRequestdto.Otp);
             }
-
-            emailRequestdto.subject = "Merobolee: Otp for approval";
+            emailRequestdto.subject = "Merobolee! Nepal's First E-bidding Platform: OTP Requested";
             emailRequestdto.htmlContent = HtmlContent;
         }
 

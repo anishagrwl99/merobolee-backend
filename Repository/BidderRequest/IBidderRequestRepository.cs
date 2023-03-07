@@ -9,20 +9,6 @@ namespace MeroBolee.Repository
 {
     public interface IBidderRequestRepository : IRepositoryBase<BidRequestEntity>
     {
-        /// <summary>
-        /// Check if tender winner is already selected
-        /// </summary>
-        /// <param name="tenderId"></param>
-        /// <returns></returns>
-        Task<bool> CheckTenderWinner(long tenderId);
-
-
-        /// <summary>
-        /// Set a tender winner
-        /// </summary>
-        /// <param name="ent"></param>
-        /// <returns></returns>
-        Task<TenderWinnerEntity> SetTenderWinner(TenderWinnerEntity ent);
 
         /// <summary>
         /// Update a bid request entity
@@ -111,8 +97,7 @@ namespace MeroBolee.Repository
 
         Task<IEnumerable<OnlineSuppliers>> ShowAllOnlineSuppliers(long tenderId);
 
-        Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId);
-        Task<IEnumerable<TenderWinnerEntity>> GetSupplierWinningBids(long supplierCompanyId);
+        Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId,List<int> procurementId, List<int> algoId);
 
         Task<List<LiveBiddingEntity>> GetExpiredBids();
         Task<List<SealBidEntity>> GetExpiredBidsForSeal();
@@ -215,6 +200,7 @@ namespace MeroBolee.Repository
 
         Task<bool> SealBidCheckIfSubmitted(long tenderId, long supplierId);
 
-
+        Tuple<int, DateTime> findAlgoIdAndLiveEndDate(long TenderId);
+        Task<bool> CheckTenderComplete(long tenderId);
     }
 }

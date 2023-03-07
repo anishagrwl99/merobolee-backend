@@ -14,7 +14,7 @@ namespace MeroBolee.Repository
         List<CommunityApprovalEntity> AddCommunityApproval(List<CommunityApprovalEntity> communityApprovalEntity);
         //TenderSubmission UpdateTenderSubmissionStatus(TenderSubmission tenderSubmission);
         //TenderSubmission FindTenderSubmissionEntity(long companyId);
-        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,int? procurementId, int? algoId);
+        Task<IEnumerable<TenderCard>> GetMarketplaceTender(string search,List<int> procurementId, List<int> algoId);
         
         Task<IEnumerable<TenderCard>> GetLiveBidMarketplaceTenderForAdmin(string search);
         
@@ -42,8 +42,10 @@ namespace MeroBolee.Repository
         /// <param name="companyId"></param>
         /// <param name="isAlert"></param>
         /// <param name="isLiveBidUpcoming"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming);
+        Task<IEnumerable<TenderCard>> UpcomingBidderTender(long companyId, bool isAlert, bool isLiveBidUpcoming,List<int> procurementId,List<int> algoId);
 
         /// <summary>
         /// Get bid inviter upcoming tender
@@ -52,12 +54,12 @@ namespace MeroBolee.Repository
         /// <param name="procurementId"></param>
         /// <param name="algoId"></param>
         /// <returns></returns>
-        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, int? procurementId, int? algoId);
-        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId, long? companyId);
+        Task<IEnumerable<TenderCard>> UpcomingBidInviterTender(long companyId, List<int> procurementId, List<int> algoId);
+        Task<IEnumerable<TenderCard>> CompanyTendersForAdmin(int statusId, long? companyId,List<int> procurementId, List<int> algoId);
         Task<IEnumerable<TenderCard>> UpcomingTenderForAdmin();
 
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search, int? procurementId, int? algoId);
-        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, int? procurementId, int? algoId);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderHistory(long companyId ,string search, List<int> procurementId, List<int> algoId);
+        Task<IEnumerable<TenderCard>> GetBidIniviterTenderListing(long companyId, List<int> procurementId, List<int> algoId);
         Tuple<long, List<long>> GetTenderIdFromCode(string tenderCode);
 
         Tuple<long, List<long>> GetTenderWinnerIdFromCode(string tenderCode);
@@ -124,5 +126,39 @@ namespace MeroBolee.Repository
         Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidRemarksList(long tenderId, long companyId);
         Task <bool> AddPostBiddingSuperSeed(PostBiddingSuperseedEntity postBiddingSuperseedEntity);
         Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList();
+        Task<IEnumerable<TenderStatusEntity>> GetTenderStatusList();
+        Task<long> Couunt(int id);
+        Task<long> CountBidType(int id);
+        Task<long> BidInviterCountBidType(int id,long companyId);
+        Task<long> BiderCountBidType(int id,long companyId);
+        Task<long> BidInviterCount(int id, long companyId);
+        Task<long> BidderCount(int id, long companyId);
+        Task<long> GetBidderBidBasedOnProcurementType(int id,int i,long companyId);
+        Task<long> GetOngoingPreBiddingCount(int id);
+        Task<long> GetOngoingPreBiddingCountBidInviter(long companyId,int id);
+        Task<long> GetOngoingPostBiddingCount(int id);
+        Task<long> GetOngoingPostBiddingCountBidInviter(long companyId,int id);
+        Task<IEnumerable<CommunityApprovalEntity>> GetBidInviterTenderStatusList(long companyId,int procurementId,int statusId);
+        Task<IEnumerable<BidRequestEntity>> GetBidderTenderStatusList(long companyId,int procurementId,int statusId);
+        Task<long> GetBidderPendingCount(long companyId);
+        Task<long> GetBidderHistoryCount(long companyId);
+        Task<IEnumerable<BidRequestStatusEntity>> GetBidderStatus();
+        Task<IEnumerable<GraphDataEntity>> AddGraphData(IEnumerable<GraphDataEntity> graphDataEntity);
+        Task<List<GraphDataEntity>> CheckGraphData();
+        IEnumerable<GraphDataEntity> UpdateGraphData(IEnumerable<GraphDataEntity> graphDataEntity);
+        Task<List<GraphData>> GetGraphData();
+        Task<List<BidderInfo>> FetchParticipantBidderList(long tenderId);
+        Task<long> GetGraphDataTotalBudget();
+        Task<BidRequestEntity> GetBidRequestEntity(long companyId, long tenderId);
+        Task<BidRequestEntity> UpdateQualifiedStatusinBidRequest(BidRequestEntity bidRequestEntity);
+        Task <IEnumerable<BidRequestEntity>> GetBidRequestEntityByTenderId(long tenderId);
+        Task UpdateWholeQualifiedStatusinBidRequest(IEnumerable<BidRequestEntity> updateBidRequestEntitiesDto);
+        Task<List<BidderInfo>> GetQualifiedBidderList(long tenderId);
+        Task<List<BidderInfo>> GetWinnerBidderList(long tenderId);
+        Task<IEnumerable<CommunityApprovalEntity>> FindPendingCommunityApprovalEntity(long tenderId);
+        Task<bool> UpdateCommunityApprovalStatuses(IEnumerable<CommunityApprovalEntity> preBidddingApprovalEntity);
+        Task<PostBiddingSuperseedEntity> FetchPostBidRemarks(long tenderId,string Bid);
+        Task<List<long>> GetPostBidCompanyList(long tenderId);
+        Task<long> FetchUserIdFromCompanyId(long v);
     }
 }

@@ -13,7 +13,7 @@ using MeroBolee.Infrastructure;
 
 namespace MeroBolee.Controllers.Otp
 {
-    public class OtpController : BaseController
+    public class OtpController : Controller
     {
         private readonly IOtpService otpService;
         private readonly ResponseMsg response = new ResponseMsg();
@@ -24,7 +24,6 @@ namespace MeroBolee.Controllers.Otp
         }
 
         [HttpPost("Otp/Create")]
-        [Authorize(Roles = "Bid Inviter, Bidder, Super Admin")]
         public async Task<IActionResult> Create([FromBody] OtpDto otpDto)
         {
             try
@@ -37,6 +36,32 @@ namespace MeroBolee.Controllers.Otp
                 else
                 {
                     return NotFound(new Responses<bool>(response, "404", "Otp failed to send."));
+
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpPost("Otp/Verify")]
+        public async Task<IActionResult> Verify([FromBody] VerifyOtpDto dto)
+        {
+            try
+            {
+                var response = await otpService.VerifyOtp(dto.OtpCode, dto.UserId, dto.CompanyId, dto.Email);
+                if (response)
+                {
+                    return Ok(new Responses<bool>(response, "200", "OTP is Successfully Verified"));
+                }
+                else
+                {
+                    return NotFound(new Responses<bool>(response, "404", "Failed To Verify OTP"));
 
                 }
 

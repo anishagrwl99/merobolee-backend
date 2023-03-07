@@ -169,10 +169,10 @@ namespace MeroBolee.Repository
                               join t in meroBoleeDbContexts.TenderEntities on tw.TenderId equals t.Id
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
                               join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
-                              where tw.WinnerCompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
+                              where tw.CompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
-                                  CompanyId = tw.WinnerCompanyId,
+                                  CompanyId = tw.CompanyId,
                                   Id = t.Id,
                                   AdditionalRequest = t.AdditionalRequest,
                                   ApprovedBy = t.ApprovedBy,

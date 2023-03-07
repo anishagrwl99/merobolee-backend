@@ -110,33 +110,79 @@ namespace MeroBolee.Repository
         /// List all expired tenders on which a supplier has registered for
         /// </summary>
         /// <param name="supplierCompanyId"></param>
+        /// <param name="procurementId"></param>
+        /// <param name="algoId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId)
+        public async Task<IEnumerable<BidRequestEntity>> SupplierBidHistory(long supplierCompanyId, List<int> procurementId, List<int> algoId)
         {
             try
             {
-                return await meroBoleeDbContexts.BidRequestEntities
+                var obj = new List<BidRequestEntity>();
+
+                if (procurementId.Count==0 && algoId.Count==0)
+                {
+                   return await meroBoleeDbContexts.BidRequestEntities
                         .Include(x => x.Tender)
                         //.Include(x => x.Tender.TenderCards)
                         .Include(x => x.Tender.CategoryEntity)
                         .Include(x => x.BidRequestStatus)
                         .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTimeNPT.Now)
                         .ToListAsync();
-            }
-            catch (Exception)
-            {
+                }
 
-                throw;
-            }
-        }
+                else if (procurementId.Count != 0 && algoId.Count != 0)
+                {
+                    foreach (var item in procurementId)
+                    {
+                        foreach (var algo in algoId)
+                        {
+                            var result = await meroBoleeDbContexts.BidRequestEntities
+                      .Include(x => x.Tender)
+                      //.Include(x => x.Tender.TenderCards)
+                      .Include(x => x.Tender.CategoryEntity)
+                      .Include(x => x.BidRequestStatus)
+                      .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTimeNPT.Now && x.Tender.ProcurementId==item && x.Tender.AlgoId==algo)
+                      .ToListAsync();
 
-        public async Task<IEnumerable<TenderWinnerEntity>> GetSupplierWinningBids(long supplierCompanyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.TenderWinnerEntities
-                    .Where(x => x.WinnerCompanyId == supplierCompanyId)
+                            obj.AddRange(result);
+                        }
+                    }
+
+                    return obj;
+
+                }
+                else if (procurementId.Count!=0)
+                {
+                    foreach (var item in procurementId)
+                    {
+                        var result = await meroBoleeDbContexts.BidRequestEntities
+                    .Include(x => x.Tender)
+                    //.Include(x => x.Tender.TenderCards)
+                    .Include(x => x.Tender.CategoryEntity)
+                    .Include(x => x.BidRequestStatus)
+                    .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTimeNPT.Now && x.Tender.ProcurementId == item)
                     .ToListAsync();
+
+                        obj.AddRange(result);
+                    }
+                    return obj;
+                }
+                else
+                {
+                    foreach (var item in algoId)
+                    {
+                        var result = await meroBoleeDbContexts.BidRequestEntities
+                    .Include(x => x.Tender)
+                    //.Include(x => x.Tender.TenderCards)
+                    .Include(x => x.Tender.CategoryEntity)
+                    .Include(x => x.BidRequestStatus)
+                    .Where(x => x.CompanyId == supplierCompanyId && x.Tender.LiveEndDate < DateTimeNPT.Now && x.Tender.AlgoId == item)
+                    .ToListAsync();
+
+                        obj.AddRange(result);
+                    }
+                    return obj;
+                }
             }
             catch (Exception)
             {
@@ -748,35 +794,6 @@ namespace MeroBolee.Repository
             }
 
         }
-        public async Task<bool> CheckTenderWinner(long tenderId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.TenderWinnerEntities
-                    .AnyAsync(x=> x.TenderId == tenderId);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<TenderWinnerEntity> SetTenderWinner(TenderWinnerEntity ent)
-        {
-            try
-            {
-                meroBoleeDbContexts.TenderWinnerEntities.Add(ent);
-                await unitOfWork.SaveChangesAsync();
-                return ent; 
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
 
         /// <summary>
         /// Determines whether [is supplier registered] [the specified company identifier].
@@ -1048,6 +1065,34 @@ namespace MeroBolee.Repository
             }
             catch 
             {
+                throw;
+            }
+        }
+
+        public Tuple<int, DateTime> findAlgoIdAndLiveEndDate(long TenderId)
+        {
+            try
+            {
+                var values = meroBoleeDbContexts.TenderEntities.Where(x => x.Id == TenderId).Select(
+                    x => new {AlgoId = x.AlgoId , LivEndDate = x.LiveEndDate}).FirstOrDefault();
+                return Tuple.Create(values.AlgoId, values.LivEndDate);
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckTenderComplete(long tenderId)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderEntities.AnyAsync(x => x.Id == tenderId && x.IsDeleted==false && x.PostBidStatus!=3);
+            }
+            catch 
+            {
+
                 throw;
             }
         }

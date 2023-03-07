@@ -47,6 +47,10 @@ namespace MeroBolee.Model
 
         public bool IsDeleted { get; set; }
         public bool IsSuspended { get; set; }
+        public bool IsQualified { get; set; }
+        public bool IsWinner { get; set; }
+        public DateTime  QualifiedDate { get; set; } 
+        public DateTime  WonDate { get; set; } 
         public ICollection<BidderRequestDocEntity> BidderRequestDocs { get; set; }
 
         [JsonIgnore]

@@ -90,7 +90,7 @@ namespace MeroBolee.Service
             try
             {
                 // string path = @"C:\Users\Anish\Downloads\CREDITOR.pfx";
-                string path = @"C:\HostingSpaces\merobolee\office.merobolee.com\wwwroot\Resource\NHCL\CREDITOR.pfx";
+                string path = @"C:\HostingSpaces\api.merobolee.com\wwwroot\Resource\NHCL\CREDITOR.pfx";
                 byte[] certificate = File.ReadAllBytes(path);
                 X509Certificate2 cert2 = new X509Certificate2(certificate, "123", X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
                 SHA256Managed shHash = new SHA256Managed();

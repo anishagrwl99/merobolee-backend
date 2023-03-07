@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MeroBolee.Dto
@@ -25,5 +26,6 @@ namespace MeroBolee.Dto
         public int StatusId { get; set; }
 
         public int RemarksStatusId { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }
