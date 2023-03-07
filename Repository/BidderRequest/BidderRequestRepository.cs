@@ -1027,6 +1027,9 @@ namespace MeroBolee.Repository
                 {
                     MaterailId = x.Key.MaterialId,
                     UnitPrice = x.Min(o => o.UnitPrice),
+                    Remarks = x.FirstOrDefault().Remarks,
+                    Quantity = x.FirstOrDefault().Quantity, 
+                    Units = x.FirstOrDefault().Units
                 }).OrderBy(x => x.UnitPrice).ToArray();
 
                 List<QuotationResponseDto> quotationResponseDtoList = new List<QuotationResponseDto>();
@@ -1035,10 +1038,10 @@ namespace MeroBolee.Repository
                     QuotationResponseDto quotationResponseDto = new QuotationResponseDto();
                     quotationResponseDto.UnitPrice = quote[i].UnitPrice;
                     quotationResponseDto.MaterialId = quote[i].MaterailId;
-                    quotationResponseDto.Quantity = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
-                    quotationResponseDto.Remarks = await meroBoleeDbContexts.QuotationEntities.Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Remarks).FirstOrDefaultAsync();
-                    quotationResponseDto.Units = await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Units).FirstOrDefaultAsync();
-                    quotationResponseDto.Quotation = quote[i].UnitPrice * await meroBoleeDbContexts.QuotationEntities.Where(x => x.UnitPrice == quote[i].UnitPrice).Where(x => x.MaterialId == quote[i].MaterailId).Select(x => x.Quantity).FirstOrDefaultAsync();
+                    quotationResponseDto.Quantity = quote[i].Quantity;
+                    quotationResponseDto.Remarks = quote[i].Remarks;
+                    quotationResponseDto.Units = quote[i].Units;
+                    quotationResponseDto.Quotation = quote[i].UnitPrice * quote[i].Quantity;
                     quotationResponseDto.MaterialName = await meroBoleeDbContexts.TenderMaterialEntities.Where(x => x.Id == quote[i].MaterailId).Where(x => x.TenderId == TenderId).Select(x => x.Materials).FirstOrDefaultAsync();
                     quotationResponseDtoList.Add(quotationResponseDto);
                 }
