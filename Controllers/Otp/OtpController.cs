@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OtpNet;
 using System;
-using MeroBolee.Migrations;
-using MeroBolee.Service;
-using System.Security;
 using MeroBolee.Service.Otp;
 using MeroBolee.Dto;
 using Microsoft.AspNetCore.Http;

@@ -7,32 +7,27 @@ using MeroBolee.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using MeroBolee.Service.Inovice;
 using MeroBolee.Service.Otp;
 using MeroBolee.Repository.Otp;
+using MeroBolee.Service.VendorEnlistment;
+using MeroBolee.Repository.VendorEnlistment;
 
 namespace MeroBolee
 {
@@ -220,6 +215,10 @@ namespace MeroBolee
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IOtpRepository, OtpRepository>();
 
+            //VendorEnlistment
+            services.AddScoped<IVendorEnlistmentService, VendorEnlistmentService>();
+            services.AddScoped<IVendorEnlistmentRepository, VendorEnlistmentRepository>();
+
             //Watchlist
             services.AddScoped<IWatchListRepository, WatchListRepository>();
             services.AddScoped<IWatchListService, WatchListService>();
@@ -375,6 +374,8 @@ namespace MeroBolee
 
             // custom jwt auth middleware
             app.UseMiddleware<JwtMiddleware>();
+
+            app.UseMiddleware<EncryptionMiddleware>();
 
      
             app.UseEndpoints(endpoints =>

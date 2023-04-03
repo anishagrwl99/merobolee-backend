@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
@@ -15,8 +12,6 @@ namespace MeroBolee.Dto
         public string ProfilePicture { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime? ActivationDate { get; set; }
-
-        
     }
 
     public class UpdateUserDto

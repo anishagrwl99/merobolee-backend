@@ -440,6 +440,9 @@ namespace MeroBolee.Service
         public async Task<LiveBidResponse> AutoBid(TenderAutoBidDto bidDto)
         {
             string key = $"Tender_Bidding_{bidDto.TenderId}";
+            MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
+            int algoId = meroBoleeDbContext.TenderEntities.Where(x => x.Id == bidDto.TenderId).Select(x => x.AlgoId)
+                .FirstOrDefault();
             List<LiveBiddingEntity> biddings = new List<LiveBiddingEntity>();
             memoryCache.TryGetValue<List<LiveBiddingEntity>>(key, out biddings);
 
@@ -452,7 +455,7 @@ namespace MeroBolee.Service
                     LiveBiddingEntity ent = biddings
                         .Where(x => x.MaterialId == q.MaterialId && x.UserId == bidDto.SupplierId)
                         .FirstOrDefault();
-                    if (ent != null)
+                    if (ent != null && algoId == 1)
                     {
                         autoBidEntities.Add(new LiveBiddingEntity
                         {
@@ -465,6 +468,20 @@ namespace MeroBolee.Service
                             Units = q.Unit,
                             Quantity = q.Quantity
                     });
+                    }
+                    else
+                    {
+                        autoBidEntities.Add(new LiveBiddingEntity
+                        {
+                            BidDate = bidDto.BiddingDate,
+                            BiddingRequestId = bidDto.BiddingId,
+                            TenderId = bidDto.TenderId,
+                            MaterialId = q.MaterialId,
+                            Quotation = ent.Quotation,
+                            UnitPrice = IncreaseQuotationByPercent(bidDto.Percentage, q.UnitPrice),
+                            Units = q.Unit,
+                            Quantity = q.Quantity
+                        });
                     }
                 }
 
@@ -714,22 +731,13 @@ namespace MeroBolee.Service
 
                 if (procurementId != null)
                 {
-                    var procurementList = procurementId.Split(',');
-                    foreach (var item in procurementList)
-                    {
-                        var a = Int32.Parse(item);
-                        procurementIdsList.Add(a);
-                    }
+                    procurementIdsList = procurementId?.Split(',')?.Select(Int32.Parse)?.ToList();
                 }
 
                 if (algoId != null)
                 {
-                    var algoList = algoId.Split(',');
-                    foreach (var item in algoList)
-                    {
-                        var a = Int32.Parse(item);
-                        algoIdsList.Add(a);
-                    }
+                    algoIdsList = algoId?.Split(',')?.Select(Int32.Parse)?.ToList();
+
                 }
 
                 IEnumerable<BidRequestEntity> requests = await bidRequestRepository.SupplierBidHistory(supplierCompanyId,procurementIdsList,algoIdsList);
@@ -1048,63 +1056,39 @@ namespace MeroBolee.Service
         {
             if (algoId == 1)
             {
-                decimal minimumQuotation = 0;
                 bool isValid = false;
-                string errorMsg = "You have already quotated less than or same as current quotation";
+                string errorMsg = "You have quoted more than the maximum allowed price or already quoted less than your current quotation!";
                 Tuple<decimal, DateTime, DateTime> tenderInfo = tenderService.GetMaxQuotationAllowed(dto.TenderId);
                 decimal currentQuotation = dto.MaterialQuotation.Sum(x => x.Quotation);
                 if (tenderInfo.Item1 != 0 && currentQuotation <= tenderInfo.Item1)
                 {
-                    foreach (var item in dto.MaterialQuotation)
+                    decimal lastbidValue = Decimal.Zero;
+                    string keyForAuctionModelCaching = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{dto.CompanyId}";
+                    memoryCache.TryGetValue<decimal>(keyForAuctionModelCaching, out lastbidValue);
+                    if (lastbidValue == 0)
                     {
-                        item.Quotation = Math.Round(item.Quotation, 2);
-                        string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
-                        memoryCache.TryGetValue<decimal>(key, out minimumQuotation);
-                        if (minimumQuotation <= 0) //no bid found for this material
-                        {
-                            memoryCache.Set<decimal>(key, item.Quotation);
-                            isValid = true;
-                            item.IsPrevCacheAvailable = false;
-                        }
-                        else if (item.Quotation < minimumQuotation)
-                        {
-                            memoryCache.Set<decimal>(key, item.Quotation);
-                            isValid = true;
-                            item.IsPrevCacheAvailable = true;
-                            item.PreviousQuotation = minimumQuotation;
-                        }
-                        else if (minimumQuotation > 0)
-                        {
-                            item.IsPrevCacheAvailable = true;
-                            item.PreviousQuotation = minimumQuotation;
-                        }
+                        //cache not found for last bid amount
+                        lastbidValue = currentQuotation;
+                        memoryCache.Set<decimal>(keyForAuctionModelCaching, lastbidValue, LiveEndDate);
+                        isValid = true;
+                        errorMsg = "";
+                        return Tuple.Create(isValid, errorMsg);
                     }
-
-                    if (!isValid)
+                    else
                     {
-                        foreach (var item in dto.MaterialQuotation)
+                        if (lastbidValue > 0 && currentQuotation <= lastbidValue) //value has been found in cache 
                         {
-                            string key = $"{dto.SupplierId}_{dto.BiddingId}_{dto.TenderId}_{item.MaterialId}";
-                            if (item.IsPrevCacheAvailable)
-                            {
-                                memoryCache.Set<decimal>(key, item.PreviousQuotation);
-                            }
-                            else
-                            {
-                                memoryCache.Remove(key);
-                            }
+                            isValid = true;
+                            errorMsg = "";
+                            memoryCache.Set<decimal>(keyForAuctionModelCaching, currentQuotation, LiveEndDate);
+                            return Tuple.Create<bool, string>(isValid, errorMsg);
                         }
+                        else
+                        {
+                            return Tuple.Create(isValid, errorMsg);
+                        }
+                        
                     }
-                }
-                else if (tenderInfo.Item1 == 0)
-                {
-                    isValid = true;
-                    await UpdateTenderMaxQuotation(dto.TenderId, tenderInfo.Item2, tenderInfo.Item3);
-                }
-                else
-                {
-                    isValid = false;
-                    errorMsg = "You have quoted more than allowed quotation";
                 }
 
                 return Tuple.Create(isValid, errorMsg);
@@ -1112,7 +1096,7 @@ namespace MeroBolee.Service
             else
             {
                 bool isValid = false;
-                string errorMsg = "You have quoted less than the minimum allowed value for Auction!";
+                string errorMsg = "You have quoted less than the minimum allowed value or already quoted more than your current quotation for Auction!";
                 Tuple<decimal, DateTime, DateTime> tenderInfo = tenderService.GetMaxQuotationAllowed(dto.TenderId);
                 decimal currentQuotation = dto.MaterialQuotation.Sum(x => x.Quotation);
                 if (tenderInfo.Item1 != 0 && currentQuotation >= tenderInfo.Item1)
@@ -1172,7 +1156,7 @@ namespace MeroBolee.Service
                             TotalAmount = x.Min(o => o.TotalAmount),
                             BidDate = x.Max(o => o.BidDate)
                         })
-                        .OrderBy(x => x.TotalAmount)
+                        .OrderBy(x => x.TotalAmount).ThenBy(x => x.BidDate)
                         .ToList();
                 }
                 else
@@ -1254,6 +1238,11 @@ namespace MeroBolee.Service
         {
             return prevQuotation - (percentage * prevQuotation) / 100; //decrease quotation by x%
         }
+        
+        private decimal IncreaseQuotationByPercent(decimal percentage, decimal prevQuotation)
+        {
+            return prevQuotation + (percentage * prevQuotation) / 100; //decrease quotation by x%
+        }
 
 
         private async Task<decimal> GetMaxQuotation(long tenderId)
@@ -1329,7 +1318,10 @@ namespace MeroBolee.Service
                     finalPositionResponseDto.Amount = positionAmountDto.Amount;
                     finalPositionResponseDto.userId = positionAmountDto.UserId;
                     finalPositionResponseDto.position = $"L{i + 1}";
-                    finalPositionResponseDto.companyName = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                    Tuple<long, Tuple<string, string>> companyNameId = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                    finalPositionResponseDto.companyName = companyNameId.Item2.Item1;
+                    finalPositionResponseDto.PanNumber = companyNameId.Item2.Item2;
+                    finalPositionResponseDto.CompanyId = companyNameId.Item1;
                     getFinalBiddingPoisitionList.Add(finalPositionResponseDto);
                 }
                 return getFinalBiddingPoisitionList;
@@ -1371,7 +1363,10 @@ namespace MeroBolee.Service
                         finalPositionResponseDto.Amount = positionAmountDto.Amount;
                         finalPositionResponseDto.userId = positionAmountDto.UserId;
                         finalPositionResponseDto.position = $"L{i + 1}";
-                        finalPositionResponseDto.companyName = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                        Tuple<long, Tuple<string, string>> companyNameId = await bidRequestRepository.FindCompanyName(positionAmountDto.UserId);
+                        finalPositionResponseDto.companyName = companyNameId.Item2.Item1;
+                        finalPositionResponseDto.PanNumber = companyNameId.Item2.Item2;
+                        finalPositionResponseDto.CompanyId = companyNameId.Item1;
                         getFinalBiddingPoisitionList.Add(finalPositionResponseDto);
                     }
                     return getFinalBiddingPoisitionList;
@@ -1428,14 +1423,15 @@ namespace MeroBolee.Service
             foreach(TenderMaterialQuotationDto tenderMaterialQuotationDto in tenderMaterialBiddingDto.MaterialQuotation) 
             {
                 quotationEntity = new QuotationEntity();
-                quotationEntity.TenderId = (int)tenderMaterialBiddingDto.TenderId;
-                quotationEntity.UserId = (int)tenderMaterialBiddingDto.SupplierId;
+                quotationEntity.TenderId = tenderMaterialBiddingDto.TenderId;
+                quotationEntity.UserId = tenderMaterialBiddingDto.SupplierId;
                 quotationEntity.Quantity = tenderMaterialQuotationDto.Quantity;
                 quotationEntity.UnitPrice = tenderMaterialQuotationDto.UnitPrice;
                 quotationEntity.Units = tenderMaterialQuotationDto.Unit;
                 quotationEntity.Quotation = cryptoService.Encrypt(tenderMaterialQuotationDto.Quotation.ToString());
                 quotationEntity.MaterialId = (int)tenderMaterialQuotationDto.MaterialId;
                 quotationEntity.Remarks = tenderMaterialQuotationDto.Remarks;
+                quotationEntity.BidDate = tenderMaterialBiddingDto.BiddingDate;
                 quotations.Add(quotationEntity);
             }
             //  Console.WriteLine("Size of quotationList = " + quotations.Count);
@@ -1493,7 +1489,9 @@ namespace MeroBolee.Service
                 generateBillResponseDto.FinalPosition = finalPositionResponseDto.position;
                 generateBillResponseDto.TotalQuotation = totalQuotation;
                 generateBillResponseDto.CompanyName = finalPositionResponseDto.companyName;
+                generateBillResponseDto.CompanyId = finalPositionResponseDto.CompanyId;
                 generateBillResponseDto.UserId = UserId;
+                generateBillResponseDto.PanNumber = finalPositionResponseDto.PanNumber;
                 return generateBillResponseDto;
             }
             catch

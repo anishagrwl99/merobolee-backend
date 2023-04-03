@@ -279,7 +279,7 @@ namespace MeroBolee.EntityMapper
                     getTender.DateOfExecution = tenderEntity.DateOfExecution;
 
                     getTender.CreatedDate = tenderEntity.Date_created;
-                    getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
+                    getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities 
                                                  select new TenderMaterialResponseDto
                                                  {
                                                      Id = me.Id,

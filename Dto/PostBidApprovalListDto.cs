@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MeroBolee.Dto
 {
@@ -29,5 +28,21 @@ namespace MeroBolee.Dto
         public string Message { get; set; }
         public long CompanyId { get; set; }
         public string CompanyName { get; set; }
+    }
+
+    public class PostBidList
+    {
+        public int StatusId { get; set; }
+        public long CompanyId { get; set; }
+
+
+        public string CompanyName { get; set; }
+
+        public List<Remarks> Remarks { get; set; }
+
+        public string Message { get; set; }
+
+        public string Action { get; set; }
+
     }
 }

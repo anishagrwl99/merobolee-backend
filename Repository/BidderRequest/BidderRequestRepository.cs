@@ -819,7 +819,9 @@ namespace MeroBolee.Repository
             try
             {
                 List<AuctionLog> auctionLog = meroBoleeDbContexts.AuctionLogs.Where(x => x.TenderId == tenderId).ToList();
-
+                int AlgoId = meroBoleeDbContexts.TenderEntities.Where(x => x.Id == tenderId).Select(x => x.AlgoId).FirstOrDefault();
+                if(AlgoId == 1) 
+                {
                 var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
                 .Select(x => new
                 {
@@ -838,6 +840,28 @@ namespace MeroBolee.Repository
 
                 }
                 return getFinalPosition;
+                } 
+                else 
+                {
+                    var position = auctionLog.GroupBy(x => new { x.TenderId, x.UserId })
+                    .Select(x => new
+                    {
+                        Amount = x.Max(o => o.Amount),
+                        UserId = x.Key.UserId
+                    }).OrderByDescending(x => x.Amount).ToArray();
+
+                    List<PositionAmountDto> getFinalPosition = new List<PositionAmountDto>();
+                    for (int i = 0; i < position.Length; i++)
+                    {
+                        var item = position[i];
+                        PositionAmountDto positionAmountDto = new PositionAmountDto();
+                        positionAmountDto.Amount = item.Amount;
+                        positionAmountDto.UserId = item.UserId;
+                        getFinalPosition.Add(positionAmountDto);
+
+                    }
+                    return getFinalPosition;
+                }
 
             }
             catch (Exception)
@@ -914,16 +938,15 @@ namespace MeroBolee.Repository
         }
 
 
-        public async Task<string> FindCompanyName(long userId)
+        public async Task<Tuple<long, Tuple<string, string>>> FindCompanyName(long userId)
         {
             try
             {
 
                 long companyId = meroBoleeDbContexts.UserCompanies.Where(x => x.UserId == userId).Select(x => x.CompanyId).FirstOrDefault();
-                string companyName = meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == companyId).Select(x => x.Name).FirstOrDefault();
-
-                return companyName;
-
+                var companyName = meroBoleeDbContexts.CompanyEntities.Where(x => x.CompanyId == companyId).Select(x => new {x.Name, x.PANNumber}).FirstOrDefault();
+                
+                return new Tuple<long, Tuple<string, string>>(companyId, new Tuple<string, string>(companyName.Name, companyName.PANNumber));
             }
             catch (Exception)
             {
@@ -1021,16 +1044,17 @@ namespace MeroBolee.Repository
         {
             try
             {
-                var quotationEntities = meroBoleeDbContexts.QuotationEntities.Where(x => x.TenderId == TenderId).Where(x => x.UserId == UserId).ToList();
+                List<QuotationEntity> quotationEntities = meroBoleeDbContexts.QuotationEntities.Where(x => x.TenderId == TenderId).Where(x => x.UserId == UserId).OrderByDescending(x => x.BidDate).ToList();
                 var quote = quotationEntities.GroupBy(x => new { x.MaterialId })
                 .Select(x => new
                 {
                     MaterailId = x.Key.MaterialId,
-                    UnitPrice = x.Min(o => o.UnitPrice),
-                    Remarks = x.FirstOrDefault().Remarks,
-                    Quantity = x.FirstOrDefault().Quantity, 
-                    Units = x.FirstOrDefault().Units
-                }).OrderBy(x => x.UnitPrice).ToArray();
+                    UnitPrice = x.FirstOrDefault().UnitPrice,
+                    Remarks = x.LastOrDefault().Remarks,
+                    Quantity = x.LastOrDefault().Quantity, 
+                    Units = x.LastOrDefault().Units,
+                    BidDate = x.LastOrDefault().BidDate
+                }).OrderByDescending(x => x.BidDate).ThenBy(x => x.MaterailId).ToArray();
 
                 List<QuotationResponseDto> quotationResponseDtoList = new List<QuotationResponseDto>();
                 for (int i = 0; i < quote.Length; i++)

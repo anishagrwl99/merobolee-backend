@@ -1,12 +1,9 @@
 ﻿using MeroBolee.Attribute;
-using MeroBolee.Model;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Ganss.XSS;
+using Ganss.Xss;
 
 namespace MeroBolee.Dto
 {
@@ -19,8 +16,6 @@ namespace MeroBolee.Dto
         private string _additionalRequest;
 
 
-        // [Required(ErrorMessage = "Company name is required")]
-        // [Range(1, long.MaxValue, ErrorMessage = "Invalid company name")] 
         public String companyIds { get; set; }
 
         public int superId { get; set; }
@@ -60,7 +55,6 @@ namespace MeroBolee.Dto
 
         public bool IsDeleted { get; set; }
 
-        // [Required(ErrorMessage = "Product is required")]
         [MaxLength(500, ErrorMessage = "Product can be {1} character long")]
         public string Product { get; set; }
         [Required(ErrorMessage = "Date Of Execution is required")]
@@ -116,9 +110,6 @@ namespace MeroBolee.Dto
         [Required(ErrorMessage = "At least one tender material is required")]
         public ICollection<TenderMaterialRequestDto> TenderMaterials { get; set; }
 
-        //[Required(ErrorMessage = "At least one tender card information is required")]
-        //public List<TenderCardRequestDto> TenderCards { get; set; }
-
         public ICollection<TenderExtraDocDto> ExtraDocuments { get; set; }
 
         public int Algorithm { get; set; }
@@ -135,10 +126,6 @@ namespace MeroBolee.Dto
 
         [Required(ErrorMessage = "At least one tender material is required")]
         public ICollection<UpdateMaterialRequestDto> TenderMaterials { get; set; }
-
-        //[Required(ErrorMessage = "At least one tender card information is required")]
-        //public List<UpdateTenderCardRequestDto> TenderCards { get; set; }
-
 
         public List<UpdateTenderExtraDocRequestDto> ExtraDocuments { get; set; }
     }
@@ -161,17 +148,6 @@ namespace MeroBolee.Dto
 
     }
 
-    //public class TenderCardRequestDto
-    //{
-    //    [Required(ErrorMessage = "Tender card label is required")]
-    //    [MaxLength(200, ErrorMessage = "Tender card label can be {1} character long")]
-    //    public string Label { get; set; }
-
-    //    [Required(ErrorMessage = "Tender card value is required")]
-    //    [MaxLength(500, ErrorMessage = "Tender card value can be {1} character long")]
-    //    public string Value { get; set; }
-    //}
-
     public class TenderExtraDocDto
     {
         [Required(ErrorMessage = "Document Title is required")]
@@ -187,17 +163,8 @@ namespace MeroBolee.Dto
 
     public class UpdateMaterialRequestDto: TenderMaterialRequestDto
     {
-        //[Required(ErrorMessage = "Material id is required")]
-        //[Range(1, long.MaxValue, ErrorMessage = "Invalid material id")]
         public long Id { get; set; }
     }
-
-    //public class UpdateTenderCardRequestDto : TenderCardRequestDto
-    //{
-    //    //[Required(ErrorMessage = "Tender card id is required")]
-    //   // [Range(1, long.MaxValue, ErrorMessage = "Invalid tender card id")]
-    //    public long Id { get; set; }
-    //}
 
     public class UpdateTenderExtraDocRequestDto: TenderExtraDocDto
     {

@@ -124,5 +124,7 @@ namespace MeroBolee.Model
         public virtual CompanyStatusEntity CompanyStatus { get; set; }
 
         public virtual ICollection<UserCompany> CompanyUsers { get; set; }
+
+        public virtual VendorEnlistmentEntity VendorEnlistment { get; set; }
     }
 }

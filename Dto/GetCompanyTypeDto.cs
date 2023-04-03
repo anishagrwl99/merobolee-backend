@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MeroBolee.Dto
+﻿namespace MeroBolee.Dto
 {
     public class GetCompanyTypeDto
     {

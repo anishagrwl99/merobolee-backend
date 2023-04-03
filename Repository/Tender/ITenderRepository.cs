@@ -119,7 +119,7 @@ namespace MeroBolee.Repository
         Task<IEnumerable<PostBidddingApprovalEntity>> UpdatePostBidApprovalStatusByTenderId(IEnumerable<PostBidddingApprovalEntity> postBidEntity);
         Task<PostBidddingApprovalEntity> FindPostBiddingApproval(long tenderId, long companyId);
         Task<IEnumerable<PostBidddingApprovalEntity>> FindPostBiddingApprovalByTenderId(long tenderId);
-        Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidList>> FetchPostBidApprovalList(long tenderId);
         Task<IEnumerable<PostBidDtoList>> FetchTenderTitleListForBidInviter(long companyId);
         Task<PostBidddingRemarksEntity> InsertIntoPostBidRemarks(PostBidddingRemarksEntity postBidddingRemarksEntity);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(List<PostBidddingApprovalEntity> postBidEntity);
@@ -127,21 +127,7 @@ namespace MeroBolee.Repository
         Task <bool> AddPostBiddingSuperSeed(PostBiddingSuperseedEntity postBiddingSuperseedEntity);
         Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurementList();
         Task<IEnumerable<TenderStatusEntity>> GetTenderStatusList();
-        Task<long> Couunt(int id);
-        Task<long> CountBidType(int id);
-        Task<long> BidInviterCountBidType(int id,long companyId);
-        Task<long> BiderCountBidType(int id,long companyId);
-        Task<long> BidInviterCount(int id, long companyId);
-        Task<long> BidderCount(int id, long companyId);
-        Task<long> GetBidderBidBasedOnProcurementType(int id,int i,long companyId);
-        Task<long> GetOngoingPreBiddingCount(int id);
-        Task<long> GetOngoingPreBiddingCountBidInviter(long companyId,int id);
-        Task<long> GetOngoingPostBiddingCount(int id);
         Task<long> GetOngoingPostBiddingCountBidInviter(long companyId,int id);
-        Task<IEnumerable<CommunityApprovalEntity>> GetBidInviterTenderStatusList(long companyId,int procurementId,int statusId);
-        Task<IEnumerable<BidRequestEntity>> GetBidderTenderStatusList(long companyId,int procurementId,int statusId);
-        Task<long> GetBidderPendingCount(long companyId);
-        Task<long> GetBidderHistoryCount(long companyId);
         Task<IEnumerable<BidRequestStatusEntity>> GetBidderStatus();
         Task<IEnumerable<GraphDataEntity>> AddGraphData(IEnumerable<GraphDataEntity> graphDataEntity);
         Task<List<GraphDataEntity>> CheckGraphData();
@@ -160,5 +146,8 @@ namespace MeroBolee.Repository
         Task<PostBiddingSuperseedEntity> FetchPostBidRemarks(long tenderId,string Bid);
         Task<List<long>> GetPostBidCompanyList(long tenderId);
         Task<long> FetchUserIdFromCompanyId(long v);
+        Task<IEnumerable<TenderEntity>> GetAllTender();
+        Task<IEnumerable<CommunityApprovalEntity>> GetAllCommunityApproval(long companyId);
+        Task<IEnumerable<BidRequestEntity>> GetBidRequestEntities(long companyId);
     }
 }

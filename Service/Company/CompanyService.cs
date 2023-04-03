@@ -36,8 +36,10 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="companyType">The company type.</param>
         /// <param name="search">The search.</param>
+        /// <param name="procurementIds"></param>
+        /// <param name="procurementCategoryIds"></param>
         /// <returns></returns>
-        Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search);
+        Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search,string procurementIds,string procurementCategoryIds);
 
 
 
@@ -182,39 +184,116 @@ namespace MeroBolee.Service
         /// </summary>
         /// <param name="companyType"></param>
         /// <param name="search"></param>
+        /// <param name="procurementIds"></param>
+        /// <param name="procurementCategoryIds"></param>
         /// <returns></returns>
-        public async Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search)
+        public async Task<List<CompanyCardResponseDto>> GetCompanyByType(CompanyTypeEnum companyType, string search, string procurementIds, string procurementCategoryIds)
         {
             try
             {
-                List<CompanyEntity> companies = await companyRepository.GetCompanyByType(companyType, search);
-                List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
-                foreach (CompanyEntity item in companies)
+                if (companyType == CompanyTypeEnum.Bidder)
                 {
-
-                    foreach (var item1 in item.CompanyUsers)
+                    if (procurementIds==null && procurementCategoryIds==null)
                     {
-                        CompanyCardResponseDto dto = new CompanyCardResponseDto
-                        {
-                            Id = item.CompanyId,
-                            Name = item.Name,
-                            ReferenceCode = item.ReferenceCode,
-                            City = item.City,
-                            Email = item.CompanyEmail,
-                            Status = item.CompanyStatus.Status,
-                            Country = item.Country.Name,
-                            UserId = item1.UserId
-                        };
-                        reponseDtos.Add(dto);
+                        var final = new List<CompanyCardResponseDto>();
 
+                        List<CompanyEntity> companies = await companyRepository.GetCompanyByType(companyType, search);
+
+                        foreach (CompanyEntity item in companies)
+                        {
+
+                            foreach (var item1 in item.CompanyUsers)
+                            {
+                                CompanyCardResponseDto dto = new CompanyCardResponseDto
+                                {
+                                    Id = item.CompanyId,
+                                    Name = item.Name,
+                                    ReferenceCode = item.ReferenceCode,
+                                    City = item.City,
+                                    Email = item.CompanyEmail,
+                                    Status = item.CompanyStatus.Status,
+                                    Country = item.Country.Name,
+                                    UserId = item1.UserId,
+                                    VendorEnlistmentId = item.VendorEnlistment == null? 0:item.VendorEnlistment.Id
+                                };
+                                final.Add(dto);
+
+                            }
+
+                        }
+
+                        return final;
+                    }
+                    else if (procurementCategoryIds != null)
+                    {
+
+                        var numbers = procurementCategoryIds?.Split(',')?.Select(Int32.Parse)?.ToList();
+
+                        var result = await companyRepository.GetCompanyInfoByProcurementCategory(numbers, search);
+
+                        var finalList = new List<CompanyCardResponseDto>();
+                        var vIds = new List<long>();
+
+                        foreach (var item in result)
+                        {
+                            if (!vIds.Contains(item.VendorEnlistmentId))
+                            {
+                                item.UserId = await companyRepository.GetUserId(item.Id);
+                                finalList.Add(item);
+                                vIds.Add(item.VendorEnlistmentId);
+                            }
+                        }
+                        return finalList;
+                    }
+                    else
+                    {
+                        var numbers = procurementIds?.Split(',')?.Select(Int32.Parse)?.ToList();
+
+                        var result = await companyRepository.GetCompanyInfoByProcurement(numbers, search);
+
+                        var finalList = new List<CompanyCardResponseDto>();
+                        var vIds = new List<long>();
+
+                        foreach (var item in result)
+                        {
+                            if (!vIds.Contains(item.VendorEnlistmentId))
+                            {
+                                item.UserId = await companyRepository.GetUserId(item.Id);
+                                finalList.Add(item);
+                                vIds.Add(item.VendorEnlistmentId);
+                            }
+                        }
+                        return finalList;
                     }
 
                 }
-                return reponseDtos;
+                else
+                {
+                    List<CompanyEntity> companies = await companyRepository.GetCompanyByType(companyType, search);
+                    List<CompanyCardResponseDto> reponseDtos = new List<CompanyCardResponseDto>();
+                    foreach (CompanyEntity item in companies)
+                    {
+                        foreach (var item1 in item.CompanyUsers)
+                        {
+                            CompanyCardResponseDto dto = new CompanyCardResponseDto
+                            {
+                                Id = item.CompanyId,
+                                Name = item.Name,
+                                ReferenceCode = item.ReferenceCode,
+                                City = item.City,
+                                Email = item.CompanyEmail,
+                                Status = item.CompanyStatus.Status,
+                                Country = item.Country.Name,
+                                UserId = item1.UserId
+                            };
+                            reponseDtos.Add(dto);
+                        }
+                    }
+                    return reponseDtos;
+                }
             }
             catch (Exception)
             {
-
                 throw;
             }
 

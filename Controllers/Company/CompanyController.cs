@@ -252,18 +252,20 @@ namespace MeroBolee.Controllers.City
         /// To get all companies by type (0: Bid Inviter, 1: Bidder or Supplier)
         /// </summary>
         /// <param name="pagination">Pagination info</param>
+        /// <param name="procurementIds"></param>
+        /// <param name="procurementCategoryIds"></param>
         /// <param name="companyType">Company type info (0 for Bid Inviter, 1 For Supplier)</param>
         /// <param name="search">Search text</param>
         /// <returns></returns>
         [HttpGet("Company/ByType")]
-        public async Task<IActionResult> GetAllCompanyByType([FromQuery] PaginationQuery pagination, [FromQuery] CompanyTypeEnum companyType = CompanyTypeEnum.Bidder,  [FromQuery] string search = null)
+        public async Task<IActionResult> GetAllCompanyByType([FromQuery] PaginationQuery pagination,[FromQuery] string procurementIds, [FromQuery] string procurementCategoryIds, [FromQuery] CompanyTypeEnum companyType = CompanyTypeEnum.Bidder,  [FromQuery] string search = null)
         {
             try
             {
                 string url = Url.Action("GetAllCompanyByType", null, new { companyType = companyType, search = search}, Request.Scheme); //get url for current request
                 uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
-                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompanyByType(companyType, search);
+                IEnumerable<CompanyCardResponseDto> companies = await companyService.GetCompanyByType(companyType, search, procurementIds, procurementCategoryIds);
                 int totalCount = companies.Count();
                 if (totalCount == 0)
                 {

@@ -14,7 +14,7 @@ namespace MeroBolee.Repository
         Task<CompanyEntity> AddCompany(CompanyEntity companyEntity, long userId);
         Task<UserEntity> AddUser(long companyId, UserEntity user);
         Task<List<CompanyEntity>> GetCompanyByType(CompanyTypeEnum companyType, string search);
-        Task<List<CompanyEntity>> GetAllCompany( string search);
+        Task<List<CompanyEntity>> GetAllCompany(string search);
         Task<List<CompanyCardResponseDto>> GetVerifiedCompany(CompanyTypeEnum companyType, string search);
 
 
@@ -24,7 +24,10 @@ namespace MeroBolee.Repository
         Task<CompanyEntity> UpdateCompany(CompanyEntity companyEntity);
 
         Task<CompanyEntity> ChangeCompanyStatus(CompanyEntity ent);
-
+       
+        Task<List<CompanyCardResponseDto>> GetCompanyInfoByProcurementCategory(List<int> procurementCategoryIdsList, string search);
+        Task<List<CompanyCardResponseDto>> GetCompanyInfoByProcurement(List<int> procurementIdsList,string search);
+        Task<long> GetUserId(long id);
     }
 
     public class CompanyRepository : RepositoryBase<CompanyEntity>, ICompanyRepository
@@ -144,7 +147,8 @@ namespace MeroBolee.Repository
                                      )
                                      .Include(t => t.CategoryEntity)
                                      .Include(t => t.TenderStatusEntity)
-                                    // .Include(t => t.TenderCards)
+                                     .Include(t=>t.TenderEntities)
+                                     // .Include(t => t.TenderCards)
                                      .ToListAsync<CommunityApprovalEntity>();
                     }
 
@@ -177,9 +181,10 @@ namespace MeroBolee.Repository
                 if (string.IsNullOrEmpty(search))
                 {
                     return await meroBoleeDbContexts.CompanyEntities
-                        .Include(x=> x.Country)
-                        .Include(x=> x.CompanyStatus)
-                        .Include(x=>x.CompanyUsers)
+                        .Include(x => x.Country)
+                        .Include(x => x.CompanyStatus)
+                        .Include(x => x.CompanyUsers)
+                        .Include(x => x.VendorEnlistment)
                         .Where(x => x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
                         .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
@@ -190,7 +195,8 @@ namespace MeroBolee.Repository
                         .Include(x => x.Country)
                         .Include(x => x.CompanyStatus)
                         .Include(x => x.CompanyUsers)
-                        .Where(x => x.Name.ToLower().Contains(search.ToLower()) 
+                        .Include(x => x.VendorEnlistment)
+                        .Where(x => x.Name.ToLower().Contains(search.ToLower())
                                  && x.CompanyId != 1 && x.RegisteredAs == companyType.ToString()) //1 is merobolee company
                         .OrderByDescending(x => x.CompanyId)
                         .ToListAsync();
@@ -351,6 +357,137 @@ namespace MeroBolee.Repository
                 return ent;
             }
             catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<CompanyCardResponseDto>> GetCompanyInfoByProcurementCategory(List<int> procurementCategoryIdsList, string search)
+        {
+            try
+            {
+                var list = new List<CompanyCardResponseDto>();
+                if (string.IsNullOrEmpty(search))
+                {
+
+                    foreach (var item in procurementCategoryIdsList)
+                    {
+
+                        var result = await (from b in meroBoleeDbContexts.BidderProcurementCategoryEntities
+                                            where b.ProcurementCategoryId == item
+                                            select new CompanyCardResponseDto
+                                            {
+                                                VendorEnlistmentId = b.VendorEnlistmentId,
+                                                Name = b.VendorEnlistment.Company.Name,
+                                                City = b.VendorEnlistment.Company.City,
+                                                Email = b.VendorEnlistment.Company.CompanyEmail,
+                                                Country = b.VendorEnlistment.Company.Country.Name,
+                                                Id = b.VendorEnlistment.CompanyId,
+                                                ReferenceCode = b.VendorEnlistment.Company.ReferenceCode,
+                                                Status = b.VendorEnlistment.Company.CompanyStatus.Status,
+                                            }).ToListAsync();
+
+                        list.AddRange(result);
+                    }
+                }
+                else
+                {
+                    foreach (var item in procurementCategoryIdsList)
+                    {
+
+                        var result = await (from b in meroBoleeDbContexts.BidderProcurementCategoryEntities
+                                            where b.ProcurementCategoryId == item && b.VendorEnlistment.Company.Name.ToLower().Contains(search.ToLower())
+                                            select new CompanyCardResponseDto
+                                            {
+                                                VendorEnlistmentId = b.VendorEnlistmentId,
+                                                Name = b.VendorEnlistment.Company.Name,
+                                                City = b.VendorEnlistment.Company.City,
+                                                Email = b.VendorEnlistment.Company.CompanyEmail,
+                                                Country = b.VendorEnlistment.Company.Country.Name,
+                                                Id = b.VendorEnlistment.CompanyId,
+                                                ReferenceCode = b.VendorEnlistment.Company.ReferenceCode,
+                                                Status = b.VendorEnlistment.Company.CompanyStatus.Status
+                                            }).ToListAsync();
+
+                        list.AddRange(result);
+                    }
+                }
+                
+
+                return list;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<CompanyCardResponseDto>> GetCompanyInfoByProcurement(List<int> procurementIdsList, string search)
+        {
+            try
+            {
+                var list = new List<CompanyCardResponseDto>();
+
+                if (string.IsNullOrEmpty(search))
+                {
+                    foreach (var item in procurementIdsList)
+                    {
+                        var result = await (from b in meroBoleeDbContexts.BidderProcurementCategoryEntities
+                                            where b.ProcurementCategory.ProcurementId == item
+                                            select new CompanyCardResponseDto
+                                            {
+                                                VendorEnlistmentId = b.VendorEnlistmentId,
+                                                Name = b.VendorEnlistment.Company.Name,
+                                                City = b.VendorEnlistment.Company.City,
+                                                Email = b.VendorEnlistment.Company.CompanyEmail,
+                                                Country = b.VendorEnlistment.Company.Country.Name,
+                                                Id = b.VendorEnlistment.CompanyId,
+                                                ReferenceCode = b.VendorEnlistment.Company.ReferenceCode,
+                                                Status = b.VendorEnlistment.Company.CompanyStatus.Status
+                                            }).Distinct().ToListAsync();
+                        list.AddRange(result);
+                    }
+                }
+                else
+                {
+                    foreach (var item in procurementIdsList)
+                    {
+                        var result = await (from b in meroBoleeDbContexts.BidderProcurementCategoryEntities
+                                            where b.ProcurementCategory.ProcurementId == item && b.VendorEnlistment.Company.Name.ToLower().Contains(search.ToLower())
+                                            select new CompanyCardResponseDto
+                                            {
+                                                VendorEnlistmentId = b.VendorEnlistmentId,
+                                                Name = b.VendorEnlistment.Company.Name,
+                                                City = b.VendorEnlistment.Company.City,
+                                                Email = b.VendorEnlistment.Company.CompanyEmail,
+                                                Country = b.VendorEnlistment.Company.Country.Name,
+                                                Id = b.VendorEnlistment.CompanyId,
+                                                ReferenceCode = b.VendorEnlistment.Company.ReferenceCode,
+                                                Status = b.VendorEnlistment.Company.CompanyStatus.Status
+                                            }).Distinct().ToListAsync();
+                        list.AddRange(result);
+                    }
+                }
+                    
+
+                return list;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<long> GetUserId(long id)
+        {
+            try
+            {
+                return await meroBoleeDbContexts.UserCompanies.Where(x => x.CompanyId == id).Select(x => x.Id).FirstOrDefaultAsync();
+            }
+            catch
             {
 
                 throw;

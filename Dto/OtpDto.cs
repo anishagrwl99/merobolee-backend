@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MeroBolee.Dto
+﻿namespace MeroBolee.Dto
 {
     public class OtpDto
     {

@@ -1,11 +1,9 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeroBolee.EntityMapper
 {
@@ -141,7 +139,7 @@ namespace MeroBolee.EntityMapper
         }
 
 
-        public UserDetailDto UserDetailDto(UserEntity user, List<CompanyEntity> companies)
+        public UserDetailDto UserDetailDto(UserEntity user, List<CompanyEntity> companies, string baseUrl)
         {
             UserDetailDto userDetailDto = new UserDetailDto
             {
@@ -155,7 +153,6 @@ namespace MeroBolee.EntityMapper
                 RegistrationDate = user.Date_created,
                 ActivationDate = user.ActivateDate
             };
-
             userDetailDto.Companies = (from c in companies
                                        select new CompanyDto
                                        {
@@ -212,6 +209,147 @@ namespace MeroBolee.EntityMapper
                 getUsers.Add(userDto);
             }
             return getUsers;
+        }
+
+        private VendorEnlistmentDetail VendorEnlistmentEntitytoDto(VendorEnlistmentEntity vendorEnlistmentEntity)
+        {
+            var obj = new VendorEnlistmentDetail
+            {
+                Email2 = vendorEnlistmentEntity.Email2,
+                Website=vendorEnlistmentEntity.Website,
+                DirectorName = vendorEnlistmentEntity.Director_Name,
+                OtherContact = vendorEnlistmentEntity.Other_Contact,
+                OtherBranchesLocation = vendorEnlistmentEntity.Other_Branches_Location,
+                YearOfEstablishment = vendorEnlistmentEntity.Year_Of_Establishment,
+                NumberOfFullTimeEmployees = vendorEnlistmentEntity.Number_Of_Full_Time_Employees,
+                ProcurementDetatil = vendorEnlistmentEntity.Procurement_Detatil,
+                ExportCountries = vendorEnlistmentEntity.Export_Countries,
+                CountriesWithRegisteredOffice = vendorEnlistmentEntity.Countries_With_Registered_Office,
+                CountriesWithAgent = vendorEnlistmentEntity.Countries_With_Agent,
+                NatureOfBusiness = new List<string>(vendorEnlistmentEntity.Nature_Of_Business.Split(',')),
+                VendorExperience = vendorEnlistmentEntity.Vendor_Experience,
+                ContractsCurrentlyUnderway = vendorEnlistmentEntity.Contracts_Currently_Underway,
+                IsEnable = vendorEnlistmentEntity.IsEnable,
+                DateCreated = vendorEnlistmentEntity.Date_Created,
+                DateModified = vendorEnlistmentEntity.Date_Modified,
+                HasCodeOfConduct = vendorEnlistmentEntity.HasCodeOfConduct,
+                HasSuppliedBefore = vendorEnlistmentEntity.HasSuppliedBefore,
+                HasCSRPolicies = vendorEnlistmentEntity.HasCSRPolicies,
+                HasInternationalQualityAssurance = vendorEnlistmentEntity.HasInternationalQualityAssurance,
+                HasLocalOrNationalQualityAssurance = vendorEnlistmentEntity.HasLocalOrNationalQualityAssurance,
+                CopyOfLastFinancialStatement = vendorEnlistmentEntity.CopyOfLastFinancialStatement,
+                CopyOfLatestAuditedAccount = vendorEnlistmentEntity.CopyOfLatestAuditedAccount,
+                CompanyRating = vendorEnlistmentEntity.CompanyRating,
+                SixMonthsCurrentBankStatement = vendorEnlistmentEntity.SixMonthsCurrentBankStatement
+            };
+            return obj;
+        }
+
+        private List<VendorEnlistmentReferencesDto> VendorEnlistmentReferencesEntitytoDto (List<VendorEnlistmentReferencesEntity> vendorEnlistmentReferencesEntities)
+        {
+            var vendorEnlistmentReferences = new List<VendorEnlistmentReferencesDto>();
+            foreach (var item in vendorEnlistmentReferencesEntities)
+            {
+                if (!item.IsDeleted)
+                {
+                    var result = new VendorEnlistmentReferencesDto
+                    {
+                        Id=item.Id,
+                        Name = item.Name,
+                        Country = item.Country,
+                        TypeOfContract = item.TypeOfContract,
+                        Value = item.Value,
+                        Year = item.Year,
+                        ContactName = item.ContactName,
+                        Phone = item.Phone,
+                        Email = item.Email
+                    };
+                    vendorEnlistmentReferences.Add(result);
+                }
+                
+            }
+            return vendorEnlistmentReferences;
+        }
+
+        private List<VendorEnlistmentAnnualIncomeDto> VendorEnlistmentAnnualIncomeEntityToDto (List<VendorEnlistmentAnnualIncomeEntity> vendorEnlistmentAnnualIncomeEntities)
+        {
+
+            var vendorEnlistmentAnnualIncomes = new List<VendorEnlistmentAnnualIncomeDto>();
+            foreach (var item in vendorEnlistmentAnnualIncomeEntities)
+            {
+                if (!item.IsDeleted)
+                {
+                    var annualIncome = new VendorEnlistmentAnnualIncomeDto
+                    {
+                        Id = item.Id,
+                        FiscalYear = item.FiscalYear,
+                        IncomeSales = item.IncomeSales,
+                        ExportSales = item.ExportSales
+                    };
+                    vendorEnlistmentAnnualIncomes.Add(annualIncome);
+                }
+            }
+            return vendorEnlistmentAnnualIncomes;
+        }
+
+        private List<VendorEnlistmentBankInfoDto> VendorEnlistmentBankInfoEntityToDto(List<VendorEnlistmentBankInfoEntity> vendorEnlistmentBankInfoEntities)
+        {
+            var vendorEnlistmentBankInfos = new List<VendorEnlistmentBankInfoDto>();
+            foreach (var item in vendorEnlistmentBankInfoEntities)
+            {
+                if (!item.IsDeleted)
+                {
+                    var bankInfo = new VendorEnlistmentBankInfoDto
+                    {
+                        Id = item.Id,
+                        BankName = item.BankName,
+                        AccountName = item.AccountName,
+                        AccountNumber = item.AccountNumber,
+                        SwiftCode = item.SwiftCode,
+                        Address = item.Address,
+                        StreetName = item.StreetName,
+                        StreetNumber = item.StreetNumber,
+                        City = item.City,
+                        PostalCode = item.PostalCode,
+                        Country = item.Country,
+                        PhoneNumber = item.PhoneNumber
+                    };
+                    vendorEnlistmentBankInfos.Add(bankInfo);
+                }
+            }
+            return vendorEnlistmentBankInfos;
+        }
+
+        private List<long> BidderProcurementCategoryEntityToDto(List<BidderProcurementCategoryEntity> bidderProcurementCategoryEntities)
+        {
+            var list = new List<long>();
+            foreach (var item in bidderProcurementCategoryEntities)
+            {
+                if (!item.IsDeleted)
+                {
+                    list.Add(item.ProcurementCategoryId);
+                }
+            }
+            return list;
+        }
+
+        private List<VendorEnlistmentDocumentDto> VendorEnlistmentDocumentEntityToDto(List<VendorEnlistmentDocumentEntity> vendorEnlistmentDocumentEntities,string baseUrl)
+        {
+            var list= new List<VendorEnlistmentDocumentDto>();
+            foreach (var item in vendorEnlistmentDocumentEntities)
+            {
+                if (!item.IsDeleted)
+                {
+                    var obj = new VendorEnlistmentDocumentDto
+                    {
+                        Id = item.Id,
+                        DocumentTypeId = item.DocumentTypeId,
+                        DocumentPath = String.IsNullOrEmpty(item.DocumentPath) ? "" : $"{baseUrl}{item.DocumentPath.Replace('\\', '/')}"
+                    };
+                    list.Add(obj);
+                }
+            }
+            return list;
         }
 
     }
