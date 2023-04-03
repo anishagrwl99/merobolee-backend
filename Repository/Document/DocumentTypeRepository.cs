@@ -46,7 +46,7 @@ namespace MeroBolee.Repository
         {
             try
             {
-                return meroBoleeDbContexts.DocumentTypeEntities.ToList();
+                return meroBoleeDbContexts.DocumentTypeEntities.Where(x=>x.Type=="Both" || x.Type=="Bid Inviter").ToList();
             }
             catch (Exception)
             {

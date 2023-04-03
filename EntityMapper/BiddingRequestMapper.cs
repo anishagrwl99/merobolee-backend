@@ -197,13 +197,7 @@ namespace MeroBolee.EntityMapper
                     TenderLiveDate = entity.Tender.LiveEndDate,
                     TenderTitle = entity.Tender.Title,
                     TenderCode = entity.Tender.Code,
-                    //CardInfo = (from tc in entity.Tender.TenderCards
-                    //            select new TenderCardInfo
-                    //            {
-                    //                Id = tc.Id,
-                    //                Label = tc.Label,
-                    //                Value = tc.Value
-                    //            }).ToList()
+                    PostBidStatus=entity.Tender.PostBidStatus
                 };
             }
 
@@ -247,16 +241,14 @@ namespace MeroBolee.EntityMapper
                 foreach (BidRequestEntity requestEntity in bidderRequests)
                 {
                     BidHistoryCardDto c = BidEntityToHistoryCard(requestEntity);
-                    MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
-                    TenderEntity e = meroBoleeDbContext.TenderEntities.Where(x => x.Id == c.TenderId).FirstOrDefault();
-                    c.Product = e.Product;
-                    c.LiveEndDate = e.LiveEndDate;
-                    c.LiveStartDate = e.LiveStartDate;
-                    c.RegistrationTill = e.RegistrationTill;
-                    c.Location = e.Location;
+                    c.Product = requestEntity.Tender.Product;
+                    c.LiveEndDate = requestEntity.Tender.LiveEndDate;
+                    c.LiveStartDate = requestEntity.Tender.LiveStartDate;
+                    c.RegistrationTill = requestEntity.Tender.RegistrationTill;
+                    c.Location = requestEntity.Tender.Location;
                     getBiddings.Add(c);
                 };
-                return getBiddings;
+                return getBiddings.OrderByDescending(x => x.LiveEndDate);
 
             }
         }

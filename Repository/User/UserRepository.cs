@@ -211,10 +211,10 @@ namespace MeroBolee.Repository
                                                            CompanyStatus = s,
                                                            CompanyWebsite = c.CompanyWebsite,
                                                            Zip = c.Zip
-
                                                        }
 
                                                  ).ToListAsync();
+
                 return Tuple.Create(user, companies);
 
             }

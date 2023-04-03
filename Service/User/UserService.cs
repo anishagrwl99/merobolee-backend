@@ -58,11 +58,14 @@ namespace MeroBolee.Service
             return UserEntityListToDto(users, uploadImage, baseUrl, defaultImage);
         }
 
-        public async Task<UserDetailDto> GetUserDetail(long id, string baseUrl, string defaultPic)
+        public async Task<UserDetailDto> GetUserDetail(long id,string baseUrl, string defaultPic)
         {
             Tuple<UserEntity, List<CompanyEntity>> info = await userRepository.GetUserDetail(id);
-            info.Item1.ProfilePicture = await GetUserProfilePicture(info.Item1.ProfilePicture, baseUrl, defaultPic);
-            return UserDetailDto(info.Item1, info.Item2);
+            if(info.Item1!=null)
+            {
+                info.Item1.ProfilePicture = await GetUserProfilePicture(info.Item1.ProfilePicture, baseUrl, defaultPic);
+            }
+            return UserDetailDto(info.Item1, info.Item2,baseUrl);
         }
 
         public async Task<GetUserDto> SignUp(SignUpDto userDto)

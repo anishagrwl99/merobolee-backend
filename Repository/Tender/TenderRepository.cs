@@ -2513,14 +2513,14 @@ namespace MeroBolee.Repository
             }
         }
 
-        public  async Task<IEnumerable<PostBidApprovalListDto>> FetchPostBidApprovalList(long tenderId)
+        public  async Task<IEnumerable<PostBidList>> FetchPostBidApprovalList(long tenderId)
         {
             try
             {
                 return await (from b in meroBoleeDbContexts.PostBidddingApprovalEntities
                         join c in meroBoleeDbContexts.CompanyEntities on b.CompanyId equals c.CompanyId
                         where b.TenderId == tenderId
-                        select new PostBidApprovalListDto
+                        select new PostBidList
                         {
                             CompanyId = b.CompanyId,
                             StatusId = b.StatusId,
@@ -2657,149 +2657,6 @@ namespace MeroBolee.Repository
             }
         }
 
-        public async Task<long> Couunt(int id)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.TenderEntities.Where(x => x.ProcurementId == id && x.IsDeleted==false).CountAsync();
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> CountBidType(int id)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.TenderEntities.Where(x => x.AlgoId == id && x.IsDeleted == false).CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> BidInviterCountBidType(int id,long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.TenderEntities.AlgoId == id && x.CompanyId == companyId && x.TenderEntities.IsDeleted == false).CountAsync();
-
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> BiderCountBidType(int id, long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Include(x => x.Tender).Where(x => x.Tender.AlgoId == id && x.CompanyId == companyId && x.Tender.IsDeleted == false
-                 ).CountAsync();
-
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> BidInviterCount(int id,long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.TenderEntities.ProcurementId == id && x.CompanyId==companyId && x.TenderEntities.IsDeleted==false).CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> BidderCount(int id, long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Include(x => x.Tender).Where(x => x.Tender.ProcurementId == id
-                && x.CompanyId == companyId && x.Tender.IsDeleted == false
-                                        && x.Tender.StatusId == 3 //Tender should be approved
-                                                                      ).CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetBidderBidBasedOnProcurementType(int id, int i, long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Include(x => x.Tender).Where(x => x.Tender.ProcurementId == id
-                               && x.CompanyId == companyId && x.Tender.IsDeleted == false
-                                                       && x.Tender.StatusId == 3 //Tender should be approved
-                                                       && x.BidRequestStatusId == 2 //Bid request should be approved
-                                                                                     ).CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetOngoingPreBiddingCount(int id)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).
-                    Where(x=>x.TenderEntities.StatusId<3 && x.TenderEntities.IsDeleted==false && x.TenderEntities.ProcurementId==id).Select(x=>x.TenderId).Distinct().CountAsync();
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetOngoingPreBiddingCountBidInviter(long companyId,int id)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).
-                    Where(x => x.TenderEntities.StatusId < 3 && x.TenderEntities.IsDeleted == false && x.CompanyId==companyId && x.TenderEntities.ProcurementId == id).CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetOngoingPostBiddingCount(int id)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.PostBidddingApprovalEntities.Include(x => x.TenderEntity).
-                                    Where(x => x.TenderEntity.PostBidStatus < 3 && x.TenderEntity.IsDeleted == false && x.TenderEntity.ProcurementId==id).Select(x => x.TenderId).Distinct().CountAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
         public async Task<long> GetOngoingPostBiddingCountBidInviter(long companyId,int id)
         {
             try
@@ -2819,95 +2676,6 @@ namespace MeroBolee.Repository
             try
             {
                 return await meroBoleeDbContexts.TenderStatus.ToListAsync();
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<CommunityApprovalEntity>> GetBidInviterTenderStatusList(long companyId, int procurementId, int statusId)
-        {
-            try
-            {
-                if(statusId==1)
-                {
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId==companyId && x.TenderEntities.StatusId == 1
-                    && x.TenderEntities.LiveEndDate > DateTimeNPT.Now && x.TenderEntities.IsDeleted == false
-                                               && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-                else if (statusId==2)
-                {
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId == companyId && x.TenderEntities.StatusId == 2
-                   && x.TenderEntities.LiveEndDate > DateTimeNPT.Now && x.TenderEntities.IsDeleted == false
-                                              && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-                else if (statusId==3)
-                {
-
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId == companyId && x.TenderEntities.StatusId == 3
-                  && x.TenderEntities.LiveStartDate > DateTimeNPT.Now && x.TenderEntities.IsDeleted == false
-                                             && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-                else if (statusId==4)
-                {
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId == companyId && x.TenderEntities.StatusId == 3
-                  && x.TenderEntities.LiveStartDate<=DateTimeNPT.Now && x.TenderEntities.LiveEndDate > DateTimeNPT.Now && x.TenderEntities.IsDeleted == false
-                                             && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-                else if (statusId == 5)
-                {
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId == companyId && x.TenderEntities.StatusId == 3
-                   && x.TenderEntities.LiveEndDate < DateTimeNPT.Now && x.TenderEntities.IsDeleted == false
-                                             && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-                else
-                {
-                    return await meroBoleeDbContexts.CommunityApprovalEntities.Include(x => x.TenderEntities).Where(x => x.CompanyId == companyId && x.TenderEntities.StatusId == statusId
-                                            && x.TenderEntities.ProcurementId == procurementId).ToListAsync();
-                }
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<BidRequestEntity>> GetBidderTenderStatusList(long companyId, int procurementId, int statusId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Include(x => x.Tender).Where(x => x.CompanyId == companyId && x.BidRequestStatusId == statusId
-                && x.Tender.ProcurementId == procurementId && x.Tender.IsDeleted == false).ToListAsync();
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetBidderPendingCount(long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Where(x => x.CompanyId == companyId && x.Tender.IsDeleted == false && x.BidRequestStatusId == 1 && x.BidRequestStatusId == 3).CountAsync();
-
-            }
-            catch 
-            {
-
-                throw;
-            }
-        }
-
-        public async Task<long> GetBidderHistoryCount(long companyId)
-        {
-            try
-            {
-                return await meroBoleeDbContexts.BidRequestEntities.Where(x => x.CompanyId == companyId && x.Tender.IsDeleted == false && x.Tender.LiveEndDate < DateTimeNPT.Now).CountAsync();
             }
             catch 
             {
@@ -3164,6 +2932,58 @@ namespace MeroBolee.Repository
             try
             {
                 return await meroBoleeDbContexts.UserCompanies.Where(x => x.CompanyId == companyId).Select(x => x.UserId).FirstOrDefaultAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<TenderEntity>> GetAllTender()
+        {
+            try
+            {
+                return await meroBoleeDbContexts.TenderEntities.Include(x=>x.CommunityApprovalEntities).Include(x=>x.PostBidddingApprovalEntities).
+                    Where(x=>x.IsDeleted==false).ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<CommunityApprovalEntity>> GetAllCommunityApproval(long companyId)
+        {
+            try
+            {
+                return await(from cm in meroBoleeDbContexts.CommunityApprovalEntities
+                             join t in meroBoleeDbContexts.TenderEntities on cm.TenderId equals t.Id
+                             join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                             join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                             join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
+                             where cm.CompanyId== companyId && t.IsDeleted==false
+                             select cm).ToListAsync();
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<BidRequestEntity>> GetBidRequestEntities(long companyId)
+        {
+            try
+            {
+                return await(from bd in meroBoleeDbContexts.BidRequestEntities
+                             join t in meroBoleeDbContexts.TenderEntities on bd.TenderId equals t.Id
+                             join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                             join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
+                             join c1 in meroBoleeDbContexts.CompanyEntities on bd.CompanyId equals c1.CompanyId
+                             where bd.CompanyId == companyId && t.IsDeleted == false
+                             select bd).ToListAsync();  
             }
             catch 
             {

@@ -1,15 +1,9 @@
-using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
-using MeroBolee.Service;
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using MeroBolee.Service.Inovice;
 
 namespace MeroBolee.Controllers.Invoice
@@ -24,7 +18,7 @@ namespace MeroBolee.Controllers.Invoice
             this.inovicePdfService = inovicePdfService;
         }
 
-        [HttpPost("Invoice/Generate")]
+        [HttpGet("Invoice/Generate")]
         public async Task<IActionResult> InvoicePdfGenerate([FromQuery] long TenderId, [FromQuery] long UserId) 
         {
             try 
@@ -47,7 +41,7 @@ namespace MeroBolee.Controllers.Invoice
             }
         }
 
-        [HttpPost("Invoice/Generate/All")]
+        [HttpGet("Invoice/Generate/All")]
         public async Task<IActionResult> InvoicePdfGenerateAll([FromQuery] long TenderId) 
         {
             try 
@@ -70,7 +64,7 @@ namespace MeroBolee.Controllers.Invoice
             }
         }
 
-        [HttpPost("Invoice/Generate/Consolidate/Report")]
+        [HttpGet("Invoice/Generate/Consolidate/Report")]
         public async Task<IActionResult> InvoicePdfGenerateConsolidateReport([FromQuery] long TenderId) 
         {
             try 
@@ -93,7 +87,7 @@ namespace MeroBolee.Controllers.Invoice
             }
         }
 
-        [HttpPost("Invoice/Generate/SealBid/Report")]
+        [HttpGet("Invoice/Generate/SealBid/Report")]
         public async Task<IActionResult> GenerateSealBidReport([FromQuery] string htmlString) 
         {
             try 

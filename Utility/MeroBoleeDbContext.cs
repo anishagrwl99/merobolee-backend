@@ -17,7 +17,6 @@ namespace MeroBolee.Utility
         public DbSet<TechnicalSupportReceiver> TechnicalSupportReceivers { get; set; }
         public DbSet<TenderExtraDocumentEntity> TenderExtraDocuments { get; set; }
         public DbSet<TenderCardFeedbackEntity> TenderCardFeedbacks { get; set; }
-       // public DbSet<TenderCardEntity> TenderCards { get; set; }
 
         public DbSet<TenderStatusEntity> TenderStatus { get; set; }
         public DbSet<AuctionLog> AuctionLogs { get; set; }
@@ -91,6 +90,14 @@ namespace MeroBolee.Utility
         public DbSet<TenderPostBidStatusEntity> TenderPostBidStatusEntities { get; set; }
         public DbSet<TenderProcurementTypeEntity> TenderProcurementTypeEntities { get; set; }
         public DbSet<GraphDataEntity> GraphDataEntities { get; set; }
+        public DbSet<VendorEnlistmentEntity> VendorEnlistmentEntities { get; set; }
+        public DbSet<VendorEnlistmentReferencesEntity> VendorEnlistmentReferencesEntities { get; set; }
+        public DbSet<VendorEnlistmentAnnualIncomeEntity> VendorEnlistmentAnnualIncomeEntities { get; set; }
+        public DbSet<VendorEnlistmentBankInfoEntity> VendorEnlistmentBankInfoEntities { get; set; }
+        public DbSet<TenderProcurementCategoryEntity> TenderProcurementCategoryEntities { get; set; }
+        public DbSet<BidderProcurementCategoryEntity> BidderProcurementCategoryEntities { get; set; }
+        public DbSet<VendorEnlistmentDocumentEntity> VendorEnlistmentDocumentEntities { get; set; }
+        public DbSet<VendorEnlistmentLogEntity> VendorEnlistmentLogEntities { get; set; }
 
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {

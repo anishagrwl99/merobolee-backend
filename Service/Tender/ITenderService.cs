@@ -14,9 +14,9 @@ namespace MeroBolee.Service
 
         Task<GetTenderDto> GetTenderDetail(long tenderId, string basePath, bool isRegistered, string userRole);
         Task<TenderEntity> CommunityApproval(TenderApproveDtoByAdmin tenderApproveDtoByAdmin);
-        Task<bool> PreBidSuperseed(PreBidSuperSeed tenderApproveDto);
+        Task<TenderEntity> PreBidSuperseed(PreBidSuperSeed tenderApproveDto);
         Task<IEnumerable<CommunityApprovalDto>> CommunityApprovalList(long tenderId);
-        Task<PostBidDetail> GetPostBidApprovalList(long tenderId);
+        Task<IEnumerable<PostBidList>> GetPostBidApprovalList(long tenderId);
         Task<IEnumerable<PostBidDtoList>> GetPostBidCompanyList(long companyId);
         Task<IEnumerable<PostBidApprovalListDto>> GetPostBidRemarksList(long tenderId,long companyId);
         Task<TenderDocuments> GetTenderDocuments(long tenderId, string basePath);
@@ -89,17 +89,17 @@ namespace MeroBolee.Service
         Task<RetriveSubSectionDto> RetriveSubsectionTotal(long tenderId, long supplierId);
         
         Task<int> TenderStatusForAdmin(long tenderId);
-        Task<PostBidddingApprovalEntity> PostBidApprove(VerifyOtpDto verifyOtpDto);
-        Task<PostBidddingApprovalEntity> PostBidRequestChanges(TenderApproveDto tenderApprove);
+        Task<VerifyOtpDto> PostBidApprove(VerifyOtpDto verifyOtpDto);
+        Task<TenderApproveDto> PostBidRequestChanges(TenderApproveDto tenderApprove);
         Task<PostBidddingApprovalEntity> GenerateNewRequest(GenerateNewRequestDtoByAdmin tenderApprove);
         Task<bool> PostBidFinalApprove(TenderApproveDtoByAdmin tenderApprove);
         Task<List<PostBidddingApprovalEntity>> AddPostBid(AddPostBidDto postBidDto);
-        Task <bool> AddSuperSeed(SuperSeedDto superSeedDto);
+        Task <TenderEntity> AddSuperSeed(SuperSeedDto superSeedDto);
         Task<int> CheckPostBidStatus(long tenderId);
         Task<IEnumerable<TenderProcurementTypeEntity>> GetProcurement();
-        Task<List<StatDto>> GetAdminDashboard();
-        Task<List<StatDto>> GetBidInviterDashboard(long companyId);
-        Task<List<StatDto>> GetBidderDashboard(long companyId);
+        Task<Dictionary<string, StatDto>> GetAdminDashboard();
+        Task<Dictionary<string, StatDto>> GetBidInviterDashboard(long companyId);
+        Task<Dictionary<string, StatDto>> GetBidderDashboard(long companyId);
         Task<IEnumerable<GraphDataEntity>> SaveGraphData(GraphDataDto graphDataDto);
         Task<List<BidderInfo>> GetParticipantBidderList(long tenderId,string Rank);
         Task<bool> SaveQulifiedOrWinner(QualifiedOrWinnerDto qualifiedOrWinnerDto);

@@ -1,9 +1,5 @@
-﻿using MeroBolee.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
@@ -100,6 +96,10 @@ namespace MeroBolee.Dto
         public string Units { get; set; }
         
         public string MaterialGroup { get; set; }
+        public string Remarks { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal Quotation { get; set; }
+
     }
 
     public class TenderMaterialSealedResponseDto

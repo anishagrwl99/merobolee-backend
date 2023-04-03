@@ -1,12 +1,9 @@
 ﻿using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
 using MeroBolee.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +39,18 @@ namespace MeroBolee.Controllers.Tender
                 if (ModelState.IsValid)
                 {
                     TenderCardFeedbackDto response = await feedbackService.AddFeedback(feedback);
-                    return Ok(new Responses<TenderCardFeedbackDto>(response, "200", "Record is successfully added"));
+                    if (response == null)
+                    {
+                        return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                    }
+                    else if (response.Feedback == "Conflict")
+                    {
+                        return Conflict(new Responses<string>("Conflict", "409", "Action can't be performed."));
+                    }
+                    else
+                    {
+                        return Ok(new Responses<string>("Ok", "200", "Request successfully sent."));
+                    }
                 }
                 else
                 {

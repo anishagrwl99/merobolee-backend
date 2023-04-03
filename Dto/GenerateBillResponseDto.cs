@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeroBolee.Dto
 {
@@ -15,5 +12,9 @@ namespace MeroBolee.Dto
         public string CompanyName { get; set; }
 
         public long UserId { get; set; }
+        
+        public long CompanyId { get; set; }
+        
+        public string PanNumber { get; set; }
     }
 }

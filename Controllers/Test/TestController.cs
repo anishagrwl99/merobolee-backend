@@ -1,18 +1,14 @@
 ﻿using MeroBolee.Attribute;
 using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
 using MeroBolee.Service;
-using MeroBolee.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace MeroBolee.Controllers.Environment
 {

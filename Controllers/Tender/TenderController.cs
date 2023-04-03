@@ -2,12 +2,9 @@
 using MeroBolee.Infrastructure;
 using MeroBolee.Model;
 using MeroBolee.Service;
-using MeroBolee.Service.Otp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,7 +107,7 @@ namespace MeroBolee.Controllers.Tender
         /// /// <param name="procurementIds"></param>
         /// /// <param name="algoIds"></param>
         /// <returns></returns>
-        [HttpPost("Tender/Admin/List")]
+        [HttpGet("Tender/Admin/List")]
         [Authorize(Roles = "Super Admin, Tender Support, Customer Support")]
         public async Task<IActionResult> GetTenderList([FromQuery] PaginationQuery pagination, [FromQuery] int statusId,[FromQuery] string procurementIds, [FromQuery] string algoIds, [FromQuery] long? companyId = null)
         {
@@ -221,10 +218,11 @@ namespace MeroBolee.Controllers.Tender
         /// <param name="companyId"></param>
         /// <param name="procurementId"></param>
         /// <param name="algoId"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("Tender/BidInviter/Listing")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId)
+        public async Task<IActionResult> GetBidInviterTenderListing([FromQuery] PaginationQuery pagination, [FromQuery] long companyId, [FromQuery] string procurementId, [FromQuery] string algoId)
         {
             try
             {
@@ -239,7 +237,7 @@ namespace MeroBolee.Controllers.Tender
                     {
                         return NotFound(new Responses<BidInviterTenderListing>(tenders, "404", "Record not found"));
                     }
-                    return Ok(new Responses<BidInviterTenderListing>(tenders, "200", "Record found"));
+                    return Ok(ResultAfterPagination(tenders.PendingTenders, pagination, tenders.PendingTenders.Count())); // To pass result in object along with pagination info
                 }
                 return NotFound(new Responses<BidInviterTenderListing>(null, "404", "Record not found"));
             }
@@ -273,6 +271,14 @@ namespace MeroBolee.Controllers.Tender
                 if (ModelState.IsValid)
                 {
                     TenderApproveDto res = await tenderService.ApproveTenderByBidInviter(dto);
+                    if(res==null)
+                    {
+                        return NotFound(new Responses<TenderApproveDto>(res, "404", "Record not found"));
+                    }
+                    else if (res.Remarks=="Conflict")
+                    {
+                        return Conflict(new Responses<string>("Conflict", "409", "Action can't be performed."));
+                    }
                     return Ok(new Responses<TenderApproveDto>(res, "200", "Record is successfully updated"));
                 }
                 else
@@ -884,15 +890,18 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                bool tenderEntity = await tenderService.PreBidSuperseed(tenderApproveDto);
-                if (!tenderEntity)
+                TenderEntity tenderEntity = await tenderService.PreBidSuperseed(tenderApproveDto);
+                if (tenderEntity==null)
                 {
-                    return NotFound(new Responses<bool>(tenderEntity, "404", "Record not found"));
+                    return NotFound(new Responses<TenderEntity>(tenderEntity, "404", "Record not found"));
                 }
-
+                else if (tenderEntity.CommunityApprovalStatus==3)
+                {
+                    return Conflict(new Responses<TenderEntity>(tenderEntity, "409", "Action can't be performed."));
+                }
                 else
                 {
-                    return Ok(new Responses<bool>(tenderEntity, "200", "Tender is successfully updated"));
+                    return Ok(new Responses<TenderEntity>(tenderEntity, "200", "Tender is successfully updated"));
                 }
             }
             catch (Exception e)
@@ -942,13 +951,17 @@ namespace MeroBolee.Controllers.Tender
             try
             {
                 var response = await tenderService.PostBidApprove(verifyOtpDto);
-                if (response!=null)
+                if (response==null)
                 {
-                    return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding status is successfully updated"));
+                    return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                }
+                else if (response.Remarks == "Conflict")
+                {
+                    return Conflict(new Responses<string>("Conflict", "409", "Action can't be performed."));
                 }
                 else
                 {
-                    return NotFound(new Responses<PostBidddingApprovalEntity>(response, "404", "Record not found"));
+                    return Ok(new Responses<string>("Ok", "200", "Tender Post Bidding status is successfully updated"));
                 }
             }
             catch (Exception e)
@@ -971,13 +984,17 @@ namespace MeroBolee.Controllers.Tender
             try
             {
                 var response = await tenderService.PostBidRequestChanges(tenderApprove);
-                if (response != null)
+                if (response == null)
                 {
-                    return Ok(new Responses<PostBidddingApprovalEntity>(response, "200", "Tender Post Bidding Request changes successfully made"));
+                    return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                }
+                else if (response.Remarks == "Conflict")
+                {
+                    return Conflict(new Responses<string>("Conflict", "409", "Action can't be performed."));
                 }
                 else
                 {
-                    return NotFound(new Responses<PostBidddingApprovalEntity>(response, "404", "Record not found"));
+                    return Ok(new Responses<string>("Ok", "200", "Tender Post Bidding status is successfully updated"));
                 }
             }
             catch (Exception e)
@@ -992,19 +1009,22 @@ namespace MeroBolee.Controllers.Tender
         /// Get the list of companies with their respective statusid in PostBidApproval table
         /// </summary>
         /// <param name="tenderId"></param>
+        /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpGet("Admin/List/PostBidApprovalList")]
         [Authorize(Roles = "Super Admin")]
-        public async Task<IActionResult> PostBidApprovalList([FromQuery] long tenderId)
+        public async Task<IActionResult> PostBidApprovalList([FromQuery] PaginationQuery pagination, [FromQuery] long tenderId)
         {
             try
             {
+                string url = Url.Action("GetUpCommingTenderForBidInviter", null, new { tenderId = tenderId }, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
                 var postBidApprovalList = await tenderService.GetPostBidApprovalList(tenderId);
-                if (postBidApprovalList.postBidApprovalListDtos.Count() == 0)
+                if (postBidApprovalList.Count() == 0)
                 {
-                    return NotFound(new Responses<PostBidDetail>(postBidApprovalList, "404", "Record not found"));
+                    return NotFound(new Responses<IEnumerable<PostBidList>>(postBidApprovalList, "404", "Record not found"));
                 }
-                return Ok(new Responses<PostBidDetail>(postBidApprovalList, "200", "Record found"));
+                return Ok(ResultAfterPagination(postBidApprovalList, pagination, postBidApprovalList.Count())); // To pass result in object along with pagination info
             }
             catch (Exception e)
             {
@@ -1192,13 +1212,18 @@ namespace MeroBolee.Controllers.Tender
                 if (superSeedDto.Status==true)
                 {
                     var response = await tenderService.AddSuperSeed(superSeedDto);
-                    if (response)
+                    if (response==null)
                     {
-                        return Ok(new Responses<string>("Ok", "200", "Record is successfully added"));
+                        return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                       
+                    }
+                    else if (response.PostBidStatus==2)
+                    {
+                        return Conflict(new Responses<string>("Conflict", "409", "Action can't be performed."));
                     }
                     else
                     {
-                        return NotFound(new Responses<string>("Error", "404", "Record not found"));
+                        return Ok(new Responses<string>("Ok", "200", "Record is successfully added"));
                     }
                 }
                 else
@@ -1270,8 +1295,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                List<StatDto> response = await tenderService.GetAdminDashboard();
-                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+                Dictionary<string, StatDto> response = await tenderService.GetAdminDashboard();
+                return Ok(new Responses<Dictionary<string, StatDto>>(response, "200", "Record fetched successfully."));
             }
             catch (Exception e)
             {
@@ -1287,8 +1312,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                List<StatDto> response = await tenderService.GetBidInviterDashboard(companyId);
-                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+                Dictionary<string, StatDto> response = await tenderService.GetBidInviterDashboard(companyId);
+                return Ok(new Responses<Dictionary<string, StatDto>>(response, "200", "Record fetched successfully."));
             }
             catch (Exception e)
             {
@@ -1304,8 +1329,8 @@ namespace MeroBolee.Controllers.Tender
         {
             try
             {
-                List<StatDto> response = await tenderService.GetBidderDashboard(companyId);
-                return Ok(new Responses<List<StatDto>>(response, "200", "Record fetched successfully."));
+                Dictionary<string, StatDto> response = await tenderService.GetBidderDashboard(companyId);
+                return Ok(new Responses<Dictionary<string, StatDto>>(response, "200", "Record fetched successfully."));
             }
             catch (Exception e)
             {
@@ -1390,7 +1415,21 @@ namespace MeroBolee.Controllers.Tender
             return paginationResponse;
 
         }
-        
+
+        private PagedResponse<PostBidList> ResultAfterPagination(IEnumerable<PostBidList> tenders, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<PostBidList>(tenders, totalCount);
+            }
+
+            var get = tenders.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
+
+        }
+
         private PagedResponse<TenderCard> ResultAfterPagination(IEnumerable<TenderCard> tenders, PaginationQuery pagination, int totalCount)
         {
             var paginationFilteration = this.pagination.PaginationMap(pagination);

@@ -1,6 +1,5 @@
 using MeroBolee.Dto;
 using MeroBolee.Infrastructure;
-using MeroBolee.Model;
 using MeroBolee.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

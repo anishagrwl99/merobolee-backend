@@ -36,6 +36,9 @@ namespace MeroBolee.Model
         [MaxLength(50)]
         public string TypeName { get; set; }
 
+        public bool IsRequired { get; set; }
+        public string Type { get; set; }
+
         [JsonIgnore]
         public virtual ICollection<CompanyDocumentEntity> CompanyDocuments { get; set; }
     }

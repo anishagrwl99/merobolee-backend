@@ -156,7 +156,7 @@ namespace MeroBolee.Repository
         /// </summary>
         /// <param name="userId">The company identifier.</param>
         /// <returns></returns>
-        Task<string> FindCompanyName(long userId);
+        Task<Tuple<long, Tuple<string, string>>> FindCompanyName(long userId);
 
 
         /// <summary>

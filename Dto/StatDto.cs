@@ -6,7 +6,6 @@ namespace MeroBolee.Dto
     {
         public IEnumerable<CountDto> Count { get; set; }
         public long Total { get; set; }
-        public string Name { get; set; }
         public IEnumerable<ProcurementTypeDto> procurementTypeDtos { get; set; }
 
         public GraphDataDto graphDatas { get; set; }

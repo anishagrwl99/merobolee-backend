@@ -655,7 +655,7 @@ namespace MeroBolee.Controllers.BiddingRequest
                 this.uriService = new UriService(url);
                 //{this.Request.Host}{this.Request.PathBase} // Base Link for pagination
                 IEnumerable<BidHistoryCardDto> BiddingRequest = await biddingRequestService.SupplierBidHistory(supplierCompanyId,procurementIds,algoIds);
-                BiddingRequest = BiddingRequest.OrderByDescending(x => x.LiveEndDate);
+                BiddingRequest.OrderByDescending(x => x.LiveEndDate);
                 int totalCount = BiddingRequest.Count();
                 if (totalCount == 0)
                 {

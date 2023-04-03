@@ -9,7 +9,6 @@ using MeroBolee.Utility;
 using System.Text;
 using System.Net;
 using System.Collections.Generic;
-using MeroBolee.Model;
 
 namespace MeroBolee.Service.Inovice
 {
@@ -236,21 +235,12 @@ namespace MeroBolee.Service.Inovice
             try
             {
                 GenerateBillResponseDto generateBillResponseDto = await biddingRequestService.GenerateBill(TenderId, UserId);
-                string invoiceHtml = "";
-                using (WebClient web1 = new WebClient())
-                {
-                    invoiceHtml = web1.DownloadString("https://api.merobolee.com/Resource/Invoice.html");
-                }
-                // string invoiceHtml = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\Invoice.html");
+            
+                string invoiceHtml = File.ReadAllText(@"C:\HostingSpaces\api.merobolee.com\wwwroot\Resource\Invoice.html");
                 var MaterialListSB = new StringBuilder();
                 foreach (var generateBillResponse in generateBillResponseDto.QuotationResponseDtoList)
                 {
-                    string MaterialList = "";
-                    using (WebClient web1 = new WebClient())
-                    {
-                        MaterialList = web1.DownloadString("https://api.merobolee.com/Resource/tablecontent.html");
-                    }                    
-                    // string MaterialList = File.ReadAllText(@"C:\Users\Anish\OneDrive\Desktop\MeroBolee Docs\tablecontent.html");
+                    string MaterialList = File.ReadAllText(@"C:\HostingSpaces\api.merobolee.com\wwwroot\Resource\tablecontent.html");
                     string remarks = generateBillResponse.Remarks;
                     MaterialList = String.Format(MaterialList, generateBillResponse.MaterialId, generateBillResponse.MaterialName, generateBillResponse.Quantity, generateBillResponse.Units, generateBillResponse.UnitPrice, generateBillResponse.Quotation, remarks);
                     MaterialListSB.Append(MaterialList);
@@ -288,12 +278,9 @@ namespace MeroBolee.Service.Inovice
                     invoiceHtml = invoiceHtml.Replace("{TotalAmountInWords}", totalAmountInWords);
                 }
 
-                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
-                long companyId = meroBoleeDbContext.UserCompanies.Where(x => x.UserId == UserId).Select(x => x.CompanyId).FirstOrDefault();
-                string PanNumber = meroBoleeDbContext.CompanyEntities.Where(x => x.CompanyId == companyId).Select(x => x.PANNumber).FirstOrDefault();
                 if(invoiceHtml.Contains("{PanNumber}")) 
                 {
-                    invoiceHtml = invoiceHtml.Replace("{PanNumber}",  PanNumber);
+                    invoiceHtml = invoiceHtml.Replace("{PanNumber}",  generateBillResponseDto.PanNumber);
                 }
                 return invoiceHtml;
 
@@ -302,25 +289,6 @@ namespace MeroBolee.Service.Inovice
             {
                 throw;
             }
-        }
-
-        public async Task<string> GetHTMLStringForAllUserId(long TenderId)
-        {
-            try 
-            {
-                MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();
-                var quotationEntities = meroBoleeDbContext.QuotationEntities.Where(x => x.TenderId == TenderId).GroupBy(o => new { o.UserId }).Select(x => new {UserId = x.Key.UserId}).ToArray();
-                string htmlString = "";
-                for (int i = 0; i < quotationEntities.Length;i++) {
-                    htmlString = htmlString + GetHTMLString(TenderId, quotationEntities[i].UserId);
-                }
-                return htmlString;
-            }
-            catch
-            {
-                throw;
-            }
-
         }
 
         public async Task<byte[]> GenerateSealBidReport(string htmlString)
