@@ -22,7 +22,7 @@ namespace MeroBolee.Dto
 
         [Required(ErrorMessage = "Category name is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid category name")]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
 
         [Required(ErrorMessage = "Tender title is required")]
@@ -169,7 +169,7 @@ namespace MeroBolee.Dto
     public class UpdateTenderExtraDocRequestDto: TenderExtraDocDto
     {
         [Required(ErrorMessage = "Document id is required")]
-        [Range(1, long.MaxValue, ErrorMessage = "Invalid document id")]
+        [Range(0, long.MaxValue, ErrorMessage = "Invalid document id")]
         public long Id { get; set; }
     }
 }

@@ -44,6 +44,7 @@ namespace MeroBolee.Service
         /// <param name="signupRepo"></param>
         /// <param name="userManager"></param>
         /// <param name="signInManager"></param>
+        /// <param name="sendEmailService"></param>
         public SignupService(ICryptoService cryptoService, IReferenceCodeService codeService, ISignupRepository signupRepo, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ISendEmailService sendEmailService)
         {
             this.cryptoService = cryptoService;

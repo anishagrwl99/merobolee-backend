@@ -43,20 +43,20 @@ namespace MeroBolee.EntityMapper
 
                 dto.PendingByCategory = (from t in tenders
                                          where t.TenderEntities.LiveStartDate >= DateTimeNPT.Now && DateTimeNPT.Now <= t.TenderEntities.LiveEndDate
-                                         group t by new { t.TenderEntities.CategoryEntity.Category } into g
+                                         group t by new { t.TenderEntities.CategoryEntity.Title } into g
                                          select new GraphPoint
                                          {
-                                             Key = g.Key.Category,
+                                             Key = g.Key.Title,
                                              Value = g.Count().ToString()
                                          }
                                  ).ToList();
 
                 dto.CompletedByCategory = (from t in tenders
                                            where t.TenderEntities.LiveEndDate < DateTimeNPT.Now
-                                           group t by new { t.TenderEntities.CategoryEntity.Category } into g
+                                           group t by new { t.TenderEntities.CategoryEntity.Title } into g
                                            select new GraphPoint
                                            {
-                                               Key = g.Key.Category,
+                                               Key = g.Key.Title,
                                                Value = g.Count().ToString()
                                            }
                                  ).ToList();
@@ -123,10 +123,10 @@ namespace MeroBolee.EntityMapper
             if (dto != null)
             {
                 dto.RegisteredByCategory = (from t in registeredTenders
-                                            group t by new { t.CategoryEntity.Category } into g
+                                            group t by new { t.CategoryEntity.Title } into g
                                             select new GraphPoint
                                             {
-                                                Key = g.Key.Category,
+                                                Key = g.Key.Title,
                                                 Value = g.Count().ToString()
                                             }
                                     ).ToList();
@@ -143,10 +143,10 @@ namespace MeroBolee.EntityMapper
 
 
                 dto.WonByCategory = (from t in wonTenders
-                                     group t by new { t.CategoryEntity.Category } into g
+                                     group t by new { t.CategoryEntity.Title } into g
                                      select new GraphPoint
                                      {
-                                         Key = g.Key.Category,
+                                         Key = g.Key.Title,
                                          Value = g.Count().ToString()
                                      }
                                     ).ToList();

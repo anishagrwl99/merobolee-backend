@@ -129,8 +129,8 @@ namespace MeroBolee.Repository
                                           CompanyName = t.Company.Name,
                                           TenderCode = t.Code,
                                           TenderTitle = t.Title,
-                                          CategoryId = t.CategoryId,
-                                          CategoryName = t.CategoryEntity.Category,
+                                          CategoryId = t.ProcurementCategoryId,
+                                          CategoryName = t.CategoryEntity.Title,
                                           LiveStartDate = t.LiveStartDate,
                                           LiveEndDate = t.LiveEndDate,
                                           RegistrationTill = t.RegistrationTill,
@@ -208,12 +208,12 @@ namespace MeroBolee.Repository
                 AdvanceSearchDto dto = new AdvanceSearchDto();
                 dto.Tenders = await (from cm in  meroBoleeDbContexts.CommunityApprovalEntities 
                                      join  t in meroBoleeDbContexts.TenderEntities on cm.TenderId equals t.Id
-                                     join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                     join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                                      join s in meroBoleeDbContexts.TenderStatus on t.StatusId equals s.StatusId
                                      join c1 in meroBoleeDbContexts.CompanyEntities on cm.CompanyId equals c1.CompanyId
                                      where t.Title.Contains(searchText)
                                             || t.Code.Contains(searchText)
-                                            || c.Category.Contains(searchText)
+                                            || c.Title.Contains(searchText)
                                             || s.Status.Contains(searchText)
                                             || t.PerformanceRequest.Contains(searchText)
                                             || t.QualityRequest.Contains(searchText)
@@ -228,7 +228,7 @@ namespace MeroBolee.Repository
                                          TenderCode = t.Code,
                                          TenderTitle = t.Title,
                                          CategoryId = c.Id,
-                                         CategoryName = c.Category,
+                                         CategoryName = c.Title,
                                          LiveStartDate = t.LiveStartDate,
                                          LiveEndDate = t.LiveEndDate,
                                          RegistrationTill = t.RegistrationTill,

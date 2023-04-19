@@ -16,6 +16,8 @@ namespace MeroBolee.Controllers.VendorEnlistment
     {
         private readonly ResponseMsg response = new ResponseMsg();
         private readonly IVendorEnlistmentService vendorEnlistmentService;
+        private readonly PaginationMapper pagination = new PaginationMapper();
+        private IUriService uriService;
 
         public VendorEnlistmentContoller(IVendorEnlistmentService vendorEnlistmentService)
         {
@@ -62,19 +64,20 @@ namespace MeroBolee.Controllers.VendorEnlistment
 
         [HttpGet("VendorEnlistment/ProcurementCategory")]
         [Authorize(Roles = "Bidder,Super Admin,Bid Inviter")]
-        public async Task<IActionResult> ProcurementCategory([FromQuery] string id)
+        public async Task<IActionResult> ProcurementCategory([FromQuery] PaginationQuery pagination, [FromQuery] string id, [FromQuery] string search = null)
         {
             try
             {
-                var response = await vendorEnlistmentService.GetProcurementCategory(id);
+                string url = Url.Action("ProcurementCategory", null, null, Request.Scheme); //get url for current request
+                this.uriService = new UriService(url);
+                var response = await vendorEnlistmentService.GetProcurementCategory(id, search);
                 if (response.Count() == 0)
                 {
                     return NotFound(new Responses<IEnumerable<TenderProcurementCategoryEntity>>(response, "404", "Record not found."));
                 }
                 else
                 {
-                    return Ok(new Responses<IEnumerable<TenderProcurementCategoryEntity>>(response, "200", "Records fetched successfully."));
-
+                    return Ok(ResultAfterPagination(response, pagination, response.Count()));
                 }
             }
             catch (Exception e)
@@ -86,7 +89,7 @@ namespace MeroBolee.Controllers.VendorEnlistment
         }
 
         [HttpPost("VendorEnlistment/AddProcurementCategory")]
-        [Authorize(Roles = "Bidder,Super Admin")]
+        [Authorize(Roles = "Super Admin")]
         public async Task<IActionResult> AddProcurementCategory([FromBody] ProcurementCategoryDto procurementCategoryDto)
         {
             try
@@ -276,6 +279,20 @@ namespace MeroBolee.Controllers.VendorEnlistment
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
 
+
+        }
+
+        private PagedResponse<TenderProcurementCategoryEntity> ResultAfterPagination(IEnumerable<TenderProcurementCategoryEntity> getCategory, PaginationQuery pagination, int totalCount)
+        {
+            var paginationFilteration = this.pagination.PaginationMap(pagination);
+            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
+            {
+                return new PagedResponse<TenderProcurementCategoryEntity>(getCategory, totalCount);
+            }
+
+            var get = getCategory.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
+            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
+            return paginationResponse;
 
         }
     }

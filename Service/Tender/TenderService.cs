@@ -20,14 +20,14 @@ namespace MeroBolee.Service
         private readonly IUploadFile uploadFileService;
         private readonly ICompanyDocumentRepository docRepo;
         private readonly IOtpService otpService;
-
+        private readonly ISendEmailService sendEmailService;
 
         public TenderService(ITenderRepository tenderRepository,
                                 IMemoryCache cache,
                                 IReferenceCodeService referenceCodeService,
                                 IUploadFile uploadFileService,
                                 ICompanyDocumentRepository docRepo,
-                                IOtpService otpService)
+                                IOtpService otpService, ISendEmailService sendEmailService)
         {
             this.tenderRepository = tenderRepository;
             this.cache = cache;
@@ -35,6 +35,7 @@ namespace MeroBolee.Service
             this.uploadFileService = uploadFileService;
             this.docRepo = docRepo;
             this.otpService = otpService;
+            this.sendEmailService = sendEmailService;
         }
 
         public async Task<TenderEntity> AddTender(AddTenderRequestDto tenderDto)
@@ -219,6 +220,16 @@ namespace MeroBolee.Service
                         te.StatusId = 3;
                         te.ApprovedBy = tenderApprove.UserId;
                         te.Date_modified = DateTimeNPT.Now;
+
+                        var supplierEntity = await tenderRepository.FindVendorEmailByProcurementCategoryId(te.ProcurementCategoryId);
+                        if (supplierEntity.Count!=0)
+                        {
+                            EmailRequestdto emailRequestdto = new EmailRequestdto();
+                            emailRequestdto.toEmailId = string.Join(",", supplierEntity);
+
+                            emailRequestdto.callFrom = "NewTender";
+                            var sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+                        }
                     }
                     else if (tenderApprove.status == false)
                     {
@@ -240,45 +251,48 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<TenderEntity> PreBidSuperseed(PreBidSuperSeed tenderApprove)
+        public async Task<TenderEntity> PreBidSuperseed(TenderApproveDto tenderApprove)
         {
             try
             {
                 TenderEntity te = await tenderRepository.FindTenderToUpdate(tenderApprove.TenderId);
                 if (te != null)
                 {
-                    if(te.CommunityApprovalStatus==3)
+                    if (te.CommunityApprovalStatus == 3)
                     {
                         return te;
                     }
-                    var check = await otpService.VerifyOtp(tenderApprove.OtpCode, tenderApprove.UserId, tenderApprove.CompanyId, "");
-                    if (check)
+
+                    te.StatusId = 3;
+                    te.ApprovedBy = tenderApprove.UserId;
+                    te.Date_modified = DateTimeNPT.Now;
+
+                    var preBidddingApprovalEntity = await tenderRepository.FindPendingCommunityApprovalEntity(tenderApprove.TenderId);
+
+                    if (preBidddingApprovalEntity.Count() == 0)
                     {
-                        te.StatusId = 3;
-                        te.ApprovedBy = tenderApprove.UserId;
-                        te.Date_modified = DateTimeNPT.Now;
-
-                        var preBidddingApprovalEntity = await tenderRepository.FindPendingCommunityApprovalEntity(tenderApprove.TenderId);
-
-                        if (preBidddingApprovalEntity.Count() == 0)
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            foreach (var item in preBidddingApprovalEntity)
-                            {
-                                item.StatusId = 7; //Superseeded by Admin
-                            }
-                            await tenderRepository.UpdateTenderStatus(te);
-
-                            await AddToPreBiddingSuperSeed(tenderApprove);
-                            await tenderRepository.UpdateCommunityApprovalStatuses(preBidddingApprovalEntity);
-                        }
+                        return null;
                     }
                     else
                     {
-                        return null;
+                        foreach (var item in preBidddingApprovalEntity)
+                        {
+                            item.StatusId = 7; //Superseeded by Admin
+                        }
+                        await tenderRepository.UpdateTenderStatus(te);
+
+                        await AddToPreBiddingSuperSeed(tenderApprove);
+                        await tenderRepository.UpdateCommunityApprovalStatuses(preBidddingApprovalEntity);
+
+                        var supplierEntity = await tenderRepository.FindVendorEmailByProcurementCategoryId(te.ProcurementCategoryId);
+                        if (supplierEntity.Count != 0)
+                        {
+                            EmailRequestdto emailRequestdto = new EmailRequestdto();
+                            emailRequestdto.toEmailId = string.Join(",", supplierEntity);
+
+                            emailRequestdto.callFrom = "NewTender";
+                            var sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+                        }
                     }
 
                     return te;
@@ -520,33 +534,29 @@ namespace MeroBolee.Service
 
             if (tenderDto.ExtraDocuments != null)
             {
+                var list = new List<TenderExtraDocumentEntity>();
+
                 foreach (var item in tenderDto.ExtraDocuments)
                 {
-                    var itm = entity.ExtraDocuments.Where(x => x.Id == item.Id).FirstOrDefault();
-                    if (itm == null && item.Document != null)
+                    if (item.Document != null)
                     {
                         TenderExtraDocumentEntity obj = new TenderExtraDocumentEntity
                         {
                             CompanyId = tenderDto.superId,
                             UserId = tenderDto.CreatedBy,
-                            TenderId = entity.Id,
                             DocTitle = item.DocTitle,
-                            IsDeleted = entity.IsDeleted,
+                            TenderId = entity.Id,
+                            IsDeleted = false,
                             DocPath = await uploadFileService.Upload(item.Document, docPath)
                         };
-                        entity.ExtraDocuments.Add(obj);
-                    }
-                    else
-                    {
-                        itm = new TenderExtraDocumentEntity();
-                        if (item.Document != null)
-                        {
-                            await uploadFileService.DeleteFile(itm.DocPath);
-                            itm.DocPath = await uploadFileService.Upload(item.Document, docPath);
-                        }
-                        itm.DocTitle = item.DocTitle;
+                        list.Add(obj);
                     }
                 }
+                if (list.Count != 0)
+                {
+                    await tenderRepository.AddTenderDocuments(list);
+                }
+
             }
 
             UpdateTenderEntity(ref entity, tenderDto);
@@ -969,7 +979,7 @@ namespace MeroBolee.Service
             }
         }
 
-        public async Task<VerifyOtpDto> PostBidApprove(VerifyOtpDto verifyOtpDto)
+        public async Task<TenderApproveDto> PostBidApprove(TenderApproveDto verifyOtpDto)
         {
             try
             {
@@ -986,24 +996,15 @@ namespace MeroBolee.Service
 
                     if (postBidEntity != null)
                     {
-                        var check = await otpService.VerifyOtp(verifyOtpDto.OtpCode, verifyOtpDto.UserId, verifyOtpDto.CompanyId, "");
-                        if (check)
-                        {
-                            postBidEntity.StatusId = 3;
-                            postBidEntity.Date_Modified = DateTimeNPT.Now;
-                            postBidEntity.RemarksStatusId = 0;
+                        postBidEntity.StatusId = 3;
+                        postBidEntity.Date_Modified = DateTimeNPT.Now;
+                        postBidEntity.RemarksStatusId = 0;
 
-                            await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
+                        await tenderRepository.UpdatePostBidApprovalStatus(postBidEntity);
 
-                            await ToUpdatePostSealBidStatusInTender(tenderEntity);
+                        await ToUpdatePostSealBidStatusInTender(tenderEntity);
 
-                            return verifyOtpDto;
-                        }
-                        else
-                        {
-                            return null;
-                        }
-
+                        return verifyOtpDto;
                     }
                     else
                     {
@@ -1243,37 +1244,29 @@ namespace MeroBolee.Service
                     {
                         return result;
                     }
-                    var check = await otpService.VerifyOtp(superSeedDto.otpCode, superSeedDto.UserId, superSeedDto.CompanyId, "");
-                    if (check)
-                    {
-                        result.PostBidStatus = 3; //Approve by Admin
 
-                        var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
+                    result.PostBidStatus = 3; //Approve by Admin
 
-                        if(postBidddingApprovalEntity.Count()==0)
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            foreach (var item in postBidddingApprovalEntity)
-                            {
-                                item.StatusId = 4; //Superseeded by Admin
-                                item.RemarksStatusId = 0;
-                            }
-                            await tenderRepository.UpdateTenderStatus(result);
-                            await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
+                    var postBidddingApprovalEntity = await tenderRepository.FindPostBiddingApprovalByTenderId(superSeedDto.TenderId);
 
-                            await AddToPostBiddingSuperSeed(superSeedDto);
-
-                            return result;
-                        }
-                    }
-                    else
+                    if (postBidddingApprovalEntity.Count() == 0)
                     {
                         return null;
                     }
+                    else
+                    {
+                        foreach (var item in postBidddingApprovalEntity)
+                        {
+                            item.StatusId = 4; //Superseeded by Admin
+                            item.RemarksStatusId = 0;
+                        }
+                        await tenderRepository.UpdateTenderStatus(result);
+                        await tenderRepository.UpdatePostBidApprovalStatusByTenderId(postBidddingApprovalEntity);
 
+                        await AddToPostBiddingSuperSeed(superSeedDto);
+
+                        return result;
+                    }
                 }
                 else
                 {
@@ -1351,67 +1344,6 @@ namespace MeroBolee.Service
             }
         }
 
-        private async Task<StatDto> GetProcurementCount(IEnumerable<dynamic> tenderEntities ,IEnumerable<TenderProcurementTypeEntity> procurement, string Role=null)
-        {
-            try
-            {
-                var list = new List<CountDto>();
-
-                if (Role == "Super Admin")
-                {
-                    foreach (var item in procurement)
-                    {
-                        var countDto = new CountDto()
-                        {
-                            Count = tenderEntities.Where(x => x.ProcurementId == item.Id).Count(),
-                            Name = item.Procurement,
-                            Id = item.Id
-                        };
-                        list.Add(countDto);
-                    }
-                }
-                else if(Role=="Bid Inviter")
-                {
-                    foreach (var item in procurement)
-                    {
-                        var countDto = new CountDto()
-                        {
-                            Count =tenderEntities.Where(x=> x.TenderEntities.ProcurementId == item.Id).Count(),
-                            Name = item.Procurement,
-                            Id = item.Id
-                        };
-                        list.Add(countDto);
-                    }
-                }
-                else
-                {
-                    foreach (var item in procurement)
-                    {
-                        var countDto = new CountDto()
-                        {
-                            Count = tenderEntities.Where(x=>x.Tender.ProcurementId == item.Id
-                                        && x.Tender.StatusId == 3).Count(),
-                            Name = item.Procurement,
-                            Id = item.Id
-                        };
-                        list.Add(countDto);
-                    }
-                }
-                var statDto = new StatDto
-                {
-                    Count = list,
-                    Total = list.Sum(x=>x.Count),
-                };
-               
-                return statDto;
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
         private async Task<StatDto> GetBidTypeCount(IEnumerable<dynamic> tenderEntities, string Role = null)
         {
             try
@@ -1479,12 +1411,12 @@ namespace MeroBolee.Service
             try
             {
                 var procurementList = new List<ProcurementTypeDto>();
+                long companyTenders;
 
                 if (Role == "Super Admin")
                 {
                     var statustype = await tenderRepository.GetTenderStatusList();
 
-                    long companyTenders;
                     foreach (var item in procurement)
                     {
                         var statusDtoList = new List<StatusDto>();
@@ -1500,6 +1432,10 @@ namespace MeroBolee.Service
                             {
                                 companyTenders = tenderEntities.Where(t=> t.LiveEndDate < DateTimeNPT.Now && t.StatusId == 3 && t.ProcurementId == item.Id).Count();
 
+                            }
+                            else if (status.StatusId==1)
+                            {
+                                companyTenders = tenderEntities.Where(t => t.StatusId == 1 && t.ProcurementId == item.Id && t.RegistrationTill >= DateTimeNPT.Now).Count();
                             }
                             else
                             {
@@ -1528,8 +1464,6 @@ namespace MeroBolee.Service
                 {
                     var statustype = await tenderRepository.GetTenderStatusList();
 
-                    long companyTenders;
-
                     foreach (var item in procurement)
                     {
                         var statusDtoList = new List<StatusDto>();
@@ -1539,13 +1473,12 @@ namespace MeroBolee.Service
                             if (status.StatusId == 1)
                             {
                                 companyTenders= tenderEntities.Where(x =>x.TenderEntities.StatusId == 1
-                                && x.TenderEntities.LiveEndDate > DateTimeNPT.Now 
+                                && x.TenderEntities.RegistrationTill >= DateTimeNPT.Now 
                                                            && x.TenderEntities.ProcurementId == item.Id).Count();
                             }
                             else if (status.StatusId == 2)
                             {
                                 companyTenders = tenderEntities.Where(x => x.TenderEntities.StatusId == 2
-                               && x.TenderEntities.LiveEndDate > DateTimeNPT.Now 
                                                           && x.TenderEntities.ProcurementId == item.Id).Count();
                             }
                             else if (status.StatusId == 3)
@@ -1600,13 +1533,21 @@ namespace MeroBolee.Service
 
                         foreach (var status in bidderstatus)
                         {
-
+                            if (status.StatusId == 1 || status.StatusId == 3)
+                            {
+                                companyTenders = tenderEntities.Where(x => x.BidRequestStatusId == status.StatusId && x.Tender.RegistrationTill >= DateTimeNPT.Now
+                && x.Tender.ProcurementId == item.Id).Count();
+                            }
+                            else
+                            {
+                                companyTenders = tenderEntities.Where(x => x.BidRequestStatusId == status.StatusId
+                && x.Tender.ProcurementId == item.Id).Count();
+                            }
                             var statusDto = new StatusDto
                             {
                                 Id = status.StatusId,
                                 Name = status.Status,
-                                Count = tenderEntities.Where(x => x.BidRequestStatusId == status.StatusId
-                && x.Tender.ProcurementId == item.Id).Count()
+                                Count = companyTenders
                             };
 
                             statusDtoList.Add(statusDto);
@@ -1642,38 +1583,42 @@ namespace MeroBolee.Service
             {
                 var dashboard = new Dictionary<string, StatDto>();
 
-                var tenederEntities = await tenderRepository.GetAllTender();
+                var tenderEntities = await tenderRepository.GetAllTender();
                 var procurementtype = await tenderRepository.GetProcurementList();
 
-                var biddingStageCount = await BiddingStageCount(tenederEntities, Role:"Super Admin");
+                var biddingStageCount = await BiddingStageCount(tenderEntities, Role:"Super Admin");
 
                 var biddingStageCountobj = new StatDto
                 {
-                    Count = biddingStageCount,
-                    Total = biddingStageCount.Sum(x=>x.Count)
+                    Count = biddingStageCount
                 };
 
 
                 dashboard.Add("BiddingStageCount", biddingStageCountobj);
 
-
-                var procurement = await GetProcurementCount(tenederEntities, procurementtype,Role: "Super Admin");
-                dashboard.Add("ProcurementType", procurement);
-
-                var bidType = await GetBidTypeCount(tenederEntities, Role: "Super Admin");
+                var bidType = await GetBidTypeCount(tenderEntities, Role: "Super Admin");
                 dashboard.Add("TypeOfBid", bidType);
 
-                var ongoingPreBiddingCount = await OngoingPreBiddingCount(procurementtype, tenederEntities, "Super Admin");
+                var ongoingPreBiddingCount = await OngoingPreBiddingCount(procurementtype, tenderEntities, "Super Admin");
                 dashboard.Add("OngoingPreBiddingCount", ongoingPreBiddingCount);
 
-                var ongoingPostBiddingCount = await OngoingPostBiddingCount(procurementtype, tenederEntities);
+                var ongoingPostBiddingCount = await OngoingPostBiddingCount(procurementtype, tenderEntities);
                 dashboard.Add("OngoingPostBiddingCount", ongoingPostBiddingCount);
 
-                var procurementTypeStatus = await ProcurementTypeStatus(tenederEntities, procurementtype,Role: "Super Admin");
+                var procurementTypeStatus = await ProcurementTypeStatus(tenderEntities, procurementtype,Role: "Super Admin");
                 dashboard.Add("UpcomingPendingBidofProcurementType", procurementTypeStatus);
 
                 var graphdata = await GraphData();
                 dashboard.Add("GraphData", graphdata);
+
+                var upcomingBid = new StatDto();
+                upcomingBid.Total = tenderEntities.Where(t => t.StatusId == 3 && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)
+                                        && (t.LiveEndDate >= DateTimeNPT.Now)).Count();
+                dashboard.Add("UpcomingBids", upcomingBid);
+
+                var liveBid = new StatDto();
+                liveBid.Total = tenderEntities.Where(t => DateTime.Compare(DateTimeNPT.Now, t.LiveEndDate) < 0 && t.StatusId == 3).Count();
+                dashboard.Add("OngoingTenders", liveBid);
 
                 return dashboard;
             }
@@ -1717,14 +1662,10 @@ namespace MeroBolee.Service
 
                 var biddingStageCountobj = new StatDto
                 {
-                    Count = biddingStageCount,
-                    Total = biddingStageCount.Sum(x => x.Count)
+                    Count = biddingStageCount
                 };
 
                 dashboard.Add("BiddingStageCount",biddingStageCountobj);
-
-                var procurement = await GetProcurementCount(communityApprovalEntities, procurementtype, "Bid Inviter");
-                dashboard.Add("ProcurementType", procurement);
 
                 var bidType = await GetBidTypeCount(communityApprovalEntities, "Bid Inviter");
                 dashboard.Add("TypeOfBid", bidType);
@@ -1740,6 +1681,16 @@ namespace MeroBolee.Service
 
                 var graphdata = await GraphData();
                 dashboard.Add("GraphData", graphdata);
+
+                var upcomingBid = new StatDto();
+                upcomingBid.Total = communityApprovalEntities.Where(t => t.TenderEntities.StatusId == 3 //Tender should be approved
+                                        && (t.TenderEntities.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)
+                                        && (t.TenderEntities.LiveEndDate >= DateTimeNPT.Now)).Count();
+                dashboard.Add("UpcomingBids", upcomingBid);
+
+                var liveBid = new StatDto();
+                liveBid.Total = communityApprovalEntities.Where(t => DateTime.Compare(DateTimeNPT.Now, t.TenderEntities.LiveEndDate) < 0 && t.TenderEntities.StatusId == 3).Count();
+                dashboard.Add("OngoingTenders", liveBid);
 
                 return dashboard;
             }
@@ -1764,20 +1715,27 @@ namespace MeroBolee.Service
 
                 var biddingStageCountobj = new StatDto
                 {
-                    Count = biddingStageCount,
-                    Total = biddingStageCount.Sum(x => x.Count)
+                    Count = biddingStageCount
                 };
 
                 dashboard.Add("BiddingStageCount", biddingStageCountobj);
-
-                var procurement = await GetProcurementCount(bidderEntities, procurementtype);
-                dashboard.Add("ProcurementType", procurement);
 
                 var bidType = await GetBidTypeCount(bidderEntities);
                 dashboard.Add("TypeOfBid", bidType);
 
                 var procurementTypeStatus = await ProcurementTypeStatus(bidderEntities, procurementtype);
                 dashboard.Add("UpcomingPendingBidofProcurementType", procurementTypeStatus);
+
+                var upcomingBid = new StatDto();
+                upcomingBid.Total = bidderEntities.Where(t => t.Tender.StatusId == 3 //Tender should be approved
+                                        && t.BidRequestStatusId == 2 //Bid request should be approved
+                                        && (t.Tender.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
+                                        && (t.Tender.LiveEndDate >= DateTimeNPT.Now)).Count();
+                dashboard.Add("UpcomingBids", upcomingBid);
+
+                var liveBid = new StatDto();
+                liveBid.Total = bidderEntities.Where(t => DateTime.Compare(DateTimeNPT.Now, t.Tender.LiveEndDate) < 0 && t.Tender.StatusId == 3).Count();
+                dashboard.Add("OngoingTenders", liveBid);
 
                 return dashboard;
             }
@@ -1802,7 +1760,8 @@ namespace MeroBolee.Service
                         {
                             Id = item.Id,
                             Name = item.Procurement,
-                            Count = tenderEntities.Where(x => x.StatusId < 3 && x.ProcurementId == item.Id && x.CommunityApprovalEntities.Count != 0).Count()
+                            Count = tenderEntities.Where(x => ((x.StatusId == 1 && x.RegistrationTill >= DateTimeNPT.Now) || x.StatusId==2) && x.ProcurementId == item.Id 
+                            && x.CommunityApprovalEntities.Count != 0).Count()
                         };
                         list.Add(countDto);
                     }
@@ -1815,7 +1774,7 @@ namespace MeroBolee.Service
                         {
                             Id = item.Id,
                             Name = item.Procurement,
-                            Count = tenderEntities.Where(x => x.TenderEntities.StatusId < 3 && 
+                            Count = tenderEntities.Where(x => ((x.TenderEntities.StatusId == 1 && x.TenderEntities.RegistrationTill >= DateTimeNPT.Now) || x.TenderEntities.StatusId == 2) && 
                             x.TenderEntities.ProcurementId == item.Id).Count()
                         };
                         list.Add(countDto);
@@ -1891,20 +1850,11 @@ namespace MeroBolee.Service
 
                 if (Role == "Super Admin") //FOr Addmin
                 {
-                    var upcomingTenderForAdminobj = new CountDto
-                    {
-                        Id = 2,
-                        Name = "Upcoming",
-                        Count = tenderEntities.Where(t => t.StatusId == 3 && (t.LiveStartDate.AddDays(-7) <= DateTimeNPT.Now)
-                                        && (t.LiveEndDate >= DateTimeNPT.Now)).Count()
-                    };
-                    countDtos.Add(upcomingTenderForAdminobj);
-
                     var companyTendersForAdminobj = new CountDto
                     {
                         Id = 3,
                         Name = "Pending",
-                        Count = tenderEntities.Where(t => t.StatusId == 1).Count()
+                        Count = tenderEntities.Where(t =>(t.RegistrationTill >= DateTimeNPT.Now && t.StatusId == 1) || t.StatusId==2).Count()
                     };
                     countDtos.Add(companyTendersForAdminobj);
 
@@ -1916,27 +1866,24 @@ namespace MeroBolee.Service
                     };
                     countDtos.Add(historyobj);
 
+                    var upcomingTenderForAdminobj = new CountDto
+                    {
+                        Id = 5,
+                        Name = "Rejected",
+                        Count = tenderEntities.Where(t => t.StatusId == 6).Count()
+                    };
+                    countDtos.Add(upcomingTenderForAdminobj);
+
                     return countDtos;
                 }
                 else if(Role=="Bid Inviter")
                 {
-                    
-                    var upcomingTenderForBidInviterobj = new CountDto
-                    {
-                        Id = 2,
-                        Name = "Upcoming",
-                        Count = communityApprovalEntities.Where(t => t.TenderEntities.StatusId == 3 //Tender should be approved
-                                        && (t.TenderEntities.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)
-                                        && (t.TenderEntities.LiveEndDate >= DateTimeNPT.Now)).Count()
-                    };
-                    countDtos.Add(upcomingTenderForBidInviterobj);
-
                     var companyTendersForBidInviterobj = new CountDto
                     {
                         Id = 3,
                         Name = "Pending",
-                        Count = communityApprovalEntities.Where(t => t.TenderEntities.LiveEndDate > DateTimeNPT.Now &&
-                     (t.TenderEntities.StatusId == 1 || t.TenderEntities.StatusId == 2)).Count()
+                        Count = communityApprovalEntities.Where(t => (t.TenderEntities.RegistrationTill >= DateTimeNPT.Now && t.TenderEntities.StatusId == 1) 
+                        || t.TenderEntities.StatusId == 2).Count()
                     };
                     countDtos.Add(companyTendersForBidInviterobj);
 
@@ -1947,30 +1894,23 @@ namespace MeroBolee.Service
                         Count = communityApprovalEntities.Where(t => t.TenderEntities.StatusId == 3 && t.TenderEntities.LiveEndDate < DateTimeNPT.Now).Count()
                     };
                     countDtos.Add(historyobj);
+
+                    var upcomingTenderForBidInviterobj = new CountDto
+                    {
+                        Id = 5,
+                        Name = "Rejected",
+                        Count = communityApprovalEntities.Where(t => t.TenderEntities.StatusId == 6).Count()
+                    };
+                    countDtos.Add(upcomingTenderForBidInviterobj);
                 }
                 else
                 {
-                    var upcomingTenderForBidderobj = new CountDto
-                    {
-                        Id = 2,
-                        Name = "Upcoming",
-                        Count = communityApprovalEntities.Where(t => t.Tender.StatusId == 3 //Tender should be approved
-                                        && t.BidRequestStatusId == 2 //Bid request should be approved
-                                        && (t.Tender.LiveStartDate.AddDays(-3) <= DateTimeNPT.Now)//Tender live date should be within next 7 days
-                                        && (t.Tender.LiveEndDate >= DateTimeNPT.Now)).Count()
-                                        + 
-                                        communityApprovalEntities.Where(t => t.Tender.StatusId == 3 //Tender should be approved
-                                        && t.BidRequestStatusId == 2 //Bid request should be approved
-                                        && (t.Tender.RegistrationTill >= DateTimeNPT.Now)//Tender live date should be within next 7 days
-                                        && (t.Tender.LiveEndDate >= DateTimeNPT.Now)).Count()
-                    };
-                    countDtos.Add(upcomingTenderForBidderobj);
-
                     var companyTendersForAdminobj = new CountDto
                     {
                         Id = 3,
                         Name = "Pending",
-                        Count = communityApprovalEntities.Where(x=> x.BidRequestStatusId == 1 || x.BidRequestStatusId == 3).Count()
+                        Count = communityApprovalEntities.Where(x=> (x.BidRequestStatusId == 1 || x.BidRequestStatusId == 3) 
+                        && x.Tender.RegistrationTill>=DateTimeNPT.Now).Count()
                     };
                     countDtos.Add(companyTendersForAdminobj);
 
@@ -1981,6 +1921,14 @@ namespace MeroBolee.Service
                         Count = communityApprovalEntities.Where(x=> x.Tender.LiveEndDate < DateTimeNPT.Now).Count()
                     };
                     countDtos.Add(historyobj);
+
+                    var upcomingTenderForBidderobj = new CountDto
+                    {
+                        Id = 5,
+                        Name = "Rejected",
+                        Count = communityApprovalEntities.Where(t => t.Tender.StatusId == 6).Count()
+                    };
+                    countDtos.Add(upcomingTenderForBidderobj);
                 }
                 return countDtos;
 
@@ -2021,18 +1969,13 @@ namespace MeroBolee.Service
         {
             try
             {
-                if (Rank=="Qualified")
-                {
-                    return await tenderRepository.GetQualifiedBidderList(tenderId);
-                }
-                else if (Rank == "Winner")
+                if (Rank == "Winner")
                 {
                     return await tenderRepository.GetWinnerBidderList(tenderId);
                 }
                 else
                 {
                     return await tenderRepository.FetchParticipantBidderList(tenderId);
-
                 }
             }
             catch (Exception)
@@ -2046,46 +1989,11 @@ namespace MeroBolee.Service
         {
             try
             {
-                var companyList = new List<long>();
-                var companyId = qualifiedOrWinnerDto.CompanyId.Split(',');
-                foreach (var item in companyId)
-                {
-                    var obj = Int64.Parse(item);
-                    companyList.Add(obj);
-                }
-
-
-                var bidRequestEntity = await tenderRepository.GetBidRequestEntityByTenderId(qualifiedOrWinnerDto.TenderId);
-                var updateBidRequestEntitiesDto = UpdateBidRequestEntitiesDto(bidRequestEntity, qualifiedOrWinnerDto.Rank);
-                await tenderRepository.UpdateWholeQualifiedStatusinBidRequest(updateBidRequestEntitiesDto);
-
-
-                if (qualifiedOrWinnerDto.Rank == "Qualified")
-                {
-                    foreach (var item in companyList)
-                    {
-                        var newBidRequestEntity = await tenderRepository.GetBidRequestEntity(item, qualifiedOrWinnerDto.TenderId);
-                        newBidRequestEntity.IsQualified = true;
-                        newBidRequestEntity.QualifiedDate = DateTimeNPT.Now;
-                        await tenderRepository.UpdateQualifiedStatusinBidRequest(newBidRequestEntity);
-
-                    }
-                    return true;
-                }
-
-                else
-                {
-
-                    foreach (var item in companyList)
-                    {
-                        var newBidRequestEntity = await tenderRepository.GetBidRequestEntity(item, qualifiedOrWinnerDto.TenderId);
-                        newBidRequestEntity.IsWinner = true;
-                        newBidRequestEntity.WonDate = DateTimeNPT.Now;
-                        await tenderRepository.UpdateQualifiedStatusinBidRequest(newBidRequestEntity);
-                    }
-                    return true;
-                }
-
+                var newBidRequestEntity = await tenderRepository.GetBidRequestEntity(qualifiedOrWinnerDto.CompanyId, qualifiedOrWinnerDto.TenderId);
+                newBidRequestEntity.IsWinner = true;
+                newBidRequestEntity.WonDate = DateTimeNPT.Now;
+                await tenderRepository.UpdateQualifiedStatusinBidRequest(newBidRequestEntity);
+                return true;
             }
             catch (Exception)
             {
@@ -2094,5 +2002,83 @@ namespace MeroBolee.Service
             }
         }
 
+        public async Task<IEnumerable<TenderExtraDocumentResponseDto>> DeleteDocument(long id,string baseUrl)
+        {
+            try
+            {
+                var entity = await tenderRepository.FetchTenderExtraDocumentById(id);
+
+                if (entity == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    await uploadFileService.DeleteFile(entity.DocPath);
+                    entity.IsDeleted = true;
+                    await tenderRepository.UpdateTenderExtraDocument(entity);
+
+                    var documentEntities = await tenderRepository.FetchTenderExtraDocumentByTenderId(entity.TenderId);
+                    if (documentEntities.Count() == 0)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        var list = new List<TenderExtraDocumentResponseDto>();
+
+                        foreach (var item in documentEntities)
+                        {
+                            var obj = new TenderExtraDocumentResponseDto
+                            {
+                                Id = item.Id,
+                                DocTitle = item.DocTitle,
+                                DocPath = String.IsNullOrEmpty(item.DocPath) ? "" : $"{baseUrl}{item.DocPath.Replace('\\', '/')}"
+                            };
+                            list.Add(obj);
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch 
+            {
+
+                throw;
+            }
+        }
+
+        public Task SendWeeklyNewTenderEmailToSupplier()
+        {
+            return Task.Run(async () =>
+            {
+                var newTenders = await tenderRepository.GetWeeklyTender();
+                if (newTenders.Count() != 0)
+                {
+                    var supplierEmail = await tenderRepository.FetchEmailFromUser();
+                    EmailRequestdto emailRequestdto = new EmailRequestdto();
+                    emailRequestdto.toEmailIds = supplierEmail;
+                    emailRequestdto.Tenders = newTenders;
+                    emailRequestdto.callFrom = "WeeklyNewTenderEmail";
+                    var sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+                }
+            });
+        }
+
+        public Task MoveTenderToRejected()
+        {
+            return Task.Run(async () =>
+            {
+                var tenders = await tenderRepository.GetTenderToReject();
+                if (tenders.Count() != 0)
+                {
+                    foreach (var item in tenders)
+                    {
+                        item.StatusId = 6;
+                    }
+                    await tenderRepository.UpdateTenderEntitiesStatus(tenders);
+                }
+            });
+        }
     }
 }

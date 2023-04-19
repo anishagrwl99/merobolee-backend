@@ -32,19 +32,8 @@ namespace MeroBolee.EntityMapper
                 Remark = null,
                 Date_created = DateTimeNPT.Now,
                 Date_modified = DateTimeNPT.Now,
-                QualifiedDate = DateTimeNPT.Now,
                 WonDate = DateTimeNPT.Now,
             };
-            //entity.BidderRequestDocs = new List<BidderRequestDocEntity>();
-            //string folder = $"{companyFolder}\\Tender Regiatraion\\{dto.TenderId}";
-            //foreach (var item in dto.Documents)
-            //{
-            //    entity.BidderRequestDocs.Add(new BidderRequestDocEntity
-            //    {
-            //        DocPath = file.Upload(item.Document, folder).Result,
-            //        DocTitle = item.DocTitle
-            //    });
-            //}
             return entity;
         }
 
@@ -161,7 +150,7 @@ namespace MeroBolee.EntityMapper
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
-                    TenderCategory = entity.Tender.CategoryEntity.Category,
+                    TenderCategory = entity.Tender.CategoryEntity.Title,
                     TenderLiveDate = entity.Tender.LiveEndDate,
                     TenderTitle = entity.Tender.Title,
                     TenderCode = entity.Tender.Code,
@@ -193,7 +182,7 @@ namespace MeroBolee.EntityMapper
                     BidDate = entity.Date_created,
                     BidStatus = entity.BidRequestStatus.Status,
                     PaymentProvider = entity.PaymentProvider,
-                    TenderCategory = entity.Tender.CategoryEntity.Category,
+                    TenderCategory = entity.Tender.CategoryEntity.Title,
                     TenderLiveDate = entity.Tender.LiveEndDate,
                     TenderTitle = entity.Tender.Title,
                     TenderCode = entity.Tender.Code,
@@ -277,7 +266,7 @@ namespace MeroBolee.EntityMapper
                 BidDate = entity.Date_created,
                 CompanyId = entity.CompanyId,
                 CompanyName = entity.Company.Name,
-                TenderCategory = entity.Tender.CategoryEntity.Category,
+                TenderCategory = entity.Tender.CategoryEntity.Title,
                 TenderCode = entity.Tender.Code,
                 TenderLiveDate = entity.Tender.LiveStartDate,
                 TenderTitle = entity.Tender.Title,

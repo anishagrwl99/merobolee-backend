@@ -39,7 +39,7 @@ namespace MeroBolee.Repository
                 {
                     return (from w in meroBoleeDbContexts.WatchListEntities
                             join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Id
-                            join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                            join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                             join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
                             where w.CompanyId == companyId && t.LiveStartDate > DateTimeNPT.Now
                             select new TenderWatchListCard
@@ -49,14 +49,15 @@ namespace MeroBolee.Repository
                                 TenderCode = t.Code,
                                 TenderTitle = t.Title,
                                 CategoryId = c.Id,
-                                CategoryName = c.Category,
+                                CategoryName = c.Title,
                                 LiveStartDate = t.LiveStartDate,
                                 LiveEndDate = t.LiveEndDate,
                                 Product = t.Product,
                                 Price = t.Price,
                                 RegistrationTill = t.RegistrationTill,
                                 StatusId = s.StatusId,
-                                Status = s.Status
+                                Status = s.Status,
+                                Location=t.Location
                             }
 
                    ).ToList();
@@ -69,7 +70,7 @@ namespace MeroBolee.Repository
                         {
                             var result= (from w in meroBoleeDbContexts.WatchListEntities
                                          join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Id
-                                         join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                         join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                                          join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
                                          where w.CompanyId == companyId && t.LiveStartDate > DateTimeNPT.Now && t.ProcurementId==item && t.AlgoId==algo
                                          select new TenderWatchListCard
@@ -79,14 +80,15 @@ namespace MeroBolee.Repository
                                              TenderCode = t.Code,
                                              TenderTitle = t.Title,
                                              CategoryId = c.Id,
-                                             CategoryName = c.Category,
+                                             CategoryName = c.Title,
                                              LiveStartDate = t.LiveStartDate,
                                              LiveEndDate = t.LiveEndDate,
                                              Product = t.Product,
                                              Price = t.Price,
                                              RegistrationTill = t.RegistrationTill,
                                              StatusId = s.StatusId,
-                                             Status = s.Status
+                                             Status = s.Status,
+                                             Location = t.Location
                                          }
 
                    ).ToList();
@@ -102,7 +104,7 @@ namespace MeroBolee.Repository
                     {
                         var result = (from w in meroBoleeDbContexts.WatchListEntities
                                       join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Id
-                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                                       join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
                                       where w.CompanyId == companyId && t.LiveStartDate > DateTimeNPT.Now && t.ProcurementId == item 
                                       select new TenderWatchListCard
@@ -112,14 +114,15 @@ namespace MeroBolee.Repository
                                           TenderCode = t.Code,
                                           TenderTitle = t.Title,
                                           CategoryId = c.Id,
-                                          CategoryName = c.Category,
+                                          CategoryName = c.Title,
                                           LiveStartDate = t.LiveStartDate,
                                           LiveEndDate = t.LiveEndDate,
                                           Product = t.Product,
                                           Price = t.Price,
                                           RegistrationTill = t.RegistrationTill,
                                           StatusId = s.StatusId,
-                                          Status = s.Status
+                                          Status = s.Status,
+                                          Location = t.Location
                                       }
 
                  ).ToList();
@@ -134,7 +137,7 @@ namespace MeroBolee.Repository
                     {
                         var result = (from w in meroBoleeDbContexts.WatchListEntities
                                       join t in meroBoleeDbContexts.TenderEntities on w.TenderId equals t.Id
-                                      join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                                      join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                                       join s in meroBoleeDbContexts.BidRequestStatusEntities on t.StatusId equals s.StatusId
                                       where w.CompanyId == companyId && t.LiveStartDate > DateTimeNPT.Now && t.AlgoId == item
                                       select new TenderWatchListCard
@@ -144,14 +147,15 @@ namespace MeroBolee.Repository
                                           TenderCode = t.Code,
                                           TenderTitle = t.Title,
                                           CategoryId = c.Id,
-                                          CategoryName = c.Category,
+                                          CategoryName = c.Title,
                                           LiveStartDate = t.LiveStartDate,
                                           LiveEndDate = t.LiveEndDate,
                                           Product = t.Product,
                                           Price = t.Price,
                                           RegistrationTill = t.RegistrationTill,
                                           StatusId = s.StatusId,
-                                          Status = s.Status
+                                          Status = s.Status,
+                                          Location = t.Location
                                       }
 
                  ).ToList();

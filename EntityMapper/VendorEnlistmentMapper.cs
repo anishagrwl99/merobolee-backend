@@ -278,9 +278,16 @@ namespace MeroBolee.EntityMapper
                     {
                         Id=item.Id,
                         DocumentTypeId = item.DocumentTypeId,
-                        DocumentPath = String.IsNullOrEmpty(item.DocumentPath) ? "" : $"{baseUrl}{item.DocumentPath.Replace('\\', '/')}",
-                        Name=item.Document.TypeName
+                        DocumentPath = String.IsNullOrEmpty(item.DocumentPath) ? "" : $"{baseUrl}{item.DocumentPath.Replace('\\', '/')}"
                     };
+                    if (item.DocumentTypeId==6)
+                    {
+                        obj.Name = item.DocumentName;
+                    }
+                    else
+                    {
+                        obj.Name = item.Document.TypeName;
+                    }
                     list.Add(obj);
                 }
             }

@@ -15,7 +15,6 @@ namespace MeroBolee.Controllers.FAQ
         private readonly IFAQService FAQService;
         private readonly PaginationMapper pagination = new PaginationMapper();
         private readonly ResponseMsg response = new ResponseMsg();
-        private IUriService uriService;
 
         public FAQController(IFAQService FAQService)
         {
@@ -136,29 +135,6 @@ namespace MeroBolee.Controllers.FAQ
                 response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
-        }
-
-
-        /// <summary>
-        /// To display all FAQ by Admin
-        /// </summary>
-        /// <param name="pagination"></param>
-        /// <returns></returns>
-        /// <param name="getFAQ"></param>
-        /// <param name="totalCount"></param>
-
-        private PagedResponse<FAQResponseDto> ResultAfterPagination(IEnumerable<FAQResponseDto> getFAQ, PaginationQuery pagination, int totalCount)
-        {
-            var paginationFilteration = this.pagination.PaginationMap(pagination);
-            if (pagination == null || pagination.pageNo < 1 || pagination.size < 1)
-            {
-                return new PagedResponse<FAQResponseDto>(getFAQ, totalCount);
-            }
-
-            var get = getFAQ.Skip((pagination.pageNo - 1) * pagination.size).Take(pagination.size).ToList();
-            var paginationResponse = PaginationHelper.CreatedPaginationResponse(uriService, paginationFilteration, get, totalCount);
-            return paginationResponse;
-
         }
     }
 }

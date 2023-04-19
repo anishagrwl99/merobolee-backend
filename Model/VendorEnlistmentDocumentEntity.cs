@@ -17,6 +17,7 @@ namespace MeroBolee.Model
         public int DocumentTypeId { get; set; }
         public string DocumentPath { get; set; }
         public bool IsDeleted { get; set; }
+        public string DocumentName { get; set; }
 
         [JsonIgnore]
         public virtual VendorEnlistmentEntity VendorEnlistment { get; set; }

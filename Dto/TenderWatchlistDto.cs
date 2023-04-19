@@ -9,7 +9,7 @@ namespace MeroBolee.Dto
         public long TenderId { get; set; }
         public string TenderCode { get; set; }
         public string TenderTitle { get; set; }
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public WatchCategoryDto Category { get; set; }
         public string TenderDescription { get; set; }
 

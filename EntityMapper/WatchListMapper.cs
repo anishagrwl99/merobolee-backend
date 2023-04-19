@@ -51,13 +51,13 @@ namespace MeroBolee.EntityMapper
                 LiveStartDate = tender.LiveStartDate,
                 LiveEndDate = tender.LiveEndDate,
                 PublishDate = tender.Date_created,
-                CategoryId = tender.CategoryId,
+                CategoryId = tender.ProcurementCategoryId,
                 Category = CategoryTODto(tender.CategoryEntity)
             };
 
         }
 
-        private WatchCategoryDto CategoryTODto(CategoryEntity category)
+        private WatchCategoryDto CategoryTODto(TenderProcurementCategoryEntity category)
         {
             if (category == null)
             {
@@ -66,7 +66,7 @@ namespace MeroBolee.EntityMapper
             return new WatchCategoryDto
             {
                 Id = category.Id,
-                Categgory = category.Category
+                Categgory = category.Title
             };
         }
     }

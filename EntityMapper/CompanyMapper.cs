@@ -187,20 +187,13 @@ namespace MeroBolee.EntityMapper
                         TenderId = t.TenderId,
                         TenderCode = t.TenderEntities.Code,
                         TenderTitle = t.TenderEntities.Title,
-                        CategoryName = t.CategoryEntity.Category,
+                        CategoryName = t.CategoryEntity.Title,
                         CategoryId = t.CategoryId,
                         LiveStartDate = t.TenderEntities.LiveStartDate,
                         LiveEndDate = t.TenderEntities.LiveEndDate,
                         RegistrationTill = t.TenderEntities.RegistrationTill,
                         Status = t.TenderStatusEntity.Status,
                         StatusId = t.StatusId
-                        //CardInfo = (from tc in t.TenderCards
-                        //            select new TenderCardInfo
-                        //            {
-                        //                Id = tc.Id,
-                        //                Label = tc.Label,
-                        //                Value = tc.Value
-                        //            }).ToList()
                     };
                     companyDetailResponse.Tenders.Add(dto);
                 }

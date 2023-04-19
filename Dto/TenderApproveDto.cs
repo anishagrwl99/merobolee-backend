@@ -36,10 +36,4 @@ namespace MeroBolee.Dto
         public string Email {get; set; }
 
     }
-
-    public class PreBidSuperSeed: TenderApproveDto
-    {
-        public string OtpCode { get; set; }
-
-    }
 }

@@ -12,7 +12,7 @@ namespace MeroBolee.Model
         public long Id { get; set; }
 
         [ForeignKey("CategoryEntity")]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
         [ForeignKey("TenderStatusEntity")]
         public int StatusId { get; set; }
@@ -27,7 +27,7 @@ namespace MeroBolee.Model
 
         [JsonIgnore]
         public virtual TenderEntity TenderEntities { get; set; }
-        public virtual CategoryEntity CategoryEntity { get; set; }
+        public virtual TenderProcurementCategoryEntity CategoryEntity { get; set; }
         public virtual TenderStatusEntity TenderStatusEntity { get; set; }
         public virtual CompanyEntity CompanyEntity { get; set; }
 

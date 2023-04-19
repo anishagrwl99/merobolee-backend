@@ -98,6 +98,7 @@ namespace MeroBolee.Utility
         public DbSet<BidderProcurementCategoryEntity> BidderProcurementCategoryEntities { get; set; }
         public DbSet<VendorEnlistmentDocumentEntity> VendorEnlistmentDocumentEntities { get; set; }
         public DbSet<VendorEnlistmentLogEntity> VendorEnlistmentLogEntities { get; set; }
+        public DbSet<SupplierPerformanceTrackingEntity> SupplierPerformanceTrackingEntities { get; set; }
 
         public MeroBoleeDbContext(DbContextOptions<MeroBoleeDbContext> dbContext) : base(dbContext)
         {
@@ -270,8 +271,8 @@ namespace MeroBolee.Utility
                 .OnDelete(DeleteBehavior.Restrict);
 
             SetupUniqueConstraint(modelBuilder);
-            SeedStatusData(modelBuilder);
-            SeedLookupData(modelBuilder);
+            // SeedStatusData(modelBuilder);
+            // SeedLookupData(modelBuilder);
             base.OnModelCreating(modelBuilder);
             //  modelBuilder.Entity<VDCEntity>().HasMany(x=>x.User_entity).WithOptional().HasForeignKey(x => x.Vdc_id).OnDelete(DeleteBehavior.Restrict);
 

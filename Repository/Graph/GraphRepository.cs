@@ -102,7 +102,7 @@ namespace MeroBolee.Repository
                 return await (from br in meroBoleeDbContexts.BidRequestEntities
                               join t in meroBoleeDbContexts.TenderEntities on br.TenderId equals t.Id
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
-                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                              join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                               where br.CompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
@@ -113,7 +113,7 @@ namespace MeroBolee.Repository
                                   ApprovedByUser = t.ApprovedByUser,
                                   CancelRemarks = t.CancelRemarks,
                                   CategoryEntity = c,
-                                  CategoryId = t.CategoryId,
+                                  ProcurementCategoryId=t.ProcurementCategoryId,
                                   Company = t.Company,
                                   CreatedBy = t.CreatedBy,
                                   CreatedByUser = t.CreatedByUser,
@@ -168,7 +168,7 @@ namespace MeroBolee.Repository
                 return await (from tw in meroBoleeDbContexts.TenderWinnerEntities
                               join t in meroBoleeDbContexts.TenderEntities on tw.TenderId equals t.Id
                               join ts in meroBoleeDbContexts.TenderStatus on t.StatusId equals ts.StatusId
-                              join c in meroBoleeDbContexts.CategoryEntities on t.CategoryId equals c.Id
+                              join c in meroBoleeDbContexts.TenderProcurementCategoryEntities on t.ProcurementCategoryId equals c.Id
                               where tw.CompanyId == supplierCompanyId && t.Date_created >= fromDate && t.Date_created <= DateTime.Now
                               select new TenderEntity
                               {
@@ -179,7 +179,7 @@ namespace MeroBolee.Repository
                                   ApprovedByUser = t.ApprovedByUser,
                                   CancelRemarks = t.CancelRemarks,
                                   CategoryEntity = c,
-                                  CategoryId = t.CategoryId,
+                                  ProcurementCategoryId = t.ProcurementCategoryId,
                                   Company = t.Company,
                                   CreatedBy = t.CreatedBy,
                                   CreatedByUser = t.CreatedByUser,

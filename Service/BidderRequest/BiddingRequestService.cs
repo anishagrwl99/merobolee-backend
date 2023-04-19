@@ -50,7 +50,6 @@ namespace MeroBolee.Service
                 BidRequestEntity entity = await bidRequestRepository.GetBidRequestEntityOnly(dto.TenderId, dto.CompanyId);
                 if (entity == null)
                 {
-                    //tring companyFolder = companyDocumentRepository.GetCompanyFolder(dto.CompanyId);
                     BidRequestEntity bidRequest = ToEntity(dto /*, companyFolder, fileService*/);
 
                     MeroBoleeDbContext meroBoleeDbContext = new MeroBoleeDbContext();

@@ -52,7 +52,7 @@ namespace MeroBolee.EntityMapper
             {
                 CompanyId = tenderDto.superId,
                 Title = tenderDto.TenderTitle,
-                CategoryId = tenderDto.CategoryId,
+                ProcurementCategoryId = tenderDto.CategoryId,
                 LiveInterval = tenderDto.TimeInterval,
                 LiveStartDate = tenderDto.LiveStartDate,
                 LiveEndDate = tenderDto.LiveEndDate,
@@ -137,7 +137,7 @@ namespace MeroBolee.EntityMapper
         public void UpdateTenderEntity(ref TenderEntity entity, UpdateTenderRequestDto dto)
         {
             entity.Title = dto.TenderTitle;
-            entity.CategoryId = dto.CategoryId;
+            entity.ProcurementCategoryId = dto.CategoryId;
             entity.LiveInterval = dto.TimeInterval;
             entity.PerformanceRequest = dto.PerformanceRequest;
             entity.RegistrationTill = dto.RegistrationTill;
@@ -200,8 +200,8 @@ namespace MeroBolee.EntityMapper
                 getTender.TenderCode = tenderEntity.Code;
                 getTender.TenderTitle = tenderEntity.Title;
                 getTender.RegistrationTill = tenderEntity.RegistrationTill;
-                getTender.CategoryId = tenderEntity.CategoryId;
-                getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                getTender.CategoryId = tenderEntity.ProcurementCategoryId;
+                getTender.CategoryName = tenderEntity.CategoryEntity.Title;
                 getTender.TenderLiveInterval = tenderEntity.LiveInterval;
                 getTender.LiveStartDate = tenderEntity.LiveStartDate;
                 getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
@@ -217,7 +217,7 @@ namespace MeroBolee.EntityMapper
                 getTender.MaxQuotation = tenderEntity.MaxQuotation;
                 getTender.Product = tenderEntity.Product;
                 getTender.DateOfExecution = tenderEntity.DateOfExecution;
-
+                getTender.UpdatedDate = tenderEntity.Date_modified;
                 getTender.CreatedDate = tenderEntity.Date_created;
                 getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
                                              select new TenderMaterialResponseDto
@@ -241,6 +241,7 @@ namespace MeroBolee.EntityMapper
                 getTender.AlgoName = tenderEntity.AlgoName;
                 getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
                 getTender.AlgoId = tenderEntity.AlgoId;
+                getTender.ProcurementId = tenderEntity.ProcurementId;
                 return getTender;
             }
             else if (userRole.Equals("Bidder"))
@@ -260,8 +261,8 @@ namespace MeroBolee.EntityMapper
                     getTender.TenderCode = tenderEntity.Code;
                     getTender.TenderTitle = tenderEntity.Title;
                     getTender.RegistrationTill = tenderEntity.RegistrationTill;
-                    getTender.CategoryId = tenderEntity.CategoryId;
-                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.CategoryId = tenderEntity.ProcurementCategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Title;
                     getTender.TenderLiveInterval = tenderEntity.LiveInterval;
                     getTender.LiveStartDate = tenderEntity.LiveStartDate;
                     getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
@@ -277,7 +278,7 @@ namespace MeroBolee.EntityMapper
                     getTender.MaxQuotation = tenderEntity.MaxQuotation;
                     getTender.Product = tenderEntity.Product;
                     getTender.DateOfExecution = tenderEntity.DateOfExecution;
-
+                    getTender.UpdatedDate = tenderEntity.Date_modified;
                     getTender.CreatedDate = tenderEntity.Date_created;
                     getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities 
                                                  select new TenderMaterialResponseDto
@@ -300,6 +301,7 @@ namespace MeroBolee.EntityMapper
                     getTender.AlgoName = tenderEntity.AlgoName;
                     getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
+                    getTender.ProcurementId = tenderEntity.ProcurementId;
                     return getTender;
                 }
                 else
@@ -316,8 +318,8 @@ namespace MeroBolee.EntityMapper
                     getTender.TenderCode = tenderEntity.Code;
                     getTender.TenderTitle = tenderEntity.Title;
                     getTender.RegistrationTill = tenderEntity.RegistrationTill;
-                    getTender.CategoryId = tenderEntity.CategoryId;
-                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.CategoryId = tenderEntity.ProcurementCategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Title;
                     getTender.TenderLiveInterval = tenderEntity.LiveInterval;
                     getTender.LiveStartDate = tenderEntity.LiveStartDate;
                     getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
@@ -333,7 +335,7 @@ namespace MeroBolee.EntityMapper
                     getTender.MaxQuotation = tenderEntity.MaxQuotation;
                     getTender.Product = tenderEntity.Product;
                     getTender.DateOfExecution = tenderEntity.DateOfExecution;
-
+                    getTender.UpdatedDate = tenderEntity.Date_modified;
                     getTender.CreatedDate = tenderEntity.Date_created;
                     getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
                                                  select new TenderMaterialResponseDto
@@ -350,6 +352,7 @@ namespace MeroBolee.EntityMapper
                     getTender.AlgoName = tenderEntity.AlgoName;
                     getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
+                    getTender.ProcurementId = tenderEntity.ProcurementId;
                     return getTender;
                 }
             } else {
@@ -365,8 +368,8 @@ namespace MeroBolee.EntityMapper
                     getTender.TenderCode = tenderEntity.Code;
                     getTender.TenderTitle = tenderEntity.Title;
                     getTender.RegistrationTill = tenderEntity.RegistrationTill;
-                    getTender.CategoryId = tenderEntity.CategoryId;
-                    getTender.CategoryName = tenderEntity.CategoryEntity.Category;
+                    getTender.CategoryId = tenderEntity.ProcurementCategoryId;
+                    getTender.CategoryName = tenderEntity.CategoryEntity.Title;
                     getTender.TenderLiveInterval = tenderEntity.LiveInterval;
                     getTender.LiveStartDate = tenderEntity.LiveStartDate;
                     getTender.LiveEndDate = tenderEntity.LiveEndDate;// tenderEntity.Live_Start_Date.AddMinutes(tenderEntity.Tender_live_interval);
@@ -383,6 +386,7 @@ namespace MeroBolee.EntityMapper
                     getTender.Product = tenderEntity.Product;
                     getTender.DateOfExecution = tenderEntity.DateOfExecution;
                     getTender.CreatedDate = tenderEntity.Date_created;
+                    getTender.UpdatedDate = tenderEntity.Date_modified;
                     getTender.TenderMaterials = (from me in tenderEntity.TenderMaterialEntities
                                                  select new TenderMaterialResponseDto
                                                  {
@@ -407,7 +411,8 @@ namespace MeroBolee.EntityMapper
                     getTender.AlgoName = tenderEntity.AlgoName;
                     getTender.AlgoId = tenderEntity.AlgoId;
                     getTender.CommunityApprovalStatus = tenderEntity.CommunityApprovalStatus;
-                    return getTender;
+                    getTender.ProcurementId = tenderEntity.ProcurementId;
+                return getTender;
             }
         }
 
@@ -513,25 +518,5 @@ namespace MeroBolee.EntityMapper
             };
             return graphDataEntities;
         }
-
-        public IEnumerable<BidRequestEntity> UpdateBidRequestEntitiesDto(IEnumerable<BidRequestEntity> bidRequestEntities,string Rank)
-        {
-            if (Rank == "Qualified")
-            {
-                foreach (var item in bidRequestEntities)
-                {
-                    item.IsQualified = false;
-                }
-            }
-            else
-            {
-                foreach (var item in bidRequestEntities)
-                {
-                    item.IsWinner = false;
-                }
-            }
-            return bidRequestEntities;
-        }
-
     }
 }

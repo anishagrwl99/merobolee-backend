@@ -886,7 +886,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpPost("Tender/PreBid/Admin/Superseed")]
         [Authorize(Roles ="Super Admin")]
-        public async Task<IActionResult> PreBidSuperseed([FromBody] PreBidSuperSeed tenderApproveDto)
+        public async Task<IActionResult> PreBidSuperseed([FromBody] TenderApproveDto tenderApproveDto)
         {
             try
             {
@@ -946,7 +946,7 @@ namespace MeroBolee.Controllers.Tender
         /// <returns></returns>
         [HttpPost("Tender/PostBid/BidInviter/Approve")]
         [Authorize(Roles = "Bid Inviter")]
-        public async Task<IActionResult> PostBidApprove([FromBody] VerifyOtpDto verifyOtpDto)
+        public async Task<IActionResult> PostBidApprove([FromBody] TenderApproveDto verifyOtpDto)
         {
             try
             {
@@ -1360,7 +1360,7 @@ namespace MeroBolee.Controllers.Tender
         }
 
         [HttpGet("Tender/Admin/ParticipantBidderList")]
-        [Authorize(Roles = "Super Admin")]
+        [Authorize(Roles = "Super Admin,Bid Inviter")]
         public async Task<IActionResult> ParticipantBidderList([FromQuery] long tenderId, [FromQuery] string Rank)
         {
             try
@@ -1399,6 +1399,56 @@ namespace MeroBolee.Controllers.Tender
                 response.statusCode = "500";
                 response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+
+        [HttpDelete("Tender/Admin/DocumentDelete")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task<IActionResult> DocumentDelete([FromQuery] long id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    response.statusCode = "400";
+                    response.Message = "Invalid Document Id or Document Not found";
+                    return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse<ResponseMsg>(response));
+                }
+                else
+                {
+                    var response = await tenderService.DeleteDocument(id, _baseUrl);
+                    if (response == null)
+                    {
+                        return NotFound(new Responses<string>("Error", "500", "Record not found."));
+                    }
+                    else
+                    {
+                        return Ok(new Responses<IEnumerable<TenderExtraDocumentResponseDto>>(response, "200", "Record deleted successfully."));
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
+            }
+        }
+        
+        [HttpGet("Tender/test")]
+        [Authorize(Roles = "Super Admin")]
+        public async Task WeeklyTenderTest()
+        {
+            try
+            {
+                await tenderService.SendWeeklyNewTenderEmailToSupplier();
+            }
+            catch (Exception e)
+            {
+                response.statusCode = "500";
+                response.Message = e.Message + (e.InnerException == null ? "" : e.InnerException.Message);
+                // return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse<ResponseMsg>(response));
             }
         }
 

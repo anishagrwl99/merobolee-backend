@@ -19,8 +19,6 @@ namespace MeroBolee.Dto
         [Range(1, long.MaxValue, ErrorMessage = "Invalid user id")]
         public long CompanyId { get; set; }
 
-        public string otpCode { get; set; }
-
         public string Remarks { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace MeroBolee.Repository
         /// <param name="unitOfWork"></param>
         /// <param name="uploadFileService"></param>
         /// <param name="dbFactory"></param>
+        /// <param name="cryptoService"></param>
         public BidderRequestRepository(IUnitOfWork unitOfWork, IUploadFile uploadFileService, IDbFactory dbFactory, ICryptoService cryptoService) : base(dbFactory)
         {
             this.unitOfWork = unitOfWork;
@@ -1084,7 +1085,6 @@ namespace MeroBolee.Repository
         {
             try 
             {
-                // var sealBidEntity = await meroBoleeDbContexts.SealBidEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == supplierId).FirstOrDefaultAsync();
                 var quotationSealBidEntity = await meroBoleeDbContexts.QuotationSealBidEntities.Where(x => x.TenderId == tenderId).Where(x => x.UserId == supplierId).FirstOrDefaultAsync();
                 var sealBidSubsectionTotalEntity = await meroBoleeDbContexts.SealBidSubsectionTotalEntities.Where(x => x.UserId == supplierId).Where(x => x.TenderId == tenderId).FirstOrDefaultAsync();
                 if(quotationSealBidEntity != null && sealBidSubsectionTotalEntity != null) return true;

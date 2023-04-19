@@ -21,8 +21,9 @@ namespace MeroBolee.Dto
         public string CancelRemarks { get; set; }
 
         public string AlgoName { get; set; }
-        
+        public int ProcurementId { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public PostBidDetail preBidDetail { get; set; }
 
 
@@ -39,7 +40,7 @@ namespace MeroBolee.Dto
         public string CompanyName { get; set; }
         public string TenderTitle { get; set; }
         public string TenderCode { get; set; }
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public string CategoryName { get; set; }
         public DateTime LiveStartDate { get; set; }
         public DateTime LiveEndDate { get; set; }
@@ -75,7 +76,6 @@ namespace MeroBolee.Dto
 
     public class BidderInfo:CompanyInfo
     {
-        public bool IsQualified { get; set; }
         public bool IsWinner { get; set; }
         public DateTime DateModified { get; set; }
     }

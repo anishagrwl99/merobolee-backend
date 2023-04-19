@@ -38,22 +38,12 @@ namespace MeroBolee.Service
 
                 if (procurementId != null)
                 {
-                    var procurementList = procurementId.Split(',');
-                    foreach (var item in procurementList)
-                    {
-                        var a = Int32.Parse(item);
-                        procurementIdsList.Add(a);
-                    }
+                    procurementIdsList = procurementId?.Split(',')?.Select(Int32.Parse)?.ToList();
                 }
 
                 if (algoId != null)
                 {
-                    var algoList = algoId.Split(',');
-                    foreach (var item in algoList)
-                    {
-                        var a = Int32.Parse(item);
-                        algoIdsList.Add(a);
-                    }
+                    algoIdsList = algoId?.Split(',')?.Select(Int32.Parse)?.ToList();
                 }
                 return watchListRepository.GetAllWatchList(supplierId, companyId,procurementIdsList,algoIdsList);
 

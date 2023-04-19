@@ -29,6 +29,7 @@ namespace MeroBolee.Service.VendorEnlistment
                 var entity = new TenderProcurementCategoryEntity();
                 entity.ProcurementId = procurementCategoryDto.ProcurementId;
                 entity.Title = procurementCategoryDto.Title;
+                entity.IsEditable = true;
                 await vendorEnlistmentRepository.AddProcurementCategory(entity);
                 return true;
             }
@@ -108,6 +109,7 @@ namespace MeroBolee.Service.VendorEnlistment
                                         vendorEnlistmentDto.CompanyId.ToString());
                                     entity.DocumentTypeId = item.DocumentTypeId;
                                     entity.VendorEnlistmentId = vendorEnlistmentEntity.Id;
+                                    entity.DocumentName = item.Name == null ? "" : item.Name;
                                     list.Add(entity);
                                 }
                             }
@@ -159,8 +161,15 @@ namespace MeroBolee.Service.VendorEnlistment
                                 Id = item.Id,
                                 DocumentTypeId = item.DocumentTypeId,
                                 DocumentPath = String.IsNullOrEmpty(item.DocumentPath) ? "" : $"{baseUrl}{item.DocumentPath.Replace('\\', '/')}",
-                                Name = item.Document.TypeName
                             };
+                            if (item.DocumentTypeId == 6)
+                            {
+                                obj.Name = item.DocumentName;
+                            }
+                            else
+                            {
+                                obj.Name = item.Document.TypeName;
+                            }
                             list.Add(obj);
                         }
                         return list;
@@ -192,7 +201,7 @@ namespace MeroBolee.Service.VendorEnlistment
             }
         }
 
-        public async Task<IEnumerable<TenderProcurementCategoryEntity>> GetProcurementCategory(string id)
+        public async Task<IEnumerable<TenderProcurementCategoryEntity>> GetProcurementCategory(string id,string search)
         {
             try
             {
@@ -204,6 +213,11 @@ namespace MeroBolee.Service.VendorEnlistment
                     var result= await vendorEnlistmentRepository.FetchProcurementCategory(item);
                     tenderProcurementCategoryEntityList.AddRange(result);
                 }
+                if (search!=null)
+                {
+                    tenderProcurementCategoryEntityList = tenderProcurementCategoryEntityList.Where(x => x.Title.ToLower().Contains(search.ToLower())).ToList();
+                }
+
                 return tenderProcurementCategoryEntityList;
             }
             catch 
@@ -293,7 +307,7 @@ namespace MeroBolee.Service.VendorEnlistment
                 var vendorEnlistmentBankInfoEntities= UpdateVendorEnlistmentBankInfoEntity(vendorEnlistment.VendorEnlistmentBankInfos, vendorEnlistmentDto.VendorEnlistmentBankInfoDtos);
 
                 var bidderProcuremntCategoryEntities= UpdateBidderProcurementCategoryEntity(vendorEnlistment.BidderProcurementCategories, vendorEnlistmentDto.BidderProcurementCategoryIds,vendorEnlistment.Id);
-                
+
                 var list = new List<VendorEnlistmentDocumentEntity>();
 
                 if (vendorEnlistmentDto.VendorEnlistmentDocumentDtos != null)
@@ -305,6 +319,7 @@ namespace MeroBolee.Service.VendorEnlistment
                             DocumentPath = await docUpload.Upload(item.Document, vendorEnlistmentDto.CompanyId.ToString()),
                             DocumentTypeId = item.DocumentTypeId,
                             VendorEnlistmentId = vendorEnlistment.Id,
+                            DocumentName=item.Name==null?"":item.Name
                         };
                         list.Add(obj);
                     }
@@ -315,7 +330,7 @@ namespace MeroBolee.Service.VendorEnlistment
                 await vendorEnlistmentRepository.UpdateVendorEnlistmentAnnaulIncome(vendorEnlistmenAnnualIncomeEntities);
                 await vendorEnlistmentRepository.UpdateVendorEnlistmentBankInfo(vendorEnlistmentBankInfoEntities);
                 await vendorEnlistmentRepository.UpdateBidderProcurementCategory(bidderProcuremntCategoryEntities);
-                if(list.Count != 0) 
+                if (list.Count != 0)
                 {
                     await vendorEnlistmentRepository.AddVendorEnlistmentDocumentEntity(list);
                 }

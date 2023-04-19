@@ -28,6 +28,8 @@ using MeroBolee.Service.Otp;
 using MeroBolee.Repository.Otp;
 using MeroBolee.Service.VendorEnlistment;
 using MeroBolee.Repository.VendorEnlistment;
+using MeroBolee.Service.SupplierPerformanceTracking;
+using MeroBolee.Repository.SupplierPerformanceTracking;
 
 namespace MeroBolee
 {
@@ -219,6 +221,10 @@ namespace MeroBolee
             services.AddScoped<IVendorEnlistmentService, VendorEnlistmentService>();
             services.AddScoped<IVendorEnlistmentRepository, VendorEnlistmentRepository>();
 
+            //SupplierPerformanceTracking
+            services.AddScoped<ISupplierPerformanceTrackingService, SupplierPerformanceTrackingService>();
+            services.AddScoped<ISupplierPerformanceTrackingRepository, SupplierPerformanceTrackingRepository>();
+
             //Watchlist
             services.AddScoped<IWatchListRepository, WatchListRepository>();
             services.AddScoped<IWatchListService, WatchListService>();
@@ -377,16 +383,23 @@ namespace MeroBolee
 
             app.UseMiddleware<EncryptionMiddleware>();
 
-     
+
             app.UseEndpoints(endpoints =>
             {
-               // endpoints.MapControllers();
+                // endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                        name: "default",
                        pattern: "{controller=BackgroundJob}/{action=MoveRecord}/{id?}");
 
                 endpoints.MapHangfireDashboard();
             });
+
+            /* Send New Tender Email To Suplier every Sunday,Tuesday,Thursday at 10 am
+              DateTime is in GMT( 4:15 am GMT is 10:00 am nepali time) */
+            RecurringJob.AddOrUpdate<ITenderService>("Send New Tender Email To Suppliers", x => x.SendWeeklyNewTenderEmailToSupplier(), "15 4 * * 0,2,4");
+
+            /* Moves Pending Tenders To Rejected If Registration Till < Current DateTime*/
+            RecurringJob.AddOrUpdate<ITenderService>("Move Tenders To Rejected", x => x.MoveTenderToRejected(),Cron.Daily());
         }
     }
 }

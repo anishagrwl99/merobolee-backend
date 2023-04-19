@@ -76,10 +76,7 @@ namespace MeroBolee.Repository
         /// <param name="ent"></param>
         /// <returns></returns>
         CommunityApprovalEntity ApproveTenderByBidInviter(CommunityApprovalEntity ent);
-
         
-        Task SetTenderStatusToFeedback(TenderEntity tenderEntity);
-
         Tuple<decimal, DateTime, DateTime>  GetMaxQuotationAllowed(long tenderId);
         Task<TenderEntity> GetTenderEntityOnly(long tenderId);
         Task<CommunityApprovalEntity> GetTenderEntityOfCompany(long tenderId,long companyId);
@@ -137,9 +134,6 @@ namespace MeroBolee.Repository
         Task<long> GetGraphDataTotalBudget();
         Task<BidRequestEntity> GetBidRequestEntity(long companyId, long tenderId);
         Task<BidRequestEntity> UpdateQualifiedStatusinBidRequest(BidRequestEntity bidRequestEntity);
-        Task <IEnumerable<BidRequestEntity>> GetBidRequestEntityByTenderId(long tenderId);
-        Task UpdateWholeQualifiedStatusinBidRequest(IEnumerable<BidRequestEntity> updateBidRequestEntitiesDto);
-        Task<List<BidderInfo>> GetQualifiedBidderList(long tenderId);
         Task<List<BidderInfo>> GetWinnerBidderList(long tenderId);
         Task<IEnumerable<CommunityApprovalEntity>> FindPendingCommunityApprovalEntity(long tenderId);
         Task<bool> UpdateCommunityApprovalStatuses(IEnumerable<CommunityApprovalEntity> preBidddingApprovalEntity);
@@ -149,5 +143,13 @@ namespace MeroBolee.Repository
         Task<IEnumerable<TenderEntity>> GetAllTender();
         Task<IEnumerable<CommunityApprovalEntity>> GetAllCommunityApproval(long companyId);
         Task<IEnumerable<BidRequestEntity>> GetBidRequestEntities(long companyId);
+        Task<TenderExtraDocumentEntity> FetchTenderExtraDocumentById(long id);
+        Task UpdateTenderExtraDocument(TenderExtraDocumentEntity entity);
+        Task<IEnumerable<TenderExtraDocumentEntity>> FetchTenderExtraDocumentByTenderId(long tenderId);
+        Task<List<string>> FindVendorEmailByProcurementCategoryId(long procurementCategoryId);
+        Task<IEnumerable<TenderEntity>> GetWeeklyTender();
+        Task<IEnumerable<string>> FetchEmailFromUser();
+        Task<IEnumerable<TenderEntity>> GetTenderToReject();
+        Task UpdateTenderEntitiesStatus(IEnumerable<TenderEntity> tenders);
     }
 }

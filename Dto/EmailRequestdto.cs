@@ -1,8 +1,14 @@
+using MeroBolee.Model;
+using System.Collections;
+using System.Collections.Generic;
+
 namespace MeroBolee.Dto
 {
     public class EmailRequestdto
     {
         public string toEmailId {get; set;}
+        
+        public IEnumerable<string> toEmailIds { get; set; }
 
         public string token {get; set;}
         public string id {get; set;}
@@ -18,5 +24,7 @@ namespace MeroBolee.Dto
         public string subject { get; set; }
 
         public string Otp { get; set; }
+
+        public IEnumerable<TenderEntity> Tenders { get; set; }
     }
 }

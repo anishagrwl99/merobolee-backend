@@ -12,7 +12,7 @@ namespace MeroBolee.Service.VendorEnlistment
         Task<VendorEnlistmentAddDto> AddVendorEnlistment(VendorEnlistmentAddDto vendorEnlistmentDto);
         Task<IEnumerable<VendorEnlistmentDocumentDto>> DeleteDocument(long documentId, string baseUrl);
         Task<IEnumerable<DocumentTypeEntity>> GetDocumentType();
-        Task<IEnumerable<TenderProcurementCategoryEntity>> GetProcurementCategory(string id);
+        Task<IEnumerable<TenderProcurementCategoryEntity>> GetProcurementCategory(string id,string search);
         Task<bool> DeleteProcurementCategory(long id);
         Task<VendorEnlistmentDetail> GetVendorEnlistmentDetail(long companyId,string baseUrl);
         Task<VendorEnlistmentLogEntity> SetEnableOrDisable(VendorListEnableOrDisableDto vendorListEnableOrDisableDto);

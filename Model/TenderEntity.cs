@@ -15,7 +15,7 @@ namespace MeroBolee.Model
         public long Id { get; set; }
 
         [ForeignKey("CategoryEntity")]
-        public int CategoryId { get; set; }
+        public long ProcurementCategoryId { get; set; }
 
         [MaxLength(20)]
         [Column(TypeName = "VARCHAR")]
@@ -125,7 +125,7 @@ namespace MeroBolee.Model
 
         public virtual UserEntity CreatedByUser { get; set; }
         public virtual UserEntity ApprovedByUser { get; set; }
-        public virtual CategoryEntity CategoryEntity { get; set; }
+        public virtual TenderProcurementCategoryEntity CategoryEntity { get; set; }
 
         [JsonIgnore]
         [NotMapped]
