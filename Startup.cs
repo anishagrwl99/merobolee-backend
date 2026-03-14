@@ -30,6 +30,8 @@ using MeroBolee.Service.VendorEnlistment;
 using MeroBolee.Repository.VendorEnlistment;
 using MeroBolee.Service.SupplierPerformanceTracking;
 using MeroBolee.Repository.SupplierPerformanceTracking;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace MeroBolee
 {
@@ -99,6 +101,28 @@ namespace MeroBolee
                });
 
             });
+            
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var logger = context.HttpContext.RequestServices
+                        .GetRequiredService<ILogger<Program>>();
+
+                    foreach (var item in context.ModelState)
+                    {
+                        var key = item.Key;
+                        var errors = item.Value.Errors;
+
+                        foreach (var error in errors)
+                        {
+                            logger.LogError($"ModelState error for {key}: {error.ErrorMessage}");
+                        }
+                    }
+
+                    return new BadRequestObjectResult(context.ModelState);
+                };
+            });
           
 
 
@@ -109,7 +133,7 @@ namespace MeroBolee
             }, ServiceLifetime.Transient); // Connection string is available in appsettings.Json file
                 // UseSqlServer help to database connection which use package Ms.EntityFrameworkCore.SqlServer
 
-
+                
 
             services.AddSwaggerGen(c =>
             {
@@ -370,7 +394,7 @@ namespace MeroBolee
                 DashboardTitle = "Merobolee Background Activities",
                 DisplayStorageConnectionString = false,
             });
-            app.UseHttpsRedirection();
+           //x app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors(_corsPolicy);
@@ -380,8 +404,7 @@ namespace MeroBolee
 
             // custom jwt auth middleware
             app.UseMiddleware<JwtMiddleware>();
-
-            app.UseMiddleware<EncryptionMiddleware>();
+       //     app.UseMiddleware<EncryptionMiddleware>();
 
 
             app.UseEndpoints(endpoints =>
