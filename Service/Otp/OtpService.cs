@@ -124,7 +124,7 @@ namespace MeroBolee.Service.Otp
                     memoryCache.Set<string>(memoryCacheOtpKey, otpKey, expiryTime);
                 }
                 emailRequestdto.Otp = GenerateOtp(otpKey);
-                sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
+               // sendEmailResponse = sendEmailService.SendEmail(emailRequestdto);
 
                 if (sendEmailResponse != null)
                 {
@@ -133,7 +133,7 @@ namespace MeroBolee.Service.Otp
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
 
             }
